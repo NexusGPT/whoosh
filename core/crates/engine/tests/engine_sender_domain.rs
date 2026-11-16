@@ -211,7 +211,7 @@ fn f_the_read_counts_people_and_mails_most_mails_first() {
 }
 
 /// Prefix with and without "@", in any case; empty and "@"-only prefixes answer nothing; a prefix in the middle of a domain does not match.
-/// Broken copy: the prefix is not trimmed of "@" (no row for "@lou"), or `contains` replaces `starts_with` ("hotels" matches), or the
+/// Broken copy: the prefix is not trimmed of "@" (no row for "@lor"), or `contains` replaces `starts_with` ("hotels" matches), or the
 /// empty prefix answers every domain.
 #[test]
 fn g_the_prefix_with_or_without_at_any_case_and_the_empty_prefix() {
@@ -220,7 +220,7 @@ fn g_the_prefix_with_or_without_at_any_case_and_the_empty_prefix() {
     insert_from(&core, &a, "m", &[("reservations@lorvan-hotels.example", 2), ("zoe@acme.test", 1)]);
     wait_people(&core);
     let want = vec![("lorvan-hotels.example".to_string(), 1, 2)];
-    for p in ["lou", "@lou", "LOU", "@Lorvan-Hotels.Example", "lorvan-hotels.example", " @lou "] { assert_eq!(rows(&core, p), want, "prefix {p:?}"); }
+    for p in ["lor", "@lor", "LOR", "@Lorvan-Hotels.Example", "lorvan-hotels.example", " @lor "] { assert_eq!(rows(&core, p), want, "prefix {p:?}"); }
     for p in ["hotels", "ouvre", "lorvan-hotels.examples", "@@"] { assert!(rows(&core, p).is_empty(), "prefix {p:?} is not the start of a domain (or is empty)"); }
     for p in ["", "@", "  ", " @ "] { assert!(rows(&core, p).is_empty(), "prefix {p:?} answers nothing"); }
 }
