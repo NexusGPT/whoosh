@@ -1,0 +1,46 @@
+{
+  "item": "eaf347e2",
+  "full_id": "eaf347e2-5e90-43bf-8000-1abec38fee31",
+  "title": "Embed attachment pieces with subject and file name",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_pieces -- a_files_pieces_carry_the_subject_and_the_file_name",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p search-vector --test pieces -- a_file_piece_carries_the_subject_and_the_file_name",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "WHOOSH_RIG_HIDDEN=1 sh scripts/launch-one.sh <bundle> -- --rig-hidden sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 checks/ownercopy-pieces.py' (the lead's hands: a private snapshot of the installed database in the launcher's run folder, counts only, deleted at the end)",
+      "pass": "the line 'attachment pieces with a vector: <n>' reads a number above 0 (attachment pieces with a vector, for the stored mails under the cap); counts only, never a subject, a file name or a passage"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "self.file_pieces(&b.message_id, &b.subject, tok.as_ref(), embedder.as_ref(), &vector);",
+      "replace": "",
+      "proof": 0,
+      "red": "a_files_pieces_carry_the_subject_and_the_file_name.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "let whole = format!(\"{subject} · {name}\");",
+      "replace": "let whole = subject.to_string();",
+      "proof": 1,
+      "red": "a_file_piece_carries_the_subject_and_the_file_name.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Engine: core/crates/engine/tests/engine_pieces.rs:163 a_files_pieces_carry_the_subject_and_the_file_name (a stored file text is cut by the token rule and embedded once under the title 'Quote for May · devis.pdf'; the body keeps the subject alone; the file's chunks are marked embedded; pieces_over_limit 0); the title rule: core/crates/search-vector/tests/pieces.rs:129 (src pieces.rs:77). The SQL of the lead proof uses the schema of core/crates/store/migrations/sql/0014_calendars_chunks_crawl.sql:19-31 (chunk.part = 'attachment:<id>', chunk.embedded_at_ms) and attachment.local_path (read at core/crates/engine/src/attachment_auto.rs:239); 'attachment:' is 11 characters, so the attachment id starts at character 12. A file whose text lands after its mail was indexed is queued to the indexer by core/crates/engine/src/attachment_download.rs:191-192 (enqueue_for_store), which closes the finding left open in docs/lanes/pieces.md:183; that line has no test of its own (grep -rln enqueue_for_store core/crates finds only crawl.rs and attachment_download.rs, no test file), so the lead's count on the private copy is also the check of that path. Nothing was run by me. | hid-search round 17: the lead proof reads checks/ownercopy-pieces.py's line 'attachment pieces with a vector' (the engine read index/pieces, indexer.rs piece_counts, which counts each stored file's attachment chunks marked embedded) instead of a hand-typed sqlite3 query."
+}

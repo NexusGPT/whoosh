@@ -1,0 +1,33 @@
+From: Brightfield <security@example.org>
+To: Assem Example <assem@example.org>
+Subject: Sign in to Brightfield
+Date: Wed, 11 Nov 2026 00:56:00 +0000
+Message-ID: <f43b1152ec328763@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============6095441378732004602=="
+
+--===============6095441378732004602==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Your Brightfield verification code is 055384. It expires in 10 minutes.
+
+--===============6095441378732004602==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Brightfield</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img src=3D"//pixel.example.net/px/b8946133.=
+gif" width=3D"1" height=3D"1"><h2>Brightfield</h2><p>Your verification code i=
+s</p><p class=3D"code" style=3D"letter-spacing:6px"><strong>055384</strong></=
+p><p>It expires in 10 minutes.</p><p style=3D"font-size:11px;color:#888">You =
+receive this because of your account. <a href=3D"https://example.net/unsubscr=
+ibe?u=3Dbd11eb">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Pri=
+vacy</a></p><IMG SRC=3D"https://cdn.example.net/px/f3e97dcb.gif" ALT=3D"banne=
+r"></td></tr></table></body></html>
+
+--===============6095441378732004602==--

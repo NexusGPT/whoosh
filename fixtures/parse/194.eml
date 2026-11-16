@@ -1,0 +1,25 @@
+From: Kestrel VPN <digest@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: Weekly digest
+Date: Wed, 11 Nov 2026 06:32:00 +0000
+Message-ID: <ca5a7f42211d1a6a@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============8206537502652788193=="
+
+--===============8206537502652788193==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+SGVsbG8sIHNhZmUgdGV4dC4gYWZ0ZXINCg==
+
+--===============8206537502652788193==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><head><title>x</title></head><body><p>Hello, safe text 4628</p><img src=
+=3D"https://pixel.example.net/a.gif" onerror=3D"alert(1)"><p>after</p></body>=
+</html>
+
+--===============8206537502652788193==--

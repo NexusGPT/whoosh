@@ -1,0 +1,132 @@
+{
+  "item": "acefe421",
+  "full_id": "acefe421-bc15-4ffb-9dd2-a008dc4f1449",
+  "title": "Build fn-pushclient-ios",
+  "state": "outside",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--manifest-path relay/Cargo.toml --test relay registry_api::",
+      "pass": "(?s)(?=.*test registry_api::register_and_unregister_round_trip \\.\\.\\. ok)(?=.*test registry_api::unregister_removes_only_its_own_pair \\.\\.\\. ok)(?=.*test result: ok\\. \\d+ passed; 0 failed)",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "thePushClientIsRegisteredExactlyOnce,thePushClientRegistersNoSurfaceOfItsOwn",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "theThirtyAccountsHoldExactlyOneRegistrationEach,aSecondSetTokenWithTheSameTokenSendsNothing,aNewTokenRenewsEachAccountOnceKeepingItsRoutingId,removingAnAccountDeletesItsRowOnceAndNoneStaysAfter,aFailedRemovalIsKeptAndRetriedUntilTheRelayAnswers,aFailedDeleteOfTheOldTokensRowIsKeptAndRetried,theRegistrationCarriesTheEnvironmentTheRegistrarWasBuiltWith",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "theClientSpeaksTheRowsTheShippedRelayServes,theClientDeletesByRoutingIdAndTokenAndSendsNoAccountId,theClientRefusesAnAnswerThatIsNotTheRelaysOk,thirtyAccountsHoldOneRowEachOnTheRelayAndNoneAfterRemoval",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "OUTSIDE (the relay's live test instance and an iPhone that registers): after J4.10 on the simulator, GET <relay>/v1/registrations/<routing id> for each of the 30 accounts; then remove one account on the phone and GET again",
+      "pass": "count 1 for every account after J4.10; count 0 after removal",
+      "fail": "count [02-9]|count 1 after removal",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "relay/src/registry/devices.rs",
+      "find": "DELETE FROM registration WHERE device_token = ?1 AND routing_id = ?2",
+      "replace": "DELETE FROM registration WHERE device_token = ?1 AND routing_id != ?2",
+      "proof": 0,
+      "red": "register_and_unregister_round_trip \\.\\.\\. FAILED|test result: FAILED"
+    },
+    {
+      "file": "Sources/App/FeatureRegistry.swift",
+      "find": "        PushClientFeature.self,",
+      "replace": "        PushClientFeature.self,\n        PushClientFeature.self,",
+      "proof": 1,
+      "red": "thePushClientIsRegisteredExactlyOnce.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/PushClient/PushRegistrar.swift",
+      "find": "store.routingId(for: accountId) ?? RoutingId.make()",
+      "replace": "RoutingId.make()",
+      "proof": 2,
+      "red": "aNewTokenRenewsEachAccountOnceKeepingItsRoutingId.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/PushRegistrar.swift",
+      "find": "let changed = hex != token",
+      "replace": "let changed = true",
+      "proof": 2,
+      "red": "aSecondSetTokenWithTheSameTokenSendsNothing.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/PushRegistrar.swift",
+      "find": "wanted.insert(accountId)",
+      "replace": "_ = accountId",
+      "proof": 2,
+      "red": "theThirtyAccountsHoldExactlyOneRegistrationEach.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/PushRegistrar.swift",
+      "find": "do { if let token, let routing = store.routingId(for: accountId) { try await relay.unregister(routingId: routing, deviceToken: token) } }",
+      "replace": "do { try await Task.sleep(nanoseconds: 1) }",
+      "proof": 2,
+      "red": "removingAnAccountDeletesItsRowOnceAndNoneStaysAfter.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/PushRegistrar.swift",
+      "find": "catch { pendingRemoval.insert(accountId); throw error }",
+      "replace": "catch { throw error }",
+      "proof": 2,
+      "red": "aFailedRemovalIsKeptAndRetriedUntilTheRelayAnswers.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/RelayClient.swift",
+      "find": "request.httpMethod = \"POST\"",
+      "replace": "request.httpMethod = \"PUT\"",
+      "proof": 3,
+      "red": "theClientSpeaksTheRowsTheShippedRelayServes.*failed|thirtyAccountsHoldOneRowEachOnTheRelayAndNoneAfterRemoval.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/RelayClient.swift",
+      "find": ".appendingPathComponent(routingId).appendingPathComponent(deviceToken)",
+      "replace": ".appendingPathComponent(routingId)",
+      "proof": 3,
+      "red": "theClientDeletesByRoutingIdAndTokenAndSendsNoAccountId.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/RelayClient.swift",
+      "find": "ok: [200, 201])",
+      "replace": "ok: [200, 201, 500])",
+      "proof": 3,
+      "red": "theClientRefusesAnAnswerThatIsNotTheRelaysOk.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/PushRegistrar.swift",
+      "find": "            try await renew()\n            try await sweepStale()",
+      "replace": "            try await renew()",
+      "proof": 2,
+      "red": "aNewTokenRenewsEachAccountOnceKeepingItsRoutingId.*failed"
+    },
+    {
+      "file": "Sources/Features/PushClient/PushRegistrar.swift",
+      "find": "RelayRegistration(deviceToken: token, routingId: routing, environment: environment)",
+      "replace": "RelayRegistration(deviceToken: token, routingId: routing, environment: .sandbox)",
+      "proof": 2,
+      "red": "theRegistrationCarriesTheEnvironmentTheRegistrarWasBuiltWith.*failed"
+    }
+  ],
+  "gap": "OUTSIDE only (this is no longer about the simulator runtime, which is installed): proof 4 needs a relay's live test instance that the simulator app registers with (the 30 accounts after J4.10, none after removal) and an address for it in the app; the fixture-core rig copy talks to no relay (nothing leaves this Mac), so the registration reads on the relay can only be taken on a copy that has been given the relay address by the owner. The client side is proved by the loopback URLProtocol fake of the relay route table (proofs 2 and 3) and the relay side by proof 0.",
+  "owner": null,
+  "notes": "The reader cited welcomephone-selftest.txt line 10 'push-registered-once' as a stand-in row: no case of that name exists in checks/welcomephone-check.py at this commit (cases at :78-145), so it is not used. Relay cargo target: relay/Cargo.toml name = relay; relay/tests/relay/main.rs lists mod registry_api (line 5) so the test path is registry_api::<name>. registry delete SQL: relay/src/registry/devices.rs:43-52 (the DELETE at :46). Second mutant: Sources/App/FeatureRegistry.swift:18 lists PushClientFeature once; a second entry makes the registry test red. PushClientFeature.swift is a 4-line stub (id only). Proof 2 is the new unit file; proof 3 (lead, outside) was proof 2 before this change. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Not run through the rig on purpose: the rig starts the test engine with no network (rule: nothing leaves this Mac except the relay, and the relay only on the owner's say)."
+}

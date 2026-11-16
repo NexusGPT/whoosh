@@ -1,0 +1,18 @@
+From: Northwind Cloud <security@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Your Northwind Cloud sign-in code
+Date: Tue, 03 Nov 2026 13:28:00 +0000
+Message-ID: <9ea6dede57b5db8f@accounts.example.com>
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Northwind Cloud</ti=
+tle><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-=
+size:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellsp=
+acing=3D"0"><tr><td align=3D"center"><h2>Northwind Cloud</h2><div>Security co=
+de: <span style=3D"font-family:monospace;font-size:24px">8FEKXF</span></div><=
+p style=3D"font-size:11px;color:#888">You receive this because of your accoun=
+t. <a href=3D"https://example.net/unsubscribe?u=3D98ea82">Unsubscribe</a> | <=
+a href=3D"https://example.net/privacy">Privacy</a></p></td></tr></table></bod=
+y></html>

@@ -1,0 +1,55 @@
+{
+  "item": "b4603e1e",
+  "full_id": "b4603e1e-04de-4fc3-b6bf-4a4ee04a0579",
+  "title": "Build mob-composerphone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "undoSendDefaultSitsInsideItsOwnBounds,aReplyIsUndoableForExactlyTheDefaultWindowThenSent,cancelInsideTheWindowStopsTheSendAndItStaysStopped,cancellingAnUnknownEntryIsNotFoundNotASilentSuccess,aReplyFromTheFailingAccountIsRefusedInWords,theComposerRegistersTheMicrophoneUndoCancelAndTheFromAddress",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/composerphone-check.py --selftest",
+      "pass": "(?s)(?=.*clean model: failed=\\[\\] unjudged=\\[\\])(?=.*\\| J7\\.4/no-model-starts-download \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.4/download-shows-progress \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.4/model-ready-after-download \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.4/dictate-state-text \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.4/dictated-words \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.4/undo-send-bar \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.4/undo-bar-says-sending \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.4/sent-label \\| .* \\| RED on this case \\|)(?=.*\\d+ mutants, 0 not seen red; \\d+ acts deleted, 0 not seen red; 0 clean failures, 0 clean not judged)",
+      "fail": "NOT RED|\\b[1-9]\\d* not seen red|\\b[1-9]\\d* clean failures",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/composerphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/CoreBridge/FixtureCore.swift",
+      "find": ".undoable(untilMs: now + Int64(WhooshConstants.UNDO_SEND_DEFAULT_S) * 1000)",
+      "replace": ".undoable(untilMs: now)",
+      "proof": 0,
+      "red": "aReplyIsUndoableForExactlyTheDefaultWindowThenSent.*failed|✘"
+    },
+    {
+      "file": "checks/composerphone-check.py",
+      "find": "\"Sent\"), \"Sent\")",
+      "replace": "\"Sent\"), \"Delivered\")",
+      "proof": 1,
+      "red": "clean model: failed=\\[.*sent-label|\\b[1-9]\\d* clean failures"
+    },
+    {
+      "file": "checks/composerphone-check.py",
+      "find": "s.expect(\"download-shows-progress\", lambda: percents_seen(s), True)",
+      "replace": "s.expect(\"download-shows-progress\", lambda: percents_seen(s), False)",
+      "proof": 1,
+      "red": "clean model: failed=\\[.*download-shows-progress|\\b[1-9]\\d* clean failures"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims: (a) mic with no model shows download progress, then text: ComposerPhoneBar.swift:34 (accessibilityValue percent), :43 `case .downloading:` and :45-47 percent text; check cases no-model-starts-download, download-shows-progress, model-ready-after-download, listening-after-download, dictate-state-text, dictated-words at composerphone-check.py:127-134. (b) send shows the undo-send bar then 'Sent': ComposerPhoneBar.swift:101 Text(\"Sent\"), :107-114 Sending and Undo; cases undo-send-bar :137, undo-bar-says-sending :138, undo-window-seconds :139, second-send-leaves-after-window :147, sent-label :148, composer-closes-after-sent :149. Unit tests: ComposerPhoneTests.swift:35-73 (window equals UNDO_SEND_DEFAULT_S = 10, undoable then sent, cancel holds). FixtureCore.swift:816 sets the undo window. The selftest rows come from the MUTANTS comment block composerphone-check.py:158-188 and the printer :410-440. Stand-in only for proof 1. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). The speech model must be absent at the start: scripts/iphone-rig.sh uninstalls the app after the boot and before the install on every run (selftest case fresh-container-the-app-is-uninstalled-after-boot-and-before-install), so the app container, and a downloaded model with it, starts empty. Optional S that stays: a unit test that pins the rows `Sending` then `Sent` (ComposerPhoneBar.swift:34,43-46,101,115)."
+}

@@ -1,0 +1,93 @@
+{
+  "item": "65478ddc",
+  "full_id": "65478ddc-ca54-4cf2-87e0-321ee3d6af71",
+  "title": "Show the selected search result in the reader",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "aSearchThatLandsMakesTheReaderTargetTheFirstResult,anArrowMoveOnTheResultsMakesTheReaderTargetTheNextOne,aSearchWithNoResultGivesTheReaderNoTarget,aSearchStillLoadingLeavesTheReaderOnWhatItShowed,escapeGivesTheReaderTheInboxRowBack,enterOnAResultOpensThatMailAndKeepsTheResults,theSelectedResultIdFollowsTheSelectionOnlyWhileTheSearchIsOpen",
+      "pass": "Test theSelectedResultIdFollowsTheSelectionOnlyWhileTheSearchIsOpen\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theReaderBuildsTheSelectedResultsThreadWhenTheMailIsInNoInboxRow,everyResultHasItsOwnRowForTheReaderNotOnlyTheSelectedOne,downInTheReaderMovesToTheNextResultAndTheReaderFollows,markDoneOnTheOpenResultArchivesThatMailAndNotTheInboxRow",
+      "pass": "Test markDoneOnTheOpenResultArchivesThatMailAndNotTheInboxRow\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "[0-9]+ key bar checks, [0-9]+ mutants, 0 problems",
+      "fail": "NOT RED|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL .*par-reader-follows-the-selected-result|NOT JUDGED .*par-reader-follows-the-selected-result",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-reader-never-shows-a-mail-outside-the-results +pass",
+      "fail": "par-reader-never-shows-a-mail-outside-the-results +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/the-reader-shows-the-selected-result-on-the-real-engine",
+      "fail": "FAIL +search/the-reader-shows-the-selected-result-on-the-real-engine|NOT JUDGED +search/the-reader-shows-the-selected-result-on-the-real-engine",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice search: .*[0-9]+ mutant models each red on its own case",
+      "fail": "WRONG|FAILS|SURVIVE",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ gap checks, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/App/AppModel.swift",
+      "find": "if resultsShow { return SearchMacModel.shared.selectedRow }",
+      "replace": "if false { return SearchMacModel.shared.selectedRow }",
+      "proof": 0,
+      "red": "aSearchThatLandsMakesTheReaderTargetTheFirstResult\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/App/AppModel.swift",
+      "find": "if resultsShow { return SearchMacModel.shared.selectedRow }",
+      "replace": "if false { return SearchMacModel.shared.selectedRow }",
+      "proof": 4,
+      "red": "FAIL +search/the-reader-shows-the-selected-result-on-the-real-engine"
+    },
+    {
+      "file": "Sources/App/AppModel.swift",
+      "find": "if resultsShow { return SearchMacModel.shared.selectedRow }",
+      "replace": "if false { return SearchMacModel.shared.selectedRow }",
+      "proof": 3,
+      "red": "par-reader-never-shows-a-mail-outside-the-results +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Unit: Tests/Unit/SearchReaderTests.swift:35,42,50,58,67,81,92; Tests/Unit/ReaderShowsResultTests.swift:56,68,78,92,102,112,127,144. Code: Sources/App/AppModel.swift:78-85 (shownRow: selected result's row while results show), SearchMacModel.swift:318 (selectedResultId). The unit tests need WHOOSH_FIXTURE_CORE=1 (they set it themselves, SearchReaderTests.swift:7-12). SPEC A138 (docs/SPEC.md:156). | gap-search-cases: (1) the real engine: checks/realcore-check.py --slice-search, reader_round (search 'example', whose letters sit in every sender address of the local server's mail: at least two matches, else NOT JUDGED naming the count; the first result selected, then Down, Down, Up; after each the reader's mail id equals the selected result's and is one of the listed ids), judge_reader, case 'the-reader-shows-the-selected-result-on-the-real-engine'; selftest mutants reader-keeps-first and reader-off-results. (2) never a mail outside the results: case par-reader-never-shows-a-mail-outside-the-results in par-searchmac.py (reader_in_results). (3) par-searchmac.py prints a line per case (print_cases). The first mutant is the same AppModel line on the three proofs that read the reader."
+}

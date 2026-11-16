@@ -1,0 +1,5 @@
+module contractsFFI {
+    header "contractsFFI.h"
+    header "engineFFI.h"
+    export *
+}

@@ -1,0 +1,92 @@
+{
+  "item": "7a30058b",
+  "full_id": "7a30058b-0cad-4bb7-bc10-6d5facc3504d",
+  "title": "Build the footprint gate for speed, RAM and CPU",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 perf/footprint.py --selftest",
+      "pass": "(?s)ok\\s+all just under.*ok\\s+idle RSS at budget.*ok\\s+CPU at budget.*ok\\s+model RSS at budget.*ok\\s+unloaded RSS at budget.*ok\\s+launch at budget",
+      "fail": "BAD|Traceback",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "PERF_LOAD_MAX=1000 python3 perf/footprint.py --fake clean",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "OVER|RED:|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "PERF_LOAD_MAX=1000 python3 perf/footprint.py --fake keep",
+      "pass": "RED: RSS_IDLE_MAX_MB: memory, model unloaded",
+      "fail": "Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "PERF_LOAD_MAX=1000 python3 perf/footprint.py --fake launch",
+      "pass": "RED: RSS_IDLE_MAX_MB: memory at idle, no search yet",
+      "fail": "Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/footprint.py {bundle} --weights \"$WHOOSH_EMBED_WEIGHTS\"",
+      "pass": "(?s)memory at idle, no search yet\\s+\\d+ MB( \\([^)]*\\))? \\(budget RSS_IDLE_MAX_MB < \\d+ MB\\) ok.*CPU at idle, average\\s+[\\d.]+ %( \\([^)]*\\))? \\(budget CPU_IDLE_MAX_PCT < [\\d.]+ %\\) ok.*memory, model loaded\\s+\\d+ MB( \\([^)]*\\))? \\(budget RSS_MODEL_MAX_MB < \\d+ MB\\) ok.*memory, model unloaded\\s+\\d+ MB( \\([^)]*\\))? \\(budget RSS_IDLE_MAX_MB < \\d+ MB\\) ok.*launch to first frame.*ok.*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "OVER|RED:|NOT JUDGED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/footprint.py {bundle} --weights \"$WHOOSH_EMBED_WEIGHTS\" --mutant keep --unload-s 20",
+      "pass": "RED: RSS_IDLE_MAX_MB: memory, model unloaded",
+      "fail": "Traceback",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -n -F 'perf/footprint.py' scripts/main-job.sh",
+      "pass": "^\\d+:.*perf-footprint-.*perf/footprint\\.py",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "grep -c -E 'env\\[\"WHOOSH_EMBED_(MUTANT|IDLE_UNLOAD_S)\"\\]' Sources/Features/Embedding/MeaningSearch.swift",
+      "pass": "^2$",
+      "fail": "^[01]$|No such file",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "perf/footprint.py",
+      "find": "over = None if (val is None or not ok_to_judge) else val >= limit",
+      "replace": "over = None if (val is None or not ok_to_judge) else val >= limit * 1000",
+      "proof": 0,
+      "red": "BAD\\s+idle RSS at budget"
+    },
+    {
+      "file": "perf/footprint.py",
+      "find": "over = None if (val is None or not ok_to_judge) else val >= limit",
+      "replace": "over = None if (val is None or not ok_to_judge) else False",
+      "proof": 0,
+      "red": "BAD\\s+idle RSS at budget"
+    },
+    {
+      "file": "Sources/Features/Embedding/MeaningSearch.swift",
+      "find": "autoSweep: EmbedRigSwitches.mutant != \"keep\")",
+      "replace": "autoSweep: true)",
+      "proof": 5,
+      "red": "memory, model unloaded\\s+\\d+ MB[^\\n]*ok"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. perf/footprint.py (587 lines) exists and is built as the acceptance says: it measures (docstring :5-23, methods :337-372) launch to first frame, resident memory at idle after IDLE_S=60, CPU averaged over CPU_S=30 at idle, memory after a driven meaning search with the model loaded, and memory EMBED_IDLE_UNLOAD_S+5 later (model unloaded) against RSS_IDLE_MAX_MB (docs/CONSTANTS.md:169, 300), RSS_MODEL_MAX_MB (:170, 2200), CPU_IDLE_MAX_PCT (:174, 1.0). The launch row is judged against LAUNCH_COLD_MS (1500, docs/CONSTANTS.md:10) not LAUNCH_WARM_MS (400, :9): perf/footprint.py:80-84 explains that the gate's one launch is a new copy's first launch; the warm launch is perf/launch.py's (LAUNCH_SAME_COPY_MS :12). This differs from the acceptance's wording and is the code's own ruling (launch-r3); flag for the owner if they want LAUNCH_WARM_MS. 'Red names the budget': finish() at :106-115 prints one line per row 'footprint: <label> <value> (budget <NAME> < <limit> <unit>) ok|OVER|NOT JUDGED' and, for each OVER row, 'RED: <NAME>: <label> measured ..., budget ...'. Every row prints, so a pass is visible, which meets the rule that a check must print its passes. 'Seen red on a mutant': (a) the judgement flips at each budget, selftest :526-565 (14 cases with the expected over/under at the budget value, proof 0); (b) the app-side mutants: `--mutant launch|keep` sets WHOOSH_EMBED_MUTANT in the app (docstring :19-21) so a model loaded at launch or never unloaded must read RED (proof 5 hidden; proofs 2 and 3 the same on the dry-run fake process, `--fake keep|launch`, which launches no app; the dry run needs PERF_LOAD_MAX=1000 on a loaded machine per the docstring). 'It joins the main build job': scripts/main-job.sh:60 runs `python3 perf/footprint.py \"$B\"` with WHOOSH_RIG_HIDDEN=1 (proof 6). The real gate takes about 7 minutes (docstring :5) so timeout_s is 900; it launches the rig copy itself through scripts/launch-one.sh (hidden), so the runner must not wrap it again; `{bundle}` is the built Whoosh.app; `$WHOOSH_EMBED_WEIGHTS` is the lead's model folder (without weights checks 4 and 5 are NOT JUDGED, which the fail regex catches). The reader's finding said no run output exists in _captures: that is an evidence gap, not a missing build; proof 5 is the first run on this commit. Machine load above PERF_LOAD_MAX (12, docs/CONSTANTS.md:43) makes CPU and launch NOT JUDGED, so the lead runs it quiet. The second mutant is a judge that never reports OVER: the selftest must show BAD on the at-budget cases. Standing rules met: hidden only (no window: RIG_HIDDEN row), every run under a time limit. | perf-archive round 11: main112q alone-009 (`--mutant keep --unload-s 20`) read 'model unloaded 140 MB ok' 25 s after the search although the app's unload is the ledger's 300 s: the app read neither switch, and the memory had already left before the unload deadline. The gate now refuses such a run (app_reads scans the executable for the switch's name, like supports_hidden) and prints the lowest memory read before the unload deadline, saying when that drop is not the idle unload. The plain run's pass pattern now allows the load note round 8 prints beside a figure measured above PERF_LOAD_MAX. | hid-search round 25: the app reads the gate's switches on a TEST COPY only (WHOOSH_SOCKET_DIR set; MeaningSearch.swift `EmbedRigSwitches`): WHOOSH_EMBED_IDLE_UNLOAD_S becomes GemmaEmbedder's idleUnloadSeconds, WHOOSH_EMBED_MUTANT=keep turns the idle sweep off (the model never unloads), WHOOSH_EMBED_MUTANT=launch loads the model at launch from MeaningSearch.preload (the shell's launch call). The owner's copy reads none of them. So perf/footprint.py's switch_refusal finds both names in the executable and proof 5 (the keep mutant) can go red; proof 7 counts the two reads in the source. The added broken copy (the sweep left on under keep) makes proof 5's run read 'model unloaded ... ok' instead of RED. Not built or run here."
+}

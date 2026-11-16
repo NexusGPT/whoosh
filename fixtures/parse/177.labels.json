@@ -1,0 +1,15 @@
+{
+ "id": "177",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "Op ma 2 nov. 2026 om 10:14 schreef Luc Martens <luc.martens@example.org>:",
+  "visible_contains": "I will send the figures tomorrow morning. e2b9",
+  "folded_contains": "Do you have the figures for the supplier quote? e78a"
+ },
+ "adversarial": false
+}

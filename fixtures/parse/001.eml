@@ -1,0 +1,12 @@
+From: Brightfield <no-reply@example.net>
+To: Assem Example <assem@example.org>
+Subject: Confirm your login
+Date: Sun, 15 Nov 2026 01:46:00 +0000
+Message-ID: <9246c295a5795d02@accounts.example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+SGksDQoNCkVudGVyIHRoaXMgY29kZSB0byBjb250aW51ZToNCg0KICAgIDI2Q0tWUg0KDQpJZiB5
+b3UgZGlkbid0IHRyeSB0byBzaWduIGluLCB5b3UgY2FuIHNhZmVseSBpZ25vcmUgdGhpcyBlbWFp
+bC4NCg0KVGhlIEJyaWdodGZpZWxkIHRlYW0NCg==

@@ -1,0 +1,29 @@
+{
+  "surface": "mac-notch",
+  "window": {
+    "w": 180,
+    "h": 37
+  },
+  "aspect": "180:37",
+  "density": 2,
+  "safe_areas": {
+    "top": 0,
+    "right": 0,
+    "bottom": 0,
+    "left": 0
+  },
+  "notch": {
+    "w": 180,
+    "h": 37,
+    "x": "centered"
+  },
+  "min": {
+    "w": 180,
+    "h": 37
+  },
+  "max": {
+    "w": 560,
+    "h": 320
+  },
+  "source": "the 14-inch MacBook Pro notch and menu-bar height per Apple's published geometry (menu bar 37 points on notched Macs); the expanded panel size is a design choice; re-measured on the running app"
+}

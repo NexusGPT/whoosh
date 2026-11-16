@@ -1,0 +1,47 @@
+{
+  "item": "2c62797c",
+  "full_id": "2c62797c-9b63-4e4a-9339-d4511081b93f",
+  "title": "See the on-screen toggle checks red on their mutants",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-sidebar.py",
+      "pass": "(?s)J1\\.14/par-toggle-beside-lights\\s+pass .*J1\\.14/par-toggle-on-the-lights-line-after-resize\\s+pass .*J1\\.14/par-toggle-stays-put-hidden\\s+pass .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "J1\\.14/par-toggle-[a-z-]+\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-sidebar.py --selftest",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "STILL (GREEN|RED)|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "VISIBLE ONE-RUN, needs the owner's new quoted go (see owner): `RIG_VISIBLE=1 python3 checks/parity/par-sidebar.py --step J1.14` through scripts/launch-one.sh's visible door on the installed copy, once on the unmutated build and once per mutant below, logs saved under _captures/sidebar/",
+      "pass": "par-toggle-on-the-lights-line-on-screen\\s+pass"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Sidebar/SidebarToggle.swift",
+      "find": "let top = lightsLine - size.height / 2",
+      "replace": "let top = lightsLine - size.height / 2 + 17",
+      "proof": 0,
+      "red": "J1\\.14/par-toggle-(beside-lights|stays-put-hidden)\\s+fail"
+    },
+    {
+      "file": "Sources/Features/Sidebar/SidebarToggle.swift",
+      "find": "let top = lightsLine - size.height / 2",
+      "replace": "let top = z.height + lightsLine - size.height / 2",
+      "proof": 0,
+      "red": "J1\\.14/par-toggle-beside-lights\\s+fail"
+    }
+  ],
+  "gap": null,
+  "owner": "The three on-screen cases (J1.14/par-toggle-on-the-lights-line-on-screen, -after-resize, -hidden: checks/parity/par-sidebar.py:54-55, :453, :455, :472) scan the pixels of a REAL window for the red traffic light and run only with RIG_VISIBLE=1 in a window on the screen (par-sidebar.py:51-55). The owner's standing rule is no test window on screen, ever (2026-11-08 16:30); the only exception was one single-use run granted 2026-11-09 09:02 (scripts/launch-one.sh header: the door closes on use, a stamp names the go). So the lead cannot run these cases without a NEW quoted go from the owner; the owner's word (a one-run visible window, about a minute, on the installed copy) is what only they can give. Until then the two mutants are provable only through the hidden toggle cases of proof 0, which read the same offset from the rendered pixels offscreen (lights_dy, Sources/Features/Sidebar/SidebarToggle.swift:41-55 centreOffset).",
+  "notes": "What exists. (1) The mutants the acceptance names are in par-sidebar.py's mutant block: '# J1.14/par-toggle-on-the-lights-line-on-screen | the toggle is placed from the zoom button frame (a row below the lights)' (:1522, also :1523, and :1524 for the hidden-state case) = 'old zoom-frame placement', and '# J1.14/par-toggle-stays-put-hidden | the toggle is placed 17 pt below the lights' (:1525) = 'toggle 17 pt low'. They are model mutants in the self-test (proof 1: `--selftest` prints a 'MUTANTS | check | clean | mutant | mutant result' table, par-sidebar.py:1415-1443, 'red' per mutant, 'STILL ...' when a mutant does not turn its case red); they have never been applied to the app on a rebuilt tree: the earlier mutant runs in _captures/sidebar/ (r3-mut-par-sidebar.txt last line '32 checks, 1 failed, 0 not judged', r4-mut-par-sidebar.txt '33 checks, 1 failed, 0 not judged') show one red check each and do not name which mutant (reader's finding), so they do not settle this item. (2) The app-side one-line mutants above change the placement in SidebarToggleHost.place (Sources/Features/Sidebar/SidebarToggle.swift:80-92; the find string occurs once at 0aa1558e): `+ 17` is the 17 pt low toggle; `z.height + ...` puts it a zoom-button's height (a row) below the lights, the old placement read from the zoom frame. Each needs one rebuilt bundle (the lead's one compile at a time). (3) the checks stay green on the unmutated build: proof 0 on the unmutated bundle (hidden, fixture core, offscreen rendering; the three hidden toggle cases print 'J1.14/<case>  pass'), and proof 2 for the on-screen ones. (4) Unverified here: whether the hidden cases alone turn red on the zoom-frame mutant; the lead reads proof 0's result on that mutant and, if green, the on-screen cases are the only judge and the owner's go is needed."
+}

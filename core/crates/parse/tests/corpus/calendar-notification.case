@@ -1,0 +1,8 @@
+# A calendar-style notification: a card with a coloured header and buttons in cells. Designed.
+subject: Invitation: Quarterly review @ Thu 19 Nov 2026 14:00
+layout: designed
+fold_from: none
+authored: Quarterly review
+authored: Thursday 19 November 2026, 14:00 to 15:00
+--- html
+<div style="width:100%;background-color:#f8f9fa"><table width="560" style="border-collapse:collapse"><tr><td style="background-color:#3f51b5;color:#ffffff;font-size:20px;padding:12px">Quarterly review</td></tr><tr><td style="padding:12px">Thursday 19 November 2026, 14:00 to 15:00</td></tr><tr><td style="padding:12px">Room Atlas, building B</td></tr><tr><td><table><tr><td style="background-color:#e8eaf6;padding:8px"><a href="https://calendar.example.com/r?yes">Yes</a></td><td style="background-color:#e8eaf6;padding:8px"><a href="https://calendar.example.com/r?no">No</a></td><td style="background-color:#e8eaf6;padding:8px"><a href="https://calendar.example.com/r?maybe">Maybe</a></td></tr></table></td></tr></table></div>

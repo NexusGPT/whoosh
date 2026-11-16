@@ -1,0 +1,22 @@
+[package]
+name = "outbox"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh outbox: undo-send window, send later, wait offline, retry with the server's reason, scheduled entries that travel through sync."
+
+[dependencies]
+contracts = { workspace = true }
+# The send crate (lettre, MIT) delivers; the store crate keeps the outbox_entry rows. Both are frozen dependencies.
+send = { path = "../send" }
+store = { path = "../store" }
+# JSON for the draft snapshot column and the sync record payload (MIT or Apache-2.0).
+serde_json = "1"
+# Same pair and features as the store crate (MIT; bundled SQLite is public domain), so the build shares one copy.
+rusqlite = { version = "0.41", features = ["bundled", "hooks"] }
+# One random UUID (version 4) per queued message, its idempotency key (MIT OR Apache-2.0). Already in the lock file.
+uuid = { version = "1", default-features = false, features = ["v4"] }
+
+[dev-dependencies]
+# fix-realcore round 15: the staged SMTP fake (send/tests/staged/mod.rs, included by path) resets a connection (SO_LINGER 0); MIT OR Apache-2.0, already in the lock file
+socket2 = "0.6"

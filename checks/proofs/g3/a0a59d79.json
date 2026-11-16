@@ -1,0 +1,49 @@
+{
+  "item": "a0a59d79",
+  "full_id": "a0a59d79-f676-4cfd-8c9b-8cab588ed042",
+  "title": "The held-Cmd key caps never stay stuck",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-macshell.py",
+      "pass": "(?s)J0\\.12/release-hides-badges +pass.*J0\\.19/caps-hide-when-the-app-resigns-active +pass.*J0\\.19/caps-hide-when-the-app-returns-without-cmd +pass.*J0\\.19/caps-hide-when-cmd-comes-up-in-the-flags +pass.*J0\\.19/caps-hide-when-a-window-resigns-key +pass.*J0\\.19/caps-hide-on-an-event-without-cmd +pass",
+      "fail": "J0\\.(19|12)/[a-z-]+ +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"caps-hide-when-the-app-resigns-active\\|caps-hide-when-the-app-returns-without-cmd\\|release-hides-badges\\|caps-hide-when-cmd-comes-up-in-the-flags\\|caps-hide-when-a-window-resigns-key\\|caps-hide-on-an-event-without-cmd\" checks/parity/par-macshell.py",
+      "pass": "^[6-9]|^[1-9][0-9]",
+      "fail": "^[0-5]$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/MacShell/MacHintOverlay.swift",
+      "find": "private func focusLost() {\n        guard !Self.stuck else { return }",
+      "replace": "private func focusLost() {\n        guard false else { return }",
+      "proof": 0,
+      "red": "J0\\.19/caps-hide-when-the-app-resigns-active +fail"
+    },
+    {
+      "file": "Sources/Features/MacShell/MacHintOverlay.swift",
+      "find": "(!Self.stuck && !e.modifierFlags.contains(.command))",
+      "replace": "(false)",
+      "proof": 0,
+      "red": "J0\\.19/caps-hide-on-an-event-without-cmd +fail"
+    },
+    {
+      "file": "Sources/Features/MacShell/MacHintOverlay.swift",
+      "find": "        } else {\n            cancel()\n        }\n    }\n\n    /// While",
+      "replace": "        } else {\n        }\n    }\n\n    /// While",
+      "proof": 0,
+      "red": "J0\\.19/caps-hide-when-cmd-comes-up-in-the-flags +fail"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner named a par-keys case; the held-Cmd cases sit in par-macshell J0.19 (checks/parity/par-macshell.py). Accept that place, or ask for them in par-keys.",
+  "notes": "Built on lane/gap-keys: four rig doors in Sources/Features/MacShell/MacShellFeature.swift (macshell.hint.hold-by-flags, release-by-flags, window-resign, event-without-cmd) calling MacHintMonitor.simulateHold/simulateRelease/simulateWindowResign/simulateEventWithoutCommand (MacHintOverlay.swift, before cancel()). J0.19 now has cases for all four exits: caps-hide-when-the-app-resigns-active, caps-hide-when-the-app-returns-without-cmd (existing), caps-hide-when-cmd-comes-up-in-the-flags, caps-hide-when-a-window-resigns-key, caps-hide-on-an-event-without-cmd. Two corrections to the old gap text: (1) a key-down always cancels (event(): joined), so only a key-UP or scroll without Cmd proves the flag-less exit: the door sends a key-up with no flags through NSApp.sendEvent after the hold installed the key monitor; (2) macshell.hint.release calls holdEnded directly, so the old mutant 3 (Cmd-up branch emptied) was not red on J0.12: it is now judged by caps-hide-when-cmd-comes-up-in-the-flags (flagsChanged route). Limit: the window-resign door runs focusLost(), the handler didResignKey runs; the notification registration itself (MacHintOverlay.swift didResignKey observer) is not exercised on the hidden rig. Unrun: the lead compiles and runs par-macshell."
+}

@@ -1,0 +1,33 @@
+# Mail client containers, one per line: <client> <TAB> <role> <TAB> <CSS selector>, matched with the crate's own selector reader (css.rs).
+# Roles: quote (the earlier message, quoted) · separator (this element and everything after it is history) · attribution (the "wrote:" line)
+#        · new (the sender's own text) · signature (one signal of a signature, never enough alone).
+gmail	quote	blockquote.gmail_quote
+gmail	attribution	div.gmail_attr
+gmail	new	div.gmail_default
+gmail	signature	div.gmail_signature
+outlook	separator	div#divRplyFwdMsg
+outlook	separator	div.OutlookMessageHeader
+outlook	separator	div[style*="border-top:solid #E1E1E1"]
+outlook	separator	div[style*="border-top:solid #B5C4DF"]
+outlook	separator	div[style*="border:none;border-top:solid #E1E1E1"]
+outlook	new	div.WordSection1
+outlook-web	separator	div#appendonsend
+outlook-web	separator	hr#stopSpelling
+outlook-web	separator	div#mail-editor-reference-message-container
+outlook-web	new	div.elementToProof
+apple	quote	blockquote[type=cite]
+apple	new	div[dir=auto]
+thunderbird	attribution	div.moz-cite-prefix
+thunderbird	separator	div.moz-forward-container
+thunderbird	signature	div.moz-signature
+thunderbird	signature	pre.moz-signature
+proton	quote	div.protonmail_quote
+proton	quote	blockquote.protonmail_quote
+proton	signature	div.protonmail_signature_block
+yahoo	quote	div.yahoo_quoted
+yahoo	quote	div[id^=yahoo_quoted]
+yahoo	attribution	div.yahoo-quoted-begin
+zimbra	quote	div[data-marker=__QUOTED_TEXT__]
+zimbra	separator	div[data-marker=__DIVIDER__]
+zimbra	separator	hr#zwchr
+zimbra	attribution	div[data-marker=__HEADERS__]

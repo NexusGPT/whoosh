@@ -1,0 +1,51 @@
+{
+  "item": "141aa3c3",
+  "full_id": "141aa3c3-e02f-4f1f-bdb7-ef34576e1ea6",
+  "title": "Build fn-tests-j3",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 journeys/run.py J3",
+      "pass": "J3 GREEN: 8 steps",
+      "fail": "J3 (RED|COULD-NOT-DRIVE)|FAIL J3\\.",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J3.py --selftest",
+      "pass": "J3 selftest: \\d+ checks, \\d+ mutants, 0 not red or missing",
+      "fail": "NO MUTANT|STRAY|NOT IN THE CATALOGUE",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_THEME=light python3 journeys/run.py J3",
+      "pass": "J3 GREEN: 8 steps",
+      "fail": "J3 (RED|COULD-NOT-DRIVE)|FAIL J3\\.",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_THEME=dark python3 journeys/run.py J3",
+      "pass": "J3 GREEN: 8 steps",
+      "fail": "J3 (RED|COULD-NOT-DRIVE)|FAIL J3\\.",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "guard (try? m.core.run(command: .cancelSend(outboxId: id))) != nil else { return false }",
+      "replace": "guard true else { return false }",
+      "proof": 0,
+      "red": "FAIL J3\\.6/(outbox-entry-cancelled|server-sent-folder-holds-no-copy)"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The undo step asserts 0 deliveries: journeys/J3.py:364 (server-sent-folder-holds-no-copy, since(SENT) == 0) and :365 (recipient-received-nothing, served(RECIP) == 0; RECIP = server/<test_recipient>/inbox/count, J3.py:128). :365 reads NOT_SERVED today (fixture core serves no server counts), so the zero is not yet judged: see gap of 135423fa (2). Positive control exists: :380 recipient-got-exactly-one after the second send. Mutant: undo no longer cancels the send, so the entry stays and the mail leaves. | gap-composer lane: journeys/run.py documents --themes but reads none, and it is not this lane's file; journeys/J3.py now reads WHOOSH_THEME (default light) as J1.py does, sets it through `fixture theme` in J3.1 and reads it back (cases J3.1/theme-set and J3.1/theme-applied, both with a declared mutant). The journey prints no per-theme line: the two proofs above are one launch each, and the theme of a pass is the command's own. (a) 'green' is the same red as 135423fa."
+}

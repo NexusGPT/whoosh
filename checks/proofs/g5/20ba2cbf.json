@@ -1,0 +1,56 @@
+{
+  "item": "20ba2cbf",
+  "full_id": "20ba2cbf-4511-4670-8e02-84f176d73d07",
+  "title": "Make the Settings checks print what decides a failure",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsaimac-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "NOT RED|not judged on a copy|evidence on red: .*missing: (?!none)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsgeneralmac-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "NOT RED|NO MUTANT",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/mcpnotesmac-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "NOT RED|NO MUTANT",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-settingswindow.py --selftest",
+      "pass": "0 failed",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "evidence",
+      "fail": "FAIL J5\\.(6|7|9)/[a-z-]+: [^|]*$",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "filter-page-top-and-first-card-are-whole-at-940x680-and-700x480 +pass|cmd-1-to-cmd-0-switch-the-panes +pass",
+      "fail": "FAIL ",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "settingsaimac-check.py:5 (--selftest), :1210 (argv), :1290-1292 (evidence-on-red line), :1295 (meaning-downloads case). settingsgeneralmac-check.py:9,892. mcpnotesmac-check.py:5. par-settingswindow.py:1479 (--selftest) and the not-judged print :1500. The last lines of each self-test on the base before this lane are in _captures/lead/main81/selftests/ (checks_settingsaimac-check.log 'selftest: OK (0 mutants not red)', checks_parity_par-settingswindow.log '0 failed'); the par-settingswindow pass line is not verified at this commit. Proof 4's fail regex is advisory (a failing case that prints no values is a gap, read by the lead). gap-settings-checks: the table of the 23 cases (case | values printed on failure | file:line | self-test mutant) is in docs/lanes/gap-settings-checks.md section 20ba2cbf. All 23 already print an `evidence:` tail on a red (none needed a change); the four self-tests exit 0 on this branch (docs/lanes/gap-settings-checks-runs/*.log). Sorting each of the 23 lines app or check by hand stays with the lead on the next build."
+}

@@ -1,0 +1,9 @@
+# Thunderbird: div.moz-cite-prefix, blockquote type=cite, and a moz-signature after the answer.
+subject: Re: Server maintenance
+sender: Carl Jensen
+fold_from: 1
+expect: 0 NEW_CONTENT show
+authored: The maintenance window on Sunday from 6 to 8 is fine for our team.
+history: We plan to patch the mail server on Sunday from 6 to 8.
+--- html
+<html><body><p>The maintenance window on Sunday from 6 to 8 is fine for our team.</p><div class="moz-signature">-- <br>Carl Jensen<br>IT operations, +45 12 34 56 78</div><div class="moz-cite-prefix">On 10/11/2026 15:30, Dora Ivanova wrote:<br></div><blockquote type="cite"><p>We plan to patch the mail server on Sunday from 6 to 8.</p></blockquote></body></html>

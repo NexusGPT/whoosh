@@ -1,0 +1,76 @@
+{
+  "item": "eab87b0e",
+  "full_id": "eab87b0e-a013-4101-83f0-57a4cd63a769",
+  "title": "Build par-settingsaccountsmac",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingsaccountsmac.py",
+      "pass": "(?s)(?=.*(?i:service.status))(?=.*par-settingsaccountsmac-services/service-status-zoho-is-named-with-its-state +pass)(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-settingsaccountsmac.py --selftest",
+      "pass": "selftest: \\d+ sweep checks, \\d+ mutants, 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "theFiveServicesAreListedInTheFixedOrder,aServiceWithNoAccountOnThisMacSaysSo,aWorkingAccountMakesItsServiceConnected,aFailureWithoutASyncCodeNeedsSignIn,aFailureWithASyncCodeIsAServerOutOfReach,onlyPausedAccountsMakeTheServicePaused,everyStateHasItsOwnWords,aZohoAddressThatCameInAsOtherMailIsZoho,theFixtureShowsOutlookNeedingSignInAndNoZohoAccount",
+      "pass": "passed",
+      "fail": "failed"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsAccountsMac/ServiceStatus.swift",
+      "find": "if accounts.isEmpty { return .noAccount }",
+      "replace": "if accounts.isEmpty { return .connected }",
+      "proof": 2,
+      "red": "failed"
+    },
+    {
+      "file": "Sources/Features/SettingsAccountsMac/ServiceStatus.swift",
+      "find": "if accounts.contains(.needsSignIn) { return .needsSignIn }",
+      "replace": "if false { return .needsSignIn }",
+      "proof": 2,
+      "red": "failed"
+    },
+    {
+      "file": "Sources/Features/SettingsAccountsMac/ServiceStatus.swift",
+      "find": "return SyncStatusWords.failure(code: e.code, words: e.reasonWords) != nil ? .unreachable : .needsSignIn",
+      "replace": "return .needsSignIn",
+      "proof": 2,
+      "red": "failed"
+    },
+    {
+      "file": "Sources/Features/SettingsAccountsMac/ServiceStatus.swift",
+      "find": "if paused { return .paused }",
+      "replace": "if false { return .paused }",
+      "proof": 2,
+      "red": "failed"
+    },
+    {
+      "file": "Sources/Features/SettingsAccountsMac/ServiceStatus.swift",
+      "find": "return labels.contains(\"zoho\") || labels.contains(\"zohomail\") ? .zoho : nil",
+      "replace": "return nil",
+      "proof": 2,
+      "red": "failed"
+    },
+    {
+      "file": "Sources/Features/SettingsAccountsMac/ServiceStatus.swift",
+      "find": "case gmail, outlook, icloud, fastmail, zoho",
+      "replace": "case zoho, gmail, outlook, icloud, fastmail",
+      "proof": 2,
+      "red": "failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Built on lane/gap-svc-status. DECISION (the lead's default, the owner is away): the status is THIS MAC'S OWN connection state per mail service; no status page is fetched and no network call exists (the rule 'nothing leaves this Mac except the relay'). Swift: Sources/Features/SettingsAccountsMac/ServiceStatus.swift (MailService, ServiceState, ServiceStatusRow), the group in AccountsPaneView.swift (serviceStatus, drawn with SettingsGroup and SettingsRow), the rows registered as mac-settings-accounts.service-status in SettingsAccountsMacFeature.swift (rowSources). An account belongs to a service by the core's detected route (MailProvider); Zoho has no route, so an IMAP account whose host is zoho.* or zohomail.* is Zoho. States: no account on this Mac, Connected, Needs sign-in (a failure with no sync code), Paused (a paused account), Cannot reach the server (a failure that carries a sync code, SyncStatusWords). Proof 0: the case labels par-settingsaccountsmac-services/service-status-<gmail|outlook|icloud|fastmail|zoho>-is-named-with-its-state and five more print one `pass` line each through print_cases; it needs the lead's run on the fixture core. Proof 1: the model selftest, which includes the 8 new cases and one declared broken copy for each. Proof 2: the nine unit tests in Tests/Unit/SettingsAccountsServiceStatusTests.swift, run by the lead. Not proved here: nothing was compiled or run by the builder (the lead compiles and runs the Swift and the hidden check). The selftest judges a Python model of the pane, not the Swift. Already there and not mine: i18n-check --coverage and --catalogue are red on one key, the CSS literal at Sources/Features/MessageBody/MessageBodyPassage.swift:165."
+}

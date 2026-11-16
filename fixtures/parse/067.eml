@@ -1,0 +1,18 @@
+From: Kestrel VPN <hello@example.net>
+To: Assem Example <assem@example.org>
+Subject: Verify your email address
+Date: Wed, 11 Nov 2026 05:40:00 +0000
+Message-ID: <245441e0de0b5512@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Hello,
+
+Confirm my address by opening this link:
+
+https://auth.example.org/confirm-email/24283d72f543c5245c7fa09d
+
+If you did not ask for it, ignore this email.
+
+To stop these emails visit https://example.net/unsubscribe?u=3Dc8515b

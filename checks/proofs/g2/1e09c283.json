@@ -1,0 +1,47 @@
+{
+  "item": "1e09c283",
+  "full_id": "1e09c283-db75-40c2-ac1f-3e4c9e6d0192",
+  "title": "Build fn-tests-j7",
+  "state": "outside",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "git log -1 --format=%s 28cfcb59",
+      "pass": "J1-J7 red journeys",
+      "fail": "fatal",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP as above and MAC_APP=<built Mac Whoosh.app>: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --with-mac \"$MAC_APP\" \"$IPHONE_APP\" -- sh -c 'WHOOSH_SOCKET_DIR=$WHOOSH_IPHONE_SOCKET_DIR python3 journeys/run.py J7 --themes light,dark'",
+      "pass": "J7 GREEN: \\d+ steps, \\d+ checks, 0 failed, 0 not judged",
+      "fail": "COULD-NOT-DRIVE|J7 RED|FAIL |NOT JUDGED|REFUSED|NO SOCKET|DIED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "lead",
+      "run": "OUTSIDE a real iPhone 17 Pro and the owner's hands: one recorded J7 run on the device (notification, code copy, swipe triage, dictated reply, the Mac shows the same); the lead records the run file under _captures",
+      "pass": "J7 GREEN",
+      "fail": "COULD-NOT-DRIVE|J7 RED|FAIL |NOT JUDGED",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP and MAC_APP as in the notes: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --with-mac --shared-server \"$MAC_APP\" \"$IPHONE_APP\" -- sh -c 'WHOOSH_SOCKET_DIR=$WHOOSH_IPHONE_SOCKET_DIR python3 journeys/run.py J7 --themes light,dark'  (J7.5 on the shared loopback mail server; in this mode J7 runs only J7.5, the fixture steps J7.1 to J7.4 have nothing to judge on the real engine)",
+      "pass": "(?s)(?=.*\\[light\\] J7\\.5/archived-gone-on-mac +pass)(?=.*\\[light\\] J7\\.5/reply-in-thread-on-mac +pass)(?=.*\\[light\\] J7\\.5/reply-text-on-mac +pass)(?=.*\\[dark\\] J7\\.5/archived-gone-on-mac +pass)(?=.*\\[dark\\] J7\\.5/reply-in-thread-on-mac +pass)(?=.*\\[dark\\] J7\\.5/reply-text-on-mac +pass)",
+      "fail": "J7\\.5/[a-z-]+ +(fail|unjudged)|REFUSED|NO SOCKET|NO SHARED SERVER|NO INSTANCE|DIED",
+      "timeout_s": 2400
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J7.py --selftest",
+      "pass": "(?s)(?=.*clean stand-in phone and Mac \\(shared mail server, J7\\.5\\): GREEN, 1 steps, 4 checks, 4 green, 0 red, 0 not judged)(?=.*clean total: 41 checks judged green in one run or the other, 0 not judged in either)(?=.*mutant J7\\.5/reply-text-on-mac +-> RED)(?=.*mutant J7\\.1/notification-shown +-> RED)(?=.*J7 selftest: 41 checks, 41 mutants, 0 not red or missing)",
+      "fail": "NOT RED|NO BROKEN COPY|NO MUTANT|STRAY|NOT GREEN|Traceback|[1-9]\\d* not red or missing",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [],
+  "gap": "THREE parts, none provable on this Mac today. (2) 'Green after slice 7 in both themes on the simulator': journeys/run.py accepts --themes light,dark (run.py:2) but J7.py has no theme handling (no 'theme', 'dark' or 'light' in J7.py) so the themes must be set by the runner on the app before the run; The run is proof 1 (through the rig; the Mac copy is the outer launch-one.sh run, so J7.5 reads it through WHOOSH_MAC_SOCKET_DIR, which the rig exports; the phone socket is moved into WHOOSH_SOCKET_DIR by the sh -c). Whether --themes light,dark sets the phone's theme is decided by the run (J7.py has no theme handling). (3) 'One run on a real iPhone 17 Pro': OUTSIDE (a real device) and owner (their phone, their account). (4) The last J7 run (_captures/tests/r83/J7-main83.log) is 'COULD-NOT-DRIVE: 41 checks not judged', exit 1.",
+  "owner": "Run J7 once on your own iPhone 17 Pro (or say which device the one recorded run may be taken on).",
+  "notes": "J7 steps: J7.1 (journeys/J7.py:81), J7.2 (:96), J7.3 (:113), J7.4 (:156), J7.5 (:179); mutant block starts :189. The checks of J7.2 and J7.4 reuse the phone checks threadphone-check.py and composerphone-check.py, whose selftests are listed in items af6725ea and b4603e1e. No broken copy is given: without a socket every J7 check is NOT JUDGED (COULD-NOT-DRIVE), never red, so no one-line break can turn a proof red on this Mac. Verdict words come from journeys/lib/harness.py:356-360 (COULD-NOT-DRIVE, GREEN) and the run.py line `<id> <verdict>: N steps, N checks, F failed, U not judged` (journeys/run.py:50-52, stderr). | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). What stays outside (needs a real iPhone 17 Pro and the owner): proof 2 only. (Part (1), the stand-in, was closed in round 9.) | Round 7: J7.5 without the shared server now says NOT JUDGED (no shared server) instead of failing; with scripts/iphone-rig.sh --with-mac --shared-server it is judged by journeys/lib/sharedserver.py (proof 3 of this file, the lead's run). | Round 9 (j7-selftest): part (1) of the gap (the stand-in) is closed by journeys/J7.py --selftest (proof 4) on journeys/lib/fakephone.py; docs/lanes/j7-selftest.md has the table mutant to broken copy to red check."
+}

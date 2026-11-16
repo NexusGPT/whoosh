@@ -1,0 +1,15 @@
+{
+ "id": "175",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "Le lun. 2 nov. 2026 à 10:14, Sanne de Wit <sanne.de.wit@accounts.example.com> a écrit :",
+  "visible_contains": "Looks good, one small change in section 2. 58dd",
+  "folded_contains": "Please review the attached draft. 3935"
+ },
+ "adversarial": false
+}

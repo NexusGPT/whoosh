@@ -1,0 +1,106 @@
+{
+  "provider": "openrouter",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "key": "sk-or-v1-FIXTURE-not-a-real-key-0001",
+  "bad_key": "sk-or-v1-FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "list_models": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://openrouter.ai/api/v1/key",
+          "headers": {
+            "Authorization": "Bearer sk-or-v1-FIXTURE-not-a-real-key-0001"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "data": {
+              "label": "fixture key",
+              "limit": null,
+              "usage": 0
+            }
+          }
+        }
+      },
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://openrouter.ai/api/v1/models",
+          "headers": {
+            "Authorization": "Bearer sk-or-v1-FIXTURE-not-a-real-key-0001"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "data": [
+              {
+                "id": "fixture-vendor/model-a",
+                "name": "Vendor: A"
+              },
+              {
+                "id": "fixture-vendor/model-b",
+                "name": "Vendor: B"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://openrouter.ai/api/v1/key",
+          "headers": {
+            "Authorization": "Bearer sk-or-v1-FIXTURE-not-a-real-key-REFUSED"
+          }
+        },
+        "response": {
+          "status": 401,
+          "body": {
+            "error": {
+              "message": "User not found.",
+              "code": 401
+            }
+          }
+        }
+      }
+    ],
+    "complete": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://openrouter.ai/api/v1/chat/completions",
+          "headers": {
+            "Authorization": "Bearer sk-or-v1-FIXTURE-not-a-real-key-0001"
+          },
+          "body_contains": [
+            "\"model\":\"fixture-vendor/model-a\"",
+            "\"role\":\"system\"",
+            "\"content\":\"Shorten this reply to one line.\"",
+            "\"max_tokens\":"
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "id": "gen-fixture-1",
+            "choices": [
+              {
+                "index": 0,
+                "finish_reason": "stop",
+                "message": {
+                  "role": "assistant",
+                  "content": "Thanks Marta, Friday works for me."
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

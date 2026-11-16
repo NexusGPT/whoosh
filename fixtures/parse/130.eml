@@ -1,0 +1,37 @@
+From: Kestrel VPN <security@example.org>
+To: Assem Example <assem@example.org>
+Subject: New sign-in to your account
+Date: Sun, 08 Nov 2026 16:40:00 +0000
+Message-ID: <4d4c69e8e5fe2fdb@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============1235285822744081357=="
+
+--===============1235285822744081357==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+We noticed a new sign in to your account from Chrome on a Mac at 14:32. Revie=
+w recent activity: https://accounts.example.com/security/activity
+
+--===============1235285822744081357==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5L
+ZXN0cmVsIFZQTjwvdGl0bGU+PHN0eWxlPmJvZHl7Zm9udC1mYW1pbHk6SGVsdmV0aWNhLEFyaWFs
+LHNhbnMtc2VyaWY7Y29sb3I6IzIyMn0uY29kZXtmb250LXNpemU6MjhweH08L3N0eWxlPjwvaGVh
+ZD48Ym9keT48dGFibGUgd2lkdGg9IjEwMCUiIGNlbGxwYWRkaW5nPSIwIiBjZWxsc3BhY2luZz0i
+MCI+PHRyPjx0ZCBhbGlnbj0iY2VudGVyIj48aW1nIHNyYz0iaHR0cDovL2Nkbi5leGFtcGxlLm5l
+dC9weC9iNTAzYWMyZC5wbmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGFsdD0iIj48aDI+S2VzdHJl
+bCBWUE48L2gyPjxwPldlIG5vdGljZWQgYSBuZXcgc2lnbiBpbiB0byB5b3VyIGFjY291bnQgZnJv
+bSBDaHJvbWUgb24gYSBNYWMgYXQgMTQ6MzIuPC9wPjxwPklmIHRoaXMgd2FzIHlvdSwgbm8gYWN0
+aW9uIGlzIG5lZWRlZC4gSWYgbm90LCA8YSBocmVmPSJodHRwczovL2V4YW1wbGUuY29tL3NlY3Vy
+aXR5L2FjdGl2aXR5Ij5yZXZpZXcgcmVjZW50IGFjdGl2aXR5PC9hPi48L3A+PHAgc3R5bGU9ImZv
+bnQtc2l6ZToxMXB4O2NvbG9yOiM4ODgiPllvdSByZWNlaXZlIHRoaXMgYmVjYXVzZSBvZiB5b3Vy
+IGFjY291bnQuIDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvdW5zdWJzY3JpYmU/dT03ZDM3
+YzEiPlVuc3Vic2NyaWJlPC9hPiB8IDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvcHJpdmFj
+eSI+UHJpdmFjeTwvYT48L3A+PC90ZD48L3RyPjwvdGFibGU+PC9ib2R5PjwvaHRtbD4NCg==
+
+--===============1235285822744081357==--

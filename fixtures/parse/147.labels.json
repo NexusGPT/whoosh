@@ -1,0 +1,20 @@
+{
+ "id": "147",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "c532ad525f4940ca49d1@accounts.example.com",
+  "summary": "Design review",
+  "organizer": "elif.demir@mail.example.net",
+  "all_day": false,
+  "start_utc_ms": 1795334400000,
+  "start_local": null,
+  "tzid": null,
+  "location": "Room Alpha"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

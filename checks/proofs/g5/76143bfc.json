@@ -1,0 +1,77 @@
+{
+  "item": "76143bfc",
+  "full_id": "76143bfc-5771-40ee-9652-7520e82a2cef",
+  "title": "Make a searched word find its longer forms",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_inside",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p search-text --test inside",
+      "pass": "test result: ok\\. [0-9]+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theTestEngineFindsConsultantsWithTheTypedWordConsultant,theTestEngineListsEveryMailExactFirstThenByMeaningThenByDate,theTestEngineKeepsTheMatchingMailsAloneWhenNotAskedForEveryMail",
+      "pass": "Test theTestEngineFindsConsultantsWithTheTypedWordConsultant\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-a-shorter-word-finds-the-mail-that-holds-its-longer-form +pass",
+      "fail": "par-a-shorter-word-finds-the-mail-that-holds-its-longer-form +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ gap checks, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/search-text/src/query.rs",
+      "find": "while scanned < SUBSTRING_SCAN_MAX && all.advance() {",
+      "replace": "while false && all.advance() {",
+      "proof": 0,
+      "red": "b_consultant_puts_the_three_mails_holding_its_letters_in_the_match_group .*FAILED"
+    },
+    {
+      "file": "core/crates/search-text/src/query.rs",
+      "find": "while scanned < SUBSTRING_SCAN_MAX && all.advance() {",
+      "replace": "while false && all.advance() {",
+      "proof": 1,
+      "red": "a_consultant_finds_the_three_mails_that_hold_its_letters_and_only_those .*FAILED"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureSearch.swift",
+      "find": "if !rs.isEmpty { score += 3; subjectRanges += rs; wordHit = true }",
+      "replace": "if false { score += 3; subjectRanges += rs; wordHit = true }",
+      "proof": 2,
+      "red": "theTestEngineFindsConsultantsWithTheTypedWordConsultant\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureSearch.swift",
+      "find": "guard t.count < WhooshConstants.SUBSTRING_MIN_CHARS else { return hay.contains(t) }",
+      "replace": "guard t.count < 0 else { return hay.contains(t) }",
+      "proof": 3,
+      "red": "par-a-shorter-word-finds-the-mail-that-holds-its-longer-form +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Engine: core/crates/engine/tests/engine_search_inside.rs:102 (a_ order), :133 (b_ consultant), :190 (c_ first list within 50 ms on 2000 mails: the operation limit); search-text: core/crates/search-text/tests/inside.rs:33 (a_ consultant), :57 (b_ consultancy is not a match), :241 (i_ under 50 ms on 2000 mails). Commits 2748c86d (match-inside, SPEC A149) and 558e9d5f. The two cargo proofs share one mutant (find occurs once in query.rs: grep count 1): the runner applies it once per proof. The cargo test counts: engine_search_inside has 3 #[test] functions. | gap-search-cases: hidden case par-a-shorter-word-finds-the-mail-that-holds-its-longer-form (par-searchmac.py, J2.2 after par-typed-words-make-no-pill): the typed word is 'print'; the mails come from fixtures/tests-j2.json (LONGER_THREADS: those that hold the letters only inside a longer word, never as a whole word: msg-s05, whose attachment is printwerk-offer.pdf), the match group (rows with part 'match') must hold their thread and its row must say where the letters are (evidence_in not none). The fixture file was not changed. The test engine finds it through its attachment-name branch (FixtureSearch.swift:180); the sender-name branch of the test engine does not exist (the sender is matched in the real engine only), so the case rests on the attachment name."
+}

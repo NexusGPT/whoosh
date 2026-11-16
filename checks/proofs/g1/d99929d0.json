@@ -1,0 +1,126 @@
+{
+  "item": "d99929d0",
+  "full_id": "d99929d0-1e7d-42e3-a195-f42c6638d924",
+  "title": "Reader shows every message body decoded, never raw MIME",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p sync-imap body_r1_tests",
+      "pass": "test result: ok\\. 4 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p parse --test body_r2_entities",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_body_wire a_stored_mail_is_read_without_running_the_engine",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_body_qp",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/messagebody-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL |NOT RED|EVIDENCE MISSING",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/messagebody-check.py --selftest",
+      "pass": "\\d+ mutants, 0 not seen red, 0 clean failures, 0 clean not judged",
+      "fail": "NOT RED|[1-9]\\d* not seen red",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "lead",
+      "run": "the owner's word, or the lead on the installed build with the owner's account in a private copy, counts only: open the sweetgreen mail 'Omega Glow Bowl' and the Soyo World mail, as rendered text and as HTML; read the list preview of each",
+      "pass": "no boundary line, no Content-Type header, no '=' soft break in the body or in the list preview; the body appears with no wait on the network"
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_body_mutant",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-body",
+      "pass": "(?s)PASS\\s+body-has-no-boundary@sweetgreen .*PASS\\s+body-has-no-content-type@sweetgreen .*PASS\\s+body-has-no-soft-break@sweetgreen .*PASS\\s+body-holds-the-decoded-words@sweetgreen .*PASS\\s+preview-is-decoded@sweetgreen .*PASS\\s+body-has-no-boundary@soyo .*PASS\\s+body-has-no-content-type@soyo .*PASS\\s+body-has-no-soft-break@soyo .*PASS\\s+body-holds-the-decoded-words@soyo .*PASS\\s+preview-is-decoded@soyo .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL\\s|NOT JUDGED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-body --mutant",
+      "pass": "mutant body-stored-raw: KILLED by preview-is-decoded@sweetgreen, preview-is-decoded@soyo",
+      "fail": "SURVIVED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice body: model all pass, 11 broken models each red on its own cases.*the --mutant run's cases red on the raw model yes",
+      "fail": "WRONG|FAILS|SURVIVED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore_mailfake.py --selftest",
+      "pass": "selftest: body shapes: a sweetgreen-shaped multipart quoted-printable mail",
+      "fail": "WRONG|FAILS|SURVIVE|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/sync-imap/src/envelope.rs",
+      "find": "Ok(m) => (visible_preview(&m.text), m.html.filter(|h| !h.trim().is_empty())),",
+      "replace": "Ok(m) => (String::from_utf8_lossy(text).into_owned(), m.html.filter(|h| !h.trim().is_empty())),",
+      "proof": 0,
+      "red": "a_multipart_preview_is_its_decoded_text_part \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/bodies.rs",
+      "find": "let (text, html, trackers, preview) = crate::reads::parse_raw_with_preview(raw)?;",
+      "replace": "let (text, html, trackers, preview): (String, Option<String>, u32, String) = (String::from_utf8_lossy(raw).into_owned(), None, 0, String::new());",
+      "proof": 3,
+      "red": "a_multipart_quoted_printable_mail_is_stored_as_decoded_text_with_no_boundary_no_header_and_no_soft_break \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/bodies.rs",
+      "find": "if STORE_RAW.load(Ordering::Relaxed) {",
+      "replace": "if false {",
+      "proof": 7,
+      "red": "the mutant keeps the raw message|the_body_mutant_stores_the_raw_mail.*FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/bodies.rs",
+      "find": "let (text, html, trackers, preview) = crate::reads::parse_raw_with_preview(raw)?;",
+      "replace": "let (text, html, trackers, preview): (String, Option<String>, u32, String) = (String::from_utf8_lossy(raw).into_owned(), None, 0, String::new());",
+      "proof": 8,
+      "red": "FAIL\\s+body-has-no-boundary@sweetgreen"
+    }
+  ],
+  "gap": null,
+  "owner": "The final line of the item is the owner's: the owner's real account on the installed build (their word), or the hidden drive `--slice-body` (built, tail-realcore) plus `python3 checks/realcore-perf.py <bundle>`. Still needed from the owner: the real Soyo World mail's shape (it is not in the repo: the slice's Soyo mail is a shape with a base64 text part and a quoted-printable html part, not its words). (B) 'a body never waits on the network' for a body not yet stored is item 8ee25032's background download, unchanged.",
+  "notes": "Proof 0: core/crates/sync-imap/src/envelope.rs:189-245, module body_r1_tests, 4 tests (a_multipart_preview_is_its_decoded_text_part, a_preview_cut_inside_the_text_part_keeps_only_whole_text, an_html_only_message_previews_its_visible_words_and_plain_text_stays_as_it_is, the_fetched_message_carries_the_decoded_preview); assert_clean (line 197-201) asserts no '--', no 'Content-', no '=' in the preview: exactly the item's three words. Proof 1: core/crates/parse/tests/body_r2_entities.rs (case_1..case_5 and a_preview_holds_no_reference; entity decoding in text and preview; count not fixed here, any number of passes). Proof 2: core/crates/engine/tests/engine_body_wire.rs:184-197. Proofs 3-4: checks/messagebody-check.py (fixture mail, J1.6; the selftest prints 'N mutants, M not seen red, ...' at line 667; it never feeds raw MIME: its bodies come from docs/design/fixtures/mac-main-sample.json). Prior saved greens (read only): _captures/messagebody/probe-green.txt, mutants-red.txt. The cargo test `-p sync-imap body_r1_tests` filters by module path substring; sync-imap's lib tests run as 'unit tests' so the pass line is 'test result: ok. 4 passed' only if no other test in the crate matches 'body_r1_tests': it matches exactly the 4. Mutant: envelope.rs:57, the preview becomes the raw slice (the boundary and the soft breaks come back); one expression, it compiles. (gap-engine-tests, 2026-11-11) proof 3 is new (the engine half the owner's sentence names): core/crates/engine/tests/engine_body_qp.rs, two tests through the production core and the scripted IMAP server: a_multipart_quoted_printable_mail_is_stored_as_decoded_text_with_no_boundary_no_header_and_no_soft_break (the sweetgreen mail whole, quoted-printable text and HTML parts with soft breaks inside 'almonds', 'home', 'corn': the stored body_text and body_html, and the reader's plain_text, hold no boundary line, no Content- header, no '=' soft break, and read 'toasted almonds over warm quinoa') and a_multipart_mail_with_a_base64_text_part_and_a_quoted_printable_html_part_is_stored_decoded. Both print one PASS line. The proofs after it moved down by one (the lead proof is now index 6). Written, not run. (tail-realcore, 2026-11-12) piece (A) is built: checks/realcore-check.py `--slice-body` (drive_body, judge_body, main_slice_body) serves two mails from checks/realcore_mailfake.py (sweetgreen_raw, soyo_raw: the shapes of engine_body_qp.rs), selects each with J and K, reads the reader's `mac-main.reader.body` paragraphs and the list row's preview, and prints per mail `PASS body-has-no-boundary@<mail>`, `body-has-no-content-type@<mail>`, `body-has-no-soft-break@<mail>`, `body-holds-the-decoded-words@<mail>`, `preview-is-decoded@<mail>` (mail = sweetgreen, soyo); a case on an empty body is NOT JUDGED, never a pass. `--slice-body --mutant` launches with WHOOSH_CORE_MUTANT=body-stored-raw and must be RED on the boundary, header and preview cases of both mails (if it prints SURVIVED, the reader shows the engine's `prepared` result and not the stored text: the finding is then in the reader's source). The three Rust edits stay as the broken copies: mutant 2 (engine proof 7) and the new mutant 3 (hidden proof 8). Written and self-tested (selftest slice body), not run on a bundle."
+}

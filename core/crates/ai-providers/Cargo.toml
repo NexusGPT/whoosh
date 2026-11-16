@@ -1,0 +1,20 @@
+[package]
+name = "ai-providers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "AI provider adapters (OpenAI Responses, Anthropic key only, Gemini, OpenRouter, Ollama, LM Studio, the ChatGPT sign-in token) and cloud speech adapters (OpenAI, Deepgram, ElevenLabs Scribe, Groq, Mistral Voxtral). Keys arrive as a KeychainRef; HTTP is a seam."
+
+[features]
+default = []
+# The real HTTPS transport over reqwest. Off by default: no test and no build of the core needs it, and nothing in
+# the tree may reach a provider during the owner's absence. Compiled in the fixture run, never executed.
+live = ["dep:reqwest"]
+
+[dependencies]
+contracts = { workspace = true }
+netguard = { path = "../netguard" }   # rig-net-rust: a rig copy reaches this Mac only (the guard before every send and redirect)
+secrets = { path = "../secrets" }
+serde_json = "1"
+# Open-source start (docs/PRD.md:43): reqwest (MIT OR Apache-2.0) over each provider's documented JSON, serde_json (MIT OR Apache-2.0).
+reqwest = { version = "0.13", optional = true, default-features = false, features = ["blocking", "rustls"] }

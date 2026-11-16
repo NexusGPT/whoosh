@@ -1,0 +1,399 @@
+{
+  "item": "05d1d9c3",
+  "full_id": "05d1d9c3-0cf7-4075-868f-d6063cd1968f",
+  "title": "Build par-composermac",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "(?s)(?=.*par-composermac-r7/return-in-the-body-adds-a-line-and-sends-nothing +pass)(?=.*par-composermac-r7/cmd-return-in-the-body-sends +pass)(?=.*par-composermac/template-fills-subject +pass)(?=.*par-composermac/template-fills-text +pass)(?=.*par-composermac/saved-template-keeps-its-file +pass)(?=.*par-composermac-r2/from-choice-changes-the-sender +pass)(?=.*par-composermac-r6/every-choice-of-the-from-list-sets-its-sender +pass)(?=.*par-composermac-r7/send-after-the-undo-goes-again +pass)(?=.*par-composermac/footer-on-ends-the-text +pass)(?=.*par-composermac/footer-off-again +pass)(?=.*par-composermac/footer-off-by-default +pass)(?=.*par-composermac/snippet-lands-in-text +pass)(?=.*par-composermac-r2/semicolon-opens-the-snippet-list +pass)(?=.*par-composermac/instant-send-offers-no-undo +pass)(?=.*par-composermac/instant-send-says-sent-at-once +pass)(?=.*par-composermac-r6/send-now-button-sends-without-undo +pass)(?=.*par-composermac/send-and-done-archives-the-answered-message +pass)(?=.*par-composermac/send-and-done-queues-a-send +pass)(?=.*par-composermac-r6/send-and-done-button-sends-and-archives +pass)(?=.*par-composermac/instant-reply-offers-three +pass)(?=.*par-composermac/instant-reply-pick-fills-text +pass)(?=.*par-composermac-r6/instant-reply-choice-0-fills-the-text +pass)(?=.*par-composermac-r6/instant-reply-choice-2-fills-the-text +pass)(?=.*par-composermac-r2/to-key-focuses-to +pass)(?=.*par-composermac/cc-key-shows-the-row +pass)(?=.*par-composermac/bcc-key-shows-the-row +pass)(?=.*par-composermac-r2/to-takes-typed-recipient +pass)(?=.*par-composermac-r7/pasted-file-becomes-a-tile-not-text +pass)(?=.*par-composermac-r7/pasted-picture-goes-into-the-text +pass)(?=.*par-composermac-r7/pasted-picture-lives-in-the-app-data-folder +pass)(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "FAIL par-composermac",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-composermac.py --selftest",
+      "pass": "selftest: \\d+ checks, 0 mutants not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    },
+    {
+      "kind": "cargo",
+      "run": "-p send --test rich_body",
+      "pass": "test result: ok\\. 15 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "aRichSignatureIsShownAndGoesOutWithItsBold,aPlainSignatureChangesNothing,aPictureGoesIntoTheTextAndOutAsOneInlinePart,aPictureIsNotAlsoATile,aSavedDraftKeepsThePictureWhenReopened",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composerrich.py",
+      "pass": "(?s)(?=.*par-composerrich/signature-is-read-as-rich +pass)(?=.*par-composerrich/rich-signature-html-holds-its-bold +pass)(?=.*par-composerrich/rich-signature-plain-part-has-its-words-without-marks +pass)(?=.*par-composerrich/plain-signature-outgoing-as-before +pass)(?=.*par-composerrich/plain-signature-gives-no-html +pass)(?=.*par-composerrich/picture-lands-in-the-text +pass)(?=.*par-composerrich/picture-is-not-a-tile +pass)(?=.*par-composerrich/picture-kept-after-escape-and-reopen +pass)(?=.*par-composerrich/inline-picture-is-one-inline-part +pass)(?=.*par-composerrich/inline-picture-html-references-its-cid +pass)(?=.*par-composerrich/inline-picture-plain-part-has-a-fallback-line +pass)(?=.*11 checks, 0 failed, 0 not judged)",
+      "fail": "FAIL par-composerrich",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-composerrich.py --selftest",
+      "pass": "selftest: 11 checks, 0 mutants not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "aThumbnailIsNeverLargerThanItsLimitAndKeepsTheShape,aFileThatIsNoPictureGivesNoThumbnail,aLargePictureIsDrawnShrunkAndASmallOneIsNotEnlarged,aRegisteredPictureReplacesThePlaceholderInTheText,aContentIdWithNoFileKeepsThePlaceholderAndDecodesNothing,theThumbnailIsMadeOffTheMainThread,theCacheKeepsAtMostItsLimit,aPastedImageIsWrittenAsAPngOffTheMainThread,takeImageReturnsBeforeTheFileIsWritten,anImageThatIsNoPictureWritesNothing",
+      "pass": "(?s)(?=.*Test aThumbnailIsNeverLargerThanItsLimitAndKeepsTheShape\\(\\) passed)(?=.*Test aFileThatIsNoPictureGivesNoThumbnail\\(\\) passed)(?=.*Test aLargePictureIsDrawnShrunkAndASmallOneIsNotEnlarged\\(\\) passed)(?=.*Test aRegisteredPictureReplacesThePlaceholderInTheText\\(\\) passed)(?=.*Test aContentIdWithNoFileKeepsThePlaceholderAndDecodesNothing\\(\\) passed)(?=.*Test theThumbnailIsMadeOffTheMainThread\\(\\) passed)(?=.*Test theCacheKeepsAtMostItsLimit\\(\\) passed)(?=.*Test aPastedImageIsWrittenAsAPngOffTheMainThread\\(\\) passed)(?=.*Test takeImageReturnsBeforeTheFileIsWritten\\(\\) passed)(?=.*Test anImageThatIsNoPictureWritesNothing\\(\\) passed)",
+      "fail": "failed"
+    },
+    {
+      "kind": "unit",
+      "run": "withASignatureAndNoFooterTheTextEndsWithTheSignatureOnce,withASignatureAndTheFooterTheTextIsTheBodyThenTheSignatureThenTheFooter,withTheFooterAndNoSignatureTheFooterEndsTheTextAndNoSignatureIsMade,withNeitherTheTextIsTheBodyAlone,theAssemblyIsTextThenSignatureThenFooterWhateverIsOn",
+      "pass": "passed",
+      "fail": "failed|recorded an issue",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "sh -c \"grep -c -E '10_?485_?760' Sources/Features/ComposerMac/ComposerRichMail.swift\"",
+      "pass": "^0$",
+      "fail": "^[1-9]",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-attachments.py",
+      "pass": "(?s)(?=.*par-attachments-composer/pasted-image-goes-into-the-text +pass)(?=.*par-attachments-composer/pasted-file-is-pending +pass)",
+      "fail": "FAIL par-attachments-composer/pasted",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "guard let id = replyMessageId, m.perform(.archive(messageIds: [id])) else { return }",
+      "replace": "guard let id = replyMessageId, false else { return }",
+      "proof": 0,
+      "red": "FAIL par-composermac/send-and-done-archives-the-answered-message|FAIL par-composermac-r6/send-and-done-button-sends-and-archives"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "public func sendInstantly(_ m: AppModel) -> Bool { send(m, instant: true) }",
+      "replace": "public func sendInstantly(_ m: AppModel) -> Bool { send(m, instant: false) }",
+      "proof": 0,
+      "red": "FAIL par-composermac/instant-send-offers-no-undo|FAIL par-composermac/instant-send-says-sent-at-once"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": "Mark::Bold => format!(\"<b>{}</b>\", escape(&r.text)),",
+      "replace": "Mark::Bold => escape(&r.text),",
+      "proof": 2,
+      "red": "a_signature_with_formatting_goes_out_as_html_beside_the_plain_text \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": "signature_runs(text).iter().any(|r| r.mark != Mark::Plain)",
+      "replace": "true",
+      "proof": 2,
+      "red": "a_plain_signature_changes_nothing \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": "'<' => o.push_str(\"&lt;\"),",
+      "replace": "'<' => o.push('<'),",
+      "proof": 2,
+      "red": "markup_typed_in_a_signature_never_reaches_the_html_as_a_tag \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": "marked.contains(*id) &&",
+      "replace": "false &&",
+      "proof": 2,
+      "red": "a_picture_in_the_text_is_one_inline_part_the_html_references \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": "if others.is_empty() {",
+      "replace": "if true {",
+      "proof": 2,
+      "red": "a_file_outside_the_text_stays_an_attachment_beside_an_inline_picture \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": " && f.media_type.trim().to_ascii_lowercase().starts_with(\"image/\")",
+      "replace": "",
+      "proof": 2,
+      "red": "a_marker_that_names_no_picture_of_the_draft_stays_text \\.\\.\\. FAILED"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerRichMail.swift",
+      "find": "case .bold: a.inlinePresentationIntent = .stronglyEmphasized",
+      "replace": "case .bold: break",
+      "proof": 3,
+      "red": "aRichSignatureIsShownAndGoesOutWithItsBold.*failed"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerRichMail.swift",
+      "find": "contains { $0.mark != .plain }",
+      "replace": "contains { _ in true }",
+      "proof": 3,
+      "red": "aPlainSignatureChangesNothing.*failed"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "let body = ComposerRichMail.outgoingText(session.document)",
+      "replace": "let body = bodyText",
+      "proof": 3,
+      "red": "aPictureGoesIntoTheTextAndOutAsOneInlinePart.*failed"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Files.swift",
+      "find": "attachments = fileTiles.filter { !inText.contains($0.id) } +",
+      "replace": "attachments = fileTiles +",
+      "proof": 3,
+      "red": "aPictureIsNotAlsoATile.*failed"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Pictures.swift",
+      "find": "placePicture(id)",
+      "replace": "_ = id",
+      "proof": 3,
+      "red": "aSavedDraftKeepsThePictureWhenReopened.*failed"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerMacFeature.swift",
+      "find": "\"signature_rich\": ComposerRichMail.isRich(model.signature),",
+      "replace": "\"signature_rich\": false,",
+      "proof": 4,
+      "red": "FAIL par-composerrich/signature-is-read-as-rich"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCoreRich.swift",
+      "find": "case .bold: return \"<b>\" + Self.richEscape(r.text) + \"</b>\"",
+      "replace": "case .bold: return Self.richEscape(r.text)",
+      "proof": 4,
+      "red": "FAIL par-composerrich/rich-signature-html-holds-its-bold"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "let body = ComposerRichMail.outgoingText(session.document)",
+      "replace": "let body = bodyText",
+      "proof": 4,
+      "red": "FAIL par-composerrich/inline-picture-is-one-inline-part"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Files.swift",
+      "find": "attachments = fileTiles.filter { !inText.contains($0.id) } +",
+      "replace": "attachments = fileTiles +",
+      "proof": 4,
+      "red": "FAIL par-composerrich/picture-is-not-a-tile"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Pictures.swift",
+      "find": "placePicture(id)",
+      "replace": "_ = id",
+      "proof": 4,
+      "red": "FAIL par-composerrich/picture-lands-in-the-text"
+    },
+    {
+      "file": "Sources/Features/RichText/RichPictures.swift",
+      "find": "kCGImageSourceThumbnailMaxPixelSize: maxSide]",
+      "replace": "kCGImageSourceThumbnailMaxPixelSize: 100000]",
+      "proof": 6,
+      "red": "Test aThumbnailIsNeverLargerThanItsLimitAndKeepsTheShape.*failed"
+    },
+    {
+      "file": "Sources/Features/RichText/RichAttributed.swift",
+      "find": "if let picture = RichPictures.shared.cached(cid) {",
+      "replace": "if false, let picture = RichPictures.shared.cached(cid) {",
+      "proof": 6,
+      "red": "Test aRegisteredPictureReplacesThePlaceholderInTheText.*failed"
+    },
+    {
+      "file": "Sources/Features/RichText/RichPictures.swift",
+      "find": "queue.async { [self] in",
+      "replace": "queue.sync { [self] in",
+      "proof": 6,
+      "red": "Test theThumbnailIsMadeOffTheMainThread.*failed"
+    },
+    {
+      "file": "Sources/Features/AttachmentsMac/AttachmentIntake.swift",
+      "find": "nonisolated static func writeImage(_ data: Data) -> URL? {",
+      "replace": "static func writeImage(_ data: Data) -> URL? {",
+      "proof": 6,
+      "red": "error:|Test aPastedImageIsWrittenAsAPngOffTheMainThread.*failed"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": " && f.bytes.len() as u64 <= INLINE_PICTURE_MAX_BYTES)",
+      "replace": ")",
+      "proof": 2,
+      "red": "a_picture_over_the_ledgers_size_cap_stays_an_attachment_and_one_at_the_cap_goes_inline \\.\\.\\. FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "if !starts_line || !ends_line {",
+      "replace": "if false {",
+      "proof": 2,
+      "red": "a_plain_signature_the_app_already_appended_is_sent_once.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "        if !signature.isEmpty { t += \"\\n\\n\" + signature }\n        if let footer { t += \"\\n\\n\" + footer }\n",
+      "replace": "        if let footer { t += \"\\n\\n\" + footer }\n        if !signature.isEmpty { t += \"\\n\\n\" + signature }\n",
+      "proof": 7,
+      "red": "withASignatureAndTheFooterTheTextIsTheBodyThenTheSignatureThenTheFooter\\(\\) failed|✘ Test withASignatureAndTheFooterTheTextIsTheBodyThenTheSignatureThenTheFooter|theAssemblyIsTextThenSignatureThenFooterWhateverIsOn\\(\\) failed|✘ Test theAssemblyIsTextThenSignatureThenFooterWhateverIsOn"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "if !signature.isEmpty { t += \"\\n\\n\" + signature }",
+      "replace": "t += \"\\n\\n\" + signature",
+      "proof": 7,
+      "red": "withTheFooterAndNoSignatureTheFooterEndsTheTextAndNoSignatureIsMade\\(\\) failed|✘ Test withTheFooterAndNoSignatureTheFooterEndsTheTextAndNoSignatureIsMade"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "if let footer { t += \"\\n\\n\" + footer }",
+      "replace": "t += \"\\n\\n\" + (footer ?? \"\")",
+      "proof": 7,
+      "red": "withNeitherTheTextIsTheBodyAlone\\(\\) failed|✘ Test withNeitherTheTextIsTheBodyAlone"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerRichMail.swift",
+      "find": "UInt64(WhooshConstants.INLINE_PICTURE_MAX_BYTES)",
+      "replace": "10_485_760",
+      "proof": 8,
+      "red": "^[1-9]"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "if !signature.isEmpty { t += \"\\n\\n\" + signature }",
+      "replace": "if !signature.isEmpty && footer == nil { t += \"\\n\\n\" + signature }",
+      "proof": 7,
+      "red": "withASignatureAndTheFooterTheTextIsTheBodyThenTheSignatureThenTheFooter\\(\\) failed|✘ Test withASignatureAndTheFooterTheTextIsTheBodyThenTheSignatureThenTheFooter|theAssemblyIsTextThenSignatureThenFooterWhateverIsOn\\(\\) failed|✘ Test theAssemblyIsTextThenSignatureThenFooterWhateverIsOn"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "lines.len() > SIGNATURE_TAIL_MAX_LINES",
+      "replace": "!lines.is_empty()",
+      "proof": 2,
+      "red": "a_signature_followed_by_the_footer_is_sent_once_and_the_order_is_kept \\.\\.\\. FAILED|what_follows_the_signature_is_a_footer_only_when_it_is_a_few_short_lines \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "if split_signature(trimmed, text).is_some() {",
+      "replace": "if false {",
+      "proof": 2,
+      "red": "a_signature_alone_is_sent_once_and_a_draft_with_neither_goes_out_as_written \\.\\.\\. FAILED|a_signature_followed_by_the_footer_is_sent_once_and_the_order_is_kept \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "format!(\"{trimmed}\\n\\n{SIGNATURE_DELIMITER}{text}\")",
+      "replace": "format!(\"{trimmed}\")",
+      "proof": 2,
+      "red": "a_footer_alone_gets_the_signature_after_it_because_the_engine_cannot_place_it_before_a_footer_it_does_not_know \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "let starts_line = at == 0 || body.as_bytes()[at - 1] == b'\\n';",
+      "replace": "let starts_line = true;",
+      "proof": 2,
+      "red": "words_that_only_resemble_the_signature_still_get_the_signature \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "let ends_line = tail.is_empty() || tail.starts_with('\\n') || tail.starts_with(\"\\r\\n\");",
+      "replace": "let ends_line = true;",
+      "proof": 2,
+      "red": "words_that_only_resemble_the_signature_still_get_the_signature \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "lines.len() > SIGNATURE_TAIL_MAX_LINES",
+      "replace": "false",
+      "proof": 2,
+      "red": "what_follows_the_signature_is_a_footer_only_when_it_is_a_few_short_lines \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "l.chars().count() > SIGNATURE_TAIL_LINE_MAX_CHARS",
+      "replace": "false",
+      "proof": 2,
+      "red": "what_follows_the_signature_is_a_footer_only_when_it_is_a_few_short_lines \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/compose.rs",
+      "find": "let text = sig_text.trim_end();",
+      "replace": "let text = sig_text.trim_end().lines().last().unwrap_or(\"\");",
+      "proof": 2,
+      "red": "a_signature_of_several_lines_is_one_block_before_the_footer_and_a_part_of_it_is_not_the_signature \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": "match crate::compose::split_signature(body, sig) {",
+      "replace": "match None::<(&str, &str)> {",
+      "proof": 2,
+      "red": "a_rich_signature_followed_by_the_footer_is_sent_once_with_the_footer_after_it \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/send/src/rich.rs",
+      "find": "if !tail.is_empty() {",
+      "replace": "if false {",
+      "proof": 2,
+      "red": "a_rich_signature_followed_by_the_footer_is_sent_once_with_the_footer_after_it \\.\\.\\. FAILED"
+    },
+    {
+      "file": "Sources/Features/AttachmentsMac/AttachmentIntake.swift",
+      "find": "_ = ComposerModel.shared.insertPicture(u)",
+      "replace": "take(u)",
+      "proof": 0,
+      "red": "FAIL par-composermac-r7/pasted-picture-goes-into-the-text"
+    },
+    {
+      "file": "Sources/Features/AttachmentsMac/AttachmentIntake.swift",
+      "find": "_ = ComposerModel.shared.insertPicture(u)",
+      "replace": "take(u)",
+      "proof": 9,
+      "red": "FAIL par-attachments-composer/pasted-image-goes-into-the-text"
+    },
+    {
+      "file": "Sources/Features/AttachmentsMac/AttachmentIntake.swift",
+      "find": ": AttachmentPlaces.newPastedFolder() else { return nil }",
+      "replace": ": ((try? FileManager.default.createDirectory(at: temp, withIntermediateDirectories: true)) != nil ? temp : nil) else { return nil }",
+      "proof": 0,
+      "red": "FAIL par-composermac-r7/pasted-picture-lives-in-the-app-data-folder"
+    },
+    {
+      "file": "Sources/Features/RichText/RichTextEditor.swift",
+      "find": "if let s = session, s.pasteFiles() { return }",
+      "replace": "if false { return }",
+      "proof": 0,
+      "red": "FAIL par-composermac-r7/pasted-file-becomes-a-tile-not-text"
+    },
+    {
+      "file": "Sources/Features/RichText/RichTextFormat.swift",
+      "find": "case #selector(NSResponder.insertNewline(_:)): return listReturn()",
+      "replace": "case #selector(NSResponder.insertNewline(_:)): return session.instantSend()",
+      "proof": 0,
+      "red": "FAIL par-composermac-r7/return-in-the-body-adds-a-line-and-sends-nothing"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerMacFeature.swift",
+      "find": "\"⌘Enter\": { model.isOpen ? model.send($0) : false },",
+      "replace": "\"⌘Enter\": { model.isOpen ? true : false },",
+      "proof": 0,
+      "red": "FAIL par-composermac-r7/cmd-return-in-the-body-sends"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Printing: main calls print_cases (par-composermac.py:1391) so each passing case prints `<label> pass <detail>` (journeys/lib/harness.py:282-299 case_line), hence passes can be shown. Case -> feature (labels from the MUTANTS block, par-composermac.py:1170-1385): templates = par-composermac/saved-template-keeps-its-file (:1175), template-fills-subject (:1176), template-fills-text (:1200); send from any address = par-composermac-r2/from-choice-changes-the-sender (:1219), par-composermac-r6/every-choice-of-the-from-list-sets-its-sender (:1362); send again = par-composermac-r7/send-after-the-undo-goes-again (:1373); footer = footer-on-ends-the-text (:1178), footer-off-again (:1179), footer-off-by-default (:1191, case at :155); snippets = snippet-lands-in-text (:1174), par-composermac-r2/semicolon-opens-the-snippet-list (:1228); instant send = instant-send-offers-no-undo (:1183), instant-send-says-sent-at-once (:1193), par-composermac-r6/send-now-button-sends-without-undo; send and mark done = send-and-done-archives-the-answered-message (:1184, case :199), send-and-done-queues-a-send (:1196), par-composermac-r6/send-and-done-button-sends-and-archives (:1360); Instant Reply = instant-reply-offers-three (:1180, case :165), instant-reply-pick-fills-text (:1181), par-composermac-r6/instant-reply-choice-0-fills-the-text (:1334), -choice-2- (:1335); To/Cc/Bcc = cc-key-shows-the-row (:1188), bcc-key-shows-the-row (:1177), par-composermac-r2/to-key-focuses-to (:1207), cc-key-focuses-cc (:1211), bcc-key-focuses-bcc (:1212), to-takes-typed-recipient (:1221). App-side mutants: ComposerModel+Send.swift:44-53 (sendAndMarkDone and archiveAnswered; sendInstantly at :48). Hidden mode only; the check needs the fixture core. gap-composer-rich (parts 1 and 2): core builder core/crates/send/src/rich.rs (rich_texts, rich_body; wired in compose.rs compose()), core tests core/crates/send/tests/rich_body.rs (6 tests), composer Sources/Features/ComposerMac/ComposerRichMail.swift (marks, picture marker, INLINE_PICTURE_MAX_BYTES proposed), ComposerModel+Pictures.swift (insertPicture, dropOnText, rig verbs mac-composer.dev.picture/.rich-signature/.plain-signature), the fixture's record Sources/CoreBridge/FixtureCoreRich.swift (sent/last/html, plain, body, inline_parts, attachments), unit tests Tests/Unit/ComposerRichTests.swift, check checks/parity/par-composerrich.py (11 cases, --selftest with RichModel). | OLD GAP (before lane gap-states, 2026-11-12): Parts 1 and 2 BUILT by lane gap-composer-rich (docs/lanes/gap-composer-rich.md), unproven until the lead's build: proofs 2 to 5 and their broken copies. fix-screens (2026-11-11) built the thumbnail of a picture run in the text: Sources/Features/RichText/RichPictures.swift (ImageIO thumbnail of at most 600 px on a utility queue, 12 kept, never on the main thread), RichAttributed.make draws it, RichTextEditor.Coordinator.pictureLoaded swaps the placeholder in place; and a pasted or dropped image is decoded off the main thread (AttachmentIntake.takeImage); proof 6. STILL MISSING: (a) ComposerModel+Pictures.swift insertPicture must call `RichPictures.shared.register(cid: id, url: url)` after `placePicture(id)` (one line, a file of the composer lane): until then no picture has a registered file and the text keeps the symbol; (b) a picture PASTED with Cmd-V still becomes a file tile and NOT a picture in the text: the change (AttachmentIntake.paste calling ComposerModel.shared.insertPicture) was NOT made because it turns two checks red that were written to expect the tile: checks/parity/par-attachments.py:1210 `pasted-image-is-pending` (a pasted image is a pending file tile named *.png) and the sweep step at :571-575 (the `composer-tile-*` cases read the pasted image as a tile); old value: tile, new value: picture in the text, no tile; the owner of par-attachments decides which behaviour stands, then both change together; (c) a drop on the text may still reach a tile if NSTextView takes the drag first (unverified, needs a run); (d) the lead's first run of proof 0 at the build decides which of the 11 r83 failures remain (items 614e9827 and d82faa74). || ALSO (the other helper's text): Parts 1 and 2 BUILT by lane gap-composer-rich (docs/lanes/gap-composer-rich.md), unproven until the lead's build: proofs 2 to 5 and their broken copies. Left of parts 1 and 2 (findings for files this lane does not own, in the notes): a picture PASTED with Cmd-V still becomes a file tile (Sources/Features/AttachmentsMac/AttachmentIntake.swift paste(): call ComposerModel.shared.insertPicture(url) when the text holds the keys); the picture run in the text is drawn as the SF Symbol 'photo', not the picture (Sources/Features/RichText/RichAttributed.swift make(): a thumbnail decoded off the main thread); the send crate's file ownership (core/crates/send/src/compose.rs, rich.rs) to be confirmed by the lead. Part 3 BUILT by lane gap-composer-models (docs/lanes/gap-composer-models.md): par-composermac.py --selftest models 97 of 97 round-1 and round-2 cases, 0 not red. Still missing: (4) The base red: the lead's first run of proof 0 at the lane's build decides which of the 11 r83 failures remain; the lane's changes for them are in item 614e9827 and d82faa74 (diagnostics, one cause in the app: the composer reopened after a send that had gone out, 0823d21e). FIX-CORE (docs/lanes/fix-core.md): the ledger row INLINE_PICTURE_MAX_BYTES 10485760 is added and generated; the core now keeps a picture over it as a file (send/src/rich.rs `inline_of`, the 7th test of proof 2, mutant 18); the Swift side read the literal; it now reads `WhooshConstants.INLINE_PICTURE_MAX_BYTES` (lane fix-rest-app, proof 8 is the static check that no literal is left). The core's send crate is confirmed as this lane's: rich.rs, compose.rs, lib.rs and tests/rich_body.rs are kept. FIX-CORE: the double plain signature was real (the app appends it after a blank line, compose.rs with_signature only recognised the '-- ' block) and is fixed in send/src/compose.rs; test 8 of proof 2, mutant 19. SIGNATURE ORDER (lane fix-signature-order, docs/lanes/fix-signature-order.md): the sent text is again text, signature, footer (ComposerModel+Send.swift `assemble`); the core's `with_signature` and the rich path's `strip_signature` both use `split_signature` (send/src/compose.rs): the signature's whole text at the start of a line, then at most SIGNATURE_TAIL_MAX_LINES short lines (SIGNATURE_TAIL_LINE_MAX_CHARS each) count as 'already there', so exactly one copy leaves and the footer stays last; with the footer on and no signature in the text the core can only add the signature at the end, so the app always writes it itself. Proof 2 now expects 15 passed (7 new tests, mutants 23 and 29 to 38); unit proof 7 has the four cases plus the assembly, mutants 24 to 28. Round 7 (hid-compose, lead ruling): one rule for a paste. Picture DATA goes into the text as a picture (AttachmentIntake.takeImageInline -> ComposerModel.insertPicture, as a drop on the text); a copied FILE, a picture file included, is a tile (AttachmentIntake.takePasted / paste). The picture's file lies under the app's data folder (`pasted-files/<uuid>`). par-composermac r7 and par-attachments composer round say the same rule (pasted-picture-goes-into-the-text, pasted-image-goes-into-the-text; broken copies above; app mutant WHOOSH_ATTACH_MUTANT=picture-as-tile). The two reds of the last proof-0 run (cmd-z, forward-the-core-refuses) were fixed in hid-compose round 5 (a3630bd6a, 2a28298b4): only the lead's run is owed. Not proved by any case here, and no longer part of the gap: a drop ON the text reaching a tile when NSTextView takes the drag first (a hidden run cannot make a drag session)."
+}

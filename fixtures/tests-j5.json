@@ -1,0 +1,138 @@
+{
+  "_note": "Fixture of the tests-j5 lane. Sources: docs/JOURNEYS.md J5, docs/DECISION-MODEL.md VERSION 2 (signed 2026-11-07 19:16), docs/CONSTANTS.md (numbers are read from there by journeys/lib/fixture.const, never copied here). The 'ax' and 'core' blocks are the lane's ASSUMED wire until the feature lanes register their rows (docs/CONTROL-SOCKET.md 'Deltas'); a lane that names a row differently changes this file only. Every provider and engine in a test is a stub on 127.0.0.1 or a recorded answer.",
+  "ax": {
+    "palette_ai_settings": "mac-palette.result.ai-settings",
+    "palette_mcp": "mac-palette.result.outside-ai-apps",
+    "palette_decisions": "mac-palette.result.decisions",
+    "providers": "mac-settings-ai.provider",
+    "speech_local": "mac-settings-ai.speech.local",
+    "speech": "mac-settings-ai.speech",
+    "agents_new": "mac-settings-ai.agents.new",
+    "agents_form": "mac-settings-ai.agents.form",
+    "agents_card": "mac-settings-ai.agents.card",
+    "search_results": "mac-search.results",
+    "search_skeleton": "mac-search.skeleton",
+    "search_notice": "mac-search.notice",
+    "search_label_field": "mac-search.label-field",
+    "search_undo": "mac-search.undo.bar",
+    "search_answer_regions": ["mac-search.answer", "mac-search.agent-reply", "mac-search.proposal", "mac-ask.citations", "mac-ask.proposal"],
+    "mcp_server": "mac-mcp-notes.server",
+    "mcp_start": "mac-mcp-notes.server.start",
+    "mcp_apps": "mac-mcp-notes.apps",
+    "mcp_allow_claude": "mac-mcp-notes.allow.claude-desktop",
+    "mcp_revoke_claude": "mac-mcp-notes.revoke.claude-desktop",
+    "mcp_prompt": "mac-mcp-notes.prompt",
+    "mcp_prompt_approve": "mac-mcp-notes.prompt.approve",
+    "mcp_results": "mac-mcp-notes.results",
+    "dec_pages": "mac-settings-ai.decisions.pages",
+    "dec_engine": "mac-settings-ai.decisions.engine",
+    "dec_result": "mac-settings-ai.decisions.result",
+    "dec_consent": "mac-settings-ai.decisions.consent",
+    "dec_rule_editor": "mac-settings-ai.decisions.rule-editor",
+    "list_row_1_create_rule": "mac-main.list.row.1.create-rule"
+  },
+  "providers": {
+    "anthropic": {"key": "sk-test-anthropic-0001", "models_min": 1},
+    "openai": {"key": null},
+    "chatgpt_note_contains": "can stop"
+  },
+  "agent": {"name": "Supplier desk", "allow": ["readMail", "search", "label"], "words": ["read mail", "search", "label"], "no_send": "sendWithConfirmation"},
+  "search": {
+    "corpus": "fixtures/tests-j2.json",
+    "question": "what did suppliers quote me this spring?",
+    "record1_thread": "thr-01", "record1_message": "msg-01",
+    "meaning_only_thread": "thr-s06", "word_match_thread": "thr-s05", "unrelated_thread": "thr-s08",
+    "deleted_message": "msg-s05", "deleted_thread": "thr-s05", "deleted_words": "no longer in your mail",
+    "building_words": "meaning results are coming",
+    "label": "Supplier quotes",
+    "_note": "record 1 and its decoys are the twins in fixtures/tests-j2.json (msg-01 = record 1; thr-s06 matches by meaning only: none of the question's words appear in it; thr-s08 is the lake photos, unrelated). The fixture verbs hold-search, release-search, index-state <building|ready> and the rows regions above are this lane's assumed wire (docs/lanes/tests-j5.md ## Round 2)."
+  },
+  "mcp": {"app": "Claude Desktop", "query": "quote"},
+  "decision": {
+    "jev_key": "tsa-test-jev-key-0001",
+    "pages": [
+      {"id": "which-tab", "title": "Which tab"},
+      {"id": "needs-reply", "title": "Needs my reply"},
+      {"id": "sign-in-codes", "title": "Sign-in codes"},
+      {"id": "vips", "title": "VIPs"},
+      {"id": "notify-me", "title": "Notify me"},
+      {"id": "labels", "title": "Labels"}
+    ],
+    "shipped": {
+      "which-tab": [
+        {"n": 1, "kind": "rule", "word": "VIP"},
+        {"n": 2, "kind": "rule", "word": "list header"},
+        {"n": 3, "kind": "model", "question": "Which tab?", "trust": 80},
+        {"n": 4, "kind": "default", "word": "Primary"}
+      ],
+      "needs-reply": [
+        {"n": 1, "kind": "rule", "word": "from me"},
+        {"n": 2, "kind": "rule", "word": "list header"},
+        {"n": 3, "kind": "model", "question": "Does this email ask me, personally, to answer or to do something?", "trust": 75},
+        {"n": 4, "kind": "default", "word": "no"}
+      ],
+      "sign-in-codes": [
+        {"n": 1, "kind": "rule", "word": "code"},
+        {"n": 2, "kind": "model", "question": "Does this email carry a one-time code, a login link or a verification number?", "trust": 90},
+        {"n": 3, "kind": "default", "word": "no"}
+      ],
+      "vips": [{"n": 1, "kind": "rule", "word": "VIP list"}, {"n": 2, "kind": "default", "word": "no"}],
+      "notify-me": [
+        {"n": 1, "kind": "rule", "word": "VIP"},
+        {"n": 2, "kind": "rule", "word": "needs my reply"},
+        {"n": 3, "kind": "rule", "word": "list header"},
+        {"n": 4, "kind": "default", "word": "silent"}
+      ],
+      "labels": [{"n": 1, "kind": "default", "word": "none"}]
+    },
+    "vip_list": ["orders@linea-supply-example.com"],
+    "messages": {
+      "vip": {"from": "orders@linea-supply-example.com", "subject": "Quote for the Q1 print run: 12,000 units", "body_len": 300, "list_header": false, "from_me": false, "needs_reply": false},
+      "list": {"from": "noreply@github-example.com", "subject": "[whoosh] Pull request #42", "body_len": 200, "list_header": true, "from_me": false, "needs_reply": false},
+      "promo": {"from": "news@marathon-example.run", "subject": "Brussels 20k: bib pickup times", "body_len": 400, "list_header": false, "from_me": false, "needs_reply": false},
+      "ask": {"from": "jonas@orbital-example.be", "subject": "Can we move Thursday to 15:00?", "body_len": 250, "list_header": false, "from_me": false, "needs_reply": true},
+      "mine": {"from": "me@assem-example.com", "subject": "Notes to self", "body_len": 90, "list_header": false, "from_me": true, "needs_reply": false},
+      "code": {"from": "security@service-example.com", "subject": "Your verification code is 482913", "body_len": 120, "list_header": false, "from_me": false, "needs_reply": false},
+      "welcome": {"from": "hello@service-example.com", "subject": "Welcome aboard", "body_len": 500, "list_header": false, "from_me": false, "needs_reply": false},
+      "invoice": {"from": "noreply@hostcloud-example.net", "subject": "Invoice 2026-11 is available", "body_len": 300, "list_header": false, "from_me": false, "needs_reply": false},
+      "long": {"from": "bart@tenders-example.be", "subject": "Tender AQP: long body", "body_len": 2500, "list_header": false, "from_me": false, "needs_reply": false},
+      "mid": {"from": "karim@capital-example.lu", "subject": "Term sheet v2, redlines", "body_len": 1500, "list_header": false, "from_me": false, "needs_reply": false}
+    },
+    "cases": [
+      {"id": "D1", "page": "which-tab", "msg": "vip", "engine": "local", "says": ["updates", 0.99], "expect": {"entry": 1, "outcome": "Primary", "model_called": false}},
+      {"id": "D2", "page": "which-tab", "msg": "list", "engine": "local", "says": ["promotions", 0.99], "expect": {"entry": 2, "outcome": "Updates", "model_called": false}},
+      {"id": "D3", "page": "which-tab", "msg": "promo", "engine": "local", "says": ["promotions", 0.91], "expect": {"entry": 3, "outcome": "Promotions", "model_called": true, "why": "Which tab · entry 3 · the model said Promotions (0.91)"}},
+      {"id": "D4", "page": "which-tab", "msg": "promo", "engine": "local", "says": ["promotions", 0.79], "expect": {"entry": 4, "outcome": "Primary", "model_called": true}},
+      {"id": "D5", "page": "which-tab", "msg": "promo", "engine": "local", "says": ["promotions", 0.80], "expect": {"entry": 3, "outcome": "Promotions", "model_called": true}},
+      {"id": "D6", "page": "which-tab", "msg": "promo", "engine": "off", "says": ["promotions", 0.99], "expect": {"entry": 4, "outcome": "Primary", "model_called": false}},
+      {"id": "D7", "page": "needs-reply", "msg": "mine", "engine": "local", "says": ["yes", 0.99], "expect": {"entry": 1, "outcome": "no", "model_called": false}},
+      {"id": "D8", "page": "needs-reply", "msg": "list", "engine": "local", "says": ["yes", 0.99], "expect": {"entry": 2, "outcome": "no", "model_called": false}},
+      {"id": "D9", "page": "needs-reply", "msg": "ask", "engine": "local", "says": ["yes", 0.90], "expect": {"entry": 3, "outcome": "yes", "model_called": true}},
+      {"id": "D10", "page": "needs-reply", "msg": "ask", "engine": "local", "says": ["yes", 0.74], "expect": {"entry": 4, "outcome": "no", "model_called": true}},
+      {"id": "D11", "page": "needs-reply", "msg": "ask", "engine": "local", "says": ["yes", 0.75], "expect": {"entry": 3, "outcome": "yes", "model_called": true}},
+      {"id": "D12", "page": "sign-in-codes", "msg": "code", "engine": "local", "says": ["no", 0.99], "expect": {"entry": 1, "outcome": "yes", "model_called": false}},
+      {"id": "D13", "page": "sign-in-codes", "msg": "welcome", "engine": "local", "says": ["yes", 0.95], "expect": {"entry": 2, "outcome": "yes", "model_called": true}},
+      {"id": "D14", "page": "sign-in-codes", "msg": "welcome", "engine": "local", "says": ["yes", 0.89], "expect": {"entry": 3, "outcome": "no", "model_called": true}},
+      {"id": "D15", "page": "vips", "msg": "vip", "engine": "local", "says": ["yes", 0.99], "expect": {"entry": 1, "outcome": "yes", "model_called": false}},
+      {"id": "D16", "page": "vips", "msg": "ask", "engine": "local", "says": ["yes", 0.99], "expect": {"entry": 2, "outcome": "no", "model_called": false}},
+      {"id": "D17", "page": "notify-me", "msg": "vip", "engine": "local", "says": ["yes", 0.5], "expect": {"entry": 1, "outcome": "notify", "model_called": false}},
+      {"id": "D18", "page": "notify-me", "msg": "ask", "engine": "local", "says": ["yes", 0.5], "expect": {"entry": 2, "outcome": "notify", "model_called": false}},
+      {"id": "D19", "page": "notify-me", "msg": "list", "engine": "local", "says": ["yes", 0.5], "expect": {"entry": 3, "outcome": "silent", "model_called": false}},
+      {"id": "D20", "page": "notify-me", "msg": "promo", "engine": "local", "says": ["yes", 0.5], "expect": {"entry": 4, "outcome": "silent", "model_called": false}}
+    ],
+    "jev_cases": [
+      {"id": "J1", "page": "which-tab", "msg": "promo", "says": ["promotions", 0.91], "expect": {"entry": 3, "outcome": "Promotions"}},
+      {"id": "J2", "page": "which-tab", "msg": "long", "says": ["updates", 0.95], "expect": {"entry": 3, "outcome": "Updates", "body_sent": 2000}},
+      {"id": "J3", "page": "which-tab", "msg": "mid", "says": ["updates", 0.95], "expect": {"entry": 3, "outcome": "Updates", "body_sent": 1500}}
+    ],
+    "reorder": {"page": "which-tab", "move_entry": 3, "to": 1,
+      "cases": [
+        {"id": "R1", "msg": "vip", "says": ["updates", 0.99], "expect": {"entry": 1, "outcome": "Updates"}},
+        {"id": "R2", "msg": "promo", "says": ["promotions", 0.91], "expect": {"entry": 1, "outcome": "Promotions"}}]},
+    "new_rule": {"page": "which-tab", "words": "subject contains Invoice", "outcome": "Updates", "msg": "invoice", "says": ["primary", 0.5],
+      "before": {"entry": 4, "outcome": "Primary"}, "after": {"entry": 1, "outcome": "Updates"}},
+    "teaching": {"local_refit_at": 35, "page": "which-tab", "make_rule_domain": "hostcloud-example.net", "corrections": 4},
+    "prefill": {"msg": "msg-01", "from": "orders@linea-supply-example.com", "domain": "linea-supply-example.com"},
+    "sent_fields_allowed": ["from", "to", "cc", "subject", "body", "list_header", "account_name", "questions"]
+  }
+}

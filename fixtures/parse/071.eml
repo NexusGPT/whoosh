@@ -1,0 +1,35 @@
+From: Kestrel VPN <hello@example.net>
+To: Assem Example <assem@example.org>
+Subject: Activate your account
+Date: Tue, 10 Nov 2026 01:56:00 +0000
+Message-ID: <c52a7f7160ace070@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============7261556741212264310=="
+
+--===============7261556741212264310==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Verify your email: https://auth.example.com/verify?token=cd8f6c7162ae42a09e87098b&email=assem%40example.org
+
+The link works once.
+
+--===============7261556741212264310==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Kestrel VPN</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img src=3D'http://track.example.org/banner/=
+95049a2f.png' alt=3D'logo' width=3D'120'><h2>Kestrel VPN</h2><p>Click the but=
+ton below to finish. The link works once.</p><p><a href=3D"https://auth.examp=
+le.com/verify?token=3Dcd8f6c7162ae42a09e87098b&amp;email=3Dassem%40example.or=
+g" style=3D"background:#06c;color:#fff">Verify your email</a></p><p style=3D"=
+font-size:11px;color:#888">You receive this because of your account. <a href=
+=3D"https://example.net/unsubscribe?u=3D9af46c">Unsubscribe</a> | <a href=3D"=
+https://example.net/privacy">Privacy</a></p></td></tr></table></body></html>
+
+--===============7261556741212264310==--

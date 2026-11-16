@@ -1,0 +1,144 @@
+{
+ "id": "fastino/GLiDE-0.8B",
+ "modelId": "fastino/GLiDE-0.8B",
+ "sha": "9eacdeec79fa48ec52a8d6f54b331376b4bbfaf0",
+ "gated": false,
+ "private": false,
+ "disabled": false,
+ "tags": [
+  "transformers",
+  "safetensors",
+  "qwen3_5",
+  "image-text-to-text",
+  "decision-model",
+  "classification",
+  "conversational",
+  "license:other",
+  "endpoints_compatible",
+  "region:us"
+ ],
+ "pipeline_tag": "image-text-to-text",
+ "library_name": "transformers",
+ "siblings": [
+  {
+   "rfilename": ".gitattributes",
+   "blobId": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+   "size": 1570
+  },
+  {
+   "rfilename": "LICENSE",
+   "blobId": "37bb465fa7327f3b20900151f135788cc9332bde",
+   "size": 5180
+  },
+  {
+   "rfilename": "NOTICE",
+   "blobId": "eab1accb4c6f23a3b3dc3f7dfedfd32e5f123132",
+   "size": 508
+  },
+  {
+   "rfilename": "README.md",
+   "blobId": "6760bd208bd4fc5d69550efc2389545baecef615",
+   "size": 13871
+  },
+  {
+   "rfilename": "assets/fastino-glide-banner.svg",
+   "blobId": "46708384800bae228e07ec44114dea9b052f5dc7",
+   "size": 10753
+  },
+  {
+   "rfilename": "chat_template.jinja",
+   "blobId": "c0c686f9c38d70d179fb7b5f5aa7530bc913dda3",
+   "size": 8952
+  },
+  {
+   "rfilename": "config.json",
+   "blobId": "715f0448b9d38103211f0ad88bbb4d6e4f4be8c9",
+   "size": 2907
+  },
+  {
+   "rfilename": "decision_config.json",
+   "blobId": "c828c220a76abc41024b93a6452c706081a4d2cb",
+   "size": 4351
+  },
+  {
+   "rfilename": "glide/__init__.py",
+   "blobId": "685a4c922e82bbb2f6cdb1a07138bb4b7cf4d65d",
+   "size": 255
+  },
+  {
+   "rfilename": "glide/images.py",
+   "blobId": "3eda859bf0e32f8d3590fb179c69937a4ae43f7b",
+   "size": 2785
+  },
+  {
+   "rfilename": "glide/model.py",
+   "blobId": "bc6a64c34081410884a8978866489b3184643743",
+   "size": 25507
+  },
+  {
+   "rfilename": "glide/nvfp4.py",
+   "blobId": "5e0fa5f288a66304d7c2dc7b36d54fc4d036928c",
+   "size": 8765
+  },
+  {
+   "rfilename": "glide/prompt.py",
+   "blobId": "78999859bc5aa955b10b7312572f53c295d891c9",
+   "size": 6434
+  },
+  {
+   "rfilename": "glide/server.py",
+   "blobId": "17ed1439f187da5513b8ba55d967d4b889772a96",
+   "size": 8583
+  },
+  {
+   "rfilename": "licenses/Qwen3.5-0.8B-LICENSE",
+   "blobId": "1d5180a42f1c3383ba7c7bd0a50f0837ef0168df",
+   "size": 11343
+  },
+  {
+   "rfilename": "model-00001-of-00001.safetensors",
+   "blobId": "6ad8dcd127744c08e0ae255c11cdfb54eb1dc13b",
+   "size": 1504827608,
+   "lfs": {
+    "sha256": "9c69993e877d713d6daf175681d56c1bdc2524eb8753f0ec6d3772f81bcb107a",
+    "size": 1504827608,
+    "pointerSize": 135
+   }
+  },
+  {
+   "rfilename": "model.safetensors.index.json",
+   "blobId": "f4dbaf6fa71d50b173e15154c6adfcb51290a6ca",
+   "size": 30846
+  },
+  {
+   "rfilename": "readout.safetensors",
+   "blobId": "774c2c2da203324fff6193835f276a6b2fd47043",
+   "size": 522320,
+   "lfs": {
+    "sha256": "063bbfcc74526c02bd9112698e62012739155c051155675be07721627f3beb20",
+    "size": 522320,
+    "pointerSize": 131
+   }
+  },
+  {
+   "rfilename": "requirements.txt",
+   "blobId": "dc5d40741c60af977e27e6a4d9635f355e22b698",
+   "size": 465
+  },
+  {
+   "rfilename": "tokenizer.json",
+   "blobId": "5520bfd2dd834ce386c1312c410fa71af56db5ad",
+   "size": 19989325,
+   "lfs": {
+    "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "size": 19989325,
+    "pointerSize": 133
+   }
+  },
+  {
+   "rfilename": "tokenizer_config.json",
+   "blobId": "d1a20cc3a8838d08eca9de8a7b84d510d60a0524",
+   "size": 1124
+  }
+ ]
+}

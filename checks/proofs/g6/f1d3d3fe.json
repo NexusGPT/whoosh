@@ -1,0 +1,22 @@
+{
+  "item": "f1d3d3fe",
+  "full_id": "f1d3d3fe-54cc-4a8c-9b6e-722657ecd16a",
+  "title": "Split each entry rule into a field and a condition",
+  "state": "prove",
+  "proofs": [
+    {"kind": "hidden", "core": "fixture", "run": "python3 checks/parity/par-labelscontactsmac.py", "pass": "flow-rule-field-and-condition-menus +pass ", "fail": "flow-rule-field-and-condition-menus +fail ", "timeout_s": 900},
+    {"kind": "static", "run": "python3 checks/parity/par-labelscontactsmac.py --selftest", "pass": "MUTANTS \\| flow-rule-field-and-condition-menus \\| green \\| op-not-shown \\| red \\|", "fail": "MUTANTS \\| door table \\| RED|\\| STILL GREEN", "timeout_s": 300},
+    {"kind": "cargo", "run": "-p contracts --test negation_r18", "pass": "test result: ok\\. 3 passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 900},
+    {"kind": "cargo", "run": "-p smart-inbox --test negation_r18", "pass": "test result: ok\\. 1 passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 900},
+    {"kind": "cargo", "run": "-p store --test negation_r18", "pass": "test result: ok\\. 2 passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 900},
+    {"kind": "cargo", "run": "-p engine --test engine_rule_rows_r18", "pass": "test result: ok\\. 3 passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 1200}
+  ],
+  "mutants": [
+    {"file": "core/crates/contracts/src/label_tabs.rs", "find": "RuleCondition::Not { field, value } => !condition_matches(&RuleCondition::positive_twin(*field, value), f),", "replace": "RuleCondition::Not { field, value } => condition_matches(&RuleCondition::positive_twin(*field, value), f),", "proof": 2, "red": "every_negated_twin_is_the_opposite_of_its_positive_one.*FAILED"},
+    {"file": "core/crates/contracts/src/label_tabs.rs", "find": "RuleCondition::Not { field, value } => condition_is_blank(&RuleCondition::positive_twin(*field, value)),", "replace": "RuleCondition::Not { .. } => false,", "proof": 2, "red": "a_negated_condition_with_a_blank_value_is_refused_like_the_positive_one.*FAILED"},
+    {"file": "Sources/Features/LabelsContactsMac/LabelDraft.swift", "find": "var operators: [RuleOp] { self == .domain || self == .account ? [.isExactly, .isNot] : [.contains, .doesNotContain] }", "replace": "var operators: [RuleOp] { self == .domain || self == .account ? [.isExactly] : [.contains] }", "proof": 0, "red": "flow-rule-field-and-condition-menus +fail "}
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Owner 13 Nov 2026 07:30, picture 203. Code: core/crates/contracts/src/records.rs:571-580 (RuleCondition::Not, RuleField), label_tabs.rs:273 (blank refusal) and :409 (the match), Sources/Features/LabelsContactsMac/LabelDraft.swift:6-18 (RuleOp is, contains, is_not, does_not_contain) and :51 (the forms a field offers), LabelInspectorRules.swift:24 and :56 (the condition menu beside the field menu), LabelFlowSocket.swift:118 (one click door per form). Check case: checks/parity/par-labelscontactsmac.py f_field_condition (each of the eight fields clicked once, each negative form clicked once, a form the field lacks is refused), stand-in broken copy op-not-shown. Engine tests: contracts/tests/negation_r18.rs (3), smart-inbox/tests/negation_r18.rs (1), store/tests/negation_r18.rs (2), engine/tests/engine_rule_rows_r18.rs (3, a_label_with_a_negated_domain_counts_the_other_mail). The third broken copy needs a build of its own."
+}

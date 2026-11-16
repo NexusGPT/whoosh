@@ -1,0 +1,89 @@
+{
+  "item": "6836382a",
+  "full_id": "6836382a-21fa-4d4a-ab47-4dd631a37807",
+  "title": "Show the selected search result in the reader",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theReaderBuildsTheSelectedResultsThreadWhenTheMailIsInNoInboxRow,everyResultHasItsOwnRowForTheReaderNotOnlyTheSelectedOne,enterOnAResultOpensThatMailInTheReaderAndTheResultsStay,aClickOnAnotherResultOpensThatOne,enterWithNewWordsInTheFieldRunsTheSearchAndOpensNothing,downInTheReaderMovesToTheNextResultAndTheReaderFollows,escapeFromTheOpenResultReturnsToTheResultsAndASecondEscapeClosesTheSearch,markDoneOnTheOpenResultArchivesThatMailAndNotTheInboxRow,enterOnAResultOpensThatMailAndKeepsTheResults,markDoneWithResultsShowingArchivesTheSelectedResultAndNotTheInboxRow,snoozeWithResultsShowingTargetsTheSelectedResultNotTheInboxSelection,toggleReadWithResultsShowingFlipsTheSelectedResultWhenItIsNotAmongTheInboxRows,replyWithResultsShowingAnswersTheSelectedResultsThreadAndNotTheInboxRowBehindTheSearch",
+      "pass": "Test run with 13 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J2\\.4/",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "lead",
+      "run": "grep -c -E '\"case\": \"par-(reader-shows-a-result-outside-the-inbox-rows|enter-opens-the-result-and-keeps-the-results|arrows-walk-the-results-and-escape-returns-to-them)\", \"verdict\": \"PASS\"' _captures/results/g6/par-searchmac-g6.results.jsonl",
+      "pass": "^3$",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ reader-result checks, \\d+ mutants, 0 problems",
+      "fail": "[1-9]\\d* problems|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "grep -c -F 'rows.first(where: { $0.messageId == id })' Sources/Features/Reader/ReaderThread.swift Sources/Features/Reader/ReaderState.swift",
+      "pass": "ReaderThread\\.swift:0[\\s\\S]*ReaderState\\.swift:0",
+      "fail": "swift:[1-9]",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "the lead's private-copy run, one run for this item and 83ca4389: sh scripts/launch-one.sh <bundle> -- --rig-hidden sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 checks/ownercopy-search.py consultant' (counts and tail of ids only): the reader's mail equals the selected result's, then after Down, then Enter opens it with the results kept",
+      "pass": "A148 RESULT: PASS"
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/ownercopy-search.py --selftest",
+      "pass": "0 problems; the working folder is gone: True",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Reader/ReaderThread.swift",
+      "find": "guard let id = messageId, let r = m.knownRow(id) else { return nil }",
+      "replace": "guard let id = messageId, let r = m.rows.first(where: { $0.messageId == id }) else { return nil }",
+      "proof": 0,
+      "red": "theReaderBuildsTheSelectedResultsThreadWhenTheMailIsInNoInboxRow\\(\\) failed|✘ Test theReaderBuildsTheSelectedResultsThread"
+    },
+    {
+      "file": "Sources/App/AppModel.swift",
+      "find": "return s.results.first { $0.row.messageId == messageId }?.row",
+      "replace": "return nil",
+      "proof": 0,
+      "red": "everyResultHasItsOwnRowForTheReaderNotOnlyTheSelectedOne\\(\\) failed|✘ Test everyResultHasItsOwnRow"
+    },
+    {
+      "file": "Sources/Features/Reader/ReaderThread.swift",
+      "find": "guard let id = messageId, let r = m.knownRow(id) else { return nil }",
+      "replace": "guard let id = messageId, let r = m.rows.first(where: { $0.messageId == id }) else { return nil }",
+      "proof": 2,
+      "red": "FAIL J2\\.4/par-reader-shows-a-result-outside-the-inbox-rows|\"verdict\": \"FAIL\""
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyModel.swift",
+      "find": "guard let row = m.shownRow else { return false }",
+      "replace": "guard m.rows.indices.contains(m.focusIndex) else { return false }; let row = m.rows[m.focusIndex]",
+      "proof": 0,
+      "red": "replyWithResultsShowingAnswersTheSelectedResultsThreadAndNotTheInboxRowBehindTheSearch\\(\\) (recorded an issue|failed)"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) a result in no inbox tab's loaded rows is shown by the reader: Sources/Features/Reader/ReaderThread.swift:56 (make reads m.knownRow(id)), Sources/App/AppModel.swift:90-96 knownRow (shown row, inbox rows, then the results' own rows); unit Tests/Unit/ReaderShowsResultTests.swift:56 theReaderBuildsTheSelectedResultsThreadWhenTheMailIsInNoInboxRow, :68 everyResultHasItsOwnRowForTheReaderNotOnlyTheSelectedOne (the sent-seed mails of `to:fay` are in no inbox row: :36-45 asserts that); check case par-reader-shows-a-result-outside-the-inbox-rows (J2.4, par-searchmac.py). The reader's finding said no `rows.first` lookup remains in Reader: proof 4 counts it in the two files the lane fixed (both counts must be 0). (2) Enter opens it with the results kept: ReaderShowsResultTests.swift:78 enterOnAResultOpensThatMailInTheReaderAndTheResultsStay, :92 aClickOnAnotherResultOpensThatOne, :102 enterWithNewWordsInTheFieldRunsTheSearchAndOpensNothing; Tests/Unit/SearchReaderTests.swift:81 enterOnAResultOpensThatMailAndKeepsTheResults (rewritten from the rejected behaviour); code Sources/Features/SearchMac/SearchMacActs.swift:160-183 openResult (the search stays open, `release()`, surface mac-reader); par-enter-opens-the-result-and-keeps-the-results. (3) Esc returns to them: ReaderShowsResultTests.swift:127 escapeFromTheOpenResultReturnsToTheResults..., ReaderKeys.swift:44 backToResults, ReaderFeature.swift:27 ('Escape' binding); par-arrows-walk-the-results-and-escape-returns-to-them; self-test of those cases: proof 3 ('N reader-result checks, M mutants, 0 problems', par-searchmac.py:2208 print). (4) done, snooze act on it: SearchActionsTests.swift:45 markDoneWithResultsShowingArchivesTheSelectedResultAndNotTheInboxRow, :96 snoozeWithResultsShowingTargetsTheSelectedResultNotTheInboxSelection, :83 toggleRead..., :108 the label door, :119 toolbar; ReaderShowsResultTests.swift:144. Reply: gap piece 1. (5) 'unit tests on the sent-seed mail green and seen red': proof 0 is the first run (docs/lanes/reader-result.md:92 and :119 say not compiled); mutant 0 and 1 are the lane's broken copies (reader-result.md table) with find strings that occur once. Mutant 2 breaks the same line for the hidden check. Known open sibling findings in docs/lanes/reader-result.md 'Open siblings' (bottom key bar, inspector, selection keys) are not part of this acceptance; the key-bar question is the owner's. | gap-search-cases: (1) reply: Tests/Unit/SearchActionsTests.swift replyWithResultsShowingAnswersTheSelectedResultsThreadAndNotTheInboxRowBehindTheSearch (next to the done and snooze tests there): a result in no inbox row is selected, R's door (QuickReplyModel.open) answers that result's message and thread and not the inbox row behind the search; the composer's own reply entry (ComposerModel.openReply) reads m.shownMessageId first, which the same test pins (#expect(m.shownMessageId == b.messageId)) but it is not opened there (it presents a window). It is in SearchActionsTests.swift because ReaderShowsResultTests.swift is not owned by this lane. (2) the private-copy script is checks/ownercopy-search.py (the lead runs it): it prints 'A148 RESULT: PASS|FAIL' from the selected id, the reader's id, the id after Down and after Enter, counts and id tails only."
+}

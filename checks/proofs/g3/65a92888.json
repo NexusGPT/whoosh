@@ -1,0 +1,81 @@
+{
+  "item": "65a92888",
+  "full_id": "65a92888-a325-4969-abcb-5b64b2f4d659",
+  "title": "Make the no-build Swift check a gate",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "sh scripts/gates.sh <a folder for the logs outside the worktree>  (cargo check --workspace --tests, swiftc -typecheck of every Swift source, emit-sil, Tests type-check; it compiles, so the lead runs it once)",
+      "pass": "GATES GREEN at [0-9a-f]+"
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"gates.sh\" scripts/build.sh scripts/build-mac.sh scripts/main-job.sh",
+      "pass": "build(-mac)?\\.sh:[1-9]|main-job\\.sh:[1-9]",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "grep -l \"gates.sh\" docs/lanes/ai-settings-core.brief.md docs/lanes/appshell.brief.md docs/lanes/composer-r3.brief.md",
+      "pass": "brief\\.md",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "sh scripts/gates.sh --selftest-filter",
+      "pass": "^gates selftest-filter: GREEN$",
+      "fail": "^FAIL |selftest-filter: RED",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "sh scripts/gate-tests.sh --selftest-filter",
+      "pass": "^gate-tests selftest-filter: GREEN$",
+      "fail": "^FAIL |selftest-filter: RED",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "sh -n scripts/gates.sh && sh -n scripts/gate-tests.sh && echo syntax-ok",
+      "pass": "^syntax-ok$",
+      "fail": "rror",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "sh scripts/build.sh --selftest",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^  FAIL ",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "scripts/gate-tests.sh",
+      "find": "    grep -vE -f \"$2\" \"$1\" > \"$3\" || true",
+      "replace": "    cp \"$1\" \"$3\"",
+      "proof": 4,
+      "red": "^FAIL real-lines-kept|^FAIL real-error|selftest-filter: RED"
+    },
+    {
+      "file": "scripts/gates.sh",
+      "find": "    grep -vE -f \"$GATES_SWIFT_NOISE\" \"$1\" > \"$1.real\" || true",
+      "replace": "    cp \"$1\" \"$1.real\"",
+      "proof": 3,
+      "red": "^FAIL only-the-real-error|selftest-filter: RED"
+    },
+    {
+      "file": "scripts/build.sh",
+      "find": "$GATES_CMD \"$BUILD_ROOT/gates-$L\" > \"$BUILD_ROOT/gates-$L.out\" 2>&1 ||",
+      "replace": "true ||",
+      "proof": 6,
+      "red": "^  FAIL  a red gate"
+    }
+  ],
+  "gap": null,
+  "owner": "the lead: add the line to the helper brief template (outside this repository) and run proof 0 once",
+  "notes": "Not run by me (it compiles). Exit codes of gates.sh: 0 green, 1 cargo or parity-paths or constants drift, 2 swift, 3 tree changed while running, 4 error in Tests/. Earlier runs: docs/lanes/doors-compose.md:132 'GATES GREEN at 9501d692', docs/lanes/labels-r5.md:398. Proof 2 names three briefs as a sample of the folder docs/lanes/*.brief.md: a sample, not the set. gap-docs 2026-11-11 (b) done: scripts/gate-tests.sh now splits the MLX-only noise from the real errors with one function (split_noise) and prints 'noise filtered: N line(s) of MLX-only names not found: <names> (list: ..., lines: ...)' on every run; scripts/gates.sh prints 'noise filtered (swift type-check): ...' and 'noise filtered (emit-sil): ...' (0 line(s) unless GATES_SWIFT_NOISE names a file of regexes) and is red only on a real error line or on a failed run with no error line at all. Each script has a self-test that compiles nothing: `sh scripts/gates.sh --selftest-filter` (4 PASS lines then 'gates selftest-filter: GREEN') and `sh scripts/gate-tests.sh --selftest-filter` (5 PASS lines then 'gate-tests selftest-filter: GREEN'); `sh -n` passes on both. The full gates were NOT run by gap-docs (they compile); the changed real path (noise split after the Swift test type-check, and the swift and emit-sil red conditions) is covered by the self-tests only through the same functions, so the lead's one run (proof 0) is the proof of the whole. Round of 15 Nov: (c) the line is in docs/lanes/BRIEF-TEMPLATE.md ('The gates'), which the lead copies for each lane, and was sent to the two lanes then running (stale-fix, row-marks); (d) proof 0 ran once on the merged code: GATES GREEN at 95acbda22 (lead-tools/audit/gates-head193.out)."
+}

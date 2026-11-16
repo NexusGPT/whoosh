@@ -1,0 +1,99 @@
+{
+  "item": "5aa79f87",
+  "full_id": "5aa79f87-1bea-4774-b94d-223083c70800",
+  "title": "Build the quick-start step for AI setup (A128)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-firststart.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^FAIL |NOT JUDGED ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-welcomemac.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^FAIL |NOT JUDGED ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-5aa79f87\" --screens mac-welcome-accounts",
+      "pass": "^PASS mac-welcome-accounts (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/shots-5aa79f87 --states welcome-ai-step",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "read _captures/results/shots-5aa79f87/pics/state-welcome-ai-step-step-7-light-1280x820.png and ...-dark-1280x820.png (and 960x600) of the picture page index.html",
+      "pass": "one card, three lines (meaning, sorting, writing) with their buttons, Skip and Continue with their keys"
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-firststart.py --selftest",
+      "pass": "[0-9]+ checks green on the model, [0-9]+ mutants, 0 not red",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/AISetup/AISetupStep.swift",
+      "find": "func download() { skippedNeeds.remove(.decision); status.downloadLaya() }",
+      "replace": "func download() { skippedNeeds.remove(.decision) }",
+      "proof": 0,
+      "red": "J9\\.10/ai-decision-download-shows-progress-and-a-cancel"
+    },
+    {
+      "file": "Sources/Features/AISetup/AISetupStep.swift",
+      "find": "func pasteWritingKey(_ key: String) { saveKey(provider: Self.provider(forKey: key), key) }",
+      "replace": "func pasteWritingKey(_ key: String) { }",
+      "proof": 0,
+      "red": "J9\\.10/ai-pasted-key-leaves-the-writing-line-connected"
+    },
+    {
+      "file": "Sources/Features/AISetup/AISetupStep.swift",
+      "find": "status.connectJev(key: key); jev = .consent }",
+      "replace": "jev = .consent }",
+      "proof": 0,
+      "red": "J9\\.10/ai-jev-key-door-stores-the-key-and-asks-the-consent"
+    },
+    {
+      "file": "Sources/Features/AISetup/AISetupStep.swift",
+      "find": "        status.giveJevConsent(true)\n        AISettingsStore.shared.chooseEngine(.jev)",
+      "replace": "        AISettingsStore.shared.chooseEngine(.jev)",
+      "proof": 0,
+      "red": "J9\\.10/ai-jev-allow-door-gives-the-consent-and-chooses-jev"
+    },
+    {
+      "file": "Sources/Features/FirstStart/FirstStartAIRows.swift",
+      "find": "door(\"sorting.cancel\") { AISetupDoors.cancel(.decision) },",
+      "replace": "door(\"sorting.cancel\") { },",
+      "proof": 0,
+      "red": "J9\\.10/ai-cancel-stops-the-decision-download"
+    },
+    {
+      "file": "Sources/Features/AISetup/AISetupDoors.swift",
+      "find": "case .meaning: status.downloadMeaning()",
+      "replace": "case .meaning: break",
+      "proof": 0,
+      "red": "J9\\.10/ai-meaning-download-starts"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/Features/AISetup/AISetupStep.swift, AISetupDoors.swift:17-27 (fix(need): writing opens the key field, meaning downloads, decision downloads Laya or opens Decisions), AISetupWords.swift, AISetupRows.swift:57 (the rows sources ai-setup.status, .places, .marks, .step), AISetupStatus. Cases: checks/parity/par-firststart.py:302-330 (J9.10 cases: ai-card-words, ai-controls-show-their-keys, ai-lights-the-list-only, ai-three-lines-with-their-actions, ai-in-progress-states-as-drawn, ai-rings-fill-as-each-need-is-met, ai-pasted-key-reaches-the-provider, ai-use-jev-asks-the-key-then-the-consent-then-chooses, ai-meaning-download-starts, ai-continue-is-always-on, ai-skip-leaves-the-marks-on); par-firststart prints the total line at :1129 and a MUTANTS table. The second mutant's red pattern is loose on purpose: which J9.10 case it turns red was not found by reading (the decision download is reached only through ai-setup.preview in these cases), so it may survive: that is itself the evidence for gap (2). Built in this lane (checks/parity/par-firststart.py, steps_ai_run): a loopback server (class Loop, 127.0.0.1 only) staged with `fixture provider-endpoint anthropic|laya <url>` (docs/CONTROL-SOCKET.md delta 60). New cases, each with its model mutant in the file's mutant list: ai-pasted-key-leaves-the-writing-line-connected (the loopback provider got one /validate POST with a bearer, the line reads ready with no actions), ai-jev-key-door-stores-the-key-and-asks-the-consent and ai-jev-allow-door-gives-the-consent-and-chooses-jev (each door alone), ai-decision-download-shows-progress-and-a-cancel (slow loopback model server: working, progress above 0, actions [cancel]), ai-cancel-stops-the-decision-download, ai-every-control-of-the-step-clicked-once (sweep of every `<line>.<action>` the lines offered against those clicked, expects none left). The old first mutant (AISetupDoors.fix .meaning) is kept; the old second mutant (AISetupDoors.fix laya) was never reached by the step (the step's Download calls AISetupStep.download), so it is replaced by the AISetupStep.download mutant. Unverified until a build runs it: that the real laya download leaves the line `working` with a progress figure when the rig's models folder does not already hold the model (settingsaimac-check.py _laya_fresh empties it; this check does not, and says NOT JUDGED/red if the model is ready)."
+}

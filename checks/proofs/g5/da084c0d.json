@@ -1,0 +1,150 @@
+{
+  "item": "da084c0d",
+  "full_id": "da084c0d-bc8b-48a3-b4a1-c6e605f2b5c5",
+  "title": "Make six screen checks print a line per passing case",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-quickreply.py",
+      "pass": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)? +pass +\\S",
+      "fail": "NOT JUDGED|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-sidebar.py",
+      "pass": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)? +pass +\\S",
+      "fail": "NOT JUDGED|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-keys.py",
+      "pass": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)? +pass +\\S",
+      "fail": "NOT JUDGED|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-macshell.py",
+      "pass": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)? +pass +\\S",
+      "fail": "NOT JUDGED(?! BY DESIGN| J0\\.21/main-controls-clear-the-band-in-full-screen)|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)? +pass +\\S",
+      "fail": "NOT JUDGED|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)? +pass +\\S",
+      "fail": "NOT JUDGED|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-quickreply.py --selftest",
+      "pass": "selftest: [0-9]+ checks, [0-9]+ mutants, 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-sidebar.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-keys.py --selftest",
+      "pass": "par-keys selftest: green \\(0 problems\\)",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-macshell.py --selftest",
+      "pass": "[0-9]+ bad",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxlist.py --selftest",
+      "pass": "(?s)\\| green \\|[^\\n]*\\| red\\n[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model|\\| STILL |\\| RED |names no mutant|[1-9][0-9]* failed|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-composermac.py --selftest",
+      "pass": "selftest: [0-9]+ checks, 0 mutants not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "for each of the six hidden runs (proofs 0 to 5): count the stdout lines of the form '<label> pass|fail|unjudged <detail>' and compare with N of the summary line 'N checks, F failed, U not judged' of the same run; they must be equal",
+      "pass": "equal"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/parity/par-quickreply.py",
+      "find": "    print_cases(r)\n",
+      "replace": "    pass\n",
+      "proof": 0,
+      "red": "^$"
+    },
+    {
+      "file": "checks/parity/par-sidebar.py",
+      "find": "    print_cases(r)\n",
+      "replace": "    pass\n",
+      "proof": 1,
+      "red": "^$"
+    },
+    {
+      "file": "checks/parity/par-keys.py",
+      "find": "    print_cases(r)\n",
+      "replace": "    pass\n",
+      "proof": 2,
+      "red": "^$"
+    },
+    {
+      "file": "checks/parity/par-macshell.py",
+      "find": "    print_cases(r)\n",
+      "replace": "    pass\n",
+      "proof": 3,
+      "red": "^$"
+    },
+    {
+      "file": "checks/parity/par-inboxlist.py",
+      "find": "    print_cases(r)\n",
+      "replace": "    pass\n",
+      "proof": 4,
+      "red": "^$"
+    },
+    {
+      "file": "checks/parity/par-composermac.py",
+      "find": "    print_cases(r)\n",
+      "replace": "    pass\n",
+      "proof": 5,
+      "red": "^$"
+    }
+  ],
+  "gap": "S, the proof is by absence on the mutant side: the red of a mutant here is 'the log of the hidden run holds no case line' (proof 0..5 pass regex fails: there is no '<label> pass ...' line), so each mutant's red field is the empty-line placeholder '^$' and the runner must read 'the proof's pass line is missing' as red. The deciding values on each line come from the check's own detail (journeys/lib/harness.py case_line :288 cuts it at 300 characters): a case whose detail is empty prints a line with no values: the lead reads one line per check for values, e.g. in par-quickreply the landing-light case. 'a mutant run prints its red line per case' is the selftest of each check (print_model_cases for the clean model, then 'mutant <case> -> RED' lines): proofs 6 to 11; their pass lines differ per check (listed in the proofs), taken from the last lines of the main81 self-test logs and not verified at this commit (the macshell one is 'MUTANTS | caps not-above-the-frame | ok | 5 bad' there, a table row, not a summary).",
+  "owner": null,
+  "notes": "The six checks call print_cases(r) in main(): par-quickreply.py:933, par-sidebar.py:1663, par-keys.py:1570, par-macshell.py:1183, par-inboxlist.py:3392, par-composermac.py:1391; selftests call print_model_cases: par-composermac.py:2344, par-inboxlist.py:3352, par-macshell.py:809, par-keys.py:2788, par-quickreply.py:1380 and :1402, par-sidebar.py:1411 and :1437. Helpers: journeys/lib/harness.py:288 case_line, :295 print_cases, :303 print_model_cases. Commit 8d4a5b1f 'Checks print a line for every case'. Pass-line shape on record: _captures/tests/r79/par-labelscontactsmac-main79.log:5-12 ('<case>  pass  <values>') for a check that already printed (par-labelscontactsmac); the six had 0 pass lines on main83 (_captures/tests/r83/par-composermac-main83.log lines 1-8 show the MUTANTS table only)."
+}

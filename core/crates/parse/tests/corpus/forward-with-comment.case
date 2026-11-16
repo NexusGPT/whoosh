@@ -1,0 +1,19 @@
+# A forward with a comment: the comment shows, the forwarded message is folded behind the dots (never hidden).
+subject: Fwd: Delivery window
+sender: Eva Schmidt
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 FORWARDED_CONTENT collapse
+authored: Can you check whether Thursday suits the warehouse?
+history: Your delivery can be made on Thursday between 8 and 12.
+--- text
+Can you check whether Thursday suits the warehouse?
+
+---------- Forwarded message ---------
+From: Logistics Desk <desk@example.net>
+Date: Mon, 9 Nov 2026 at 16:02
+Subject: Delivery window
+To: Eva Schmidt <eva@example.com>
+
+Your delivery can be made on Thursday between 8 and 12.
+Reply to this message to confirm.

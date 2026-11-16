@@ -1,0 +1,60 @@
+{
+  "item": "0c5bf3ce",
+  "full_id": "0c5bf3ce-4fb2-44bf-b2ef-9f57b6f0e1d0",
+  "title": "Build the picked mark-done exit motion",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theLeavingRowIsUntouchedAtProgressZero,atTheDelayTheContentHasMovedLeftAndTheGapHasNotStartedToClose,atTheEndTheRowIsGoneLeftFadedAndClosed,theFourNumbersDriveTheEffect,aSlideDistanceOfZeroMeansTheRowsOwnWidth,theOpacityNeverRisesAndEndsAtZero,theGapClosesMonotonicallyAndTheSlideNeverReturns,reducedMotionGivesNoSlide,theWholeExitTakesNoMoreThanTheMotionCeiling,aSecondRemovalThirtyMillisecondsAfterTheFirstIsAnimated",
+      "pass": "Test aSecondRemovalThirtyMillisecondsAfterTheFirstIsAnimated\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "(the-removal-glided|a-held-second-key-still-glides) +pass",
+      "fail": "(the-removal-glided|a-held-second-key-still-glides) +(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxlist.py --selftest",
+      "pass": "(?s)\\| green \\|[^\\n]*\\| red\\n[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT SEEN RED|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "read the machine load (uptime), it must be under 12; then on a quiet machine: sh scripts/launch-one.sh <bundle> -- --fixture-core sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 perf/interaction.py --bundle <bundle>' and keep the whole output",
+      "pass": "interaction: commit ms over 100 actions +worst [0-9.]+ \\(budget < 50\\) ok"
+    },
+    {
+      "kind": "lead",
+      "run": "the same perf/interaction.py output: the frame row",
+      "pass": "interaction: longest presented-frame gap ms over 100 actions +worst [0-9.]+ \\(budget < 24\\) ok",
+      "fail": "OVER|NOT JUDGED"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/InboxList/ListChrome.swift",
+      "find": "lastGlided = !reduce",
+      "replace": "lastGlided = !reduce && (lastGapMs ?? 1000) > 80",
+      "proof": 0,
+      "red": "aSecondRemovalThirtyMillisecondsAfterTheFirstIsAnimated\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/InboxList/ListChrome.swift",
+      "find": "lastGlided = !reduce",
+      "replace": "lastGlided = !reduce && (lastGapMs ?? 1000) > 80",
+      "proof": 1,
+      "red": "a-held-second-key-still-glides +fail"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner sees the picked motion on an installed build and says it is right (the item's last clause; SPEC A139 'the owner picks'): nothing a check can close. What the lead proves first is proofs 0 to 4. The reader's earlier finding that no motion code exists is wrong: ROW_EXIT_SLIDE_PT 130, ROW_EXIT_SLIDE_MS 150, ROW_EXIT_CLOSE_DELAY_MS 60, ROW_EXIT_CLOSE_MS 100 are in docs/CONSTANTS.md:194-197 and Sources/CoreBridge/Generated/Constants.swift:187-188, used from Sources/Design/WhooshMotion.swift:17-18, with the pure motion tested in Tests/Unit/RowExitMotionTests.swift.",
+  "notes": "One E: Sources/Features/InboxList/ListChrome.swift:209-233 (RowCollapse.run, 'every removal glides, also the second of a held key', owner 2026-11-11); par-inboxlist J1.48/the-removal-glided (checks/parity/par-inboxlist.py:772) and J1.48/a-held-second-key-still-glides (:782, mutant row :1455). Held E in the app is a second key 30 ms later (Tests/Unit/RowExitMotionTests.swift:73). 'The frame time of 20 moves': perf/interaction.py runs 100 actions (34 archive, 33 next, 33 open), prints 'interaction: <label> worst X (budget < N) ok|OVER|NOT JUDGED' (perf/interaction.py:63-65) and is NOT JUDGED above load 12 (main83 read load 34, _captures/tests/r83/perf-interaction-main83.log). Both mutants use the same line; proofs 0 and 1 decide which one it turns red."
+}

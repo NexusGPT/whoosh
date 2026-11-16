@@ -1,0 +1,35 @@
+From: Kestrel VPN <news@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: What's new this month
+Date: Mon, 09 Nov 2026 21:43:00 +0000
+Message-ID: <100935c46cace8ae@accounts.example.com>
+List-Unsubscribe: <https://example.net/unsubscribe?u=d48f37>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============1204564758892813816=="
+
+--===============1204564758892813816==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+November news. Read more at https://example.net/blog/abc123
+
+--===============1204564758892813816==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Kestrel VPN</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img src=3D'http://cdn.example.net/open/743d=
+b9e4.png' alt=3D'logo' width=3D'120'><h2>Kestrel VPN</h2><h3>November news</h=
+3><p>Join 5000 readers. In 2026 we shipped 12 releases. Ten percent off until=
+ 30 November.</p><p>Book a call: +32 6 949 85 27</p><p><a href=3D'https://exa=
+mple.net/blog/255552'>Read more</a></p><p style=3D"font-size:11px;color:#888"=
+>You receive this because of your account. <a href=3D"https://example.net/uns=
+ubscribe?u=3D62e935">Unsubscribe</a> | <a href=3D"https://example.net/privacy=
+">Privacy</a></p><img alt=3D"x" src=3Dhttp://track.example.org/logo/8c3daeac.=
+png></td></tr></table></body></html>
+
+--===============1204564758892813816==--

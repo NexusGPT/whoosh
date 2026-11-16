@@ -1,0 +1,119 @@
+{
+  "item": "0b095f58",
+  "full_id": "0b095f58-f230-45b3-826f-8b7c6a8838aa",
+  "title": "Build the picked message row: count badge for threads",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "(?s)J1\\.54/thread-row-shows-its-count-pill +pass.*J1\\.54/single-message-shows-no-pill +pass.*J1\\.54/reply-arrow-matches-the-thread-state +pass.*J1\\.54/count-pill-fill-follows-unread-read-and-focus +pass",
+      "fail": "J1\\.54/(thread-row-shows-its-count-pill|single-message-shows-no-pill|reply-arrow-matches-the-thread-state|count-pill-fill-follows-unread-read-and-focus) +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"J1.54/thread-row-shows-its-count-pill\\|J1.54/single-message-shows-no-pill\\|J1.54/reply-arrow-matches-the-thread-state\" checks/parity/par-inboxlist.py",
+      "pass": "^[3-9]|^[1-9][0-9]",
+      "fail": "^[0-2]$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: [0-9]+ checks, [0-9]+ mutants, 0 not red",
+      "fail": "selftest FAIL|NOT RED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-rows\" --deadline 3000 --states list-row-thread-pill,list-row-single-message,list-row-reply-arrow,list-row-single-read,list-row-thread-read,list-row-thread-focused,list-row-selected,list-row-pinned,list-row-starred,list-row-attachment,list-row-thread-draft,list-row-why-tag,list-row-compact,list-row-hovered,list-row-snoozed,list-row-muted,list-row-vip",
+      "pass": "(?s)PASS [^\\n]*list-row-thread-pill/.*PASS [^\\n]*list-row-single-message/.*PASS [^\\n]*list-row-reply-arrow/.*PASS [^\\n]*list-row-single-read/.*PASS [^\\n]*list-row-thread-read/.*PASS [^\\n]*list-row-thread-focused/.*PASS [^\\n]*list-row-selected/.*PASS [^\\n]*list-row-pinned/.*PASS [^\\n]*list-row-starred/.*PASS [^\\n]*list-row-attachment/.*PASS [^\\n]*list-row-thread-draft/.*PASS [^\\n]*list-row-why-tag/.*PASS [^\\n]*list-row-compact/.*PASS [^\\n]*list-row-hovered/.*PASS [^\\n]*list-row-snoozed/.*PASS [^\\n]*list-row-muted/.*PASS [^\\n]*list-row-vip/",
+      "fail": "(FAIL|NOT JUDGED) [^\\n]*list-row-",
+      "timeout_s": 3600
+    },
+    {
+      "kind": "lead",
+      "run": "open the board docs/design/boards/message-card-r1 (the folder is ~/work/smart-email/docs/design/boards/message-card-r1, not in the worktree) next to the 17 shots of the pill rows, light and dark, at 440 px",
+      "pass": "all 17 states match"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "(?s)J1\\.63/muted-row-wears-the-mute-mark +pass.*J1\\.63/vip-row-wears-the-vip-chip +pass.*J1\\.63/snoozed-row-says-when-it-comes-back +pass.*J1\\.63/hovered-row-shows-the-strip-off-the-focus +pass",
+      "fail": "J1\\.63/(muted-row-wears-the-mute-mark|vip-row-wears-the-vip-chip|snoozed-row-says-when-it-comes-back|hovered-row-shows-the-strip-off-the-focus) +(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxlist.py --selftest",
+      "pass": "MUTANTS \\| hovered-row-shows-the-strip-off-the-focus \\| green \\|[^\\n]*\\| red",
+      "fail": "STILL (PASS|UNJUDGED)|RED ",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/InboxList/ThreadFacts.swift",
+      "find": "static func pillCount(_ threadCount: UInt32) -> Int? { threadCount > 1 ? Int(threadCount) : nil }",
+      "replace": "static func pillCount(_ threadCount: UInt32) -> Int? { Int(threadCount) }",
+      "proof": 0,
+      "red": "J1\\.54/single-message-shows-no-pill +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/InboxRowView.swift",
+      "find": "if repliedLast && row.threadCount > 1 { RepliedMark",
+      "replace": "if repliedLast { RepliedMark",
+      "proof": 0,
+      "red": "J1\\.54/reply-arrow-matches-the-thread-state +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/InboxRowView.swift",
+      "find": "CountPill(count: n, unread: row.unread, focused: onSelection).whooshAx(",
+      "replace": "EmptyView().whooshAx(",
+      "proof": 0,
+      "red": "J1\\.54/thread-row-shows-its-count-pill +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/CountPill.swift",
+      "find": "static func fillKind(unread: Bool, focused: Bool) -> Fill { focused ? .onAccent : (unread ? .accent : .quiet) }",
+      "replace": "static func fillKind(unread: Bool, focused: Bool) -> Fill { focused ? .onAccent : (unread ? .quiet : .accent) }",
+      "proof": 0,
+      "red": "J1\\.54/count-pill-fill-follows-unread-read-and-focus +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/InboxRowView.swift",
+      "find": "if muted { RowMark(symbol: \"bell.slash\", ink: secondary)",
+      "replace": "if false { RowMark(symbol: \"bell.slash\", ink: secondary)",
+      "proof": 5,
+      "red": "J1\\.63/muted-row-wears-the-mute-mark +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/InboxRowView.swift",
+      "find": "if vip { VipChip(",
+      "replace": "if false { VipChip(",
+      "proof": 5,
+      "red": "J1\\.63/vip-row-wears-the-vip-chip +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/RowMarks.swift",
+      "find": "static func snoozeWords(_ r: InboxRow) -> String? { state.snoozeTimes[r.messageId].map { Words.text(\"back %@\", $0) } }",
+      "replace": "static func snoozeWords(_ r: InboxRow) -> String? { nil }",
+      "proof": 5,
+      "red": "J1\\.63/snoozed-row-says-when-it-comes-back +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/InboxRowView.swift",
+      "find": "if strip > 0 && (rested || pointerRested || focused) && stripAllowed {",
+      "replace": "if strip > 0 && (rested || focused) && stripAllowed {",
+      "proof": 5,
+      "red": "J1\\.63/hovered-row-shows-the-strip-off-the-focus +fail"
+    }
+  ],
+  "gap": "Lane row-marks (docs/lanes/row-marks.md) built the four states the app did not draw (7 hovered with the strip, 10 snoozed, 13 muted, 14 VIP sender) and repaired the reaches of 15 (thread with a draft) and 16 (the why tag in dark); nothing was built or run on an app by the lane. The lead must: (1) build; (2) run proof 3 hidden (all 17 list-row- states, light and dark, 1280x820 and 960x632) and read every picture against the board, design A (proof 4); (3) run proof 5 hidden (par-inboxlist J1.63, the four marks read from the probe and the drawn frame) and its four broken copies (mutants 4 to 7); (4) run proof 0 again (J1.54 on the moved marks).",
+  "owner": null,
+  "notes": "par-inboxlist r83: 316 checks, 0 failed, 3 not judged (J1.52 tag cases, not this item), so J1.54 passed on main83 (the earlier reader finding 'no count-pill case' was wrong). Journey style: no per-case pass line, only FAIL lines and the total. | OLD GAP (before lane gap-states, 2026-11-12): Built and judged: pill after the sender on a thread row, none on a single message, reply arrow on a thread whose last message is mine (par-inboxlist J1.54, cases thread-row-shows-its-count-pill, single-message-shows-no-pill, reply-arrow-matches-the-thread-state; each reads the probe AND the drawn frame). Built by tail-small (2026-11-11) for the pill's COLOURS: Sources/Features/InboxList/CountPill.swift `enum Fill` and `fillKind(unread:focused:)` (the view's `fill` now switches on it: same three fills, no look changed), the rows probe field `count_pill_fill` (onaccent / accent / quiet, null for a single message; Sources/Features/InboxList/ListProbe.swift line 28), and the J1.54 case count-pill-fill-follows-unread-read-and-focus (checks/parity/par-inboxlist.py, after reply-arrow-matches-the-thread-state; it reads every thread row before and after each click, expects focused rows onaccent, unread rows accent, read rows quiet, and is NOT JUDGED if one of the three kinds is never seen); its MUTANTS row and stand-in model are in the same file; `python3 checks/parity/par-inboxlist.py --selftest` exit 0, last line '6 checks, 0 failed, 0 not judged' (tail-small-out/st-inboxlist1.txt; the case prints 'pass' on the model and its mutant is red); the Swift broken copy is mutant 3 (unread and read swapped). Not compiled or run on a build: the lead's run of proof 0 and mutant 3. Still missing: (a) 'all 17 states of the board match' is the lead's own look (proof 2); (b) 'shots light and dark' of the 17 states: checks/shots-sheet.py has no list-row state set, a page of M size in a file outside this lane's lists (not done: it needs a build to render, and a helper may not run the app); (c) 'main58': judge on the newest main, not main58 (the lead's run). | ROUND 9 (hid-list): checks/shots-sheet.py has the list-row state set (STATES, item 0b095f58): list-row-thread-pill (a thread of 3 with its count pill), list-row-single-message (no pill), list-row-reply-arrow (the owner's reply last, arrow and pill); a new step kind `click_row` clicks the first row of `mac-main.list` whose field has the value (thread_count 3, thread_count 1, replied_last True) so the focused row is the one the tile is about; no close-up (the row id is a plain accessibilityIdentifier, not .whooshAx). Light and dark, 1280x820 and 960x632: 12 pictures. A fixture without such a row is NOT JUDGED naming the field (three mutants of the Driven stand-in). The board has 17 states: the three the item names are shot; the other 14 (focus, hover, selection, pin, snooze, star, attachment, mute, VIP, draft, tag, compact) need per-state fixtures and stay the lead's own look at the board (proof 2). `shots-sheet.py --selftest` exit 0: 117 checks, 39 mutants, 0 not red. Owed: the lead's run of proof 3 and the board look. | LANE ROW-MARKS (2026-11-15): the row draws VIP chip, pin, star, clip and mute after the count on line 1 in the board's order and inks (InboxRowView.swift `marks`), the snooze words in the time's place (`SnoozeReturn`), the hover fill and strip on a rested row (`pointerRested`); reads in Sources/Features/InboxList/RowMarks.swift (message/<id>/muted, the VIPs view's senders, snooze/<id>/return_local_time; no contract field added); probe fields muted, vip, snoozed, hovered, rested (ListProbe.swift); door `fixture pointer-rest mac-main.list.row.<n>` / `off` (Sources/ControlSocket/FixtureVerbs.swift, ListPointerRest.swift). shots-sheet: 4 new states, draft reach waits on a read thread (opening marks it read: FixtureCore.swift `case .openThread`), why reach uses `ensure` steps; par-inboxlist J1.63 (4 cases, stand-in RowMarksCtl, mutant lines)."
+}

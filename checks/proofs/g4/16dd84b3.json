@@ -1,0 +1,55 @@
+{
+  "item": "16dd84b3",
+  "full_id": "16dd84b3-a78a-4139-be08-ac1b82ee9462",
+  "title": "Connect a calendar from Settings",
+  "state": "outside",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingscalendars-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^(FAIL|UNJUDGED) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingscalendars-check.py --selftest",
+      "pass": "^selftest: OK \\(0 mutants not red\\)",
+      "fail": "NOT RED|selftest: FAILED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-16dd84b3\" --screens mac-settings-replies",
+      "pass": "^PASS mac-settings-replies (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "on the owner's Mac, installed build: Settings, Calendars, press the one button, answer Allow in the macOS window, then open Settings, Replies, Sources; read `rows mac-settings-calendars.list` and the calendars rows of `rows mac-settings-replies.sources` through the control socket",
+      "pass": "macOS shows its calendar prompt once; after Allow the pane lists the calendars with their account names; Sources lists the same calendars each with a switch (kind calendar, `enabled` readable)"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsCalendarsMac/CalendarsModel.swift",
+      "find": "guard state == .notAsked, !asking else { return false }",
+      "replace": "guard !asking else { return false }",
+      "proof": 0,
+      "red": "FAIL J10\\.2c/ask-door-asks-once"
+    },
+    {
+      "file": "Sources/Features/SettingsCalendarsMac/CalendarsModel.swift",
+      "find": "feed.replaceCalendars(calendars)",
+      "replace": "feed.replaceCalendars([])",
+      "proof": 0,
+      "red": "FAIL J10\\.2c/allowed-calendars-appear-on-sources-with-their-switches"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner (or the lead on the owner's Mac): the live macOS prompt and the owner's real calendars cannot be shown on a hidden test copy: the fixture only sets the access state (`fixture calendar-access <not-asked|allowed|refused|will-refuse>`, check lines 120-127). Needs: this Mac's Calendar permission dialog answered by a person, and the owner's calendars. The rig proofs 0-1 settle everything that does not need macOS (one ask, list after allow, steps when refused, Sources feed, switches).",
+  "notes": "state is outside because the acceptance's live part needs the owner's Mac and macOS Calendar permission; the machine part is proof 0. Code: Sources/Features/SettingsCalendarsMac/CalendarsModel.swift:66-80 ask(), :140-155 pushFeed, CalendarsPaneView.swift:45, EventKitCalendarAccess.swift:7, Apps/mac/App/Info.plist:42 NSCalendarsFullAccessUsageDescription. Cases (checks/settingscalendars-check.py): :194 ask-door-asks-once, :211 allowed-lists-name-and-account, :365 allowed-calendars-appear-on-sources-with-their-switches, :371 refused-takes-the-calendars-off-sources, :379 switching-a-calendar-on-sends-its-events; static cases read the Swift sources (the check's header). The selftest writes _captures/settingscalendars-mac/selftest-mutants.json (line ~827) so run it in a copy that may write there. The aggregate total line is the pass line; no line per case."
+}

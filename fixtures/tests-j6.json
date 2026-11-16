@@ -1,0 +1,81 @@
+{
+  "note": "Fixture for journey J6 (the notch) and the slice-6 checks. Fictional people and domains. The core's fixture verb `fixture deliver <name> <this file> [idle|eventsource]` reads an arrival from `arrivals`; ids, text and the code are the expected values the checks compare to, never read from a built screen. The perf-idle and perf-eventsource arrivals belong to perf/notch-arrival.py: one per mode, so each mode has its own empty baseline.",
+  "front_app": "browser",
+  "arrivals": {
+    "login-code": {
+      "id": "msg-j6-code",
+      "thread": "thr-j6-code",
+      "account": "acc-04",
+      "sender": "Northlight Sign-in",
+      "from": "no-reply@signin-example.com",
+      "subject": "Your sign-in code",
+      "first_lines": "Your sign-in code is 482915. It expires in 10 minutes.",
+      "code": "482915"
+    },
+    "next-mail": {
+      "id": "msg-j6-next",
+      "thread": "thr-j6-next",
+      "account": "acc-04",
+      "sender": "Jonas Weber",
+      "from": "jonas@weber-example.de",
+      "subject": "Lunch on Thursday?",
+      "first_lines": "Are you free at 12:30 on Thursday? Same place as last time.",
+      "code": null
+    },
+    "muted-mail": {
+      "id": "msg-j6-muted",
+      "thread": "thr-j6-muted",
+      "account": "acc-02",
+      "sender": "Daily Digest",
+      "from": "digest@news-example.com",
+      "subject": "Your morning digest",
+      "first_lines": "Five stories for today.",
+      "code": null
+    },
+    "failing-account-mail": {
+      "id": "msg-j6-failing",
+      "thread": "thr-j6-failing",
+      "account": "acc-18",
+      "sender": "Tender Desk",
+      "from": "desk@tender-example.be",
+      "subject": "Clarification round 2",
+      "first_lines": "Please confirm the delivery window before Friday.",
+      "code": null
+    },
+    "perf-idle": {
+      "id": "msg-j6-perf-idle",
+      "thread": "thr-j6-perf-idle",
+      "account": "acc-04",
+      "sender": "Northlight Sign-in",
+      "from": "no-reply@signin-example.com",
+      "subject": "Your sign-in code (perf idle)",
+      "first_lines": "Your sign-in code is 731904.",
+      "code": "731904"
+    },
+    "perf-eventsource": {
+      "id": "msg-j6-perf-eventsource",
+      "thread": "thr-j6-perf-eventsource",
+      "account": "acc-04",
+      "sender": "Northlight Sign-in",
+      "from": "no-reply@signin-example.com",
+      "subject": "Your sign-in code (perf eventsource)",
+      "first_lines": "Your sign-in code is 731904.",
+      "code": "731904"
+    }
+  },
+  "muted_account": "acc-02",
+  "reply": "Got it, thanks.",
+  "drop": {
+    "file": "quote.pdf",
+    "recipient": "test@recipient.example",
+    "line": "Here is the file.",
+    "oversize_file": "huge-video.mov"
+  },
+  "notch_buttons_after": [
+    "Archive",
+    "Mark read",
+    "Reply"
+  ],
+  "save_refusal_reason": "Whoosh could not save this setting. The settings store is read-only.",
+  "empty_line": "That's everything"
+}

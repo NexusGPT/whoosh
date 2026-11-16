@@ -1,0 +1,6 @@
+# HAND-WRITTEN: a domain that publishes RFC 6186 SRV records and nothing else (no ISPDB entry, no autoconfig file).
+# Lines: "srv <name> <priority> <weight> <port> <target>". A higher priority number is tried later.
+domain srv-only.example
+srv _imaps._tcp.srv-only.example 10 0 993 backup-imap.srv-only.example.
+srv _imaps._tcp.srv-only.example 0 1 993 imap.srv-only.example.
+srv _submission._tcp.srv-only.example 0 1 587 smtp.srv-only.example.

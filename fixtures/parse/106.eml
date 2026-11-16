@@ -1,0 +1,36 @@
+From: Linea Supply <billing@example.com>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1604
+Date: Tue, 03 Nov 2026 19:00:00 +0000
+Message-ID: <8dc975a69fd71517@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5756996716698746034=="
+
+--===============5756996716698746034==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+SW52b2ljZSAyMDI2LTE2MDQgZm9yIEVVUiAxLDI1MC4wMCBpcyBkdWUgb24gMzAgTm92ZW1iZXIg
+MjAyNi4NCg==
+
+--===============5756996716698746034==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5M
+aW5lYSBTdXBwbHk8L3RpdGxlPjxzdHlsZT5ib2R5e2ZvbnQtZmFtaWx5OkhlbHZldGljYSxBcmlh
+bCxzYW5zLXNlcmlmO2NvbG9yOiMyMjJ9LmNvZGV7Zm9udC1zaXplOjI4cHh9PC9zdHlsZT48L2hl
+YWQ+PGJvZHk+PHRhYmxlIHdpZHRoPSIxMDAlIiBjZWxscGFkZGluZz0iMCIgY2VsbHNwYWNpbmc9
+IjAiPjx0cj48dGQgYWxpZ249ImNlbnRlciI+PGltZyBhbHQ9IngiIHNyYz1odHRwOi8vaW1nLmV4
+YW1wbGUuY29tL3B4LzBlY2M2YjU0LmdpZj48aDI+TGluZWEgU3VwcGx5PC9oMj48cD5JbnZvaWNl
+IDxiPjIwMjYtMTYwNDwvYj4gZm9yIEVVUiA2Njk4Ljg1IGlzIGR1ZSBvbiAzMCBOb3ZlbWJlciAy
+MDI2LjwvcD48cD5WQVQgMjElLiBJQkFOIEJFNjggNTM5MCAwNzU0IDcwMzQuIFBheW1lbnQgcmVm
+ZXJlbmNlIDYwOS83NzQ2LzM4NDk1LjwvcD48cCBzdHlsZT0iZm9udC1zaXplOjExcHg7Y29sb3I6
+Izg4OCI+WW91IHJlY2VpdmUgdGhpcyBiZWNhdXNlIG9mIHlvdXIgYWNjb3VudC4gPGEgaHJlZj0i
+aHR0cHM6Ly9leGFtcGxlLm5ldC91bnN1YnNjcmliZT91PWVlNDhlMSI+VW5zdWJzY3JpYmU8L2E+
+IHwgPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC9wcml2YWN5Ij5Qcml2YWN5PC9hPjwvcD48
+L3RkPjwvdHI+PC90YWJsZT48L2JvZHk+PC9odG1sPg0K
+
+--===============5756996716698746034==--

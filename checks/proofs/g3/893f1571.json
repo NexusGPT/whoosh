@@ -1,0 +1,35 @@
+{
+  "item": "893f1571",
+  "full_id": "893f1571-aa65-4779-8214-f2cb21ce9d22",
+  "title": "Build AI reply in the thread",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-quickreply.py",
+      "pass": "(?s)par-quickreply-ai/auto-draft-shows-on-open +pass.*par-quickreply-ai/cmd-j-shows-the-instruction-field +pass.*par-quickreply-ai/instruction-field-takes-the-typing +pass.*par-quickreply-ai/return-writes-the-draft-with-its-mark +pass.*par-quickreply-ai/change-field-shows-under-the-draft +pass.*par-quickreply-ai/change-request-replaces-the-text-in-place +pass.*par-quickreply-ai/nothing-is-sent-alone +pass",
+      "fail": "par-quickreply-ai/[a-z0-9-]+ +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-quickreply.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red or missing",
+      "fail": "NOT RED|STRAY MUTANT|NO MUTANT|RED on the model",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyFeature.swift",
+      "find": "\"⌘J\": { model.aiKey($0) },",
+      "replace": "\"⌘J\": { _ in false },",
+      "proof": 0,
+      "red": "par-quickreply-ai/cmd-j-shows-the-instruction-field +fail|par-quickreply-ai/return-writes-the-draft-with-its-mark +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The thread's reply IS the quick reply: the quick reply sits under every open thread (lead ruling main41, MacFootHints.swift:60-63 doc), so the earlier finding 'the reply-in-thread path is not shown' is wrong. par-quickreply step 'par-quickreply-ai' (checks/parity/par-quickreply.py:680-760, cases listed with mutants :910-927): auto-draft-shows-on-open, pill-shows-its-key (the cmd-J cap), cmd-j-shows-the-instruction-field, instruction-field-takes-the-typing, return-writes-the-draft-with-its-mark (the AI mark), change-field-shows-under-the-draft, change-request-replaces-the-text-in-place, typing-makes-it-an-ordinary-draft, nothing-is-sent-alone, send-makes-it-ordinary-and-queues-one. par-quickreply prints a line per case (print_cases, 2 uses). J10.9 and J10.10 (journeys/J10.py:403-438) judge the same on the fixture core through the journey runner (run on main83: no failure in J10.9 or J10.10; the journey as a whole reads COULD-NOT-DRIVE only for J10.8, item ebde5eae). r83: par-quickreply 108 checks, 0 failed. The mutant (QuickReplyFeature.swift:105) makes the cmd-J key do nothing. Proof 1 is the file's own --selftest of the AI reply model (par-quickreply.py:1400-1426, 'selftest: N checks, M mutants, 0 not red or missing')."
+}

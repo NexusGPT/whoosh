@@ -1,0 +1,15 @@
+{
+ "id": "167",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "On Mon, Nov 2, 2026 at 10:14 AM Elif Demir <elif.demir@accounts.example.com> wrote:",
+  "visible_contains": "Agreed. Let's move ahead with the second option. 4104",
+  "folded_contains": "Please review the attached draft. e840"
+ },
+ "adversarial": false
+}

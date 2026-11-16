@@ -1,0 +1,71 @@
+{
+ "item": "c205c515",
+ "full_id": "c205c515-c238-4ba1-934a-0337f7673ab3",
+ "title": "Build fn-tests-j6",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J6 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J6-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+   "pass": "(?s)(?=.*STEP J6\\.1 PASS=\\d+\\n)(?=.*STEP J6\\.2 PASS=\\d+\\n)(?=.*STEP J6\\.3 PASS=\\d+\\n)(?=.*STEP J6\\.4 PASS=\\d+\\n)(?=.*STEP J6\\.5 PASS=\\d+\\n)(?=.*STEP J6\\.6 PASS=\\d+\\n)(?=.*STEP J6\\.7 PASS=\\d+\\n)",
+   "fail": "J6 (RED|COULD-NOT-DRIVE)|STEP J6\\.\\d+ [^\\n]*(FAIL|NOT JUDGED)=|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "python3 journeys/J6.py --selftest",
+   "pass": "selftest: \\d+ checks, \\d+ mutants( red)?, .*0 not red or missing",
+   "fail": "NOT RED|STRAY|NO MUTANT|NOT IN THE CATALOGUE|[1-9]\\d* not red or missing",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_THEME=dark WHOOSH_RESULTS_DIR=$D/results-dark python3 journeys/run.py J6 2>&1 ; python3 journeys/lib/summary.py \"$D/results-dark\" J6'",
+   "pass": "(?s)(?=.*STEP J6\\.1 PASS=\\d+\\n)(?=.*STEP J6\\.2 PASS=\\d+\\n)(?=.*STEP J6\\.3 PASS=\\d+\\n)(?=.*STEP J6\\.4 PASS=\\d+\\n)(?=.*STEP J6\\.5 PASS=\\d+\\n)(?=.*STEP J6\\.6 PASS=\\d+\\n)(?=.*STEP J6\\.7 PASS=\\d+\\n)(?=.*THEME J6\\.1 theme-applied PASS got=dark)",
+   "fail": "J6 (RED|COULD-NOT-DRIVE)|STEP J6\\.\\d+ [^\\n]*(FAIL|NOT JUDGED)=|could not drive|THEME J6\\.1 theme-applied (FAIL|NOT JUDGED)",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results-themes-dry python3 journeys/run.py --dry --themes light,dark J6 2>&1 | grep -E \"^\\[(light|dark)\\] J6 \"'",
+   "pass": "(?s)\\[light\\] J6 [A-Z-]+: .*\\[dark\\] J6 [A-Z-]+: ",
+   "fail": "\\[light\\] J6 [^\\n]*\\n\\[light\\] J6 |Traceback|takes light or dark",
+   "timeout_s": 300
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/Notch/NotchRowFacts.swift",
+   "find": "row.merging([\"arrival_ms\": arrivalMs, \"sharing_type\": sharingType,",
+   "replace": "row.merging([\"arrival_ms\": 0, \"sharing_type\": sharingType,",
+   "proof": 0,
+   "red": "STEP J6\\.1 [^\\n]*FAIL="
+  },
+  {
+   "file": "journeys/lib/theme.py",
+   "find": "s.raw(\"fixture\", \"theme\", want)",
+   "replace": "s.raw(\"fixture\", \"theme\", \"light\")",
+   "proof": 2,
+   "red": "THEME J6\\.1 theme-applied FAIL got=light"
+  },
+  {
+   "file": "journeys/run.py",
+   "find": "\"[%s] \" % theme if theme else \"\", r[\"id\"].split(\" (\")[0]",
+   "replace": "\"[%s] \" % \"light\" if theme else \"\", r[\"id\"].split(\" (\")[0]",
+   "proof": 3,
+   "red": "\\[light\\] J6 [^\\n]*\\n\\[light\\] J6 "
+  },
+  {
+   "file": "journeys/lib/theme.py",
+   "find": "s.expect(\"theme-applied\", lambda: s.ctl.uistate()[\"theme\"], want)",
+   "replace": "s.expect(\"theme-applied\", lambda: want, want)",
+   "proof": 1,
+   "red": "NOT RED \\(pass\\)"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Same machinery as item 0fe74f14: proof 0 prints one 'STEP J6.n <verdict>=count' line per step from the results jsonl; J6 has 7 steps (journeys/J6.py:195-294: J6.1 Mail appears in the notch, J6.2 Copy the code, J6.3 Open one in place, J6.4 Quick reply from the notch, J6.5 Archive the next mail, J6.6 Notch settings, J6.7 Drop a file on the notch). Proof 1: journeys/J6.py --selftest (J6.py:572-591, the J4 kit, a stand-in app on a private socket, one mutant per check; saved: _captures/tests-j6/mutation-J6.txt last line 'MUTANTS seen red: 44 of 44', read only). Mutant: J6.1/arrival-measured ('the arrival measurement reads zero', J6.py:349) at Sources/Features/Notch/NotchRowFacts.swift:51 (needs an app rebuild). 'Red at scaffold' is history: _captures/tests-j6/J6-live-red.txt:4. Theme (lane gap-themes): journeys/J6.py:202 calls `_theme.apply(s)` (journeys/lib/theme.py:20-24: `fixture theme <WHOOSH_THEME, default light>`, then the case `J6.1/theme-applied` reads uistate theme), TITLE says the theme (J6.py:25), MUTANTS row J6.py:347. Proof 2 runs the journey with WHOOSH_THEME=dark and prints, from journeys/lib/summary.py, the line 'THEME J6.1 theme-applied PASS got=dark'; the light pass is proof 0 (the default theme). Proof 3: `journeys/run.py --dry --themes light,dark J6` prints one line per theme ('[light] J6 ...', '[dark] J6 ...'; no app is launched, so the verdict word there is COULD-NOT-DRIVE and is not read). On a real run `--themes` writes each pass under <results folder>/<theme>/ and both passes drive one app (a fixture core cannot be reset): the lead launches once per theme, as proofs 0 and 2 do. A light run cannot show that the app applies a theme (a build that ignores the verb stays light): only the dark proof can. Open until a hidden run shows it: whether the hidden rig's refusal log names the front app (the old red said 'other-app-still-front: expected browser, got None', _captures/tests-j6/J6-live-red.txt:4); proof 0 goes red on J6.1 if it still reads None, and that would be a gap of the rig, not of this journey."
+}

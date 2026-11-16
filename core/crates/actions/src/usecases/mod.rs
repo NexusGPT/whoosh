@@ -1,0 +1,24 @@
+//! One file per use case. Each owns its store step (`apply`) and a thin `execute`.
+pub mod archive;
+pub mod delete_draft;
+pub mod build_contacts;
+mod contacts_support;
+pub mod empty_trash_and_spam;
+pub mod label;
+pub mod label_contact;
+pub mod mark_all_read;
+pub mod mark_read;
+pub mod merge_contact;
+pub mod move_to_account;
+pub mod move_to_label;
+pub mod mute;
+pub mod pin;
+pub mod save_draft;
+pub mod record_send;
+pub mod send_again;
+pub mod snooze;
+pub mod spam;
+pub mod star;
+pub mod trash;
+pub mod undo;
+pub mod unsubscribe;

@@ -1,0 +1,84 @@
+{
+  "item": "9bfd333a",
+  "full_id": "9bfd333a-81e8-4d24-a5f3-0eaf1741b293",
+  "title": "Make the keys and labels checks print what decides",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-keys.py --selftest",
+      "pass": "par-keys selftest: green \\(0 problems\\)",
+      "fail": "problem\\(s\\)|NOT RED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "[0-9]+ key bar checks, [0-9]+ mutants, 0 problems",
+      "fail": "NOT RED|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/messagebody-check.py --selftest",
+      "pass": "[0-9]+ mutants, 0 not seen red, 0 clean failures, 0 clean not judged",
+      "fail": "NOT RED|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-reader.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/rig-hidden-check.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shortcuts-check.py --selftest",
+      "pass": "shortcuts-check selftest: green \\(0 problems\\)",
+      "fail": "[1-9][0-9]* problem|NOT RED|FAIL",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shortcuts-check.py",
+      "pass": "(?m)^J1\\.6/cmd-z-undoes-typed-text-in-the-composer +(pass|fail) ",
+      "fail": "NOT JUDGED|unjudged",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/checklib/resetguard.py --selftest",
+      "pass": "(?m)^0 problems$",
+      "fail": "[1-9][0-9]* problems|NOT RED|FAIL",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/shortcuts-check.py",
+      "find": "    print_cases(r)       # one line per case, the passing ones too\n",
+      "replace": "    pass\n",
+      "proof": 7,
+      "red": "(?m)^J1\\.6/cmd-z-undoes-typed-text-in-the-composer +(pass|fail) "
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Self-test commands and last lines on the base before this lane: _captures/lead/main81/selftests/ checks_parity_par-keys.log ('par-keys selftest: green (0 problems)'), checks_parity_par-searchmac.log ('2 key bar checks, 2 mutants, 0 problems'), checks_messagebody-check.log, checks_parity_par-reader.log ('88 checks, 0 failed, 0 not judged'), checks_parity_par-labelscontactsmac.log ('203 checks, 0 failed, 0 not judged'), checks_rig-hidden-check.log ('11 checks, 0 failed, 0 not judged'). The exact flag and pass line of messagebody-check self-test is not verified at this commit (messagebody-check.py:694 reads --selftest, its last line in the main81 log is a free text line); a pass regex that does not match must be corrected by the lead, it is not a failure of the item. Fixture: docs/design/fixtures/mac-main-sample.json. | OLD GAP (before lane gap-states, 2026-11-12): L, hidden run owed. Lane tail-keys (docs/lanes/tail-keys.md, table of the 25 cases with file:line) made each of the 25 cases print what decides it: key verb fields window, key_before, key_after, route in shortcuts-check.py:87-112 and par-keys.py:142; both view strings on a reset refusal in checks/checklib/resetguard.py:66 (proof 8); par-reader o-on-the-open-message-passes-on prints the key's reply and the reader state before and after (par-reader.py:796-830); par-labelscontactsmac flow-ai-thread-saved, flow-ai-refusal-shown-and-opens-decisions, w-sender-card-row-opens-its-thread, d-plus-gives-the-value-field-back print `| evidence:` (par-labelscontactsmac.py:1067); the other cases already printed their values (par-searchmac DoorTrace, messagebody read_press, rig-hidden missing_frame_evidence, par-keys what_the_app_said, labels key_evidence). Self-tests exit 0 here: par-keys, shortcuts-check, par-reader, par-labelscontactsmac, resetguard (each prints its `evidence on red` line). Still owed: (1) the lead's hidden run of each check on the next build with each of the 25 lines sorted app or check and quoted; (2) two findings for files this lane may not edit: checks/messagebody-check.py:160 MONITOR_FIELDS gains \"window\", \"key_before\", \"key_after\", \"route\"; checks/parity/par-searchmac.py:1365 save_name_escape starts with ensure_open(c) like tab_door/hover_door/bar_click_takes_keys. Round 9 (lane hid-search): finding 2 applied: save_name_escape, clear_button, recent_door and result_click begin with ensure_open(c) (checks/parity/par-searchmac.py, the door table of 12 cases: open is the opener itself; tab, hover and bar had it; owner, arrows, esc and cursor begin with leave_search and ⌘K by design); the door self-test: '12 door checks, 13 mutants, 0 problems'. The lead's hidden run of the 25 cases stays the proof (docs/lanes/tail-keys.md)."
+}

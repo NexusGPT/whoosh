@@ -1,0 +1,90 @@
+{
+  "item": "c533cae6",
+  "full_id": "c533cae6-b6c8-454e-8a04-22552c63ee2a",
+  "title": "Extract the state paths the app reads",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity-paths.py",
+      "pass": "^\\d+ paths, 0 unknown or unserved, 0 untyped$",
+      "fail": "^FAIL ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity-paths.py --selftest",
+      "pass": "^0 problems$",
+      "fail": "^FAIL |[1-9]\\d* problems",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "grep -n 'python3 checks/parity-paths.py' scripts/gates.sh",
+      "pass": "^\\d+:python3 checks/parity-paths\\.py > ",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/job-order-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^FAIL ",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/job-order-check.py --selftest",
+      "pass": "^0 problems$",
+      "fail": "[1-9]\\d* problems",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-macshell.py --dry",
+      "pass": "^\\d+ checks, \\d+ failed, \\d+ not judged$",
+      "fail": "Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-sidebar.py --dry",
+      "pass": "^\\d+ checks, \\d+ failed, \\d+ not judged$",
+      "fail": "Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxlist.py --dry",
+      "pass": "^\\d+ checks, \\d+ failed, \\d+ not judged$",
+      "fail": "Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Sidebar/SidebarData.swift",
+      "find": "core.state(path: \"smart_folder/\\(id)/count\")",
+      "replace": "core.state(path: \"smart_folderz/\\(id)/count\")",
+      "proof": 0,
+      "red": "^FAIL "
+    },
+    {
+      "file": "scripts/gates.sh",
+      "find": "python3 checks/parity-paths.py > \"$LOGS/gate-state-paths.log\" 2>&1 ||",
+      "replace": "true > \"$LOGS/gate-state-paths.log\" 2>&1 ||",
+      "proof": 2,
+      "red": "^$"
+    },
+    {
+      "file": "scripts/main-job.sh",
+      "find": "sh scripts/install.sh \"$LBL\" > \"$S/install-$LBL.log\"",
+      "replace": "sh scripts/install-x.sh \"$LBL\" > \"$S/install-$LBL.log\"",
+      "proof": 3,
+      "red": "^FAIL "
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: checks/parity-paths.py:198-202 (--write writes docs/STATE-PATHS.json), :205-208 (FAIL lines then the total `N paths, N unknown or unserved, N untyped`, exit 1 on any), selftest end :303 `N problems`; scripts/gates.sh:24-25 (the gate line; its own failure echo `GATE RED: parity-paths`); scripts/main-job.sh exists (line 30 is the install step); checks/job-order-check.py:48-54 prints `PASS <name>` per check and `N checks, N failed, 0 not judged`, selftest :94 `N problems`. Three dry-run crashes = par-macshell, par-sidebar and par-inboxlist `--dry` (docs/lanes/tests-r58.md:84, :94, :115-125); the fix is in journeys/lib/harness.py (class Dry, line 16). Proofs 5-7 prove that a dry run ends in its total line instead of a Traceback; they run no app (the harness `force_dry` path, harness.py:308-317). The mutant 1 changes the one SidebarData.swift read of smart_folder/<id>/count to a path no row covers (the finding of the lane: _captures/tests-r58/parity-paths-real-mutant.log did the same with reply/sources); it is red only if the generated row for that read is keyed by the pattern `smart_folder/<folder>/count` (docs/STATE-PATHS.json:667 area), which is why `smart_folderz` appears in no row. Mutant 2's red is the absence of any line (the grep prints nothing: `fail: ^$` marks an empty output). No mutant is given for the three dry crashes: a one-line break of class Dry that makes a dry run crash again was not found by reading; the baseline crash itself is the red (lane note line 84). The job-order check is not in scripts/gates.sh (grep of gates.sh for job-order finds nothing); the item does not require it."
+}

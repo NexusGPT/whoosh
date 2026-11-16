@@ -1,0 +1,118 @@
+{
+ "item": "847f8b14",
+ "full_id": "847f8b14-eeac-4e6d-862b-15a41729a328",
+ "title": "Build vis-components",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "python3 checks/token-check.py",
+   "pass": "(?s)hex colour literals outside Sources/Design: 0\\n.*\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL |[1-9]\\d* failed",
+   "timeout_s": 120
+  },
+  {
+   "kind": "lead",
+   "run": "open the 20 PNGs _captures/components/components-<page>-<light|dark>.png (pages overview snooze snoozedate labels undo status keys empty marks chips; 10 pages x 2 themes) and look at them: every control of docs/lanes/components.md:19-25 is drawn, no clipped text, the dark ones are dark",
+   "pass": "20 of 20 pictures show their controls"
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/seams/component-grammar.py --selftest",
+   "pass": "(?s)PASS +oracle +all 5 labels green.*\\| mark-size \\|.*RED: .*\\n6 checks, 0 failed, 0 not judged\\s*\\[exit 0\\]\\s*\\Z",
+   "fail": "STAYED GREEN|FAIL +oracle",
+   "timeout_s": 120
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/seams/component-grammar.py",
+   "pass": "(?s)(?=.*PASS +reader-code-pill )(?=.*PASS +code-pill )(?=.*PASS +label-chip )(?=.*PASS +key-hint )(?=.*PASS +account-mark ).*\\d+ checks, 0 failed, 0 not judged\\s*(\\[exit 0\\])?\\s*\\Z",
+   "fail": "FAIL |NOT JUDGED |STAYED GREEN",
+   "timeout_s": 300
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/components-shots-check.py --selftest",
+   "pass": "(?s)ok +clean pictures: 23 cases.*ok +broken copy square-key-cap.*selftest: 0 problem\\(s\\)\\s*\\[exit 0\\]\\s*\\Z",
+   "fail": "STAYED GREEN|FAIL +clean|selftest: [1-9]",
+   "timeout_s": 120
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'python3 checks/components-shots-check.py --make \"$D/components\" && python3 checks/components-shots-check.py \"$D/components\"'",
+   "pass": "(?s)(?=.*PASS +picture-keys-dark)(?=.*PASS +key-cap-size)(?=.*PASS +label-chip-size)(?=.*PASS +code-pill-rules).*23 checks, 0 failed, 0 not judged\\s*(\\[exit 0\\])?\\s*\\Z",
+   "fail": "FAIL |NOT JUDGED |NOT MADE|NOT MEASURED",
+   "timeout_s": 300
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/Components/ComponentsFeature.swift",
+   "find": "t[\"components.gallery.open\"] = { _ in ComponentGalleryWindow.shared.show() }",
+   "replace": "let leakedColour = \"#2F6FED\"; t[\"components.gallery.open\"] = { _ in ComponentGalleryWindow.shared.show() }",
+   "proof": 0,
+   "red": "FAIL none-hex-string-literal"
+  },
+  {
+   "file": "checks/seams/component-grammar.py",
+   "find": "setk(\"code-pill\", \"notch-codepill\", \"h\", _FILE_TILE)",
+   "replace": "setk(\"code-pill\", \"notch-codepill\", \"h\", _CAP)",
+   "proof": 2,
+   "red": "code-pill-height \\|.*STAYED GREEN"
+  },
+  {
+   "file": "checks/seams/component-grammar.py",
+   "find": "setk(\"code-pill\", \"notch-codepill\", \"r\", _FIELD)",
+   "replace": "setk(\"code-pill\", \"notch-codepill\", \"r\", _ITEM)",
+   "proof": 2,
+   "red": "code-pill-radius \\|.*STAYED GREEN"
+  },
+  {
+   "file": "checks/seams/component-grammar.py",
+   "find": "setk(\"label-chip\", \"gallery\", \"h\", _CAP + 1)",
+   "replace": "setk(\"label-chip\", \"gallery\", \"h\", _CAP)",
+   "proof": 2,
+   "red": "chip-height \\|.*STAYED GREEN"
+  },
+  {
+   "file": "checks/seams/component-grammar.py",
+   "find": "setk(\"key-hint\", \"gallery\", \"r\", _ITEM)",
+   "replace": "setk(\"key-hint\", \"gallery\", \"r\", 5)",
+   "proof": 2,
+   "red": "hint-radius \\|.*STAYED GREEN"
+  },
+  {
+   "file": "checks/seams/component-grammar.py",
+   "find": "setk(\"account-mark\", \"reader-meta\", \"h\", _E[\"cases\"][4][1][0][3])",
+   "replace": "setk(\"account-mark\", \"reader-meta\", \"h\", _E[\"cases\"][4][1][1][3])",
+   "proof": 2,
+   "red": "mark-size \\|.*STAYED GREEN"
+  },
+  {
+   "file": "checks/components-shots-check.py",
+   "find": "    if abs(f[\"h\"] - want_h) > 0.5:",
+   "replace": "    if abs(f[\"h\"] - want_h) > 50:",
+   "proof": 4,
+   "red": "broken copy tall-key-cap +-> STAYED GREEN"
+  },
+  {
+   "file": "checks/components-shots-check.py",
+   "find": "    return (not same(near, mid)) and same(deep, mid)",
+   "replace": "    return True",
+   "proof": 4,
+   "red": "broken copy square-key-cap +-> STAYED GREEN"
+  },
+  {
+   "file": "checks/components-shots-check.py",
+   "find": "    ok = mean > 128 if theme == \"light\" else mean < 128",
+   "replace": "    ok = True",
+   "proof": 4,
+   "red": "broken copy wrong-theme +-> STAYED GREEN"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Proof 0 = checks/token-check.py:63-93 (prints 'hex colour literals outside Sources/Design: %d' at line 81 and the totals line at line 91; static, scans Sources/**/*.swift). The item text says shots are 'rendered by shot'; the 20 PNGs exist in _captures/components/ (read only) from build cp2, commit eb5b153 (docs/lanes/components.md:35, the 'Evidence' list). Proof 1 is the lead's own look at them; they are older than this commit so only a fresh hidden run (gap B) re-proves them. Tests/Unit/ComponentsTests.swift holds 3 tests (lines 29, 34, 39: theSnoozePickerOffersTimesInWords, theLabelPickerListsLabelsFromEveryAccountNested, theSnoozeConstantsAreOrderedWords) for the pickers, not for heights or radii. Mutant: the scanner's own mutant list is token-check.py:84-88 ('a feature file holds \"#2F6FED\"'). | OLD GAP (before lane gap-states, 2026-11-12): Part (A) is built: checks/seams/component-grammar.py (selftest = proof 2, live = proof 3, registered as slice 'grammar' in checks/seams/run.py). Its LIVE run cannot be green yet, three app-side findings (docs/lanes/gap-seams.md C1-C4), checked by tail-small (2026-11-11) against the code at this commit: (C1) BUILT by hid-keys on 2026-11-12 (FrameProbe.setRadius/radius, whooshAx(_:radius:), measure reply `radius`; only the notch code pill passes a radius so far); the old reason was: it cannot be built in the one file this lane owns: `measure` (Sources/ControlSocket/WindowVerbs.swift:23 `return [\"frame\": f]`) can serve a `radius` only if the marked view hands it over, and the radius is a drawn property SwiftUI does not expose to an AppKit anchor (FrameAnchor reads a frame only, Sources/App/FrameProbe.swift:296-310 (FrameAnchor)). The change is across files outside this lane: Sources/App/FrameProbe.swift gets `private static var radii: [String: CGFloat]`, `static func setRadius(_ id: String, _ r: CGFloat?)` and `static func radius(_ id: String) -> CGFloat?`, cleared where `frames.removeAll()` runs (line 52); `whooshAx(_ id: String, radius: CGFloat? = nil)` (line 317) passes it to WhooshAxModifier, which calls FrameProbe.setRadius(id, radius) in the measuring branch (with FrameProbe.set); then WindowVerbs.swift:23 becomes `var reply: ControlRow = [\"frame\": f]; if let r = FrameProbe.radius(ax) { reply[\"radius\"] = Double(r) }; return reply`; and each control passes the same constant it draws (WhooshRadius.item, keyCap, ...). (C2) a look question for the owner, NOT applied: the reader's code pill is drawn at fileTile height 36 and field radius 10 (Sources/Features/Reader/ReaderCodePill.swift:21-22) while the shared CodePill, which the notch uses (NotchRowView.swift:91), is keyCap 20 and item 6 (Sources/Features/Components/SmallControls.swift (struct CodePill, line 67)); the live check will FAIL on that until the owner picks one grammar (questions_for_owner in docs/lanes/tail-small.md). (C3) label chip, key hint and account mark have no measurable per-surface id: LabelChip is drawn only in the gallery (ComponentGallery.swift:133), foot hints carry a plain accessibilityIdentifier (MacFootHints.swift:148), every AccountMark carries the same id 'account-mark' (AccountMark.swift:112): each needs `.whooshAx(\"<surface>.<control>\")` in the files of those lanes. (C4) docs/DESIGN.md and docs/CONSTANTS.md hold no chip, pill or key-cap number: the check reads Sources/Design/WhooshSpacing.swift keyCap and WhooshRadius.swift item/keyCap; a ledger row is the lead's (docs/CONSTANTS.md is not editable by a helper). Part (B) is not done: checks/components-shots-check.py lies outside this lane's files; a builder who owns it writes it as the old gap text says. The status line is one surface only (MacStatusLine, mac-main.status), so it is not a two-surface case. hid-keys 2026-11-12: part (B) built: checks/components-shots-check.py (selftest = proof 4, the lead's run = proof 5: --make then judge, 23 cases). Code pill ruling (lead): the reader's pill is its own component reader-code-pill (36, radius 10), the shared CodePill 20 and 6; case code-pill-rules reads that from component-grammar.py. Only the lead's run (proofs 3 and 5, and the 20 pictures of proof 1) is owed. C4 ledger rows are proposed in docs/lanes/hid-keys.md."
+}

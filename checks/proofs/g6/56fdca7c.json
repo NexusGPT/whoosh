@@ -1,0 +1,79 @@
+{
+  "item": "56fdca7c",
+  "full_id": "56fdca7c-db50-4c35-a61c-3dfffb2368d2",
+  "title": "Prove the reply on the real engine in the hidden rig",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice5",
+      "pass": "(?s)PASS\\s+the-reply-reached-smtp-once-threaded .*PASS\\s+the-sent-copy-joins-its-thread ",
+      "fail": "FAIL\\s+the-reply|FAIL\\s+the-sent-copy",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-moved",
+      "pass": "(?s)PASS\\s+a-mail-moved-away-on-the-server-leaves-the-apps-inbox .*PASS\\s+a-reply-to-a-stored-mail-whose-server-copy-moved-is-queued-with-in-reply-to-and-references ",
+      "fail": "FAIL\\s|NOT JUDGED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-moved --mutant",
+      "pass": "mutant [a-z-]+: RED as it must be",
+      "fail": "SURVIVED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest: model all pass, mutant model red",
+      "fail": "Traceback|WRONG|FAILS",
+      "timeout_s": 300
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_state_headers",
+      "pass": "test result: ok\\. 4 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/outbox/src/adapters/reply/mod.rs",
+      "find": "if let Some(found) = self.stored(thread_id, kind)? {",
+      "replace": "if let Some(found) = None::<ReplyContext> {",
+      "proof": 1,
+      "red": "FAIL\\s+a-reply-to-a-stored-mail-whose-server-copy-moved-is-queued-with-in-reply-to-and-references"
+    },
+    {
+      "file": "core/crates/engine/src/sync.rs",
+      "find": "if !gone.is_empty() { d.store.delete_messages(gone).map_err(|e| e.to_string())?; }",
+      "replace": "if false { d.store.delete_messages(gone).map_err(|e| e.to_string())?; }",
+      "proof": 1,
+      "red": "FAIL\\s+a-mail-moved-away-on-the-server-leaves-the-apps-inbox"
+    },
+    {
+      "file": "core/crates/engine/src/state_headers.rs",
+      "find": "let [\"message\", id, \"thread_headers\"] = p[..] else { return None };",
+      "replace": "let [\"message\", id, _] = p[..] else { return None };",
+      "proof": 4,
+      "red": "a_path_of_another_shape_is_not_claimed \\.\\.\\. FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/state_headers.rs",
+      "find": "refs.join(\",\")",
+      "replace": "String::new()",
+      "proof": 4,
+      "red": "the_stored_headers_of_a_message_are_served \\.\\.\\. FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Built by lane gap-moved-slice, run on a build by the lead (nothing here was compiled or run: only `python3 checks/realcore-check.py --selftest` and `python3 checks/realcore_mailfake.py --selftest`). Proof 0 is the slice-5 reply (a mail the server still holds). Proof 1, run `python3 checks/realcore-check.py <bundle> --slice-moved` (hidden, real core): checks/realcore-check.py main_slice_moved, judge_moved, drive_moved, selftest_moved; it prints one line per case, `PASS|FAIL|NOT JUDGED <case> <detail>`, and ends `N checks, F failed, U not judged`; the passing lines are `PASS       a-mail-moved-away-on-the-server-leaves-the-apps-inbox  ...` and `PASS       a-reply-to-a-stored-mail-whose-server-copy-moved-is-queued-with-in-reply-to-and-references  ...` (the app-wide `no-outbound-refused` line follows). Proof 2 is the same with `--mutant`: WHOOSH_CORE_MUTANT=reply-ignores-store (engine rust_core.rs Mutant::ReplyIgnoresStore, honoured by outbox adapters/reply/mod.rs `stored`) and it prints `mutant reply-ignores-store: RED as it must be (...)` when the reply case went red. The fake (checks/realcore_mailfake.py): `plain=True` (no change list: CONDSTORE/QRESYNC commands are recorded and refused), `refs=True` (a References chain on each mail), `move_away(mail, uid, to_folder, quiet)` and `announce(mail)`. The engine read the check waits on: `core state message/<id>/thread_headers` (core/crates/engine/src/state_headers.rs, one dispatch line in rust_core.rs state()), the stored Message-ID and References as JSON. DEVIATION from the first gap text: the two cases move two different mails. The sync deletes a vanished mail's row (core/crates/engine/src/sync.rs:347 delete_messages), so once the app has been told mail 2 left, the store holds nothing to reply from; the reply therefore answers mail 1, which the server moves without telling the app (the fake is quiet until `wake`), the app's own reader still showing it: the owner's stale-mail case. Broken copies: proof 2 for the reply case (hook), mutants[0] for the reply case (source), mutants[1] for the inbox case (the sync keeps the vanished row). Unverified until the lead runs it: that J then Enter reaches mail 1, that the engine stores the headers before the move, and what the thread view does with a mail the server moved."
+}

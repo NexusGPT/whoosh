@@ -1,0 +1,63 @@
+{
+  "item": "408caa48",
+  "full_id": "408caa48-f259-4d6d-a06f-22ebde72f7a2",
+  "title": "Show the time left on the undo chip",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "(?s)J1\\.58/timer-reads-full-when-the-chip-appears +pass.*J1\\.58/timer-has-drained-by-mid-life +pass.*J1\\.58/chip-and-timer-are-gone-at-the-end +pass.*J1\\.58/second-action-restarts-the-line +pass.*J1\\.58/no-undo-no-line +pass.*J1\\.58/line-is-one-linear-trim-with-no-second-timer +pass.*J1\\.58/line-and-expiry-share-one-life +pass.*J1\\.58/timer-reads-full-after-delete +pass.*J1\\.58/timer-reads-full-after-pin +pass.*J1\\.58/timer-reads-full-after-snooze +pass.*J1\\.58/timer-reads-full-after-label +pass.*J1\\.58/timer-reads-full-after-reader-delete +pass",
+      "fail": "J1\\.58/[a-z0-9-]* +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxlist.py --selftest",
+      "pass": "MUTANTS \\| timer-has-drained-by-mid-life \\| green \\|.*\\| red",
+      "fail": "\\| STILL |\\| RED |names no mutant",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/InboxList/ListChrome.swift",
+      "find": "withAnimation(.linear(duration: frac * Double(InboxListState.undoChipMs) / 1000)) { left = 0 }",
+      "replace": "withAnimation(.linear(duration: 0.001)) { left = 0 }",
+      "proof": 0,
+      "red": "J1\\.58/timer-has-drained-by-mid-life +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/TriageKeys.swift",
+      "find": "state.say(done == 1 ? Said(\"Deleted\") : Said(\"Deleted %lld\", done))",
+      "replace": "state.say(done == 1 ? Said(\"Deleted\") : Said(\"Deleted %lld\", done), undoable: false)",
+      "proof": 0,
+      "red": "J1\\.58/timer-reads-full-after-delete +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/TriageActions.swift",
+      "find": "state.say(pinned ? Said(\"Unpinned\") : Said(\"Pinned\"))",
+      "replace": "state.say(pinned ? Said(\"Unpinned\") : Said(\"Pinned\"), undoable: false)",
+      "proof": 0,
+      "red": "J1\\.58/timer-reads-full-after-pin +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/TriageActions.swift",
+      "find": "state.say(p.doneWords(said))",
+      "replace": "state.say(p.doneWords(said), undoable: false)",
+      "proof": 0,
+      "red": "J1\\.58/timer-reads-full-after-(snooze|label) +fail"
+    },
+    {
+      "file": "Sources/Features/Reader/ReaderActions.swift",
+      "find": "TriageActions.state.say(Said(\"Deleted\"))",
+      "replace": "TriageActions.state.say(Said(\"Deleted\"), undoable: false)",
+      "proof": 0,
+      "red": "J1\\.58/timer-reads-full-after-reader-delete +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Journey style: FAIL lines and the total only. The earlier finding 'no run' missed J1.58 and its stand-in (par-inboxlist.py:2966-3035). The interaction check: python3 perf/interaction.py on a quiet machine (load under PERF_LOAD_MAX 12), compare with the ledger budget; see item a0073150. | OLD GAP (before lane gap-states, 2026-11-12): The timer is built and judged: par-inboxlist J1.58 (timer-reads-full-when-the-chip-appears, timer-has-drained-by-mid-life (0.3 to 0.7), chip-and-timer-are-gone-at-the-end, no-undo-no-line, second-action-restarts-the-line, line-is-one-linear-trim-with-no-second-timer, line-and-expiry-share-one-life); UnreadCount UndoTimerLine in ListChrome.swift:65, undoChipMs = 6000 (InboxListState.swift:70). The case is gated: FC.Gate(UNDO_TIMER_COMMIT = '2e79dd05'): a build without that commit reads NOT JUDGED. Built by tail-small (2026-11-11), gap (1) in part: J1.58 now also drives delete (the # key) and pin (shift-P), each after the previous capsule has left and a healthy row is clicked, and expects words shown and the timer at 0.85 or more: cases timer-reads-full-after-delete and timer-reads-full-after-pin (checks/parity/par-inboxlist.py, after line-and-expiry-share-one-life; MUTANTS rows and the UndoTimerCtl stand-in updated; `par-inboxlist.py --selftest` exit 0, last line '6 checks, 0 failed, 0 not judged', both cases pass on the model and are red on their mutants: tail-small-out/st-inboxlist1.txt). Swift broken copies: mutants 1 (delete without an Undo button, so no line) and 2 (pin the same). Not run on a build: the lead's run of proof 0 and mutants 1 and 2. Still missing: (1) snooze, label and the reader's delete are not driven: each needs the picker or the open reader on a build (snooze and label finish through TriageActions.swift:56 `state.say(p.doneWords(words))`, the reader's delete through ReaderActions.swift:53); not done, because the keys and rows of those pickers cannot be read on a build by a helper that may not run the app, and a drive written blind would be a guess; (2) 'no added latency (interaction check unchanged)': perf/interaction.py on the same build with the budget unchanged, the lead's run on a quiet machine (load under PERF_LOAD_MAX 12); (3) 'shots light and dark' of the capsule at mid value (the lead's run). | ROUND 9 (hid-list): par-inboxlist J1.58 now drives snooze (H, words, Enter), label (L, Suppliers, Enter) and the reader's delete (reader.open then reader.delete), each after the previous capsule left, expecting words shown and the timer at 0.85 or more: cases timer-reads-full-after-snooze, -label, -reader-delete; stand-in and three MUTANTS lines added; `par-inboxlist.py --selftest` exit 0, all three pass on the model and are red on their mutants (_captures/hid-list/selftest-inboxlist-3.log). Swift broken copies: mutant 4 (snooze and label share the one say line), mutant 5 (reader delete). Owed: the lead's run of proof 0 and mutants 1 to 5 on a build, the interaction check (item a0073150) and the mid-value shots."
+}

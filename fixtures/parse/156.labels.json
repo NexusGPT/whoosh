@@ -1,0 +1,20 @@
+{
+ "id": "156",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "CANCEL",
+  "uid": "73cbc4d7d9d43fff7546@example.org",
+  "summary": "Board prep",
+  "organizer": "mira.okafor@mail.example.net",
+  "all_day": false,
+  "start_utc_ms": 1794655800000,
+  "start_local": null,
+  "tzid": null,
+  "location": null
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

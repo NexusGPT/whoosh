@@ -1,0 +1,12 @@
+{
+ "id": "069",
+ "category": "link-html",
+ "code": null,
+ "links": [
+  "https://auth.example.net/magic-link/72f48b244a6853e2d0dd5fce"
+ ],
+ "invite": null,
+ "tracker_count": 2,
+ "quoted": null,
+ "adversarial": false
+}

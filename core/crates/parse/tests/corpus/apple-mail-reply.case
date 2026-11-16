@@ -1,0 +1,11 @@
+# Apple Mail: the attribution in a div, then blockquote type=cite. Written; history hidden.
+subject: Re: Dinner on Saturday
+sender: Adam Petit
+layout: written
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY hide
+authored: Saturday at eight is perfect, I will bring dessert.
+history: Would Saturday at eight work for dinner at our place?
+--- html
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body dir="auto"><div dir="ltr">Saturday at eight is perfect, I will bring dessert.</div><div dir="ltr"><br><blockquote type="cite">On 10 Nov 2026, at 18:40, Beth Moreau &lt;beth@example.fr&gt; wrote:<br><br></blockquote></div><blockquote type="cite"><div dir="ltr">Would Saturday at eight work for dinner at our place?</div></blockquote></body></html>

@@ -1,0 +1,37 @@
+{
+ "schema": "whoosh-search-corpus/1",
+ "note": "tests-r58: the labels window's Merge case. Two people at one domain whose names look alike (Linea Supply, Linea Supply Billing) so the sender card offers the merge, and one unrelated person as the control. Fictional people and domains.",
+ "today": "2026-11-07",
+ "messages": [
+  {
+   "id": "msg-la-1",
+   "thread": "thr-la-1",
+   "account": "acc-04",
+   "from_name": "Linea Supply",
+   "from": "orders@linea-supply-example.com",
+   "date": "2026-11-06T09:12:00",
+   "subject": "Order 7 confirmed",
+   "body": "Your order 7 is confirmed."
+  },
+  {
+   "id": "msg-la-2",
+   "thread": "thr-la-2",
+   "account": "acc-04",
+   "from_name": "Linea Supply Billing",
+   "from": "billing@linea-supply-example.com",
+   "date": "2026-11-06T09:20:00",
+   "subject": "Invoice 7",
+   "body": "Invoice 7 is attached to this mail."
+  },
+  {
+   "id": "msg-la-3",
+   "thread": "thr-la-3",
+   "account": "acc-04",
+   "from_name": "Marta Voss",
+   "from": "marta@voss-atelier-example.com",
+   "date": "2026-11-05T14:00:00",
+   "subject": "Sketches",
+   "body": "Here are the sketches you asked for."
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+# Only a signature-looking text: nothing authored above it, so it is not a signature and nothing is folded.
+subject: Contact
+sender: Hugo Bernard
+fold_from: none
+authored: Hugo Bernard
+authored: +33 6 12 34 56 78
+--- text
+Best regards,
+Hugo Bernard
++33 6 12 34 56 78

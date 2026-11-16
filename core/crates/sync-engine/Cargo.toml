@@ -1,0 +1,20 @@
+[package]
+name = "sync-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh sync scheduler: first screen of every account first, then full-history backfill, per account isolated."
+
+[dependencies]
+contracts = { workspace = true }
+store = { path = "../store" }
+async-trait = "0.1"
+serde_json = "1"
+# The same rusqlite the store uses, for the sync_state statements run inside Store::write.
+rusqlite = { version = "0.41", features = ["bundled"] }
+tokio = { version = "1", default-features = false, features = ["rt", "sync", "time", "macros"] }
+
+[dev-dependencies]
+tempfile = "3"
+# test-util: the tests run on a paused clock, so the fakes' delays and the backoff cost no wall time.
+tokio = { version = "1", default-features = false, features = ["rt", "macros", "sync", "time", "test-util"] }

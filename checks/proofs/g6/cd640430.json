@@ -1,0 +1,49 @@
+{
+  "item": "cd640430",
+  "full_id": "cd640430-4e1f-42bd-9791-9c8b018b3745",
+  "title": "Mark a sender as VIP from the app",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_vip_mark",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-palettemac.py",
+      "pass": "^vip-mark-command +pass ",
+      "fail": "^vip-mark-command +(fail|unjudged) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-palettemac.py --selftest",
+      "pass": "(?s)par-palettemac selftest: green \\(0 problems\\).*doors-nav: \\d+ checks x 2 languages, 0 problems",
+      "fail": "par-palettemac selftest: RED|STILL GREEN|Traceback",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-vip",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^(FAIL|NOT JUDGED) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "(?s)selftest slice vip: clean stand-in green.*^selftest: model all pass, mutant model red",
+      "fail": "WRONG|FAILS|Traceback",
+      "timeout_s": 1800
+    }
+  ],
+  "mutants": [],
+  "gap": "The real-engine slice (proof 3) has a self-test and has not run against an app: the lead's hidden run of python3 checks/realcore-check.py <bundle> --slice-vip on a hidden test copy after the merge. Not driven: Remove through the palette on a mail focused from the VIPs view of a real store beyond the slice's own account.",
+  "owner": null,
+  "notes": "Code: core/crates/engine/src/vip_mark.rs and core/crates/engine/tests/engine_vip_mark.rs (2 tests), Sources/Features/PaletteMac (the two lines), docs/lanes/vip-mark.md. The palette case vip-mark-command (c_vip_mark) and its stand-in ModelVip are in checks/parity/par-palettemac.py of the lead's merged copy (not in this work copy, which forked before it); its output line form is `%-28s %-8s %s` (name, pass|fail|unjudged). Slice: checks/realcore-check.py --slice-vip (drive_vip, judge_vip, selftest_vip). `mutants` is empty on purpose: the engine's broken copies would edit core/crates/engine/src/vip_mark.rs and rust_core.rs, files outside this lane's work copy; the palette check's own four broken copies run in proof 2 and the slice's four in proof 4."
+}

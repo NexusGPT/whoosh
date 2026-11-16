@@ -1,0 +1,46 @@
+{
+  "item": "9c64cfa9",
+  "full_id": "9c64cfa9-26aa-4b3c-bde0-6d6e2a966e67",
+  "title": "Sort mail with the on-device model",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_label_model_r5 -- laya_chosen_files_a_message_on_the_device_and_nothing_goes_to_a_network the_prompt_laya_gets_is_cut_to_its_window_oldest_thread_messages_first a_saved_description_then_a_rerun_sorts_the_mail_already_there_on_the_device_and_never_blocks",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theModelLoadsOnFirstUseAndNotBefore,theModelUnloadsAfterTheIdleTimeFromTheLedgerAndLoadsAgainOnTheNextUse",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice3b",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL|SURVIVED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "installed build, network off (Wi-Fi switched off by the lead), Laya chosen in Settings, Decisions: type a description in Needs Reply, press the rerun; then read, as counts only on a private copy of the owner's data, `core state label/<id>/rerun/*` and the number of messages whose filing says decided_by=laya",
+      "pass": "the count of messages filed in Needs Reply with decided_by=laya is above 0; the rerun state reads done or its pending figures; no network was needed (Wi-Fi off during the run); the activity monitor shows the model loaded only after the first question"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/decision_model.rs",
+      "find": "let state = state_for_laya(state);",
+      "replace": "let state = state;",
+      "proof": 0,
+      "red": "the_prompt_laya_gets_is_cut_to_its_window.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": "M, kind code and check: (1) no test runs the whole path on the built app with Laya chosen and the network cut: the cargo test laya_chosen_files_a_message_on_the_device_and_nothing_goes_to_a_network (engine_label_model_r5.rs:203) proves on the real core with a scripted Laya that a counting socket sees 0 connections, but the shell's real Laya weights are not in that test. A hidden check with the real weights is item 49c8d129, which this item can lean on. (2) The mutant above proves the prompt cut only; no one-line break exists for 'no network' because the guard is an absence. A mutant for it needs a test that arms a Laya port and makes the core ask a cloud route (S, a new case in engine_label_model_r5.rs). Note: grep for offline|network|loopback in core/crates/decision/tests finds nothing, as the reader said, but engine_label_model_r5.rs:193-226 is the network-count test.",
+  "owner": "The owner confirms on their Mac: Laya chosen, no network, a typed description sorts their real mail into Needs Reply; the model loads on the first question (acceptance: 'the owner confirms').",
+  "notes": "Paths: core/crates/engine/tests/engine_label_model_r5.rs:193 counting_server, :203 laya_chosen_files_a_message_on_the_device_and_nothing_goes_to_a_network (asserts decided_by Laya, 0 hits), :228, :277; core/crates/engine/src/decision_model.rs:124-160 LayaPort, :148 decide, :154 the cut; Tests/Unit/OnDeviceAITests.swift:182 and :192 (ModelResidency, 'loads on first use'); Sources/Features/OnDeviceAI/Contract/LayaOnDevice.swift:9 ('Nothing loads at launch. The weights are read into memory on the first question'). The unit names are Swift Testing @Test functions; the lead's runner finds them by name. Slice 3b (checks/realcore-check.py) arms a local AI provider fake, not Laya; listed as the nearest real-core app run. The seam for ModelResidency covers Laya only if LayaOnDevice uses it (LayaOnDevice.swift:23-26 shows `residency: ModelResidency<Loaded>`)."
+}

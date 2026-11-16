@@ -1,0 +1,17 @@
+[package]
+name = "parse"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+ammonia = "4.2.4"
+contracts = { workspace = true }
+icalendar = "0.17.17"
+mail-parser = "1.0.1"
+markup5ever = "0.40.0"
+html5ever = "0.40.1"
+regex = "1.13.1"
+
+[dev-dependencies]
+serde_json = "1"

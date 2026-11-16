@@ -1,0 +1,8 @@
+# Separator lines, one per line: <kind> <TAB> <regex>, read case-insensitively against one trimmed line.
+# original: the "-----Original Message-----" family (what follows is the earlier message).
+# forward: the forwarded-message rule (what follows was forwarded on purpose).
+original	^-{2,}\s*(original message|message d'origine|ursprüngliche nachricht|mensaje original|messaggio originale|mensagem original|oorspronkelijk bericht|wiadomość oryginalna|algne kiri|alkuperäinen viesti|ursprungligt meddelande|исходное сообщение)\s*-{2,}$
+forward	^-{2,}\s*(forwarded message|message transféré|weitergeleitete nachricht|mensaje reenviado|messaggio inoltrato|mensagem encaminhada|doorgestuurd bericht|wiadomość przekazana|edasi saadetud kiri|välitetty viesti|vidarebefordrat meddelande|пересылаемое сообщение|original message follows)\s*-{2,}$
+forward	^begin forwarded message\s*:$
+forward	^début du message réexpédié\s*:$
+underscore	^_{10,}$

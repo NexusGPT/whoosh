@@ -1,0 +1,21 @@
+[package]
+name = "sync-gmail-api"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Gmail API sync adapter (history.list, labels, watch). Off unless the gmail_api_verified flag is on."
+build = "build.rs"
+
+[features]
+default = []
+# The real HTTPS transport over reqwest. Off by default: no test and no build of the core needs it, and nothing in
+# the tree may reach Google during the owner's absence. Compiled in the fixture run, never executed.
+live = ["dep:reqwest"]
+
+[dependencies]
+contracts = { workspace = true }
+netguard = { path = "../netguard" }   # rig-net-rust: a rig copy reaches this Mac only (the guard before every send and redirect)
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+reqwest = { version = "0.13", optional = true, default-features = false, features = ["blocking", "rustls"] }

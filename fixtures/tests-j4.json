@@ -1,0 +1,21 @@
+{
+  "about": "Test data for the tests-j4 lane (J4 accounts, Welcome, the 31st account, device sync). Numbers live in docs/CONSTANTS.md, never here. Accounts come from docs/design/fixtures/mac-main-sample.json. Nothing here is a real mail account or a real provider host.",
+  "unknown_domain_address": "owner@mail.unknown-example.test",
+  "unknown_domain_provider": "IMAP",
+  "garbage_addresses": ["not-an-address", "a@", "@b.example", "a b@c.example", "x@y", "", "   "],
+  "long_local_part_chars": 300,
+  "wrong_password_words": "wrong password",
+  "app_password_link_prefix": "https://",
+  "thirty_first": {
+    "id": "acc-31",
+    "address": "assem@thirty-first-example.test",
+    "name": "Account 31",
+    "colour": "#5F3DC4",
+    "provider": "IMAP"
+  },
+  "stub_servers": {
+    "host": "127.0.0.1",
+    "about": "authorisation and token endpoints are served on an ephemeral loopback port by the test itself; no provider host is ever contacted"
+  },
+  "qr_payload_forbidden_keys": ["password", "secret", "app_password", "refresh_token", "access_token", "address"]
+}

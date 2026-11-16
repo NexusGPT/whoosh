@@ -1,0 +1,106 @@
+{
+  "item": "8c3a0430",
+  "full_id": "8c3a0430-91d8-4b32-be81-7b0fe014861f",
+  "title": "Show the meaning index progress on screen",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "statusLineSaysNothingWhenNothingIsQueued,statusLineSaysTheShareWhileBuilding,statusLineSaysPausedInPlaceOfThePercentage,settingsLineGivesTheFiguresAndTheBarWhileBuilding,settingsLineSaysDoneWithoutABar,settingsLineSaysPausedAtTheFigures,settingsLineSaysHowManyMailsCouldNotBeRead,theSameLinesInFrenchReadTheFrenchCatalogueAndTheFrenchNumberFormat,zeroTotalGivesNoLineAndNoShare,theModelTakesAnAnnouncementAndOnlyThen",
+      "pass": "Test theModelTakesAnAnnouncementAndOnlyThen\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "0 missing",
+      "fail": "missing [1-9]",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-index-line-shows-while-the-meaning-index-builds +pass",
+      "fail": "par-index-line-shows-while-the-meaning-index-builds +fail|NOT JUDGED [^\\n]*par-index-line-shows-while-the-meaning-index-builds",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ gap checks, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "PASS J5\\.9/meaning-index-line-gives-the-figures-while-building.*\\n(?s:.*)PASS J5\\.9/meaning-index-line-says-how-many-mails-are-indexed-when-the-build-is-done.*\\n(?s:.*)PASS J5\\.9/status-line-says-the-share-while-the-index-builds",
+      "fail": "FAIL J5\\.9/(meaning-index-line|status-line-says)|NOT JUDGED J5\\.9/(meaning-index-line|status-line-says)|UNJUDGED J5\\.9/(meaning-index-line|status-line-says)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsaimac-check.py --selftest",
+      "pass": "index cases say which verb and which file are missing, and are never a pass: OK",
+      "fail": "selftest: FAILED|CLEAN-RUN",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "theIndexProgressVerbPutsItsTwoFiguresOnTheModelAndRefusesWhatIsNotTwoNumbers",
+      "pass": "passed",
+      "fail": "failed|recorded an issue",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Embedding/IndexProgress.swift",
+      "find": "public static func total(_ s: MeaningIndexBuilder.Status) -> Int { s.indexed + s.queued }",
+      "replace": "public static func total(_ s: MeaningIndexBuilder.Status) -> Int { s.queued }",
+      "proof": 0,
+      "red": "settingsLineGivesTheFiguresAndTheBarWhileBuilding\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/Embedding/IndexProgress.swift",
+      "find": "if isPaused(s) { return Words.text(\"indexing paused\") }",
+      "replace": "if false { return Words.text(\"indexing paused\") }",
+      "proof": 0,
+      "red": "statusLineSaysPausedInPlaceOfThePercentage\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchResultsList.swift",
+      "find": "guard IndexProgress.isBuilding(s) else { return nil }",
+      "replace": "",
+      "proof": 2,
+      "red": "par-index-line-shows-while-the-meaning-index-builds +fail"
+    },
+    {
+      "file": "Sources/Features/BackgroundWork/MeaningModelRow.swift",
+      "find": "if case .ready = s { row[\"index_text\"] = IndexProgress.settingsLine(idx)?.text ?? NSNull() } else { row[\"index_text\"] = NSNull() }",
+      "replace": "row[\"index_text\"] = NSNull()",
+      "proof": 4,
+      "red": "FAIL J5\\.9/meaning-index-line-gives-the-figures-while-building"
+    },
+    {
+      "file": "Sources/Features/MacShell/MacSyncStatus.swift",
+      "find": "\"index_paused\": IndexProgress.isPaused(s), \"index_text\": IndexProgress.statusLinePart(s) ?? NSNull()]",
+      "replace": "\"index_paused\": IndexProgress.isPaused(s), \"index_text\": NSNull()]",
+      "proof": 4,
+      "red": "FAIL J5\\.9/status-line-says-the-share-while-the-index-builds"
+    },
+    {
+      "file": "Sources/ControlSocket/FixtureVerbs.swift",
+      "find": "IndexProgressModel.shared.take(s)   // the figures are on screen when the reply is sent",
+      "replace": "_ = s   // the figures are on screen when the reply is sent",
+      "proof": 6,
+      "red": "theIndexProgressVerbPutsItsTwoFiguresOnTheModelAndRefusesWhatIsNotTwoNumbers\\(\\) failed|✘ Test theIndexProgressVerbPutsItsTwoFiguresOnTheModelAndRefusesWhatIsNotTwoNumbers"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner picks among the lead's drawn states of the line (SPEC A137: the lead draws the states, the owner picks); the shipped wording ('indexing 40 %' on the status line, 'Indexing your mail: 40 of 100' in Settings) is the candidate. Nothing else is left for a builder.",
+  "notes": "CLOSED for builders (lane tail-settings): the verb `fixture index-progress <indexed> <queued>` is served (FixtureVerbs.swift:200, proof 6); the hidden cases of the Settings line and the status row exist in checks/settingsaimac-check.py: J5.9/meaning-index-line-gives-the-figures-while-building, J5.9/meaning-index-line-says-how-many-mails-are-indexed-when-the-build-is-done (both read row mac-settings-ai.meaning: Sources/Features/BackgroundWork/MeaningModelRow.swift:41-43) and J5.9/status-line-says-the-share-while-the-index-builds (row mac-main.sync.line, MacSyncStatus.swift:131-134, hooked at MacShellFeature.swift:9); proof 4 now requires all three PASS lines, each with a broken copy above. App finding checked: none needed in SettingsAIMac or Embedding; the rows carry the fields the cases read, and `fixture reset` not clearing the figures (docs/lanes/fix-rest-app.md point 3) is answered inside the check (the last two index cases now send `fixture index-progress 0 0` in a finally). Not driven by any hidden case: the paused sentences (the verb sets no pause); the unit tests of proof 0 judge them. The hidden cases need the search model on this Mac (the Settings line exists only then; the case downloads it from the loopback stub, launch with WHOOSH_RIG_EMBED_PORT). Tests: Tests/Unit/IndexProgressTests.swift:14,20,28,34,42,51,58,67,79,85 (10 tests). The word 'of total' is a phrase of the item: the app says 'N of M'. English sentences must be in 14 languages (proof 1)."
+}

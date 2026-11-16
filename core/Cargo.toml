@@ -1,0 +1,17 @@
+# Whoosh core: one Cargo workspace. Every folder under crates/ is a member by the glob below,
+# so a lane adds its crate without editing this file (repo-shape.md rule 3: no hub edits).
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+uniffi = "0.29"
+contracts = { path = "crates/contracts" }
+
+[profile.release]
+lto = "thin"

@@ -1,0 +1,71 @@
+{
+  "item": "341faf01",
+  "full_id": "341faf01-2892-4417-bc7c-7cbeb486d2af",
+  "title": "Type-check and drive the window title change on main79",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "git cat-file -t 843fd34e",
+      "pass": "^commit$",
+      "fail": "fatal",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "git merge-base --is-ancestor 843fd34e HEAD && echo ancestor",
+      "pass": "^ancestor$",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/probes-check.py",
+      "pass": "^OK +window-titles-are-words: \\d+ windows, no title is an id",
+      "fail": "^(FAIL|NOT JUDGED) +(window-titles-are-words|steps-change-the-digest|install-state-new-is-a-new-installation)",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-macshell.py",
+      "pass": "^\\d+ checks, \\d+ failed, \\d+ not judged$",
+      "fail": "Traceback",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "^\\d+ checks, \\d+ failed, \\d+ not judged$",
+      "fail": "Traceback",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "^\\d+ checks, \\d+ failed, \\d+ not judged$",
+      "fail": "Traceback",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-341faf01\"",
+      "pass": "^\\d+ checks, \\d+ failed, \\d+ not judged$",
+      "fail": "Traceback",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "scripts/gates.sh (the pre-build checks) on the merge that holds 843fd34e, then the five hidden runs above on the built app; quote each run's result line from its log, and say for the two FAIL lines of _captures/tests/r79/probes-check-main79.log (steps-change-the-digest at :13, install-state-new-is-a-new-installation at :24) whether they recur",
+      "pass": "GATES GREEN at <commit>; window-titles-are-words reads OK; each of par-macshell, par-composermac, par-settingswindow and shots-sheet prints its `N checks, F failed, U not judged` line (a window was found); the two earlier FAIL lines are either gone or named with their cause"
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "This item is a run on a build, not a code change; its proofs are the runs. The merge 843fd34e exists (the reader: git cat-file -t = commit; proof 0 repeats it). Pass lines for the four screen checks are only their total line (`reaches its result line` in the acceptance): a check that finds no window ends NOT JUDGED lines but still prints the total, so the regexes accept any F and U; the lead reads F and U in the quoted lines and judges them (par-macshell and par-composermac print per-case lines through print_cases, par-settingswindow and shots-sheet do not). Proof 2 fails on the three case names of the old log (:7 and :21 were OK window-titles-are-words, :13 and :24 the two FAIL lines). The probes-check checks and their selftest are in item c7aed2f9; the composer window is not opened by probes-check (gap there). No mutant: a run has no one-line break; the title code's own mutant is in item c7aed2f9."
+}

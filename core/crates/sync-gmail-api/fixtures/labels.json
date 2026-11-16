@@ -1,0 +1,34 @@
+{
+ "note": "Shaped after the Gmail REST reference (users.history.list, users.messages.get format=raw). Written by hand with invented addresses; no real mailbox was read.",
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "labels",
+   "query": [],
+   "status": 200,
+   "body": {
+    "labels": [
+     {
+      "id": "INBOX",
+      "name": "INBOX",
+      "messageListVisibility": "hide",
+      "labelListVisibility": "labelShow",
+      "type": "system"
+     },
+     {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+     },
+     {
+      "id": "Label_12",
+      "name": "Receipts",
+      "messageListVisibility": "show",
+      "labelListVisibility": "labelShow",
+      "type": "user"
+     }
+    ]
+   }
+  }
+ ]
+}

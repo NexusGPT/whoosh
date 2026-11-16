@@ -1,0 +1,126 @@
+{
+  "provider": "gemini",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "key": "AIza-FIXTURE-not-a-real-key-0001",
+  "bad_key": "AIza-FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "list_models": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models",
+          "headers": {
+            "x-goog-api-key": "AIza-FIXTURE-not-a-real-key-0001"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "models": [
+              {
+                "name": "models/fixture-gemini-a",
+                "displayName": "Fixture A",
+                "supportedGenerationMethods": [
+                  "generateContent",
+                  "countTokens"
+                ]
+              },
+              {
+                "name": "models/fixture-embed-b",
+                "displayName": "Embed",
+                "supportedGenerationMethods": [
+                  "embedContent"
+                ]
+              }
+            ],
+            "nextPageToken": "page/2+token="
+          }
+        }
+      },
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models?pageToken=page%2F2%2Btoken%3D",
+          "headers": {
+            "x-goog-api-key": "AIza-FIXTURE-not-a-real-key-0001"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "models": [
+              {
+                "name": "models/fixture-gemini-c",
+                "displayName": "Fixture C",
+                "supportedGenerationMethods": [
+                  "generateContent"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models",
+          "headers": {
+            "x-goog-api-key": "AIza-FIXTURE-not-a-real-key-REFUSED"
+          }
+        },
+        "response": {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": 400,
+              "message": "API key not valid. Please pass a valid API key.",
+              "status": "INVALID_ARGUMENT",
+              "details": [
+                {
+                  "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                  "reason": "API_KEY_INVALID"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "complete": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models/fixture-gemini-a:generateContent",
+          "headers": {
+            "x-goog-api-key": "AIza-FIXTURE-not-a-real-key-0001"
+          },
+          "body_contains": [
+            "\"text\":\"Shorten this reply to one line.\"",
+            "\"systemInstruction\"",
+            "\"maxOutputTokens\":"
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "candidates": [
+              {
+                "content": {
+                  "role": "model",
+                  "parts": [
+                    {
+                      "text": "Thanks Marta, Friday works for me."
+                    }
+                  ]
+                },
+                "finishReason": "STOP"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

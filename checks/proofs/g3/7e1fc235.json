@@ -1,0 +1,75 @@
+{
+  "item": "7e1fc235",
+  "full_id": "7e1fc235-5416-4887-9284-ac452c20797b",
+  "title": "Fix the body the server never sends",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_body_r2 a_body_the_server_never_sends_is_logged_with_its_case",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_body_r2 a_600_kb_body_is_fetched_and_stored_in_every_legal_answer_shape",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "lead",
+      "run": "on the owner's data, counts only, after the build with the case wording has run on the owner's Mac: the number of lines in core.log that hold 'the server sent no body for UID 143411' and the case words after it, and whether that message has a stored body (a count of rows with a non-empty body for that UID, never the text)",
+      "pass": "the line names the case (size, literal or fetch form) and the body is stored, or the reader's own words say why it cannot be shown"
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_body_gone a_uid_the_server_no_longer_holds_is_removed_after_one_pass_and_never_asked_again -- --test-threads=1",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_body_gone a_uid_the_server_lists_without_a_body_is_asked_once_in_ten_passes_and_logged_once -- --test-threads=1",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-bodygone",
+      "pass": "8 checks, 0 failed, 0 not judged|9 checks, 0 failed, 0 not judged",
+      "fail": "FAIL ",
+      "timeout_s": 1800
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/bodies.rs",
+      "find": "self.no_body(account, folder, id, &format!(\"the server sent no body for UID {uid}{case}\"));",
+      "replace": "self.no_body(account, folder, id, &format!(\"the server sent no body for UID {uid}\"));",
+      "proof": 0,
+      "red": "a_body_the_server_never_sends_is_logged_with_its_case.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/sync-imap/src/checked.rs",
+      "find": "                if silent && !uid_search(s, &format!(\"UID {uid}\")).await?.contains(&uid) {",
+      "replace": "                if false {",
+      "proof": 3,
+      "red": "panicked|FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/bodies.rs",
+      "find": "        lock(&self.failed).retain(|_, f| f.no_body || !(f.account == account && f.folder == folder));",
+      "replace": "        lock(&self.failed).retain(|_, f| !(f.account == account && f.folder == folder));",
+      "proof": 4,
+      "red": "panicked|FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": "Only the owner's Mac holds the real fetch trace of UID 143411 (the sweetgreen newsletter): run the installed build, let it fetch, and let the lead read the counts from the owner's core.log and database on a private copy.",
+  "notes": "fix-realcore round 9 (2026-11-13): a UID with no FETCH line in all three asks is checked once with `UID SEARCH UID <n>` (core/crates/sync-imap/src/checked.rs `fetch_bodies`); not listed: the row is removed as a mail that left its folder (core/crates/engine/src/bodies.rs `left_the_folder`, an archived row kept), one log line; listed with no body: asked again after a pause doubling from BODY_FETCH_RETRY_S, at most BODY_NO_BODY_TRIES_MAX tries per launch (proposed ledger rows in docs/lanes/fix-realcore.md Round 9), the folder's sync no longer clears it, one log line per decision, and `message/<id>/body_unavailable` says why (identifiers). The CONDSTORE resync no longer skips the vanished check when HIGHESTMODSEQ is unchanged (sync-imap adapter.rs `resync`). Proofs 3-5 are this round's; the owner part (proof 2) stays. | In the repo and proved by cargo: the log line now carries the case ('BODY[] came back NIL', 'as an empty literal, 0 bytes', 'no BODY[] in the answer', no FETCH answer): bodies.rs:278 (None arm), test engine_body_r2.rs:142 a_body_the_server_never_sends_is_logged_with_its_case (four answer shapes for UID 143411); a 600 kB body in every legal answer shape is fetched and stored, engine_body_r2.rs:115; the sweetgreen mail as the server holds it (multipart/alternative, quoted-printable) is the fixture of engine_body_r1.rs:35 and the tests from :122. The cause for the owner's real UID is NOT named by anything in the repo: it needs the trace from the owner's Mac (size, literal, fetch form). No claim about the real server is made here."
+}

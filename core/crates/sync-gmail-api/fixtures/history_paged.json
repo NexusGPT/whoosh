@@ -1,0 +1,116 @@
+{
+ "note": "Shaped after the Gmail REST reference (users.history.list, users.messages.get format=raw). Written by hand with invented addresses; no real mailbox was read.",
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "history",
+   "query": [
+    [
+     "startHistoryId",
+     "1006"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "history": [
+     {
+      "id": "1007",
+      "messagesAdded": [
+       {
+        "message": {
+         "id": "m-p-1",
+         "threadId": "t-p1",
+         "labelIds": [
+          "INBOX"
+         ]
+        }
+       }
+      ]
+     }
+    ],
+    "nextPageToken": "page-2-token",
+    "historyId": "1008"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "history",
+   "query": [
+    [
+     "startHistoryId",
+     "1006"
+    ],
+    [
+     "pageToken",
+     "page-2-token"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "history": [
+     {
+      "id": "1008",
+      "messagesAdded": [
+       {
+        "message": {
+         "id": "m-p-2",
+         "threadId": "t-p2",
+         "labelIds": [
+          "INBOX"
+         ]
+        }
+       }
+      ]
+     }
+    ],
+    "historyId": "1008"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages/m-p-1",
+   "query": [
+    [
+     "format",
+     "raw"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "id": "m-p-1",
+    "threadId": "t-p1",
+    "labelIds": [
+     "INBOX"
+    ],
+    "snippet": "First page body",
+    "historyId": "1007",
+    "internalDate": "1793700000000",
+    "sizeEstimate": 237,
+    "raw": "RnJvbTogQm9iIEV4YW1wbGUgPGJvYkBleGFtcGxlLnRlc3Q-DQpUbzogb3duZXJAZXhhbXBsZS50ZXN0DQpTdWJqZWN0OiBQYWdlIG9uZQ0KTWVzc2FnZS1JRDogPG0tcC0xQG1haWwuZXhhbXBsZS50ZXN0Pg0KRGF0ZTogVHVlLCAzIE5vdiAyMDI2IDA5OjAwOjAwICswMDAwDQpNSU1FLVZlcnNpb246IDEuMA0KQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PXV0Zi04DQoNCkZpcnN0IHBhZ2UgYm9keQ0K"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages/m-p-2",
+   "query": [
+    [
+     "format",
+     "raw"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "id": "m-p-2",
+    "threadId": "t-p2",
+    "labelIds": [
+     "INBOX"
+    ],
+    "snippet": "Second page body",
+    "historyId": "1008",
+    "internalDate": "1793700060000",
+    "sizeEstimate": 242,
+    "raw": "RnJvbTogQ2Fyb2wgRXhhbXBsZSA8Y2Fyb2xAZXhhbXBsZS50ZXN0Pg0KVG86IG93bmVyQGV4YW1wbGUudGVzdA0KU3ViamVjdDogUGFnZSB0d28NCk1lc3NhZ2UtSUQ6IDxtLXAtMkBtYWlsLmV4YW1wbGUudGVzdD4NCkRhdGU6IFR1ZSwgMyBOb3YgMjAyNiAwOTowMDowMCArMDAwMA0KTUlNRS1WZXJzaW9uOiAxLjANCkNvbnRlbnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD11dGYtOA0KDQpTZWNvbmQgcGFnZSBib2R5DQo"
+   }
+  }
+ ]
+}

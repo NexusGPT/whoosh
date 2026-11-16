@@ -1,0 +1,120 @@
+{
+  "item": "ab649850",
+  "full_id": "ab649850-34ce-4f7c-9d87-1703527c3575",
+  "title": "Add Remind me if no reply on a draft",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_actions",
+      "pass": "test result: ok\\. 14 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p store --test engine_actions",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "(?s)par-composermac-r4/remind-key-opens-the-time-list\\s+pass .*par-composermac-r4/remind-pick-sets-the-reminder\\s+pass .*par-composermac-r4/send-gives-the-reminder-to-the-core\\s+pass .*par-composermac-r4/reminder-fires-when-no-reply-arrives\\s+pass .*par-composermac-r4/reminder-stays-quiet-when-a-reply-arrived\\s+pass ",
+      "fail": "par-composermac-r4/(remind|send-gives|reminder)[a-z-]*\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-keys.py",
+      "pass": "par-keys-composer/shift-cmd-h-remind-me\\s+pass ",
+      "fail": "par-keys-composer/shift-cmd-h-remind-me\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_reminder_inbox -- --nocapture",
+      "pass": "(?s)reminder-inbox read on 2002 mails: best of 5 = \\d+ ms.*test result: ok\\. 4 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "unit",
+      "run": "aFiredReminderMarksItsThreadsRowInTheInboxListAndAWaitingOrAnsweredOneDoesNot,theRowsKeyChangesWhenTheReminderFiresSoTheChipIsDrawn,theRowDrawsTheReminderChipOnlyWhenItsReminderFired,theChipsWordIsTheCataloguesNotAnInlineSentence",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "0 missing",
+      "fail": "missing [1-9]",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "par-composermac-r4/fired-reminder-marks-the-inbox-row\\s+pass ",
+      "fail": "par-composermac-r4/fired-reminder-marks-the-inbox-row\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/reminders.rs",
+      "find": "check_remind_if_no_reply(at_ms, now_ms)?;",
+      "replace": "let _ = check_remind_if_no_reply(at_ms, now_ms);",
+      "proof": 0,
+      "red": "remind_if_no_reply_is_set_on_a_draft_and_refused_for_the_past_and_for_an_unknown_draft \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/delta10.rs",
+      "find": "None => self.outbox_reply_reminder(draft_id)?",
+      "replace": "None => None",
+      "proof": 0,
+      "red": "a_reminder_set_on_an_outbox_entry_is_read_cleared_and_follows_the_sent_message \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/read.rs",
+      "find": "out.insert(t);",
+      "replace": "let _ = t;",
+      "proof": 4,
+      "red": "thread 'a_fired_reminders_thread_sits_in_the_inbox_with_the_mark_and_a_waiting_one_has_none' (\\(\\d+\\) )?panicked"
+    },
+    {
+      "file": "core/crates/engine/src/reminders.rs",
+      "find": "if !away.is_empty() {",
+      "replace": "if false {",
+      "proof": 4,
+      "red": "thread 'a_thread_put_away_comes_back_to_the_inbox_when_its_reminder_fires_and_done_on_the_row_clears_it' (\\(\\d+\\) )?panicked"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCore.swift",
+      "find": "replyReminders.keys.contains { reminderThreadLocked($0) == thread && replyReminderInView(state: reminderStateLocked($0)) }",
+      "replace": "false",
+      "proof": 5,
+      "red": "Test aFiredReminderMarksItsThreadsRowInTheInboxListAndAWaitingOrAnsweredOneDoesNot\\(\\) (failed|recorded an issue)"
+    },
+    {
+      "file": "Sources/Features/InboxList/InboxRowView.swift",
+      "find": "static func showsReminderChip(_ r: InboxRow) -> Bool { r.reminderFired }",
+      "replace": "static func showsReminderChip(_ r: InboxRow) -> Bool { false }",
+      "proof": 5,
+      "red": "Test theRowDrawsTheReminderChipOnlyWhenItsReminderFired\\(\\) (failed|recorded an issue)"
+    },
+    {
+      "file": "core/crates/engine/src/reminders.rs",
+      "find": "crate::unarchive::run_recording(store, roles, away, false)",
+      "replace": "crate::unarchive::run_recording(store, roles, away, true)",
+      "proof": 4,
+      "red": "the automatic return leaves no undo entry|thread 'a_thread_put_away_comes_back_to_the_inbox_when_its_reminder_fires_and_done_on_the_row_clears_it' (\\(\\d+\\) )?panicked"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) ⌘⇧H on a draft sets a reminder date: key ⇧⌘H (KeyPreset.swift:180 remind-me), the composer's time list: par-composermac.py:580-608 cases remind-key-opens-the-time-list, remind-pick-sets-the-reminder, send-gives-the-reminder-to-the-core (core reads `reply_reminder/<entry>/at_ms`); par-keys-composer/shift-cmd-h-remind-me (par-keys.py:1103-1106); core: core/crates/engine/src/reminders.rs:28-40 `set` (stored on the draft or its outbox entry; the past and unknown ids refused), engine_actions.rs:332 remind_if_no_reply_is_set_on_a_draft_and_refused_for_the_past_and_for_an_unknown_draft, :391 a_reminder_set_on_an_outbox_entry_is_read_cleared_and_follows_the_sent_message; core/crates/store/tests/engine_actions.rs:98 a_reminder_is_set_on_a_draft_refused_in_the_past_and_replaces_the_one_of_the_same_reply_thread. (2) a reply before the time answers the reminder: engine_actions.rs:353 a_reply_that_comes_before_the_time_answers_the_reminder_and_it_never_fires; par-composermac.py:611-617 reminder-stays-quiet-when-a-reply-arrived. (3) no reply by then, the thread is listed and fires once: engine_actions.rs:373 a_reminder_with_no_reply_comes_due_lists_the_thread_and_fires_once; par-composermac.py:664 fired-reminder-is-a-row-of-the-reminders-view (mailbox/reminders/rows 0 -> 1). (4) core test green and mutant red: the two mutants are the lane's remind-accepts-past and sent-ignores-outbox (docs/lanes/engine-actions.md:21,24; delta10.rs:172); the lane also names remind-keeps-both (store). Find strings occur once at 0aa1558e. par-composermac.py prints its cases with print_cases (:1391): 'par-composermac-r4/<case>  pass|fail|unjudged  detail'. The reader's finding that the mutant and the driven check were missing is wrong for the check (it exists) and an evidence gap for the core run. gap-remind update: the owner's decision (the lead's default) reads the acceptance literally, the INBOX list shows the thread again with a reminder mark; the Reminders view is unchanged. | OLD GAP (before lane gap-states, 2026-11-12): kind check, size S, plus the lead's build steps. BUILT: the inbox list itself shows a thread whose reminder fired, marked: InboxRow.reminder_fired (contracts/src/command.rs, one new field, default false), store read.rs reminder_fired_threads and reminder_return_candidates, engine reminders.rs mark_rows (called by reads.rs inbox) and fire_due_and_return (a thread put away comes back through Unarchive when its reminder fires), the row chip InboxRowView.reminderChip (catalogue word 'Reminder', 14 languages), rows mac-main.list serves `reminder`, FixtureCore.inboxRow serves reminderFired; tests in engine_reminder_inbox.rs and Tests/Unit/ReminderInboxRowTests.swift. STILL MISSING: (1) the lead generates the Swift bindings (the new field) before compiling; (2) the driven case ALREADY EXISTS (gap-composer-models): checks/parity/par-composermac.py:673 `fired-reminder-marks-the-inbox-row`, but it expects the WORD `fired` (ROW_MARK, line 1672) and the app serves a BOOL: Sources/Features/InboxList/ListProbe.swift:20 `\"reminder\": r.reminderFired` and the fixture row `reminderFired` are true/false, so on the app the case reads `True` against `fired` and goes red; one of the two lines must change (ROW_MARK = True is the smaller change; InboxList and par-composermac are not fix-screens' files, and a check's expected value is not edited by a builder); (3) none of this was compiled or run by the builder (rule: no cargo, no swift). || ALSO (the other helper's text): kind check, size S, plus the lead's build steps. BUILT: the inbox list itself shows a thread whose reminder fired, marked: InboxRow.reminder_fired (contracts/src/command.rs, one new field, default false), store read.rs reminder_fired_threads and reminder_return_candidates, engine reminders.rs mark_rows (called by reads.rs inbox) and fire_due_and_return (a thread put away comes back through Unarchive when its reminder fires), the row chip InboxRowView.reminderChip (catalogue word 'Reminder', 14 languages), rows mac-main.list serves `reminder`, FixtureCore.inboxRow serves reminderFired; tests in engine_reminder_inbox.rs and Tests/Unit/ReminderInboxRowTests.swift. FIX-CORE (docs/lanes/fix-core.md): finding F2 of gap-remind is applied: the automatic return no longer records an undo entry (engine/src/unarchive.rs `run_recording(.., record_undo)`; reminders.rs passes false), asserted in proof 4's third test and broken by mutant 6; not compiled or run. STILL MISSING: (1) the lead generates the Swift bindings (the new field) before compiling; (2) the driven check case that reads the inbox row's `reminder` after the reminder fires, in checks/parity/par-composermac.py near fired() (owned by another helper; exact case in docs/lanes/gap-remind.md finding F1); (3) none of this was compiled or run by the builder (rule: no cargo, no swift)."
+}

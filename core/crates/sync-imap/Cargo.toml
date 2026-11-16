@@ -1,0 +1,33 @@
+[package]
+name = "sync-imap"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[dependencies]
+netguard = { path = "../netguard" }   # engine-act-r6 round 5: a rig copy reaches this Mac only (outbound_allowed before any lookup or dial)
+contracts = { workspace = true }
+async-imap = { version = "0.12", default-features = false, features = ["runtime-tokio", "compress"] }   # imap-compress: COMPRESS=DEFLATE (RFC 4978) through the library's own `Session::compress`
+tokio = { version = "1", default-features = false, features = ["rt", "macros", "net", "time", "sync", "io-util"] }
+# contracts delta 14: the person's own OAuth2 sign-in, refreshed before expiry, as the XOAUTH2 token source
+oauth = { path = "../oauth" }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring"] }
+rustls-native-certs = "0.8"
+futures = "0.3"
+async-trait = "0.1"
+base64 = "0.22"
+mail-parser = "0.11"
+# body-r1: the row preview is the decoded text of the header block plus the first body bytes (parse_message, PREVIEW_CHARS)
+parse = { path = "../parse" }
+imap-proto = "0.17"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+# The send crate owns the SMTP settings types; lettre (MIT) is the same SMTP client it uses, so validation checks the sending half with the same transport.
+send = { path = "../send" }
+lettre = { version = "0.11", default-features = false, features = ["smtp-transport", "hostname", "rustls-tls"] }
+
+[dev-dependencies]
+secrets = { path = "../secrets" }
+# imap-compress: the test server inflates and deflates the connection with the same raw DEFLATE codec the library uses
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+tokio = { version = "1", default-features = false, features = ["rt-multi-thread", "macros", "net", "time", "sync", "io-util"] }

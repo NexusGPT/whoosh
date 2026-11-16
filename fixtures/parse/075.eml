@@ -1,0 +1,18 @@
+From: Orchard Pay <hello@example.com>
+To: Assem Example <assem@example.org>
+Subject: Verify your email address
+Date: Fri, 13 Nov 2026 12:24:00 +0000
+Message-ID: <274eee65f9762c66@mail.example.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Hello,
+
+Verify your email by opening this link:
+
+https://auth.example.com/verify?token=b06faf1229158f5a87140488&email=assem%40example.org
+
+If you did not ask for it, ignore this email.
+
+To stop these emails visit https://example.net/unsubscribe?u=96ef74

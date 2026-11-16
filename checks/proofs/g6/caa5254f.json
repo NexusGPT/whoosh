@@ -1,0 +1,43 @@
+{
+  "item": "caa5254f",
+  "full_id": "caa5254f-330f-49a5-8d5e-fd8e5092afa6",
+  "title": "Keep the hidden copy's reads right on any display setup",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-notch.py --selftest",
+      "pass": "37 round-6 checks green on the model, 37 mutants, 0 not red",
+      "fail": "RED on the model|NOT RED|NO MUTANT|STRAY MUTANT|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-notch.py",
+      "pass": "(?s)(?=.*J6\\.25/top-of-screen-without-notch pass )(?=.*J6\\.46/no-notch-panel-at-screen-top pass ).*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "J6\\.25/top-of-screen-without-notch +(fail|unjudged)|J6\\.46/no-notch-panel-at-screen-top +(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-quickreply.py",
+      "pass": "(?s)(?=.*par-quickreply/sending-card-is-lifted pass )(?=.*par-quickreply/sent-card-lands-flat pass )(?=.*par-quickreply/landing-light-ran pass ).*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "par-quickreply/(sending-card-is-lifted|sent-card-lands-flat|landing-light-ran) +(fail|unjudged)",
+      "timeout_s": 1500
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/parity/par-notch.py",
+      "find": "    return [w[\"y\"] - parked - top for w in wins]",
+      "replace": "    return [w[\"y\"] - parked for w in wins]",
+      "proof": 0,
+      "red": "RED on the model: J6\\.46/no-notch-panel-at-screen-top expected \\[0\\], got \\[-551\\]"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The notch read: checks/parity/par-notch.py panel_tops (the window server's Y, less the row's `parked`, less the top of the display the notch targets, read from the host by _real_screen_top); J6.25 and J6.46 use it. The self-test's model display sits at MODEL_SCREEN_TOP -551, so a read against 0 is red on the model (the broken copy above gives the red of 14 Nov word for word). Measured 15 Nov on test copy main191, one display 1512x982 (lead-tools/probe-notch-pos.py): row parked 6000, window frame (448, -5618, 616, 600), window server Y 6000, in every shape. The Mac's power record (pmset -g log) says the display was off from 18:39 to 21:04 on 14 Nov and the lid was opened at 21:04: the four reds of 19:55 to 20:03 ran with the lid closed."
+}

@@ -1,0 +1,196 @@
+{
+  "item": "f1a5ceef",
+  "full_id": "f1a5ceef-d3c1-40fa-b284-be0d5b335a82",
+  "title": "Show Cmd+Enter as the send key on every reply control",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theReplySendCapIsTheComposersCommandReturn,theReplyHelpNamesCommandReturnAndNotControlReturn,everyLanguageOfTheSendHelpNamesOnlyCommandReturn,controlReturnStillSendsFromTheReplyField,plainEnterNeverSendsFromTheReplyField,commandReturnSendsFromTheReplyField,commandReturnAndControlReturnAreBothBoundKeys,theNotchCardSendCapIsTheComposersCommandReturn",
+      "pass": "Test commandReturnAndControlReturnAreBothBoundKeys\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-quickreply.py",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL [^ ]*(send-button-shows-key-cap|draft-card-keys-shown|failed-card-shows-code|ctrl-enter-sends|cmd-enter-still-sends|cmd-enter-key-sends-draft|draft-card-is-lifted-glass|return-adds-a-line-and-sends-nothing|cmd-return-key-event-sends|discard-key-in-an-open-reply-removes-the-draft|backspace-key-event-removes-the-draft|r-puts-the-cursor-in-the-reply-with-a-draft-card-shown|r-puts-the-cursor-in-the-reply-with-no-card|empty-reply-leaves-no-draft|failed-card-offers-retry-and-edit-with-keys|cmd-e-puts-the-failed-words-back-in-the-reply|cancel-leaves-when-the-window-ends)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "read the results file par-quickreply writes (_captures/results/par-quickreply/) or the case lines its main() prints (print_cases :933), and take the five cases by name",
+      "pass": "(send-button-shows-key-cap|draft-card-keys-shown|failed-card-shows-code|ctrl-enter-sends|cmd-enter-still-sends|cmd-enter-key-sends-draft) +pass"
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-quickreply.py --selftest",
+      "pass": "selftest: [0-9]+ checks, [0-9]+ mutants, 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/keycaps-check.py --selftest",
+      "pass": "keycaps selftest: green \\(0 problems\\)",
+      "fail": "[1-9][0-9]* problem|NOT RED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "0 missing",
+      "fail": "missing [1-9]",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-notch.py",
+      "pass": "(?m)^J6\\.23/send-cap-is-command-return +pass ",
+      "fail": "(?m)^J6\\.23/send-cap-is-command-return +(fail|unjudged) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-notch.py",
+      "pass": "(?m)^J6\\.34/open-actions-carry-keys +pass ",
+      "fail": "(?m)^J6\\.23/send-cap-is-command-return +(fail|unjudged) ",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/QuickReply/ReplyContext.swift",
+      "find": "public static let sendCap = \"⌘↵\"",
+      "replace": "public static let sendCap = \"⌃↵\"",
+      "proof": 0,
+      "red": "theReplySendCapIsTheComposersCommandReturn\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/QuickReply/ThreadCardParts.swift",
+      "find": "static let sendCap = QuickReplyCopy.sendCap",
+      "replace": "static let sendCap = \"⌃↵\"",
+      "proof": 0,
+      "red": "theReplySendCapIsTheComposersCommandReturn\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/QuickReply/ReplyContext.swift",
+      "find": "public static var sendHelp: String { Words.text(\"Send (⌘↵)\") }",
+      "replace": "public static var sendHelp: String { Words.text(\"Send (⌃)\") }",
+      "proof": 0,
+      "red": "theReplyHelpNamesCommandReturnAndNotControlReturn\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/QuickReply/ReplyContext.swift",
+      "find": "public static let sendCap = \"⌘↵\"",
+      "replace": "public static let sendCap = \"⌃↵\"",
+      "proof": 1,
+      "red": "FAIL [^ ]*send-button-shows-key-cap"
+    },
+    {
+      "file": "Sources/Features/Notch/NotchReply.swift",
+      "find": "static let sendCap = QuickReplyCopy.sendCap",
+      "replace": "static let sendCap = \"⌃↵\"",
+      "proof": 0,
+      "red": "theNotchCardSendCapIsTheComposersCommandReturn\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyFeature.swift",
+      "find": "            \"⌘Enter\": sendKey,\n",
+      "replace": "",
+      "proof": 1,
+      "red": "FAIL [^ ]*cmd-enter-key-sends-draft"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyFeature.swift",
+      "find": "\"cap\": NotchReply.sendCap",
+      "replace": "\"cap\": \"⌃↵\"",
+      "proof": 6,
+      "red": "(?m)^J6\\.23/send-cap-is-command-return +fail "
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyBar.swift",
+      "find": "            // main115: this handler sent the reply into the undo window). ⌘↵ and ⌃↵ send through the Send button's shortcuts (QuickReplySendPill).\n",
+      "replace": "            // main115: this handler sent the reply into the undo window). ⌘↵ and ⌃↵ send through the Send button's shortcuts (QuickReplySendPill).\n            .onKeyPress(.return, phases: .down) { _ in _ = model.send(app); return .handled }\n",
+      "proof": 1,
+      "red": "FAIL [^ ]*return-adds-a-line-and-sends-nothing"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyFeature.swift",
+      "find": "(model.aiEnter(m) || newLineKey(m)) },",
+      "replace": "(model.aiEnter(m) || (model.isOpen && model.send(m))) },",
+      "proof": 1,
+      "red": "FAIL [^ ]*return-adds-a-line-and-sends-nothing"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyFeature.swift",
+      "find": "let sendKey: (AppModel) -> Bool = { m in model.isOpen ? model.send(m) :",
+      "replace": "let sendKey: (AppModel) -> Bool = { m in model.isOpen ? true :",
+      "proof": 1,
+      "red": "FAIL [^ ]*cmd-return-key-event-sends"
+    },
+    {
+      "file": "Sources/Features/QuickReply/ThreadCardsRegistry.swift",
+      "find": "        if q.showsBox, let open = q.threadId, drafts.contains(where: { $0.threadId == open }) { return nil }\n",
+      "replace": "",
+      "proof": 1,
+      "red": "FAIL [^ ]*no-draft-card-beside-an-open-reply"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyDrafts.swift",
+      "find": "        guard (try? drafts.delete(draftId: id, core: m.core)) != nil else { return false }\n        if openDraftId == id { openDraftId = nil }",
+      "replace": "        guard true else { return false }\n        if openDraftId == id { openDraftId = nil }",
+      "proof": 1,
+      "red": "FAIL [^ ]*discard-key-in-an-open-reply-removes-the-draft"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyFeature.swift",
+      "find": "            \"⌘Backspace\": { m in !(model.isOpen && model.fieldFocused) && ThreadCardsRegistry.deleteShownCard(m) },\n",
+      "replace": "",
+      "proof": 1,
+      "red": "FAIL [^ ]*backspace-key-event-removes-the-draft"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyBar.swift",
+      "find": "        guard model.wantsKeys, model.showsBox, model.header.focus == .none, model.ai.focus == .reply else { return }\n        focused = true\n",
+      "replace": "        return\n        guard model.wantsKeys, model.showsBox, model.header.focus == .none, model.ai.focus == .reply else { return }\n        focused = true\n",
+      "proof": 1,
+      "red": "FAIL [^ ]*r-puts-the-cursor-in-the-reply-with-a-draft-card-shown"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyDrafts.swift",
+      "find": "            guard !text.isEmpty else { return }\n            openDraftId = try? drafts.save",
+      "replace": "            openDraftId = try? drafts.save",
+      "proof": 1,
+      "red": "FAIL [^ ]*empty-reply-leaves-no-draft"
+    },
+    {
+      "file": "Sources/Features/QuickReply/QuickReplyFeature.swift",
+      "find": "            \"⌘E\": { model.editNewestFailed($0) },\n",
+      "replace": "",
+      "proof": 1,
+      "red": "FAIL [^ ]*cmd-e-puts-the-failed-words-back-in-the-reply"
+    },
+    {
+      "file": "Sources/Features/QuickReply/ThreadCardsRegistry.swift",
+      "find": "\n                        row[\"edit\"] = ThreadCardIds.outgoingEdit(i); row[\"edit_cap\"] = ThreadCardCopy.editCap",
+      "replace": "",
+      "proof": 1,
+      "red": "FAIL [^ ]*failed-card-offers-retry-and-edit-with-keys"
+    },
+    {
+      "file": "Sources/Features/QuickReply/ThreadOutgoingCard.swift",
+      "find": "if !countdown(until).isExpired(at: ctx.date) {",
+      "replace": "if true {",
+      "proof": 1,
+      "red": "FAIL [^ ]*cancel-leaves-when-the-window-ends"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/Features/QuickReply/ReplyContext.swift:48-49 (sendCap and sendHelp), ThreadCardParts.swift:88, QuickReplyControls.swift:3,34, QuickReplyBar.swift:95, QuickReplyFeature.swift:96. SPEC A145. The first and fourth mutants are the same edit judged by a unit proof and by the hidden proof. 'a hidden look on a build shows the cap': proof 1 and 2 (row reads, not a picture); a picture would be a hidden shot of the slab: checks/shots-sheet.py (not used here). tail-small (2026-11-11): the lead changed the Reply row today, so the owner's decision is made as the lead's: Sources/Features/Notch/NotchRows.swift:62 serves \"key\": NotchReply.sendCap (⌘↵, = QuickReplyCopy.sendCap, NotchReply.swift:14) and :73 the open quick reply row serves the same cap; checks/parity/par-notch.py:325 (J6.34 open-actions-carry-keys) expects [(\"Mark read\", \"U\"), (\"Archive\", \"E\"), (\"Reply\", \"⌘↵\")] and :230 (J6.23 send-cap-is-command-return) expects [\"⌘↵\"]. Proof 7 is the J6.34 line of the same par-notch run as proof 6; mutant 7 (the Reply row back to NotchFeature.sendKey, ⌃Enter) is its broken copy, red on J6.34/open-actions-carry-keys. The notch still binds ⌃Enter (NotchFeature.swift:103,110): that binding is unshown, as NotchReply.swift:13 says. Not run here: the lead's run of proofs 6 and 7 and of mutant 7. | 14 Nov 2026: broken copy 7 (the notch's open-mail actions row showing the send cap on Reply) removed: by the owner's pick the open mail's Reply button starts the reply and shows R; the send cap stays on the reply's own send control (par-notch J6.23/send-cap-is-command-return)."
+}

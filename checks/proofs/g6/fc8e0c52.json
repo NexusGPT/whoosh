@@ -1,0 +1,99 @@
+{
+  "item": "fc8e0c52",
+  "full_id": "fc8e0c52-b7e6-4c27-84af-388b73c4224f",
+  "title": "Let decisions pick any node of the label tree",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p decision --test decide --test labels",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){2}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "(?s)a-tree-node-the-menu-lists-every-node-with-its-path\\s+pass .*a-tree-node-a-rule-files-under-a-nested-node\\s+pass .*a-tree-node-the-preview-files-a-match-under-the-node\\s+pass .*a-tree-node-the-model-proposes-a-child-of-an-existing-node\\s+pass .*a-tree-node-accepting-the-proposal-adds-a-rule\\s+pass ",
+      "fail": "a-tree-node-[a-z-]+\\s+fail",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "(?s)a-tree-node-decided-by-names-the-node\\s+pass .*a-tree-node-the-owner-picks-a-nested-node-for-a-rule\\s+pass .*a-tree-node-apply-files-under-the-node-in-the-core\\s+pass .*a-tree-node-accepting-the-proposal-creates-the-label\\s+pass ",
+      "fail": "a-tree-node-[a-z-]+\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "STILL GREEN|MUTANTS \\|[^\\n]*\\| RED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_decision_list",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "unit",
+      "run": "aRuleOfTheOwnerFilesUnderANestedNodeWithItsAiCardOff,aRuleTheNodeAlreadyHoldsIsNotWrittenTwice,aBadDecisionListIsRefusedAndWritesNothing,theEntryDoorsExistForTheSwitchTheQuestionAndEveryTreeNode,theLabelsRuleReachesTheCoreAsACondition",
+      "pass": "Test run with 5 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/decision/src/decide.rs",
+      "find": "let mut options: Vec<String> = offered_paths(labels).into_keys().collect();",
+      "replace": "let mut options: Vec<String> = Vec::new();",
+      "proof": 0,
+      "red": "FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/decision_list.rs",
+      "find": "if !held.iter().any(|c| &c.rules == rule) {",
+      "replace": "if false && !held.iter().any(|c| &c.rules == rule) {",
+      "proof": 4,
+      "red": "a_rule_files_under_a_nested_node_with_its_ai_card_off.*FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/decision_list.rs",
+      "find": "if !held.iter().any(|c| &c.rules == rule) {",
+      "replace": "if true {",
+      "proof": 4,
+      "red": "a_rule_already_on_the_node_is_not_written_twice.*FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/decision_list.rs",
+      "find": "if !known.contains(id) {",
+      "replace": "if false {",
+      "proof": 4,
+      "red": "a_bad_request_is_refused_in_words_and_writes_nothing.*FAILED"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureDecisionList.swift",
+      "find": "if !chains.contains(where: { $0.rules == rule }) {",
+      "replace": "if false && !chains.contains(where: { $0.rules == rule }) {",
+      "proof": 5,
+      "red": "aRuleOfTheOwnerFilesUnderANestedNodeWithItsAiCardOff\\(\\) failed|✘ Test aRuleOfTheOwnerFilesUnderANestedNodeWithItsAiCardOff"
+    },
+    {
+      "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+      "find": "s.update(page: id, entry: s.pages[i].entries[n - 1].id) { $0.outcome = tree[k - 1] }; return true",
+      "replace": "return true",
+      "proof": 2,
+      "red": "a-tree-node-the-owner-picks-a-nested-node-for-a-rule\\s+fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "What exists. (1) the model may propose a new child under an existing parent and never writes it: core/crates/decision/tests/decide.rs:143 the_labels_model_may_propose_a_new_child_under_an_existing_parent_and_never_writes_it; code decide.rs:27 (module note: 'the Labels model answers a path in it, or proposes a new child'), :90-91 offered_paths, :123 `paths.get(said)`. (2) the menu lists every node with its path, a rule files under a nested node, the preview files a match under the node, the model proposes a child and accepting adds a rule: five TREE cases green on the app per the lane (miss-labels-cases.md:36,43-44); they print 'name  pass  detail' lines (report(), par-labelscontactsmac.py:2968). (3) decided_by exists in the contract: core/crates/contracts/src/command.rs:589. (4) each TREE case is green on its stand-in FakeTree and red on its own mutant (par-labelscontactsmac.py:2866 FakeTree, self-test loop :3112-3120); the two NOT-JUDGED cases are also run against today's app stand-in and must say NOT JUDGED with the missing door and the file (NEEDS_DOOR :2863). The reader's finding ('PARTLY') agrees. The mutant above breaks the offer of paths to the model, which the decide.rs tests judge. Question for the owner: should a RULE be able to file under a node whose AI card is off (the node is a plain folder) and should the model be offered nodes with the AI card off? gap-labels: nothing in this lane's Owns changed for this item; the stale parts of the old gap text are corrected above. gap-decisions (decisions of the lead, 2026-11-11): (1) a rule of the owner may file under any node, also one whose AI card is off; the model is offered only the labels whose AI card is on (decide.rs unchanged); (2) the AI card keeps the code's wording. Built: F1 the door `mac-settings-ai.decisions.page.labels.entry.<n>.node.<k>` (SettingsAIMacFeature.swift, search `.node.\\(k)`), and F2 the ONE contract addition `Command::SaveDecisionList { page_id, node_ids, rules }` (core/crates/contracts/src/command.rs after ApplyDecisionPreview), served by core/crates/engine/src/decision_list.rs (new) through the arm in core/crates/engine/src/rust_core.rs (`Command::SaveDecisionList`), by Sources/CoreBridge/FixtureDecisionList.swift (new) through one case in FixtureCore.swift, and sent by AISettingsStore.apply(page:) for the Labels page (writeLabelRules; since gap-decisions-real after the core accepted ApplyDecisionPreview, so a stale preview writes no rule either). Proofs 4 (cargo, 3 tests in core/crates/engine/tests/engine_decision_list.rs) and 5 (Swift, Tests/Unit/DecisionListTests.swift). The two cases that were NOT JUDGED become pass lines on the first run of proof 2 (hidden, needs the lead's regenerated bindings). A rule on a node whose AI card is ON still follows the three steps: step 1 picks, the AI rules."
+}

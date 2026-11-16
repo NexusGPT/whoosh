@@ -1,0 +1,16 @@
+# A bottom-posted reply: the quote on top, the answer below. The quote is collapsed (never hidden), the answer shown, nothing folded.
+subject: Re: Train times
+sender: Chloe Martin
+fold_from: none
+expect: 0 REPLY_HISTORY collapse
+expect: 1 NEW_CONTENT show
+authored: The 8:12 works for me, I will meet you on the platform.
+history: The first train leaves at 7:40 and the second at 8:12.
+--- text
+On Tue, 10 Nov 2026 at 09:15, Dana Novak <dana@example.org> wrote:
+> The first train leaves at 7:40 and the second at 8:12.
+> Which one do you prefer?
+> I can book the tickets today.
+> Let me know before noon.
+
+The 8:12 works for me, I will meet you on the platform.

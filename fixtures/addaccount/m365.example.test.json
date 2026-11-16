@@ -1,0 +1,80 @@
+{
+ "domain": "m365.example.test",
+ "address": "assem.fixture@m365.example.test",
+ "password": "fixture-password",
+ "source": "autodiscover",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "miss"
+  },
+  {
+   "id": "autoconfig",
+   "outcome": "miss"
+  },
+  {
+   "id": "srv",
+   "outcome": "miss"
+  },
+  {
+   "id": "autodiscover",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "outlook.office365.com",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.office365.com",
+  "smtpPort": 587,
+  "smtpSecurity": "starttls",
+  "username": "assem.fixture@m365.example.test",
+  "authMethod": "oauth2"
+ },
+ "tenant": "Northwind Test Tenant",
+ "coming_soon": "Sign in with Microsoft: coming soon",
+ "password_allowed": true,
+ "validates": true,
+ "ops": [
+  "IMAP LOGIN",
+  "IMAP LIST",
+  "SMTP EHLO",
+  "SMTP AUTH"
+ ],
+ "folders": [
+  {
+   "name": "INBOX",
+   "attrs": []
+  },
+  {
+   "name": "Sent Items",
+   "attrs": [
+    "\\Sent"
+   ]
+  },
+  {
+   "name": "Drafts",
+   "attrs": [
+    "\\Drafts"
+   ]
+  },
+  {
+   "name": "Deleted Items",
+   "attrs": [
+    "\\Trash"
+   ]
+  },
+  {
+   "name": "Junk Email",
+   "attrs": [
+    "\\Junk"
+   ]
+  }
+ ],
+ "folder_map": {
+  "sent": "Sent Items",
+  "drafts": "Drafts",
+  "trash": "Deleted Items",
+  "junk": "Junk Email"
+ }
+}

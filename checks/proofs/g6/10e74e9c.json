@@ -1,0 +1,47 @@
+{
+  "item": "10e74e9c",
+  "full_id": "10e74e9c-ec4f-435a-b127-1b7b69e6227d",
+  "title": "Let every entry rule row be deleted",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "flow-every-rule-row-has-its-remove +pass",
+      "fail": "flow-every-rule-row-has-its-remove +(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+      "pass": "^MUTANTS \\| flow-every-rule-row-has-its-remove \\| green \\| only-first-row-removable \\| red ",
+      "fail": "STILL GREEN|MUTANTS \\| flow-every-rule-row-has-its-remove \\| RED|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "grep -c -F 'opacity(hover' Sources/Features/LabelsContactsMac/LabelInspectorRules.swift",
+      "pass": "^0$",
+      "fail": "^[1-9]",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "on the installed Whoosh (the lead's hands, nothing automated: the check never drives the installed build): Labels, a label, the Entry card, + Add rule three times; read each of the three rows without moving the pointer onto it, then click the remove control of the third row and of the second, then Create (or Save) and open the label again",
+      "pass": "each of the three rows shows its remove control at rest; after the two removals only the first row stays; the reopened label holds only the first row's rule"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/LabelsContactsMac/LabelInspectorRules.swift",
+      "find": ".buttonStyle(.plain).help(Words.text(\"Remove this rule\"))",
+      "replace": ".buttonStyle(.plain).opacity(hover ? 1 : 0).help(Words.text(\"Remove this rule\"))",
+      "proof": 2,
+      "red": "^1$"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Cause and fix are in docs/lanes/hid-labels.md 'Round 8' (:104-:111): RuleRowView.removeButton was drawn with an opacity of 0 until hover or focus; it now draws at rest (Sources/Features/LabelsContactsMac/LabelInspectorRules.swift:119-126, the comment at :124). Hidden case: checks/parity/par-labelscontactsmac.py:1043 f_rows_removable (registered at :1343 as flow-every-rule-row-has-its-remove, mutant only-first-row-removable): adds three rows (subject alpha, from beta, domain gamma.example), measures the three remove controls drawn at rest, removes the third and the second by their own doors, reads the rows left (the first holds alpha), then Create, and reads the saved label/<id>/chains/entry (alpha kept, beta and gamma gone) and that the yes/no facts did not move. That is the finish line's 'a hidden case removes the second and third rows' and 'removing it takes it out of the saved rules'. The case prints one line per case by the same print as the rest of the file (par-labelscontactsmac.py:3194-3196, '<name> <pass|fail|unjudged> <detail>'); the selftest prints a MUTANTS line per FLOW case (:3237 area, 'MUTANTS | <name> | green | <mutant> | red | ...'). Proof 2 is the selftest line of this case's broken model; proof 3 is a static read of the app source (no 'opacity(hover' in the file) with a broken copy that puts it back (find occurs once at LabelInspectorRules.swift:124). 'Seen on the installed build' is the lead proof: the hidden copy is the only thing a check may drive, so the installed build is read by the lead's eyes. Nothing was run by me."
+}

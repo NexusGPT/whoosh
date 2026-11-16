@@ -1,0 +1,11 @@
+From: Orchard Pay <orders@example.com>
+To: Assem Example <assem@example.org>
+Subject: Reservation confirmed
+Date: Mon, 02 Nov 2026 22:14:00 +0000
+Message-ID: <cdd107e79aafba78@accounts.example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Reservation confirmed for 2 guests on 14 November 2026 at 19:30.
+Reference 752822 (keep it for the front desk).

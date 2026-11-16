@@ -1,0 +1,1536 @@
+{
+ "surface": "mac-main",
+ "note": "Sample data in the shape of the owner's inbox (30 accounts on four providers). Fictional people and domains; the real records are named at the first test on the owner's accounts (docs/JOURNEYS.md real-data line). 2026-11-07: the failing account moved from Nordlicht (acc-04, which holds the open quote thread) to Provanta RFP (acc-18) so J1.7 quick reply has its happy path (plan gap G15). 2026-11-07 (root delta 2): account unread counts now sum to All inboxes (198) and cover each account's unread rows; acc-22 has its own colour; messages[] is stated as the first page of Primary (list_page). 2026-11-07 (root delta 3): every message carries invented body paragraphs (body) and, for replies, the quoted text (quoted); msg-01's body is the open thread's last message. 2026-11-07 (root delta 4): each account carries icon_id, the glyph picked on the native-glass v2 board (docs/design/boards/directions/native-glass/v2/index.html, const ICON). 2026-11-08 (contracts delta 10): msg-09, msg-11 and msg-15 carry List-Unsubscribe data (list_unsubscribe, list_unsubscribe_one_click) so Unsubscribe can be driven: one-click, a web link, one-click with a mail fallback.",
+ "window": {
+  "w": 1280,
+  "h": 820,
+  "min_w": 960,
+  "min_h": 600
+ },
+ "accounts": [
+  {
+   "id": "acc-01",
+   "address": "assem@nexus-example.io",
+   "name": "Work",
+   "provider": "Google",
+   "colour": "#2F6FED",
+   "unread": 10,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "briefcase",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Work"
+  },
+  {
+   "id": "acc-02",
+   "address": "assem@chammah-example.com",
+   "name": "Personal",
+   "provider": "Microsoft",
+   "colour": "#D9480F",
+   "unread": 5,
+   "group": "Personal",
+   "paused": false,
+   "icon_id": "house",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Personal"
+  },
+  {
+   "id": "acc-03",
+   "address": "ac@ventures-example.co",
+   "name": "Investing",
+   "provider": "iCloud",
+   "colour": "#2B8A3E",
+   "unread": 12,
+   "group": "Clients",
+   "paused": false,
+   "icon_id": "chart",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Investing"
+  },
+  {
+   "id": "acc-04",
+   "address": "assem@northlight-example.de",
+   "name": "Nordlicht",
+   "provider": "Fastmail",
+   "colour": "#9C36B5",
+   "unread": 6,
+   "group": "Side",
+   "paused": false,
+   "icon_id": "star",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Nordlicht"
+  },
+  {
+   "id": "acc-05",
+   "address": "a.chammah@merel-atelier-example.fr",
+   "name": "Atelier Mérel",
+   "provider": "Google",
+   "colour": "#E8590C",
+   "unread": 4,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "pen",
+   "backfill": 1.0,
+   "signature": "Bien à vous,\nAssem Chammah · Atelier Mérel"
+  },
+  {
+   "id": "acc-06",
+   "address": "hello@whoosh-example.app",
+   "name": "Whoosh",
+   "provider": "Microsoft",
+   "colour": "#0B7285",
+   "unread": 5,
+   "group": "Personal",
+   "paused": false,
+   "icon_id": "bolt",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Whoosh"
+  },
+  {
+   "id": "acc-07",
+   "address": "assem@orbital-example.be",
+   "name": "Orbital",
+   "provider": "iCloud",
+   "colour": "#C2255C",
+   "unread": 9,
+   "group": "Clients",
+   "paused": false,
+   "icon_id": "globe",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Orbital"
+  },
+  {
+   "id": "acc-08",
+   "address": "ops@nexus-example.io",
+   "name": "Nexus ops",
+   "provider": "Fastmail",
+   "colour": "#5C7CFA",
+   "unread": 5,
+   "group": "Side",
+   "paused": false,
+   "icon_id": "code",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Nexus ops"
+  },
+  {
+   "id": "acc-09",
+   "address": "billing@nexus-example.io",
+   "name": "Nexus billing",
+   "provider": "Google",
+   "colour": "#F59F00",
+   "unread": 6,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "bank",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Nexus billing"
+  },
+  {
+   "id": "acc-10",
+   "address": "assem@family-example.net",
+   "name": "Family",
+   "provider": "Microsoft",
+   "colour": "#1098AD",
+   "unread": 4,
+   "group": "Personal",
+   "paused": false,
+   "icon_id": "heart",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Family"
+  },
+  {
+   "id": "acc-11",
+   "address": "a@sailing-club-example.org",
+   "name": "Sailing",
+   "provider": "iCloud",
+   "colour": "#7048E8",
+   "unread": 4,
+   "group": "Clients",
+   "paused": false,
+   "icon_id": "sail",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Sailing"
+  },
+  {
+   "id": "acc-12",
+   "address": "assem@iconic-example.ai",
+   "name": "Iconic",
+   "provider": "Fastmail",
+   "colour": "#099268",
+   "unread": 12,
+   "group": "Side",
+   "paused": false,
+   "icon_id": "key",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Iconic"
+  },
+  {
+   "id": "acc-13",
+   "address": "me@icloud-example.com",
+   "name": "iCloud",
+   "provider": "Google",
+   "colour": "#E03131",
+   "unread": 12,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "mail",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · iCloud"
+  },
+  {
+   "id": "acc-14",
+   "address": "assem@fastmail-example.fm",
+   "name": "Fastmail",
+   "provider": "Microsoft",
+   "colour": "#364FC7",
+   "unread": 4,
+   "group": "Personal",
+   "paused": false,
+   "icon_id": "mail",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Fastmail"
+  },
+  {
+   "id": "acc-15",
+   "address": "press@whoosh-example.app",
+   "name": "Press",
+   "provider": "iCloud",
+   "colour": "#A61E4D",
+   "unread": 6,
+   "group": "Clients",
+   "paused": false,
+   "icon_id": "pen",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Press"
+  },
+  {
+   "id": "acc-16",
+   "address": "assem@alumni-example.edu",
+   "name": "Alumni",
+   "provider": "Fastmail",
+   "colour": "#3B5BDB",
+   "unread": 4,
+   "group": "Side",
+   "paused": false,
+   "icon_id": "book",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Alumni"
+  },
+  {
+   "id": "acc-17",
+   "address": "a.c@lhg-example.com",
+   "name": "LHG",
+   "provider": "Google",
+   "colour": "#0CA678",
+   "unread": 12,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "briefcase",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · LHG"
+  },
+  {
+   "id": "acc-18",
+   "address": "assem@provanta-example.be",
+   "name": "Provanta RFP",
+   "provider": "Microsoft",
+   "colour": "#F08C00",
+   "unread": 5,
+   "group": "Personal",
+   "paused": false,
+   "status": "sign in again",
+   "icon_id": "phone",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Provanta RFP"
+  },
+  {
+   "id": "acc-19",
+   "address": "support@whoosh-example.app",
+   "name": "Support",
+   "provider": "iCloud",
+   "colour": "#C92A2A",
+   "unread": 4,
+   "group": "Clients",
+   "paused": false,
+   "icon_id": "cup",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Support"
+  },
+  {
+   "id": "acc-20",
+   "address": "assem@capital-example.lu",
+   "name": "Capital",
+   "provider": "Fastmail",
+   "colour": "#5F3DC4",
+   "unread": 6,
+   "group": "Side",
+   "paused": false,
+   "icon_id": "bank",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Capital"
+  },
+  {
+   "id": "acc-21",
+   "address": "ceo@nexus-example.io",
+   "name": "CEO",
+   "provider": "Google",
+   "colour": "#1864AB",
+   "unread": 4,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "key",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · CEO"
+  },
+  {
+   "id": "acc-22",
+   "address": "assem@travel-example.co",
+   "name": "Travel",
+   "provider": "Microsoft",
+   "colour": "#8F5BD6",
+   "unread": 12,
+   "group": "Personal",
+   "paused": false,
+   "icon_id": "plane",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Travel"
+  },
+  {
+   "id": "acc-23",
+   "address": "assem@marathon-example.run",
+   "name": "Running",
+   "provider": "iCloud",
+   "colour": "#862E9C",
+   "unread": 4,
+   "group": "Clients",
+   "paused": false,
+   "icon_id": "flag",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Running"
+  },
+  {
+   "id": "acc-24",
+   "address": "a@photography-example.gallery",
+   "name": "Photo",
+   "provider": "Fastmail",
+   "colour": "#E67700",
+   "unread": 6,
+   "group": "Side",
+   "paused": false,
+   "icon_id": "camera",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Photo"
+  },
+  {
+   "id": "acc-25",
+   "address": "assem@rfp-example.eu",
+   "name": "RFP desk",
+   "provider": "Google",
+   "colour": "#087F5B",
+   "unread": 4,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "book",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · RFP desk"
+  },
+  {
+   "id": "acc-26",
+   "address": "assem@board-example.vc",
+   "name": "Board",
+   "provider": "Microsoft",
+   "colour": "#D6336C",
+   "unread": 5,
+   "group": "Personal",
+   "paused": false,
+   "icon_id": "chart",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Board"
+  },
+  {
+   "id": "acc-27",
+   "address": "assem@legacy-example.com",
+   "name": "Legacy",
+   "provider": "iCloud",
+   "colour": "#1971C2",
+   "unread": 7,
+   "group": "Clients",
+   "paused": false,
+   "icon_id": "leaf",
+   "backfill": 0.47,
+   "signature": "Best,\nAssem Chammah · Legacy"
+  },
+  {
+   "id": "acc-28",
+   "address": "assem@studio-example.design",
+   "name": "Studio",
+   "provider": "Fastmail",
+   "colour": "#5C940D",
+   "unread": 12,
+   "group": "Side",
+   "paused": false,
+   "icon_id": "pen",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Studio"
+  },
+  {
+   "id": "acc-29",
+   "address": "assem@tenders-example.be",
+   "name": "Tenders",
+   "provider": "Google",
+   "colour": "#B02A37",
+   "unread": 5,
+   "group": "Work",
+   "paused": false,
+   "icon_id": "flag",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Tenders"
+  },
+  {
+   "id": "acc-30",
+   "address": "assem@archive-example.org",
+   "name": "Archive",
+   "provider": "Microsoft",
+   "colour": "#6741D9",
+   "unread": 4,
+   "group": "Personal",
+   "paused": false,
+   "icon_id": "book",
+   "backfill": 1.0,
+   "signature": "Best,\nAssem Chammah · Archive"
+  }
+ ],
+ "tabs": [
+  {
+   "id": "primary",
+   "name": "Primary",
+   "unread": 23,
+   "waiting": 4
+  },
+  {
+   "id": "needs-reply",
+   "name": "Needs Reply",
+   "unread": 6,
+   "waiting": 6
+  },
+  {
+   "id": "updates",
+   "name": "Updates",
+   "unread": 41,
+   "waiting": 0
+  },
+  {
+   "id": "promotions",
+   "name": "Promotions",
+   "unread": 117,
+   "waiting": 0
+  },
+  {
+   "id": "social",
+   "name": "Social",
+   "unread": 9,
+   "waiting": 0
+  },
+  {
+   "id": "vips",
+   "name": "VIPs",
+   "unread": 2,
+   "waiting": 1
+  }
+ ],
+ "current_tab": "primary",
+ "account_filter": "All accounts",
+ "mailboxes": [
+  {
+   "name": "All inboxes",
+   "count": 198
+  },
+  {
+   "name": "VIPs",
+   "count": 2
+  },
+  {
+   "name": "Pinned",
+   "count": 2
+  },
+  {
+   "name": "Snoozed",
+   "count": 7
+  },
+  {
+   "name": "Drafts",
+   "count": 3
+  },
+  {
+   "name": "Sent"
+  },
+  {
+   "name": "Junk"
+  },
+  {
+   "name": "Trash"
+  },
+  {
+   "name": "Archive"
+  }
+ ],
+ "labels": [
+  {
+   "name": "Work",
+   "children": [
+    {
+     "name": "Clients",
+     "children": [
+      {
+       "name": "Nordlicht",
+       "unread": 4
+      },
+      {
+       "name": "Atelier Mérel",
+       "unread": 2
+      },
+      {
+       "name": "LHG",
+       "unread": 0
+      },
+      {
+       "name": "Provanta",
+       "unread": 3,
+       "colour": "#2F6FED",
+       "description": "Everything about the Provanta account: the RFP, the contract, the people.",
+       "pinned": true,
+       "children": [
+        {
+         "name": "RFP 2026",
+         "unread": 2,
+         "children": [
+          {
+           "name": "Q4",
+           "unread": 5
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "unread": 1
+    },
+    {
+     "name": "Suppliers",
+     "unread": 3,
+     "colour": "#B7791F",
+     "description": "Quotes and orders from our suppliers.",
+     "rules": {
+      "match": "any",
+      "conditions": [
+       {
+        "kind": "domain",
+        "domain": "linea-supply-example.com"
+       },
+       {
+        "kind": "subject",
+        "words": "quote"
+       }
+      ]
+     }
+    },
+    {
+     "name": "Tenders",
+     "unread": 1
+    }
+   ],
+   "unread": 2
+  },
+  {
+   "name": "Personal",
+   "children": [
+    {
+     "name": "Family",
+     "unread": 5
+    },
+    {
+     "name": "Sailing",
+     "unread": 1
+    }
+   ],
+   "unread": 0
+  },
+  {
+   "name": "Finance",
+   "children": [
+    {
+     "name": "Invoices",
+     "unread": 6,
+     "account": "acc-02"
+    },
+    {
+     "name": "Payouts",
+     "unread": 0
+    }
+   ],
+   "unread": 2
+  }
+ ],
+ "smart_folders": [
+  {
+   "name": "Supplier quotes",
+   "rule": "attachments from suppliers mentioning a quote"
+  },
+  {
+   "name": "Waiting on me",
+   "rule": "threads where the last message is not mine, older than 2 days"
+  },
+  {
+   "name": "Travel this month",
+   "rule": "bookings and tickets dated this month"
+  }
+ ],
+ "messages": [
+  {
+   "id": "msg-01",
+   "to": [
+    "assem@northlight-example.de",
+    "karen@linea-supply-example.com"
+   ],
+   "cc": [
+    "finance@linea-supply-example.com",
+    "ASSEM@NORTHLIGHT-EXAMPLE.DE"
+   ],
+   "kind": "pinned",
+   "sender": "Linea Supply",
+   "from": "orders@linea-supply-example.com",
+   "initials": "LS",
+   "account": "acc-04",
+   "subject": "Quote for the Q1 print run: 12,000 units",
+   "preview": "Hi Assem, as discussed, the unit price at 12,000 is 0.84 EUR, delivery in week 4. Please find the signed quote attached.",
+   "time": "09:12",
+   "unread": true,
+   "pinned": true,
+   "attachments": [
+    "quote-Q1-print-run.pdf"
+   ],
+   "thread_count": 3,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Hi Assem,",
+    "As discussed, the unit price at 12,000 is 0.84 EUR (10,080 EUR total, VAT excluded), delivery in week 4 to the Düsseldorf warehouse.",
+    "Please find the signed quote attached. Two options at the end: a 170 g cover (+0.06 EUR per unit) and a spot varnish on the cover (+0.03 EUR per unit).",
+    "Let me know by Tuesday so we can hold the press slot.",
+    "Best,",
+    "Karen Bosch, Linea Supply"
+   ],
+   "quoted": [
+    "Thanks Assem. Our estimator is on it; you will have the quote by Friday."
+   ]
+  },
+  {
+   "id": "msg-02",
+   "decided_by": "Laya",
+   "kind": "pinned",
+   "sender": "Marie Lefèvre",
+   "from": "marie@merel-atelier-example.fr",
+   "initials": "ML",
+   "account": "acc-05",
+   "subject": "Final logo files + brand book v3",
+   "preview": "The brand book v3 is in the shared folder. The wordmark now has the tighter tracking you asked for.",
+   "time": "08:47",
+   "unread": false,
+   "pinned": true,
+   "attachments": [
+    "brand-book-v3.pdf",
+    "wordmark.svg"
+   ],
+   "thread_count": 2,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Hi Assem,",
+    "The brand book v3 is in the shared folder. The wordmark now has the tighter tracking you asked for, and the icon grid is on page 12.",
+    "I also exported the logo files as SVG and PNG at 1x, 2x and 3x.",
+    "Marie"
+   ],
+   "quoted": [
+    "Could you send the final files once the tracking is fixed?"
+   ]
+  },
+  {
+   "id": "msg-03",
+   "decided_by": "Owner",
+   "kind": "row",
+   "sender": "Ton Verheyden",
+   "from": "tom.verheyden@provanta-example.be",
+   "initials": "TV",
+   "account": "acc-18",
+   "subject": "Re: Clarification points, section 4.2",
+   "preview": "Thanks Assem. Two points remain open on the SLA table; can you confirm the penalty cap by Monday?",
+   "time": "08:31",
+   "unread": true,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 5,
+   "trackers_blocked": 1,
+   "tab": "primary",
+   "body": [
+    "Thanks Assem.",
+    "Two points remain open on the SLA table: the penalty cap and the response time for priority 2 tickets.",
+    "Can you confirm the penalty cap by Monday? We propose 10% of the monthly fee.",
+    "Tom"
+   ],
+   "quoted": [
+    "Here are our answers to the clarification points of section 4.2."
+   ]
+  },
+  {
+   "id": "msg-04",
+   "decided_by": "Laya",
+   "kind": "row",
+   "sender": "Hetzner-style host",
+   "from": "noreply@hostcloud-example.net",
+   "initials": "HH",
+   "account": "acc-08",
+   "subject": "Invoice 2026-11 is available",
+   "preview": "Your invoice for October is ready. Amount: 412.30 EUR.",
+   "time": "08:05",
+   "unread": true,
+   "pinned": false,
+   "attachments": [
+    "invoice-2026-11.pdf"
+   ],
+   "thread_count": 1,
+   "trackers_blocked": 2,
+   "tab": "primary",
+   "body": [
+    "Your invoice for October is ready.",
+    "Amount: 412.30 EUR, paid by direct debit on 15 November.",
+    "You can download the PDF from your account page."
+   ]
+  },
+  {
+   "id": "msg-05",
+   "kind": "row",
+   "sender": "Nina Okafor",
+   "from": "nina@northlight-example.de",
+   "initials": "NO",
+   "account": "acc-04",
+   "subject": "Workshop on 19 Nov: agenda draft",
+   "preview": "Draft agenda attached; I kept the afternoon for the hands-on part as you suggested.",
+   "time": "07:58",
+   "unread": true,
+   "pinned": false,
+   "attachments": [
+    "agenda-19-nov.docx"
+   ],
+   "thread_count": 2,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Hi Assem,",
+    "Draft agenda attached; I kept the afternoon for the hands-on part as you suggested.",
+    "Morning: context and the three use cases. Lunch at 12:30. Afternoon: building the first agent in pairs.",
+    "Comments by Friday?",
+    "Nina"
+   ]
+  },
+  {
+   "id": "msg-06",
+   "decided_by": "Jev",
+   "kind": "row",
+   "sender": "Apple Developer",
+   "from": "developer@apple-example.com",
+   "initials": "AD",
+   "account": "acc-06",
+   "subject": "Your app has been approved for TestFlight",
+   "preview": "Whoosh 0.1 (14) is ready to test.",
+   "time": "07:40",
+   "unread": false,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 1,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Whoosh 0.1 (14) is ready to test.",
+    "Testers in your internal group can install it from TestFlight now."
+   ]
+  },
+  {
+   "id": "msg-07",
+   "kind": "row",
+   "sender": "Jonas Pieters",
+   "from": "jonas@orbital-example.be",
+   "initials": "JP",
+   "account": "acc-07",
+   "subject": "Can we move Thursday to 15:00?",
+   "preview": "I have a clash at 14:00. 15:00 works on my side; the room stays booked.",
+   "time": "07:21",
+   "unread": true,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 2,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Hi Assem,",
+    "I have a clash at 14:00. 15:00 works on my side; the room stays booked.",
+    "Does that work for you?",
+    "Jonas"
+   ],
+   "quoted": [
+    "See you Thursday at 14:00 in room 3."
+   ]
+  },
+  {
+   "id": "msg-08",
+   "kind": "row",
+   "sender": "Sophie Chammah",
+   "from": "sophie@family-example.net",
+   "initials": "SC",
+   "account": "acc-10",
+   "subject": "Photos from Sunday",
+   "preview": "Here are the ones from the garden. The last one is the keeper.",
+   "time": "Yesterday",
+   "unread": false,
+   "pinned": false,
+   "attachments": [
+    "IMG_2041.jpg",
+    "IMG_2044.jpg",
+    "IMG_2051.jpg"
+   ],
+   "thread_count": 1,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Here are the ones from the garden.",
+    "The last one is the keeper.",
+    "Love, Sophie"
+   ]
+  },
+  {
+   "id": "msg-09",
+   "decided_by": "Rule: GitHub",
+   "login_code": "482913",
+   "kind": "row",
+   "sender": "GitHub",
+   "from": "noreply@github-example.com",
+   "initials": "G",
+   "account": "acc-06",
+   "subject": "[whoosh] Pull request #42: Rust core: IMAP IDLE for 30 accounts",
+   "preview": "mchen opened a pull request: adds the shared IDLE scheduler and the QRESYNC path.",
+   "time": "Yesterday",
+   "unread": true,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 1,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "mchen opened a pull request: adds the shared IDLE scheduler and the QRESYNC path.",
+    "Files changed: 14. Checks: 3 of 3 passed."
+   ],
+   "list_unsubscribe": [
+    "<mailto:unsubscribe@github-example.com?subject=unsubscribe>",
+    "<https://github-example.com/notifications/unsubscribe/one-click>"
+   ],
+   "list_unsubscribe_one_click": true
+  },
+  {
+   "id": "msg-10",
+   "kind": "row",
+   "sender": "LHG Procurement",
+   "from": "procurement@lhg-example.com",
+   "initials": "LP",
+   "account": "acc-17",
+   "subject": "Cloud Service Agreement: countersigned copy",
+   "preview": "Please find the countersigned agreement. The pilot starts on 1 December.",
+   "time": "Yesterday",
+   "unread": false,
+   "pinned": false,
+   "attachments": [
+    "LHG-CSA-signed.pdf"
+   ],
+   "thread_count": 4,
+   "trackers_blocked": 1,
+   "tab": "primary",
+   "body": [
+    "Dear Assem,",
+    "Please find the countersigned agreement attached.",
+    "The pilot starts on 1 December; our project lead will contact you this week.",
+    "Kind regards,",
+    "LHG Procurement"
+   ],
+   "quoted": [
+    "Please find the signed agreement for countersignature."
+   ]
+  },
+  {
+   "id": "msg-11",
+   "kind": "row",
+   "sender": "Stripe-style billing",
+   "from": "billing@paybridge-example.com",
+   "initials": "SB",
+   "account": "acc-09",
+   "subject": "Payout of 8,420.00 EUR sent",
+   "preview": "The payout to your account ending 4471 was sent today.",
+   "time": "Yesterday",
+   "unread": false,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 1,
+   "trackers_blocked": 3,
+   "tab": "primary",
+   "body": [
+    "The payout to your account ending 4471 was sent today.",
+    "Amount: 8,420.00 EUR. It should arrive within 2 business days."
+   ],
+   "list_unsubscribe": [
+    "<https://billing-example.com/email-preferences>"
+   ],
+   "list_unsubscribe_one_click": false
+  },
+  {
+   "id": "msg-12",
+   "kind": "row",
+   "sender": "Karim Haddad",
+   "from": "karim@capital-example.lu",
+   "initials": "KH",
+   "account": "acc-20",
+   "subject": "Term sheet v2, redlines",
+   "preview": "Redlines in the attached. The liquidation preference moves back to 1x, as agreed.",
+   "time": "Thu",
+   "unread": true,
+   "pinned": false,
+   "attachments": [
+    "term-sheet-v2-redlines.docx"
+   ],
+   "thread_count": 6,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Assem,",
+    "Redlines in the attached. The liquidation preference moves back to 1x, as agreed.",
+    "The board seat clause is unchanged. Can we sign next week?",
+    "Karim"
+   ],
+   "quoted": [
+    "Attached is v1 of the term sheet with our comments."
+   ]
+  },
+  {
+   "id": "msg-13",
+   "kind": "row",
+   "sender": "Sailing club",
+   "from": "secretary@sailing-club-example.org",
+   "initials": "SC",
+   "account": "acc-11",
+   "subject": "Winter storage: your slot is 17B",
+   "preview": "Boats go in on 22 November from 09:00.",
+   "time": "Thu",
+   "unread": false,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 1,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Boats go in on 22 November from 09:00.",
+    "Your slot is 17B. Please remove the sails and the battery before lifting."
+   ]
+  },
+  {
+   "id": "msg-14",
+   "kind": "row",
+   "sender": "Elena Rossi",
+   "from": "elena@iconic-example.ai",
+   "initials": "ER",
+   "account": "acc-12",
+   "subject": "Intro: Dario (ex-Linear) on design systems",
+   "preview": "Dario is free next week; he liked the keyboard-first brief.",
+   "time": "Wed",
+   "unread": false,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 2,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Hi both,",
+    "Dario is free next week; he liked the keyboard-first brief.",
+    "Dario, Assem builds a mail app for people with too many inboxes. I think you two should talk.",
+    "Elena"
+   ]
+  },
+  {
+   "id": "msg-15",
+   "decided_by": "Rule: Newsletters",
+   "kind": "row",
+   "sender": "Running Belgium",
+   "from": "news@marathon-example.run",
+   "initials": "RB",
+   "account": "acc-23",
+   "subject": "Brussels 20k: bib pickup times",
+   "preview": "Pick up your bib on Friday between 12:00 and 20:00.",
+   "time": "Wed",
+   "unread": false,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 1,
+   "trackers_blocked": 2,
+   "tab": "primary",
+   "body": [
+    "Pick up your bib on Friday between 12:00 and 20:00.",
+    "Bring your ID and the QR code from your registration email."
+   ],
+   "list_unsubscribe": [
+    "<https://running-belgium-example.be/unsubscribe?u=1>",
+    "<mailto:leave@running-belgium-example.be>"
+   ],
+   "list_unsubscribe_one_click": true
+  },
+  {
+   "id": "msg-16",
+   "kind": "row",
+   "sender": "Bart De Smet",
+   "from": "bart@tenders-example.be",
+   "initials": "BD",
+   "account": "acc-29",
+   "subject": "Tender AQP: question round closes Friday",
+   "preview": "We have 3 questions left; I drafted them in the shared doc.",
+   "time": "Tue",
+   "unread": true,
+   "pinned": false,
+   "attachments": [],
+   "thread_count": 3,
+   "trackers_blocked": 0,
+   "tab": "primary",
+   "body": [
+    "Hi Assem,",
+    "We have 3 questions left; I drafted them in the shared doc.",
+    "The question round closes Friday at 12:00.",
+    "Bart"
+   ],
+   "quoted": [
+    "Let's keep a list of open questions for the tender."
+   ]
+  }
+ ],
+ "open_thread": {
+  "id": "thr-01",
+  "subject": "Quote for the Q1 print run: 12,000 units",
+  "account": "acc-04",
+  "participants": [
+   "Linea Supply <orders@linea-supply-example.com>",
+   "Assem Chammah <assem@northlight-example.de>",
+   "Nina Okafor <nina@northlight-example.de>"
+  ],
+  "trackers_blocked": 0,
+  "messages": [
+   {
+    "id": "thr-01-m1",
+    "from": "Assem Chammah",
+    "time": "Mon 14:02",
+    "folded": true,
+    "first_line": "Could you quote 12,000 units of the Q1 brochure, 16 pages, 130 g matte, delivery before week 5?"
+   },
+   {
+    "id": "thr-01-m2",
+    "from": "Linea Supply",
+    "time": "Wed 10:15",
+    "folded": true,
+    "first_line": "Thanks Assem. Our estimator is on it; you will have the quote by Friday."
+   },
+   {
+    "id": "msg-01",
+    "from": "Linea Supply",
+    "time": "Today 09:12",
+    "folded": false,
+    "body": [
+     "Hi Assem,",
+     "As discussed, the unit price at 12,000 is 0.84 EUR (10,080 EUR total, VAT excluded), delivery in week 4 to the Düsseldorf warehouse.",
+     "Please find the signed quote attached. Two options at the end: a 170 g cover (+0.06 EUR per unit) and a spot varnish on the cover (+0.03 EUR per unit).",
+     "Let me know by Tuesday so we can hold the press slot.",
+     "Best,",
+     "Karen Bosch, Linea Supply"
+    ],
+    "attachments": [
+     "quote-Q1-print-run.pdf (212 KB)"
+    ],
+    "agent_summary": "A quote for 12,000 brochures at 0.84 EUR per unit (10,080 EUR), delivery week 4. Two paid options. Answer by Tuesday to keep the press slot."
+   }
+  ],
+  "quick_reply": {
+   "from": "assem@northlight-example.de",
+   "signature": "Assem Chammah · Nordlicht",
+   "placeholder": "Reply to Karen…"
+  }
+ },
+ "focused_message": "msg-01",
+ "hovered_message": "msg-03",
+ "states": {
+  "sync": {
+   "line": "30 of 30 indexed · synced 2 min ago",
+   "failing_account": "acc-18",
+   "failing_line": "Provanta RFP needs you to sign in again"
+  },
+  "empty_primary": {
+   "title": "All done",
+   "line": "Nothing in Primary. Next snooze returns at 14:00 (Jonas, Thursday 15:00).",
+   "key_hint": "Tab for Updates (41)"
+  },
+  "first_sync": {
+   "title": "Fetching your history",
+   "line": "14 of 30 accounts indexed · 2 years of mail so far · you can already search what is here",
+   "progress": 0.47
+  },
+  "error": {
+   "line": "Provanta RFP: sign-in expired. Sign in again in Settings: Accounts."
+  },
+  "undo_bar": "Archived · Z to undo (8 s)",
+  "trainer_hint": "Next time, press E to archive"
+ },
+ "shortcuts": {
+  "⌘K": "search",
+  "Z": "undo",
+  "X": "select conversation",
+  "⇧J": "add next to selection",
+  "⇧K": "add previous to selection",
+  "Escape": "back to list",
+  "⌘A": "select all from here",
+  "⇧⌘A": "select all",
+  "E": "archive",
+  "⇧E": "mark not done",
+  "H": "snooze",
+  "S": "star",
+  "U": "mark read or unread",
+  "⇧#": "delete",
+  "⇧!": "junk",
+  "⇧M": "mute",
+  "⌘U": "unsubscribe",
+  "C": "compose",
+  "Enter": "open or reply all",
+  "R": "reply",
+  "F": "forward",
+  "⌘O": "open links and attachments",
+  "O": "expand message",
+  "⇧O": "expand all messages",
+  "⇧H": "expand or collapse message header",
+  "L": "label",
+  "Y": "remove label",
+  "[": "remove label, next",
+  "]": "remove label, previous",
+  "⇧Y": "remove all labels",
+  "V": "move",
+  "⇧U": "show unread",
+  "⇧S": "show starred",
+  "⇧I": "show important",
+  "⇧R": "show no reply",
+  "0": "open day",
+  "T": "today",
+  "-": "previous day or week",
+  "=": "next day or week",
+  "B": "create event",
+  "⌘B": "bold",
+  "⌘I": "italic",
+  "⇧⌘X": "strikethrough",
+  "⇧⌘7": "numbered list",
+  "⇧⌘8": "bulleted list",
+  "⇧⌘9": "quote",
+  "⌘]": "increase indent",
+  "⌘[": "decrease indent",
+  "⇧⌘O": "edit to",
+  "⇧⌘C": "edit cc",
+  "⇧⌘B": "edit bcc",
+  "⇧⌘F": "edit from",
+  "⇧⌘S": "edit subject",
+  "⇧⌘M": "edit message",
+  "⇧⌘,": "discard draft",
+  "⇧⌘I": "move contacts to bcc",
+  "⇧⌘H": "remind me if no reply",
+  "⇧⌘L": "send later",
+  ";": "use snippet inline",
+  "⌘;": "use snippet",
+  "⌘Enter": "send",
+  "⇧⌘Enter": "send and mark done",
+  "⇧⌘Z": "send now",
+  "Left": "focus left",
+  "Right": "focus right",
+  "Tab": "next split",
+  "J": "next",
+  "K": "previous",
+  "N": "next message",
+  "P": "previous message",
+  "Space": "scroll down",
+  "⇧Space": "scroll up",
+  "⌘Up": "jump to top",
+  "⌘Down": "jump to bottom",
+  "⌘N": "new window",
+  "⌘T": "new tab",
+  "⇧⌘]": "next tab",
+  "⇧⌘[": "previous tab",
+  "⌘W": "close tab",
+  "⌘=": "increase font size",
+  "⌘-": "decrease font size",
+  "⌘0": "reset font size",
+  "⌃/": "copy page link",
+  "⇧⌘P": "pop draft in or out",
+  "⇧Enter": "pop out reply all",
+  "⇧C": "pop out new message",
+  "⇧F": "pop out forward",
+  "⌘/": "pop out a draft and search",
+  "⌘D": "switch to or from a draft",
+  "⌘P": "palette",
+  "⇧P": "pin",
+  "⌘\\": "hide or show the sidebar",
+  "⌘J": "write a reply draft",
+  "⌃1": "switch to account 1",
+  "⌃2": "switch to account 2",
+  "⌃3": "switch to account 3",
+  "⌃4": "switch to account 4",
+  "⌃5": "switch to account 5",
+  "⌃6": "switch to account 6",
+  "⌃7": "switch to account 7",
+  "⌃8": "switch to account 8",
+  "⌃9": "switch to account 9",
+  "⌘1": "switch to tab 1",
+  "⌘2": "switch to tab 2",
+  "⌘3": "switch to tab 3",
+  "⌘4": "switch to tab 4",
+  "⌘5": "switch to tab 5",
+  "⌘6": "switch to tab 6",
+  "⌘7": "switch to tab 7",
+  "⌘8": "switch to tab 8",
+  "⌘9": "switch to tab 9"
+ },
+ "contacts": [
+  {
+   "name": "Linea Supply",
+   "addresses": [
+    "orders@linea-supply-example.com",
+    "billing@linea-supply-example.com"
+   ]
+  }
+ ],
+ "flow_example": [
+  {
+   "id": "flow-entry-1",
+   "account": "acc-04",
+   "from": "laura.meier@nordlicht.example",
+   "sender": "Laura Meier",
+   "subject": "Signed order form for the Q1 run",
+   "body": "Hi Assem, the signed order form is attached. A question: can you confirm the Q1 quantity? I am waiting on your reply.",
+   "step": "kept",
+   "attachments": [
+    "order-form-Q1-signed.pdf"
+   ]
+  },
+  {
+   "id": "flow-kept-1",
+   "account": "acc-04",
+   "from": "jonas@orbital-example.be",
+   "sender": "Jonas Orbital",
+   "subject": "Question about the delivery week",
+   "body": "Hi Assem, a question on the delivery week: can you confirm week 4 still holds? I am waiting on your reply to book the truck.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-2",
+   "account": "acc-04",
+   "from": "nina@northlight-example.de",
+   "sender": "Nina Northlight",
+   "subject": "Request: your decision on the agenda",
+   "body": "Hi Assem, a request for a decision on the workshop agenda draft. The team is waiting on you.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-3",
+   "account": "acc-05",
+   "from": "marie@merel-atelier-example.fr",
+   "sender": "Marie Mérel",
+   "subject": "Someone needs a decision on the brand book",
+   "body": "Hi Assem, someone from the print shop is waiting for a decision on the brand book cover. Reply when you can.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-rejected-1",
+   "account": "acc-07",
+   "from": "karim@capital-example.lu",
+   "sender": "Karim Capital",
+   "subject": "Question on the term sheet, already answered",
+   "body": "Hi Assem, a question on the term sheet redlines. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  },
+  {
+   "id": "flow-kept-4",
+   "account": "acc-04",
+   "from": "desk04@orbital-example.be",
+   "sender": "Orbital Desk 04",
+   "subject": "Question about the delivery (04)",
+   "body": "Hi Assem, a question on the delivery week: can you confirm it still holds? I am waiting on your reply.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-5",
+   "account": "acc-04",
+   "from": "desk05@northlight-example.de",
+   "sender": "Northlight Desk 05",
+   "subject": "Request: your decision on the draft (05)",
+   "body": "Hi Assem, a request for a decision on the draft. The team is waiting on you.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-6",
+   "account": "acc-05",
+   "from": "desk06@merel-atelier-example.fr",
+   "sender": "Merel Atelier Desk 06",
+   "subject": "Waiting for your decision (06)",
+   "body": "Hi Assem, someone is waiting for your decision on the cover. Reply when you can.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-7",
+   "account": "acc-07",
+   "from": "desk07@capital-example.lu",
+   "sender": "Capital Desk 07",
+   "subject": "Can you confirm the quantity? (07)",
+   "body": "Hi Assem, a question on the order: can you confirm the quantity? I need your answer to go ahead.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-8",
+   "account": "acc-04",
+   "from": "desk08@orbital-example.be",
+   "sender": "Orbital Desk 08",
+   "subject": "Question about the delivery (08)",
+   "body": "Hi Assem, a question on the delivery week: can you confirm it still holds? I am waiting on your reply.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-9",
+   "account": "acc-04",
+   "from": "desk09@northlight-example.de",
+   "sender": "Northlight Desk 09",
+   "subject": "Request: your decision on the draft (09)",
+   "body": "Hi Assem, a request for a decision on the draft. The team is waiting on you.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-10",
+   "account": "acc-05",
+   "from": "desk10@merel-atelier-example.fr",
+   "sender": "Merel Atelier Desk 10",
+   "subject": "Waiting for your decision (10)",
+   "body": "Hi Assem, someone is waiting for your decision on the cover. Reply when you can.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-11",
+   "account": "acc-07",
+   "from": "desk11@capital-example.lu",
+   "sender": "Capital Desk 11",
+   "subject": "Can you confirm the quantity? (11)",
+   "body": "Hi Assem, a question on the order: can you confirm the quantity? I need your answer to go ahead.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-12",
+   "account": "acc-04",
+   "from": "desk12@orbital-example.be",
+   "sender": "Orbital Desk 12",
+   "subject": "Question about the delivery (12)",
+   "body": "Hi Assem, a question on the delivery week: can you confirm it still holds? I am waiting on your reply.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-13",
+   "account": "acc-04",
+   "from": "desk13@northlight-example.de",
+   "sender": "Northlight Desk 13",
+   "subject": "Request: your decision on the draft (13)",
+   "body": "Hi Assem, a request for a decision on the draft. The team is waiting on you.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-14",
+   "account": "acc-05",
+   "from": "desk14@merel-atelier-example.fr",
+   "sender": "Merel Atelier Desk 14",
+   "subject": "Waiting for your decision (14)",
+   "body": "Hi Assem, someone is waiting for your decision on the cover. Reply when you can.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-15",
+   "account": "acc-07",
+   "from": "desk15@capital-example.lu",
+   "sender": "Capital Desk 15",
+   "subject": "Can you confirm the quantity? (15)",
+   "body": "Hi Assem, a question on the order: can you confirm the quantity? I need your answer to go ahead.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-16",
+   "account": "acc-04",
+   "from": "desk16@orbital-example.be",
+   "sender": "Orbital Desk 16",
+   "subject": "Question about the delivery (16)",
+   "body": "Hi Assem, a question on the delivery week: can you confirm it still holds? I am waiting on your reply.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-17",
+   "account": "acc-04",
+   "from": "desk17@northlight-example.de",
+   "sender": "Northlight Desk 17",
+   "subject": "Request: your decision on the draft (17)",
+   "body": "Hi Assem, a request for a decision on the draft. The team is waiting on you.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-18",
+   "account": "acc-05",
+   "from": "desk18@merel-atelier-example.fr",
+   "sender": "Merel Atelier Desk 18",
+   "subject": "Waiting for your decision (18)",
+   "body": "Hi Assem, someone is waiting for your decision on the cover. Reply when you can.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-19",
+   "account": "acc-07",
+   "from": "desk19@capital-example.lu",
+   "sender": "Capital Desk 19",
+   "subject": "Can you confirm the quantity? (19)",
+   "body": "Hi Assem, a question on the order: can you confirm the quantity? I need your answer to go ahead.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-20",
+   "account": "acc-04",
+   "from": "desk20@orbital-example.be",
+   "sender": "Orbital Desk 20",
+   "subject": "Question about the delivery (20)",
+   "body": "Hi Assem, a question on the delivery week: can you confirm it still holds? I am waiting on your reply.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-21",
+   "account": "acc-04",
+   "from": "desk21@northlight-example.de",
+   "sender": "Northlight Desk 21",
+   "subject": "Request: your decision on the draft (21)",
+   "body": "Hi Assem, a request for a decision on the draft. The team is waiting on you.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-22",
+   "account": "acc-05",
+   "from": "desk22@merel-atelier-example.fr",
+   "sender": "Merel Atelier Desk 22",
+   "subject": "Waiting for your decision (22)",
+   "body": "Hi Assem, someone is waiting for your decision on the cover. Reply when you can.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-kept-23",
+   "account": "acc-07",
+   "from": "desk23@capital-example.lu",
+   "sender": "Capital Desk 23",
+   "subject": "Can you confirm the quantity? (23)",
+   "body": "Hi Assem, a question on the order: can you confirm the quantity? I need your answer to go ahead.",
+   "step": "kept"
+  },
+  {
+   "id": "flow-rejected-2",
+   "account": "acc-05",
+   "from": "desk02@merel-atelier-example.fr",
+   "sender": "Merel Atelier Desk 02",
+   "subject": "Waiting for your decision (02)",
+   "body": "Hi Assem, a question on item 02. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  },
+  {
+   "id": "flow-rejected-3",
+   "account": "acc-07",
+   "from": "desk03@capital-example.lu",
+   "sender": "Capital Desk 03",
+   "subject": "Can you confirm the quantity? (03)",
+   "body": "Hi Assem, a question on item 03. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  },
+  {
+   "id": "flow-rejected-4",
+   "account": "acc-04",
+   "from": "desk04@orbital-example.be",
+   "sender": "Orbital Desk 04",
+   "subject": "Question about the delivery (04)",
+   "body": "Hi Assem, a question on item 04. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  },
+  {
+   "id": "flow-rejected-5",
+   "account": "acc-04",
+   "from": "desk05@northlight-example.de",
+   "sender": "Northlight Desk 05",
+   "subject": "Request: your decision on the draft (05)",
+   "body": "Hi Assem, a question on item 05. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  },
+  {
+   "id": "flow-rejected-6",
+   "account": "acc-05",
+   "from": "desk06@merel-atelier-example.fr",
+   "sender": "Merel Atelier Desk 06",
+   "subject": "Waiting for your decision (06)",
+   "body": "Hi Assem, a question on item 06. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  },
+  {
+   "id": "flow-rejected-7",
+   "account": "acc-07",
+   "from": "desk07@capital-example.lu",
+   "sender": "Capital Desk 07",
+   "subject": "Can you confirm the quantity? (07)",
+   "body": "Hi Assem, a question on item 07. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  },
+  {
+   "id": "flow-rejected-8",
+   "account": "acc-04",
+   "from": "desk08@orbital-example.be",
+   "sender": "Orbital Desk 08",
+   "subject": "Question about the delivery (08)",
+   "body": "Hi Assem, a question on item 08. You replied yesterday, this is only my thanks.",
+   "step": "rejected"
+  }
+ ],
+ "sample_mails_note": "The three mails of the owner's drawings, and wide (A146: a 700 px fixed table, wider than the reading pane) (Sources/Features/MessageBody/MessageBodySamples.swift): the drive seam mac-main.reader.body.sample.<designed|written|plain|wide> puts one in the shown body's place, fixture core only. html is sanitised mail HTML (designed carries its own bgcolor and color: data of a sample mail, not design colours); quote_offset is the UTF-8 length of the part above the earlier-message quote.",
+ "sample_mails": {
+  "designed": {
+   "sender": "elise@oranta.example",
+   "html": "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"><tr><td bgcolor=\"#ff7900\"><font color=\"#000000\"><b>orange</b></font></td></tr>\n<tr><td><h4>Your order is confirmed</h4><p>Hello Assem, thank you for your order nº 32001294172 of 10 November 2026.</p>\n<p><img src=\"cid:whoosh-blocked\" data-whoosh-src=\"https://example.com/banner.png\" width=\"560\" height=\"54\"></p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>Fibre Pro, 12 months</td><td>59.00 EUR</td></tr><tr><td>Installation</td><td>0.00 EUR</td></tr><tr><td><b>Total per month</b></td><td><b>59.00 EUR</b></td></tr></table>\n<p><a href=\"https://example.com/order\"><font color=\"#ffffff\">Follow my order</font></a></p>\n<img src=\"cid:whoosh-blocked\" data-whoosh-src=\"https://example.com/t1.gif\" width=\"1\" height=\"1\"><img src=\"cid:whoosh-blocked\" data-whoosh-src=\"https://example.com/t2.gif\" width=\"1\" height=\"1\"></td></tr></table>",
+   "trackers_blocked": 3
+  },
+  "written": {
+   "sender": "claire.martin@lorvan-hotels.example",
+   "html": "<p>Hi Assem,</p><blockquote>Can you confirm the revised price of the quote?</blockquote><p>Yes: 18,400 EUR excluding tax, as in the quote of 3 November.</p><blockquote>Does next week suit you for a call?</blockquote><p>Thursday at 10:00 or 15:00 works for me. Tell me which you prefer.</p><p>Best,<br>Claire</p><div class=\"gmail_quote\"><p>Assem Chammah, Mon 9 Nov, 17:02</p><p>Hello Claire, can you confirm the revised price of the quote? Does next week suit you for a call?</p><p>Thanks, Assem</p></div>",
+   "trackers_blocked": 0,
+   "quote_offset": 311
+  },
+  "plain": {
+   "sender": "karen@linea-supply.example",
+   "text": "Hello Assem,\n\nThe delivery slot is confirmed for week 4. The press is booked for the Tuesday, and the pallets leave the\nDüsseldorf warehouse the same afternoon, so please check the address on https://example.com/delivery before then.\n\n> Can you also send the signed quote\n> to billing@example.com?\n\nYes, attached.\n\nKaren"
+  },
+  "wide": {
+   "sender": "news@industry-weekly.example",
+   "html": "<table width=\"700\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:700px;min-width:700px\"><tr><td width=\"420\" bgcolor=\"#ffffff\" style=\"padding:16px 24px\"><font color=\"#1d1d1f\"><b>Industry Weekly</b></font></td><td width=\"280\" align=\"right\" bgcolor=\"#ffffff\" style=\"padding:16px 24px\"><font color=\"#6e6e73\">11 November 2026</font></td></tr>\n<tr><td colspan=\"2\" style=\"padding:0 24px\"><h4>Three plants switch to local power this winter</h4><p>Hello Assem, this week: the grid contracts signed in Ghent, Liège and Charleroi, and what they change for suppliers.</p></td></tr>\n<tr><td width=\"420\" style=\"padding:8px 24px\">Read the full story on the site, with the figures per plant.</td><td width=\"280\" align=\"right\" style=\"padding:8px 24px\"><a href=\"https://example.com/story\"><b>Read more</b></a></td></tr>\n<tr><td colspan=\"2\" bgcolor=\"#f5f5f7\" style=\"padding:12px 24px\"><font color=\"#6e6e73\">You receive this newsletter as a subscriber. <a href=\"https://example.com/unsubscribe\">Unsubscribe</a></font></td></tr></table>",
+   "trackers_blocked": 0
+  }
+ },
+ "list_page": {
+  "tab": "primary",
+  "rows": 16,
+  "rows_unread": 8,
+  "tab_unread": 23,
+  "note": "messages[] is the first page of the Primary list; the tab holds 23 unread across all accounts, 8 of them on this page"
+ }
+}

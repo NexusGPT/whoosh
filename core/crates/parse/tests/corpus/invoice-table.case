@@ -1,0 +1,7 @@
+# An invoice with a table of lines inside a fixed-width layout table. Designed.
+subject: Invoice INV-2026-0311
+layout: designed
+fold_from: none
+authored: Invoice INV-2026-0311 is due on 30 November 2026.
+--- html
+<table width="640" cellpadding="8" style="border:1px solid #dddddd;font-family:Verdana,sans-serif"><tr><td style="background-color:#004d40;color:#ffffff">Northwind Consulting</td></tr><tr><td>Invoice INV-2026-0311 is due on 30 November 2026.</td></tr><tr><td><table width="100%" border="1" cellspacing="0"><tr><th>Item</th><th>Hours</th><th>Amount</th></tr><tr><td>Workshop preparation</td><td>6</td><td>540.00</td></tr><tr><td>Workshop day</td><td>8</td><td>720.00</td></tr></table></td></tr><tr><td style="background-color:#e0f2f1">Total due: 1,260.00 EUR</td></tr></table>

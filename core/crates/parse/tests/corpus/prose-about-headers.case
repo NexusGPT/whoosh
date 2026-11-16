@@ -1,0 +1,17 @@
+# Prose that explains header fields: no date-like field, so no header block. Everything stays visible.
+subject: How to file a request
+sender: Farid Haddad
+fold_from: none
+authored: When you write to the helpdesk, fill in the fields like this:
+authored: From: your own work address, never a private one
+authored: To: the helpdesk queue of your site
+authored: Subject: one line that names the device and the problem
+authored: That way the request reaches the right team the first time.
+--- text
+When you write to the helpdesk, fill in the fields like this:
+
+From: your own work address, never a private one
+To: the helpdesk queue of your site
+Subject: one line that names the device and the problem
+
+That way the request reaches the right team the first time.

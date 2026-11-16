@@ -1,0 +1,71 @@
+{
+ "item": "0fe74f14",
+ "full_id": "0fe74f14-6e29-4120-9dbd-3c2dee6106ae",
+ "title": "Build fn-tests-j5",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J5 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J5-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+   "pass": "(?s)(?=.*STEP J5\\.1 PASS=\\d+\\n)(?=.*STEP J5\\.2 PASS=\\d+\\n)(?=.*STEP J5\\.3 PASS=\\d+\\n)(?=.*STEP J5\\.4 PASS=\\d+\\n)(?=.*STEP J5\\.5 PASS=\\d+\\n)(?=.*STEP J5\\.6 PASS=\\d+\\n)(?=.*STEP J5\\.7 PASS=\\d+\\n)(?=.*STEP J5\\.8 PASS=\\d+\\n)(?=.*STEP J5\\.9 PASS=\\d+\\n)",
+   "fail": "J5 (RED|COULD-NOT-DRIVE)|STEP J5\\.\\d+ [^\\n]*(FAIL|NOT JUDGED)=|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "python3 journeys/J5.py --selftest",
+   "pass": "selftest: \\d+ checks, \\d+ mutants( red)?, .*0 not red or missing",
+   "fail": "NOT RED|STRAY|NO MUTANT|NOT IN THE CATALOGUE|[1-9]\\d* not red or missing",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_THEME=dark WHOOSH_RESULTS_DIR=$D/results-dark python3 journeys/run.py J5 2>&1 ; python3 journeys/lib/summary.py \"$D/results-dark\" J5'",
+   "pass": "(?s)(?=.*STEP J5\\.1 PASS=\\d+\\n)(?=.*STEP J5\\.2 PASS=\\d+\\n)(?=.*STEP J5\\.3 PASS=\\d+\\n)(?=.*STEP J5\\.4 PASS=\\d+\\n)(?=.*STEP J5\\.5 PASS=\\d+\\n)(?=.*STEP J5\\.6 PASS=\\d+\\n)(?=.*STEP J5\\.7 PASS=\\d+\\n)(?=.*STEP J5\\.8 PASS=\\d+\\n)(?=.*STEP J5\\.9 PASS=\\d+\\n)(?=.*THEME J5\\.1 theme-applied PASS got=dark)",
+   "fail": "J5 (RED|COULD-NOT-DRIVE)|STEP J5\\.\\d+ [^\\n]*(FAIL|NOT JUDGED)=|could not drive|THEME J5\\.1 theme-applied (FAIL|NOT JUDGED)",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results-themes-dry python3 journeys/run.py --dry --themes light,dark J5 2>&1 | grep -E \"^\\[(light|dark)\\] J5 \"'",
+   "pass": "(?s)\\[light\\] J5 [A-Z-]+: .*\\[dark\\] J5 [A-Z-]+: ",
+   "fail": "\\[light\\] J5 [^\\n]*\\n\\[light\\] J5 |Traceback|takes light or dark",
+   "timeout_s": 300
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"note\": AIWords.chatgptNote,",
+   "replace": "\"note\": \"\",",
+   "proof": 0,
+   "red": "STEP J5\\.1 [^\\n]*FAIL="
+  },
+  {
+   "file": "journeys/lib/theme.py",
+   "find": "s.raw(\"fixture\", \"theme\", want)",
+   "replace": "s.raw(\"fixture\", \"theme\", \"light\")",
+   "proof": 2,
+   "red": "THEME J5\\.1 theme-applied FAIL got=light"
+  },
+  {
+   "file": "journeys/run.py",
+   "find": "\"[%s] \" % theme if theme else \"\", r[\"id\"].split(\" (\")[0]",
+   "replace": "\"[%s] \" % \"light\" if theme else \"\", r[\"id\"].split(\" (\")[0]",
+   "proof": 3,
+   "red": "\\[light\\] J5 [^\\n]*\\n\\[light\\] J5 "
+  },
+  {
+   "file": "journeys/lib/theme.py",
+   "find": "s.expect(\"theme-applied\", lambda: s.ctl.uistate()[\"theme\"], want)",
+   "replace": "s.expect(\"theme-applied\", lambda: want, want)",
+   "proof": 1,
+   "red": "NOT RED \\(pass\\)"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Proof 0 runs J5 once on the hidden fixture core and prints, per step, the count of verdicts from the harness's results jsonl (journeys/lib/harness.py:248-270: one JSON line per case, verdict PASS|FAIL|NOT JUDGED); it prints 'STEP J5.n PASS=k' for a step with only passes (the inline python was tried on a sample file: 'STEP J4.1 PASS=2'). The pass regex needs all nine steps pure PASS; the fail regex catches any FAIL or NOT JUDGED in any step. journeys/run.py also prints 'J5 GREEN|RED|COULD-NOT-DRIVE: ...' on stderr (merged by 2>&1). Proof 1: journeys/J5.py --selftest runs the whole journey against the stand-in app of journeys/J4.py's kit (J5.py:437-445 loads it by path), prints 'selftest: N checks, M mutants red, ..., 0 not red or missing' (J4.py:899): no app. Mutant row for J5.1/chatgpt-stop-note is J5.py:377 ('the ChatGPT note is missing'); the app side is SettingsAIMacFeature.swift:32 where the row serves its note (needs an app rebuild). The J5 slice is 'slice-j5-agents' (docs/plan.json:3253); the journey mentions decision settings J5.8-J5.9 whose screens are items eecbf79a and others: a failing J5.8 is those items' gap, not this journey's. Theme (lane gap-themes): journeys/J5.py:208 calls `_theme.apply(s)` (journeys/lib/theme.py:20-24: `fixture theme <WHOOSH_THEME, default light>`, then the case `J5.1/theme-applied` reads uistate theme), TITLE says the theme (J5.py:66), MUTANTS row J5.py:375. Proof 2 runs the journey with WHOOSH_THEME=dark and prints, from journeys/lib/summary.py, the line 'THEME J5.1 theme-applied PASS got=dark'; the light pass is proof 0 (the default theme). Proof 3: `journeys/run.py --dry --themes light,dark J5` prints one line per theme ('[light] J5 ...', '[dark] J5 ...'; no app is launched, so the verdict word there is COULD-NOT-DRIVE and is not read). On a real run `--themes` writes each pass under <results folder>/<theme>/ and both passes drive one app (a fixture core cannot be reset): the lead launches once per theme, as proofs 0 and 2 do. A light run cannot show that the app applies a theme (a build that ignores the verb stays light): only the dark proof can."
+}

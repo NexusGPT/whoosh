@@ -1,0 +1,47 @@
+{
+ "item": "a70152d6",
+ "full_id": "a70152d6-5582-4a91-aabf-7b0390605576",
+ "title": "Build fn-perf-thirty-one",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "python3 perf/thirty-one.py --selftest",
+   "pass": "selftest: every cell seen red on its mutant",
+   "fail": "NOT RED|\\d+ problem",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 perf/thirty-one.py",
+   "pass": "(?s)PASS every-frame-under-budget.*PASS memory-under-budget.*PASS search-under-budget.*PASS memory-with-search-model-under-budget.*\\d+ checks, 0 failed, 0 not judged\\s*\\Z",
+   "fail": "FAIL |NOT JUDGED|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "lead",
+   "run": "quiet machine: the same run on the installed main bundle under launch-one with the full-history 30-account fixture loaded (perf/memory-mac.py:20 `fixture load full-history-30`), the 31st added during the J/K run; read the three budget lines",
+   "pass": "every frame gap under 1.5 x FRAME_MS (24 ms), first screen under SEARCH_FIRST_SCREEN_MS, memory under MEM_MAC_MB 600 with 31 accounts, exit 0"
+  },
+  {
+   "kind": "unit",
+   "run": "measureAppMemoryAnswersThePhysicalFootprintInMegabytes,measureMacSearchFirstScreenIsServedAndNeverAnInvented,theFirstScreenReadsTheInteractionFrameAndNothingElseIsServed",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/ControlSocket/WindowVerbs.swift",
+   "find": "try PerfMeasures.answer(ax) { return served }",
+   "replace": "try PerfMeasures.answer(ax + \"x\") { return served }",
+   "proof": 3,
+   "red": "measureAppMemoryAnswersThePhysicalFootprintInMegabytes.*failed|measureMacSearchFirstScreenIsServedAndNeverAnInvented.*failed"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Built (lane gap-perf, docs/lanes/gap-perf.md): perf/thirty-one.py now reads only measures the app serves. Frame: `measure mac-main.interaction.gap` after each J/K key (Sources/App/InteractionProbe.swift answer), worst over the run judged under 1.5 x FRAME_MS (perf/thirty-one.py FRAME_GAP, interaction()); no `frame-max`/`frame-reset` is served (a worst-over-run in the app would miss events a later key supersedes). Search: `key /`, `type supplier`, `key Enter`, then `measure mac-search.first-screen`, served in Sources/ControlSocket/WindowVerbs.swift (PerfMeasures) as the interaction `.frame` of the Enter, the quantity journeys/J2.py:355 judges; a measure of the results screen itself would belong to Sources/Features/SearchMac (not edited: finding in the notes). Memory: `measure app.memory` -> {mb (physical footprint), rss_mb}, same file. `fixture add-account <address> [name] [colour]` takes 1 to 3 arguments (Sources/ControlSocket/FixtureEvents.swift:31). The script prints `PASS <cell>` per passing cell, `FAIL` / `NOT JUDGED` on stderr, a reading of 0 is not judged (selftest rows mem-zero, gap-zero). Proof 0 is the script's model self-test (8 mutant rows). Proof 3: Tests/Unit/PerfMeasureTests.swift. Unit tests and the broken copy (mutant 0) need the lead's compile. Open decision for the lead: the item's memory budget is stated for `fixture load full-history-30` (300,000 messages); thirty-one.py loads the default fixture after `clock advance 600`; proof 2 (lead) names the full-history run. Earlier notes: Budgets are read from docs/CONSTANTS.md: FRAME_MS 16, SEARCH_FIRST_SCREEN_MS 100, MEM_MAC_MB 600. Cells: thirty-first-is-there, every-frame-under-budget, search-under-budget, memory-under-budget, budget-can-fail."
+}

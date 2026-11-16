@@ -1,0 +1,62 @@
+{
+  "item": "1b64473f",
+  "full_id": "1b64473f-edec-4a66-962e-c8c0dbc5deee",
+  "title": "Send attachments with a message",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_files_r6",
+      "pass": "test result: ok\\. 5 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p send --test attachments_d22",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-attachments.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "aFileAttachedByHandIsOnTheQueuedMessage,aFileTakenOffBeforeTheSendIsNotSent",
+      "pass": "passed",
+      "fail": "failed"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/draft_files.rs",
+      "find": "Ok(send::OutgoingFile { file_name: row.file_name.clone(), media_type: row.media_type.clone(), bytes })",
+      "replace": "Ok(send::OutgoingFile { file_name: row.file_name.clone(), media_type: row.media_type.clone(), bytes: Vec::new() })",
+      "proof": 0,
+      "red": "the_sent_message_holds_each_file_byte_for_byte.*FAILED|panicked"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "        settleFiles()\n        let id: String?",
+      "replace": "        let id: String?",
+      "proof": 3,
+      "red": "aFileAttachedByHandIsOnTheQueuedMessage"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Files.swift",
+      "find": "else { fileTiles.removeAll { $0.id == a.id }; pendingRemovals.append(a.id) }",
+      "replace": "else { fileTiles.removeAll { $0.id == a.id } }",
+      "proof": 3,
+      "red": "aFileTakenOffBeforeTheSendIsNotSent"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The composer half is now proved by Tests/Unit/RepliesComposerFilesSendTests.swift (aFileAttachedByHandIsOnTheQueuedMessage :71, aFileTakenOffBeforeTheSendIsNotSent :87): ComposerModel.attach(url) (ComposerModel+Files.swift:12), then send (ComposerModel+Send.swift submit(): settleFiles(), saveOnCoreDraft(), .send(draftId:)); the fixture core moves the draft's files to the outbox entry, read at outbox/<id>/attachments (FixtureLabels.swift:715): file name, size and the path of the file attached. Over the REAL core the bytes in the SMTP message are proved by engine_files_r6 and attachments_d22 (proofs 0, 1); the composer-to-REAL-core slice of checks/realcore-check.py is NOT built (that file is not in this lane's Owns): the hand-off from composer to the send command is proved on the fixture core only, the core's own half on the real core. The earlier finding 'attachment-index-check is not that' stands: that check is the attachment text index."
+}

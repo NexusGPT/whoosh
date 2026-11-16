@@ -1,0 +1,93 @@
+{
+  "item": "46ed60cb",
+  "full_id": "46ed60cb-ffd8-46ef-bbe3-c29ea62e8e52",
+  "title": "Measure the search speed against 50 ms",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J2\\.1/par-(suggestions|first-result)|NOT JUDGED J2\\.1/par-(suggestions|first-result)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "lead",
+      "run": "grep -h -F '\"case\": \"par-suggestions-under-50-ms-after-a-typed-letter\", \"verdict\": \"PASS\"' _captures/results/g6/par-searchmac-g6.results.jsonl",
+      "pass": "\"expected\": \"< 50 ms\", \"got\": \"[\\d.]+ ms\"",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "grep -h -F '\"case\": \"par-first-result-rows-under-50-ms-after-return\", \"verdict\": \"PASS\"' _captures/results/g6/par-searchmac-g6.results.jsonl",
+      "pass": "\"expected\": \"< 50 ms\", \"got\": \"[\\d.]+ ms\"",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_inside -- --nocapture",
+      "pass": "(?s)first list, 3-letter word: \\d+ matches, \\d+ rows, in [\\d.]+ ms on 2000 mails.*first list, 10-letter word: \\d+ matches, \\d+ rows, in [\\d.]+ ms on 2000 mails.*test result: ok\\. 3 passed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ search-checks cases, \\d+ mutants, 0 problems",
+      "fail": "[1-9]\\d* problems|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-suggestions-under-50-ms-after-a-typed-letter +pass +[\\d.]+ ms, expected < [\\d.]+ ms",
+      "fail": "par-suggestions-under-50-ms-after-a-typed-letter +fail|NOT JUDGED [^\\n]*par-suggestions-under-50-ms-after-a-typed-letter",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-first-result-rows-under-50-ms-after-return +pass +[\\d.]+ ms, expected < [\\d.]+ ms",
+      "fail": "par-first-result-rows-under-50-ms-after-return +fail|NOT JUDGED [^\\n]*par-first-result-rows-under-50-ms-after-return",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchMac/SearchSuggest.swift",
+      "find": "let letters = prefix.trimmingCharacters(in: .whitespaces).lowercased()",
+      "replace": "Thread.sleep(forTimeInterval: 0.08); let letters = prefix.trimmingCharacters(in: .whitespaces).lowercased()",
+      "proof": 1,
+      "red": "FAIL J2\\.1/par-suggestions-under-50-ms-after-a-typed-letter|\"verdict\": \"FAIL\""
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchMacModel.swift",
+      "find": "func runSearch() {",
+      "replace": "func runSearch() { Thread.sleep(forTimeInterval: 0.08)",
+      "proof": 2,
+      "red": "FAIL J2\\.1/par-first-result-rows-under-50-ms-after-return|\"verdict\": \"FAIL\""
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchSuggest.swift",
+      "find": "let letters = prefix.trimmingCharacters(in: .whitespaces).lowercased()",
+      "replace": "Thread.sleep(forTimeInterval: 0.08); let letters = prefix.trimmingCharacters(in: .whitespaces).lowercased()",
+      "proof": 5,
+      "red": "par-suggestions-under-50-ms-after-a-typed-letter +fail +[\\d.]+ ms, expected"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchMacModel.swift",
+      "find": "func runSearch() {",
+      "replace": "func runSearch() { Thread.sleep(forTimeInterval: 0.08)",
+      "proof": 6,
+      "red": "par-first-result-rows-under-50-ms-after-return +fail +[\\d.]+ ms, expected"
+    }
+  ],
+  "gap": null,
+  "owner": "Default taken by the lead on 2026-11-11 under the owner's no-questions order: the first search screen is judged against 50 ms (the owner's words: 'The objective is <50ms for any operation'); the ledger row SEARCH_FIRST_SCREEN_MS, docs/PRD.md and docs/CAPABILITY-CONTRACT.md say 50. The owner may set another number. No measured run on 1,000,000 messages exists yet: the lead's run of perf/search.py on a quiet machine is the proof that is left.",
+  "notes": "Claims and judges. (1) suggestions after a typed letter under 50 ms: case par-suggestions-under-50-ms-after-a-typed-letter, J2.1, checks/parity/par-searchmac.py:745-761 (the letter goes in as the `type` verb, which the probe measures (ControlSocket/Verbs.swift \"type\"; hid-search round 16: the `key` verb never types a plain letter into the field), the probe's `commit` ms is read with `measure mac-main.interaction.commit`, and the suggestion rows must be on that screen; a letter that did not reach the field or no suggestion rows is NOT JUDGED naming what was read). (2) first result rows after Enter under 50 ms: case par-first-result-rows-under-50-ms-after-return, :672-692 (stopwatch from the Return key to the first read that finds result rows, beside the probe's own commit; the larger is judged). (3) Both under INTERACTION_COMMIT_MS (const read from the ledger at :2351, 50 ms). (4) 'or the number that failed': a failing case prints on stderr 'FAIL J2.1/<case>' through run_journey (par-searchmac.py:2723-2724) and the results file holds `got`; the detail string reads 'expected < 50 ms, got X ms' (:2353). Mutant lines declared for both cases at par-searchmac.py:2683-2684. The `type` verb is not measured by the app's interaction probe (the check's own comment at :661-667), so the letter is sent with `key`; that is faithful for one letter. Machine load above PERF_LOAD_MAX (12) gives NOT JUDGED, so the lead runs it on a quiet machine. Proof 0's fail regex catches NOT JUDGED lines for the two cases only when they are printed on stderr; the results-file proofs 1 and 2 are the sure read (they match only a PASS record). Environment: WHOOSH_BUILD_LABEL and WHOOSH_RESULTS_DIR (harness.py:244-246) put the results file at a path the static proofs can name; the runner passes the environment through launch-one.sh (it scrubs only CLAUDE-session prefixes, scripts/launch-one.sh header). The app-side mutants add an 80 ms sleep to the people read of the suggestions (SearchSuggest.swift:41, one call per typed letter) and to runSearch (SearchMacModel.swift:192); each needs a rebuild of the bundle (the lead's runner decides if two rebuilds are worth it; the in-process cargo timings of proof 3 are the cheaper pair, mutants for them are in item 64f2e8a7). Questions for the owner: SEARCH_FIRST_SCREEN_MS is 100 ms on 1M messages in the ledger while the owner said <50 ms for any operation; which is it for the first screen on a very large mailbox? | gap-search-cases: par-searchmac.py main now calls print_cases(r) (one 'case  pass|fail|unjudged  detail' line per judged case, before the MUTANTS table), and the timing closure of drive() is judge_timing(): the detail on a pass AND a fail is '<got> ms, expected < <limit> ms', so proofs 5 and 6 read the measure from the printed line. The self-test (perf_selftest) judges judge_timing on a model at 12.0 and 80.0 ms and checks main calls print_cases. Proofs 1 and 2 (the results file) still hold."
+}

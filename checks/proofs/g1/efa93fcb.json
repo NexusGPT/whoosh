@@ -1,0 +1,46 @@
+{
+ "item": "efa93fcb",
+ "full_id": "efa93fcb-9a8c-4f8e-8278-6af4c3634480",
+ "title": "Bring the list's frame time under budget",
+ "state": "gap",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "python3 perf/interaction.py --selftest",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD |FAIL",
+   "timeout_s": 120
+  },
+  {
+   "kind": "lead",
+   "run": "quiet machine (1-minute load under PERF_LOAD_MAX 12, no build running), an installed main bundle holding Contents/Resources/rig-hidden.ok: sh scripts/launch-one.sh <bundle> -- --fixture-core sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 perf/interaction.py --bundle <bundle> --dump' (perf/interaction.py:7-8); save the log",
+   "pass": "(?s)longest presented-frame gap ms over 100 actions\\s+worst [0-9.]+ \\(budget < 24\\) ok.*commit ms over 100 actions\\s+worst [0-9.]+ \\(budget < 50\\) ok.*\\d+ checks, 0 failed, 0 not judged"
+  },
+  {
+   "kind": "static",
+   "run": "grep -c \"^| after\" docs/PERF.md",
+   "pass": "^[2-9]$",
+   "fail": "^0$",
+   "timeout_s": 30
+  },
+  {
+   "kind": "static",
+   "run": "grep -c 'accessibilityIdentifier(\"mac-main.list.row.\\\\(i)\")   // the place id, outside the equatable row' Sources/Features/InboxList/InboxListView.swift",
+   "pass": "^1$",
+   "fail": "^0$",
+   "timeout_s": 30
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/InboxList/InboxListView.swift",
+   "find": ".accessibilityIdentifier(\"mac-main.list.row.\\(i)\")   // the place id, outside the equatable row (perf-archive r7)",
+   "replace": ".accessibilityIdentifier(\"mac-main.list.row\")   // the place id, outside the equatable row (perf-archive r7)",
+   "proof": 3,
+   "red": "^0$"
+  }
+ ],
+ "gap": "L. main105 (_captures/lead/main105/perf/interaction.log, load 10.10): longest frame gap worst 52.2 ms (budget 24), archive median 26.1, open 21.4, next 10.3; the worst is action 1, the first archive after launch (update.queue 75.7). docs/PERF.md now holds the main105 'after' row (proof 2 reads 2). Built in perf-archive round 7 (docs/lanes/perf-archive.md): the rows below an archived or restored mail are no longer redrawn because their place changed (RowKey keeps no index; the place id `mac-main.list.row.<n>` is set outside the equatable row, InboxListView.swift; the row's action closure finds its row by message id), and the phases now count row body evaluations (`InboxRowView.body (count)`, in and out of the key handler). Left: (1) the lead's run of the next build: the archive gap median must fall under 24 and the count says whether say's 10 ms is the rows' update flushed early inside the handler (InboxRowView.body in dispatch above 0 on archive); (2) the first-archive cold path (52.2 ms gap at action 1): no fix by reading; (3) a quiet run with all three rows under budget.",
+ "owner": null,
+ "notes": "Proof 0: perf/interaction.py:106-127 (selftest, no app, prints ok/BAD per case). Proof 1 is the real run; its output lines are printed by finish() in perf/interaction.py:62-66 as 'interaction: <label> <worst N> (budget < B) OK|OVER'; the code prints lowercase 'ok' for False (line 65: {True: 'OVER', False: 'ok', None: 'NOT JUDGED'}); the label strings are those of judge() (lines 90-92). Proof 2 is a crude static check that docs/PERF.md carries a second 'after' row (today one, line 36; line 37 is the 'low load (owed row)' main39 row): it reads 1 now and is red until a builder adds the after row at low load; adjust the pattern if the new row is worded differently. Every saved real run is OVER: _captures/perf-diag/main55/interaction-r1-try1-py.log:12,14 and _captures/appshell/r2/perf-interaction-loaded.txt:6 (read only). No app mutant: the judgement is mutant-tested in item 57586479; this item's behaviour is the app's speed, which only the real run proves. | OLD GAP (before lane gap-states, 2026-11-12): L. perf-archive (docs/lanes/perf-archive.md) added `measure mac-main.interaction.phases` and the `interaction: dump phase` lines of perf/interaction.py --dump, and removed three pieces of work from the key path (no prune of an empty selection, no selection write that changes nothing, the reader pane no longer observes the focus index through AppModel.knownRow); the cause stays unmeasured until the lead's --dump run of the next build; the rest below still holds. The measurement exists and is red; the cause, the fix and the after row do not. (1) Name the cause with Instruments (Time Profiler on the main thread while 100 J/K/E/Enter actions run) or the frame probe: `perf/interaction.py --dump` prints per action type (archive, next, open) min/median/p95/max of frame and commit (perf/interaction.py:95-103), Sources/App/FrameProbe.swift and Sources/App/InteractionProbe.swift hold the probe, and the debug knob WHOOSH_DEBUG_SLOW_FRAME_MS (InteractionProbe.swift:125-129) proves the probe tracks a slow frame. Say what runs on the main thread per key (the list's rebuild on every key is the lead; Sources/Features/InboxList/*, Sources/Features/Reader/*). (2) Fix it in the owner's files only (the list lane's Sources/Features/InboxList/**), keeping the other lanes' tests green. (3) Add before/after rows to docs/PERF.md in the table at lines 33-37: its 'low load (owed row)' main39 row already holds the quoted 96.8 and 80.7 at load 4.38 (docs/PERF.md:37), so the 'before' exists; the 'after' row with the new worst values at load under 12 is what is owed. Done when the lead proof reads 'ok' on both lines. Note on the acceptance wording: the code judges the LONGEST PRESENTED-FRAME GAP under 24 ms (1.5 x FRAME_MS, CONSTANTS.md:13), not 'frame worst under 16'; the old frame row (arrival to first frame) is now judged under 66 ms. | perf-archive round 7: proof 3 (static) proves the row's place id stays outside the equatable row; its mutant drops the place from the id."
+}

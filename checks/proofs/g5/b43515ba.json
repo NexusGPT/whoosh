@@ -1,0 +1,55 @@
+{
+  "item": "b43515ba",
+  "full_id": "b43515ba-220b-4036-babc-8aa9e3ca5b64",
+  "title": "Make the meaning search answer on the installed build",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "on a private copy of the owner's data folder (the lead copies it, reads counts only, prints no mail text): sqlite3 <copy>/Core/whoosh.sqlite \"select count(*), sum(embedded_at_ms is not null) from chunk\" (every chunk carries its embedded time once the engine wrote its vector; the database is Core/whoosh.sqlite, ownercopy-search.py DB_NAME)",
+      "pass": "^([0-9]+)\\|\\1$"
+    },
+    {
+      "kind": "lead",
+      "run": "the same copy: the meaning index of the engine (core/crates/engine/src/indexer.rs:163 and :407-422) is <copy>/Core/index/vector, kept with its two marker files chunk-keys-v1 and pieces-v1; mail pieces are filed under numeric keys, and vector/vector-keys.tsv holds only the TEXT-keyed pieces (an attachment's read text, core/crates/search-vector/src/keys.rs), so 0 lines there is right when no attachment was read. Run: printf \"markers %s, embedded %s\\n\" \"$(ls <copy>/Core/index/vector/chunk-keys-v1 <copy>/Core/index/vector/pieces-v1 | wc -l | tr -d ' ')\" \"$(sqlite3 <copy>/Core/whoosh.sqlite \"select sum(embedded_at_ms is not null) || ' of ' || count(*) from chunk\")\"",
+      "pass": "^markers 2, embedded ([1-9][0-9]*) of \\1$"
+    },
+    {
+      "kind": "lead",
+      "run": "on a private copy of the owner's data (the lead's run, counts only): python3 checks/ownercopy-search.py inside scripts/launch-one.sh (it searches 'consultant' on a launch of the build over the snapshot and prints the match group's size against the mails that hold the letters)",
+      "pass": "RESULT: PASS \\| exact (\\d+) of \\1"
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/consultant-is-an-exact-match-though-the-mail-holds-consultants",
+      "fail": "FAIL +search/consultant",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_index_log",
+      "pass": "test result: ok\\. 2 passed"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "            self.inner.note(&if held { format!(\"held by battery or heat; {waiting} mails and rows wait\") }\n                            else { format!(\"no longer held by battery or heat; {waiting} mails and rows wait\") });\n",
+      "replace": "            let _ = waiting;\n",
+      "proof": 4,
+      "red": "(?m)^test a_hold_by_battery_or_heat_is_said_once_when_it_starts_and_once_when_it_ends \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "        self.note(&format!(\"{} chunks embedded in this pass; {} mails and rows wait\", ids.len(), waiting));\n",
+      "replace": "        let _ = waiting;\n",
+      "proof": 4,
+      "red": "(?m)^test a_finished_embedding_pass_says_how_many_chunks_it_embedded \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": "Only the owner's own search on the installed build closes the board row (their words: 'THE ACTUAL EMBEDDING SHOULD WORK').",
+  "notes": "Counts to read: table chunk(message_id, part, chunk_no, text, embedded_at_ms) (core/crates/store/migrations/sql/0014_calendars_chunks_crawl.sql:25-32, a chunk is embedded when embedded_at_ms is not null); the vector index folder <data>/vector (core/crates/engine/src/indexer.rs:344) holds vector-keys.tsv (core/crates/search-vector/src/keys.rs:10, one 'slot<TAB>key' line per stored vector); the database is <data>/whoosh.db (core/crates/store/src/replies.rs:189 names it). The number of vector-keys lines can exceed the chunk count (message-level vectors share the file): the lead reads 'embedded chunks <= lines' and the empty-file case (0 lines) is the red one. Related: items b7a881b4 and 183fe10a (the query side), 26a6f568 (a model that arrives late). | OLD GAP (before lane gap-states, 2026-11-12): L, cause and fix. Not on record: the cause of 'consultant found nothing; the index's key file is empty' on the owner's installed build (SPEC A141, docs/SPEC.md:159). The candidates of docs/lanes/query-embed.md section 2 (a document embed never returned, so the key file stayed empty): held by battery or heat (crawl.rs:207-209, indexer.rs:254-262), wait_for_room at a 1,800 MB footprint (indexer.rs:407-411), a step before the hand-over returning after the word index (indexer.rs:368), embed_titled blocked in embedSync with no time limit (GemmaEmbedder.swift:82); the lane proposes log lines for each ('indexer: held by battery or heat', 'indexer: waiting for memory, footprint N MB', 'indexer: embedding N chunks of M mails') in core/crates/engine/src/indexer.rs, not yet added (grep of indexer.rs for those words finds none at this commit). Needed: (a) add them; (b) one run on the owner's copy (or a private copy of it) reads which line appears, and the lead names the cause with that line; (c) the fix, with an engine test that fails on the old code. The seeded real-engine run (proof 3) proves the engine path with a model, not the installed app (its output line 2 says so). Two reads of the owner's private data (proofs 0 to 2) are the lead's, counts only: nothing here read ~/Library/Application Support/Whoosh. Round 9 (lane hid-search): the lead measured the installed index on a private copy at 13:14 (main92): 418|418 chunks embedded, so proof 0 holds; the claim 'the index is empty' came from vector/vector-keys.tsv, which holds only text-keyed (attachment) pieces. The lead's ownercopy-search run on main95 printed 'RESULT: PASS | exact 5 of 5' (proof 2, the pass line now any N of N). Proof 3 passed on main97 (again-014.log). Proof 1 (the two markers and 'embedded N of N') is not yet read. The log lines of docs/lanes/query-embed.md section 2: the pass line (commit_and_mark, added by the lead), the hold by battery or heat (set_held, one line when it starts and one when it ends) and the memory wait (wait_for_room, one line at its start and one at its end), counts only; 'embedding N chunks of M mails' is the existing per-mail line 'the model returned N vectors for M chunks' plus the pass line. Engine test: core/crates/engine/tests/engine_index_log.rs (proof 4); the memory wait is not staged by a test (it needs the footprint over EMBED_INDEX_CEILING_MB)."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "168",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "On Mon, Nov 2, 2026 at 10:14 AM Yara Costa <yara.costa@example.net> wrote:",
+  "visible_contains": "Thanks, that works for me. c43f",
+  "folded_contains": "Can you confirm the schedule for next week? 8a12"
+ },
+ "adversarial": false
+}

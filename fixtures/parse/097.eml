@@ -1,0 +1,11 @@
+From: Northwind Cloud <orders@example.net>
+To: Assem Example <assem@example.org>
+Subject: Order confirmation
+Date: Fri, 06 Nov 2026 20:16:00 +0000
+Message-ID: <00f439f9a277a0b1@example.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Reservation confirmed for 2 guests on 14 November 2026 at 19:30.
+Reference 227483 (keep it for the front desk).

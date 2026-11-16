@@ -1,0 +1,70 @@
+{
+  "item": "a4a612c7",
+  "full_id": "a4a612c7-dc84-4b68-977a-c5cc54c57402",
+  "title": "Fix Space on an attachment (A123)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-attachments.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^FAIL |NOT JUDGED ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-a4a612c7\" --screens mac-main",
+      "pass": "^PASS mac-main (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "run `python3 checks/parity/par-attachments.py` (step par-attachments-absent-space writes absent_shot pictures) and read _captures/attachments-mac/absent/1-absent-light-1280x820.png, 2-fetching-50-light-1280x820.png, 3-present-light-1280x820.png (the present one is taken after the preview is closed again, never with a preview open)",
+      "pass": "the tile reads 'not on this Mac yet' with a cloud, then a ring at 50 percent, then the file; the strip reads '1 file · not on this Mac yet' with no size before, and no 'not on this Mac' once present; the lead rules on the look"
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-mailview",
+      "pass": "(?s)\\A(?=.*?\\nPASS +space-on-an-absent-file-starts-the-download-and-waits )(?=.*?\\nPASS +the-preview-opens-when-the-file-lands )(?=.*?\\nPASS +space-closes-the-preview )(?=.*?\\nPASS +the-quick-look-button-starts-the-download-and-waits )(?=.*?\\nPASS +the-button-opens-the-preview-when-the-file-lands )(?=.*?\\nPASS +escape-closes-the-button-preview )",
+      "fail": "^(FAIL|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice mailview: model all 22 cases pass, 17 broken answers each red on its own case",
+      "fail": "WRONG|FAILS",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/AttachmentsMac/QuickLookController.swift",
+      "find": "if store.peek(ref).url == nil && !AttachmentRig.mutant(\"no-wait\") { return store.whenReady(ref, .quickLook) }",
+      "replace": "",
+      "proof": 0,
+      "red": "FAIL par-attachments-absent-space/space-on-an-absent-file-starts-the-fetch-and-waits"
+    },
+    {
+      "file": "Sources/Features/AttachmentsMac/AttachmentGalleryParts.swift",
+      "find": "if sizes.isEmpty && !AttachmentRig.mutant(\"size-when-absent\") { return AttachmentWords.galleryNoneHere(set.all.count) }",
+      "replace": "",
+      "proof": 0,
+      "red": "FAIL par-attachments-absent-space/absent-file-is-named-absent-and-the-strip-prints-no-size"
+    },
+    {
+      "file": "Sources/Features/AttachmentsMac/QuickLookController.swift",
+      "find": "if store.peek(ref).url == nil && !AttachmentRig.mutant(\"no-wait\") { return store.whenReady(ref, .quickLook) }",
+      "replace": "",
+      "proof": 3,
+      "red": "FAIL +(space-on-an-absent-file-starts-the-download-and-waits|the-preview-opens-when-the-file-lands)"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/Features/AttachmentsMac/QuickLookController.swift:36-41 (Space on an absent file waits for the fetch: whenReady .quickLook), AttachmentGalleryParts.swift:56-62 (size words: none here prints no size, partial prints how many are here), AttachmentWords.swift:29 notOnThisMac, :35 quickLookAllTip, AttachmentProxy.swift:5. Cases: par-attachments.py:318 step par-attachments-absent-space (cases absent-file-is-named-absent-and-the-strip-prints-no-size, space-on-an-absent-file-starts-the-fetch-and-waits, the-tile-shows-the-progress, the-preview-opens-when-the-bytes-land, the-strip-names-no-absent-file-once-it-is-here, space-closes-the-preview), :334 par-attachments-absent-size (three cases), :359 par-attachments-absent-button (the Quick Look button: the-button-starts-the-fetch-and-waits, the-button-opens-the-preview-when-the-bytes-land, escape-closes-it); their mutant table lines 654-665. par-attachments.py prints the MUTANTS table and one total line (line 1624), no line per case on a pass: the aggregate pass line covers them. The reader's finding about no run log stands; the lead's run on a build is the proof. The two source mutants remove the wait guard and the 'no size when absent' guard. Lane gap-mailview-checks: 'on the real engine path' is built as checks/realcore-check.py --slice-mailview: Space on the first file and the Quick Look button on the second, both not on this Mac, against the REAL core and a local fake: the tile reads fetching (waiting quick-look, no figure) while the preview stays closed, then present with the preview open on that file; Space and Escape close it. The cases are printed one line each (PASS/FAIL/NOT JUDGED with the values)."
+}

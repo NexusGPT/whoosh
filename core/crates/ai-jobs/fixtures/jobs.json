@@ -1,0 +1,874 @@
+{
+ "draft_reply": {
+  "input": {
+   "intent": "accept the price, ask for delivery in March",
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    }
+   ],
+   "voice": "Short sentences. Opens with the first name, signs off with 'Best,'. Direct, warm, no exclamation marks.",
+   "instructions": "Never promise a date. Keep it under 80 words."
+  },
+  "answer": {
+   "text": "Marta, 52 euros each works for us. Could you deliver in March instead of February? Best, A."
+  }
+ },
+ "suggested_replies": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-03",
+     "text": "Thanks Marta. Could March work for delivery?"
+    },
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-04",
+     "text": "March works if you accept 54 euros each. Shall I send the order form?"
+    }
+   ],
+   "count": 3,
+   "voice": "Short sentences. Opens with the first name, signs off with 'Best,'. Direct, warm, no exclamation marks.",
+   "instructions": "Never promise a date. Keep it under 80 words."
+  },
+  "answer": {
+   "replies": [
+    {
+     "label": "Accept",
+     "text": "Marta, 54 euros is fine. Please send the order form. Best, A."
+    },
+    {
+     "label": "Counter",
+     "text": "Marta, can we meet at 53 euros? Best, A."
+    },
+    {
+     "label": "Ask first",
+     "text": "Marta, what does the price include? Best, A."
+    }
+   ]
+  }
+ },
+ "rewrite": {
+  "input": {
+   "paragraph": "I regret to inform you that the shipment will be late by roughly two weeks owing to circumstances beyond our control.",
+   "style": "shorter, warmer",
+   "voice": "Short sentences. Opens with the first name, signs off with 'Best,'. Direct, warm, no exclamation marks.",
+   "instructions": "Never promise a date. Keep it under 80 words."
+  },
+  "answer": {
+   "text": "Sorry, the shipment will be about two weeks late."
+  }
+ },
+ "dictation_cleanup": {
+  "input": {
+   "spoken": "um hi jon uh can you send me the the contract by friday thanks",
+   "language": "en"
+  },
+  "answer": {
+   "text": "Hi Jon, can you send me the contract by Friday? Thanks."
+  }
+ },
+ "translate": {
+  "input": {
+   "text": "Bonjour, pouvez-vous confirmer la livraison de mars ?",
+   "target_language": "English"
+  },
+  "answer": {
+   "text": "Hello, can you confirm the March delivery?",
+   "source_language": "French"
+  }
+ },
+ "compose_autocomplete": {
+  "input": {
+   "before_cursor": "Thanks for the offer. We can accept the price if",
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    }
+   ],
+   "voice": "Short sentences. Opens with the first name, signs off with 'Best,'. Direct, warm, no exclamation marks."
+  },
+  "answer": {
+   "continuation": " delivery moves to March."
+  }
+ },
+ "draft_follow_up": {
+  "input": {
+   "thread": [
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-04",
+     "text": "Marta, could you confirm the March delivery?"
+    }
+   ],
+   "voice": "Short sentences. Opens with the first name, signs off with 'Best,'. Direct, warm, no exclamation marks.",
+   "instructions": "Never promise a date. Keep it under 80 words."
+  },
+  "answer": {
+   "text": "Marta, a quick note on the March delivery. Could you let me know when you can confirm? Best, A."
+  }
+ },
+ "reply_nudge": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    }
+   ]
+  },
+  "answer": {
+   "nudge": "Marta needs your confirmation of 52 euros each by Friday."
+  }
+ },
+ "check_in_message": {
+  "input": {
+   "purpose": "the signed contract we sent last week",
+   "recipient_name": "Jon",
+   "voice": "Short sentences. Opens with the first name, signs off with 'Best,'. Direct, warm, no exclamation marks."
+  },
+  "answer": {
+   "text": "Hi Jon, how does the signed contract stand? Best, A."
+  }
+ },
+ "draft_attachment_selection": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": null,
+     "text": "Please send us your signed order form and the delivery address sheet."
+    }
+   ],
+   "attachments": [
+    "order-form-signed.pdf",
+    "holiday-photos.zip",
+    "delivery-addresses.xlsx"
+   ]
+  },
+  "answer": {
+   "attachments": [
+    "order-form-signed.pdf",
+    "delivery-addresses.xlsx"
+   ]
+  }
+ },
+ "summarise_thread": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-03",
+     "text": "Thanks Marta. Could March work for delivery?"
+    },
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-04",
+     "text": "March works if you accept 54 euros each. Shall I send the order form?"
+    }
+   ],
+   "language": "English"
+  },
+  "answer": {
+   "summary": "Marta offered 400 chairs at 52 euros with February delivery. After the owner asked for March, she agreed at 54 euros each and offered the order form.",
+   "key_points": [
+    "400 chairs",
+    "54 euros each for March delivery",
+    "Order form offered"
+   ],
+   "open_questions": [
+    "Does the owner accept 54 euros?"
+   ]
+  }
+ },
+ "digest_line": {
+  "input": {
+   "message": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": null,
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each."
+    }
+   ]
+  },
+  "answer": {
+   "line": "Marta offers 400 chairs at 52 euros each."
+  }
+ },
+ "extract_sign_in_code": {
+  "input": {
+   "message": "Your Acme verification code is 482913. It expires in 10 minutes. Or sign in: https://acme.example/signin?t=abc123"
+  },
+  "answer": {
+   "found": true,
+   "code": "482913",
+   "link": "https://acme.example/signin?t=abc123"
+  }
+ },
+ "classify_needs_reply": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-03",
+     "text": "Thanks Marta. Could March work for delivery?"
+    },
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-04",
+     "text": "March works if you accept 54 euros each. Shall I send the order form?"
+    }
+   ],
+   "owner_address": "owner@whoosh-test.example"
+  },
+  "answer": {
+   "status": "needs_reply",
+   "reason": "Marta asks whether to send the order form and the owner has not answered."
+  }
+ },
+ "meeting_brief": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-03",
+     "text": "Thanks Marta. Could March work for delivery?"
+    },
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-04",
+     "text": "March works if you accept 54 euros each. Shall I send the order form?"
+    }
+   ],
+   "attendees": [
+    "Marta Ilves"
+   ]
+  },
+  "answer": {
+   "brief": "Marta supplies chairs. She offered 52 euros for February and moved to 54 euros for March delivery.",
+   "points": [
+    "Settle the price",
+    "Confirm delivery month"
+   ]
+  }
+ },
+ "availability_reply": {
+  "input": {
+   "thread": [
+    {
+     "from": "jon@partner-example.com",
+     "date": null,
+     "text": "Can we meet next week for 30 minutes?"
+    }
+   ],
+   "free_slots": [
+    "Tue 10:00",
+    "Wed 14:00",
+    "Thu 09:30"
+   ],
+   "voice": "Short sentences. Opens with the first name, signs off with 'Best,'. Direct, warm, no exclamation marks."
+  },
+  "answer": {
+   "text": "Jon, Tuesday 10:00 or Thursday 09:30 both work. Best, A.",
+   "proposed_slots": [
+    "Tue 10:00",
+    "Thu 09:30"
+   ]
+  }
+ },
+ "find_snippets": {
+  "input": {
+   "thread": [
+    {
+     "from": "jon@partner-example.com",
+     "date": null,
+     "text": "What are your opening hours?"
+    }
+   ],
+   "snippets": [
+    "hours: We are open 9 to 17, Monday to Friday.",
+    "refund: Refunds take 5 days."
+   ]
+  },
+  "answer": {
+   "matches": [
+    "hours"
+   ]
+  }
+ },
+ "match_rule": {
+  "input": {
+   "message": [
+    {
+     "from": "billing@vendor-example.com",
+     "date": null,
+     "text": "Invoice 1042 is attached."
+    }
+   ],
+   "rules": [
+    "invoices: anything with an invoice or receipt",
+    "travel: bookings and tickets"
+   ]
+  },
+  "answer": {
+   "rule": "invoices",
+   "reason": "The message sends an invoice."
+  }
+ },
+ "rule_arguments": {
+  "input": {
+   "message": [
+    {
+     "from": "billing@vendor-example.com",
+     "date": null,
+     "text": "Invoice 1042 for 380 euros is due on 2026-12-01."
+    }
+   ],
+   "rule": "invoices",
+   "fields": [
+    "number: the invoice number",
+    "amount: the total",
+    "due: the due date"
+   ]
+  },
+  "answer": {
+   "arguments": [
+    {
+     "name": "number",
+     "value": "1042"
+    },
+    {
+     "name": "amount",
+     "value": "380 euros"
+    },
+    {
+     "name": "due",
+     "value": "2026-12-01"
+    }
+   ]
+  }
+ },
+ "cold_email": {
+  "input": {
+   "message": [
+    {
+     "from": "sales@growthly-example.com",
+     "date": null,
+     "text": "Hi, I help companies like yours get 10x leads. Free call this week?"
+    }
+   ],
+   "policy": "Strangers selling a service."
+  },
+  "answer": {
+   "is_cold": true,
+   "reason": "A stranger offers a sales service."
+  }
+ },
+ "recurring_pattern": {
+  "input": {
+   "recent_mail": [
+    {
+     "from": "news@shop-example.com",
+     "date": null,
+     "text": "This week's deals"
+    },
+    {
+     "from": "news@shop-example.com",
+     "date": null,
+     "text": "Weekend deals"
+    },
+    {
+     "from": "news@shop-example.com",
+     "date": null,
+     "text": "Deals you missed"
+    }
+   ]
+  },
+  "answer": {
+   "repeats": true,
+   "pattern": "A shop sends deal newsletters several times a week.",
+   "rule_words": "Mail from news@shop-example.com goes to Promotions."
+  }
+ },
+ "categorize_sender": {
+  "input": {
+   "sender": "news@shop-example.com",
+   "samples": [
+    {
+     "from": "news@shop-example.com",
+     "date": null,
+     "text": "This week's deals"
+    }
+   ],
+   "categories": [
+    "primary: people and work",
+    "updates: receipts and notices",
+    "promotions: offers and newsletters"
+   ]
+  },
+  "answer": {
+   "category": "promotions",
+   "reason": "The sender sends offers."
+  }
+ },
+ "categorize_senders": {
+  "input": {
+   "senders": [
+    "news@shop-example.com: This week's deals",
+    "marta@linea-supply-example.com: Offer for 400 chairs"
+   ],
+   "categories": [
+    "primary: people and work",
+    "promotions: offers and newsletters"
+   ]
+  },
+  "answer": {
+   "assignments": [
+    {
+     "sender": "news@shop-example.com",
+     "category": "promotions"
+    },
+    {
+     "sender": "marta@linea-supply-example.com",
+     "category": "primary"
+    }
+   ]
+  }
+ },
+ "sender_pattern": {
+  "input": {
+   "sender": "alerts@bank-example.com",
+   "samples": [
+    {
+     "from": "alerts@bank-example.com",
+     "date": null,
+     "text": "Your statement is ready"
+    }
+   ]
+  },
+  "answer": {
+   "pattern": "Monthly statement notices.",
+   "same_treatment": true,
+   "suggested_rule": "Mail from alerts@bank-example.com goes to Updates."
+  }
+ },
+ "prompt_to_rules": {
+  "input": {
+   "words": "Put newsletters in Promotions and flag anything from my accountant as VIP."
+  },
+  "answer": {
+   "rules": [
+    {
+     "name": "Newsletters",
+     "when": "the message is a newsletter",
+     "then": "put it in Promotions"
+    },
+    {
+     "name": "Accountant",
+     "when": "the sender is my accountant",
+     "then": "mark it VIP"
+    }
+   ]
+  }
+ },
+ "clean_inbox": {
+  "input": {
+   "message": [
+    {
+     "from": "billing@vendor-example.com",
+     "date": null,
+     "text": "Your payment was received. Thank you."
+    }
+   ],
+   "policy": "Keep what waits for me."
+  },
+  "answer": {
+   "action": "archive",
+   "reason": "A receipt that needs no action."
+  }
+ },
+ "voice_profile": {
+  "input": {
+   "sent": [
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-04",
+     "text": "Marta, thanks. March works for us. Please send the form. Best, A."
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-05",
+     "text": "Hi Jon, can you move the call to Thursday? I am out Wednesday. Best, A."
+    }
+   ]
+  },
+  "answer": {
+   "summary_words": "Writes short, direct sentences. Opens with the first name and signs off with 'Best,' and an initial. Polite, no exclamation marks.",
+   "traits": [
+    "short sentences",
+    "signs off with Best",
+    "first-name greeting"
+   ]
+  }
+ },
+ "compact_writing_style": {
+  "input": {
+   "notes": [
+    "Short sentences, signs off Best.",
+    "Direct, no exclamation marks, first-name greeting."
+   ]
+  },
+  "answer": {
+   "summary_words": "Short, direct sentences with a first-name greeting and a Best sign-off; no exclamation marks."
+  }
+ },
+ "persona": {
+  "input": {
+   "sent": [
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-04",
+     "text": "Marta, thanks. March works for us. Please send the form. Best, A."
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-05",
+     "text": "Hi Jon, can you move the call to Thursday? I am out Wednesday. Best, A."
+    }
+   ]
+  },
+  "answer": {
+   "persona": "A buyer who negotiates supply deals and manages meetings with partners.",
+   "topics": [
+    "supplier prices",
+    "meeting scheduling"
+   ]
+  }
+ },
+ "extract_knowledge": {
+  "input": {
+   "document": "Refunds are paid within 5 days. Support is open 9 to 17 on weekdays."
+  },
+  "answer": {
+   "entries": [
+    {
+     "topic": "refunds",
+     "fact": "Refunds are paid within 5 days."
+    },
+    {
+     "topic": "support hours",
+     "fact": "Support is open 9 to 17 on weekdays."
+    }
+   ]
+  }
+ },
+ "knowledge_from_history": {
+  "input": {
+   "history": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-03",
+     "text": "Thanks Marta. Could March work for delivery?"
+    },
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-04",
+     "text": "March works if you accept 54 euros each. Shall I send the order form?"
+    }
+   ]
+  },
+  "answer": {
+   "entries": [
+    {
+     "topic": "chair supplier",
+     "fact": "Marta Ilves supplies chairs at 54 euros each for March delivery."
+    }
+   ]
+  }
+ },
+ "reply_memories_extract": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-03",
+     "text": "Thanks Marta. Could March work for delivery?"
+    },
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-04",
+     "text": "March works if you accept 54 euros each. Shall I send the order form?"
+    }
+   ]
+  },
+  "answer": {
+   "memories": [
+    "The owner prefers March delivery for chair orders."
+   ]
+  }
+ },
+ "select_reply_memories": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": null,
+     "text": "Which month suits you for delivery?"
+    }
+   ],
+   "memories": [
+    "The owner prefers March delivery for chair orders.",
+    "The owner dislikes calls."
+   ]
+  },
+  "answer": {
+   "selected": [
+    "The owner prefers March delivery for chair orders."
+   ]
+  }
+ },
+ "reply_context_queries": {
+  "input": {
+   "thread": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": null,
+     "text": "Can you confirm the price we agreed last spring?"
+    }
+   ]
+  },
+  "answer": {
+   "queries": [
+    "Marta Ilves price spring",
+    "linea-supply-example.com offer"
+   ]
+  }
+ },
+ "file_attachment": {
+  "input": {
+   "file_name": "scan0042.pdf",
+   "file_text": "Invoice 1042 from Vendor Co, 380 euros, due 2026-12-01.",
+   "context": [
+    {
+     "from": "billing@vendor-example.com",
+     "date": null,
+     "text": "Invoice attached."
+    }
+   ]
+  },
+  "answer": {
+   "label": "Invoices",
+   "file_name": "vendor-co-invoice-1042.pdf",
+   "reason": "It is an invoice from Vendor Co."
+  }
+ },
+ "parse_filing_reply": {
+  "input": {
+   "suggestion": "Label Invoices, name vendor-co-invoice-1042.pdf",
+   "answer": "yes but call it vendor-1042.pdf"
+  },
+  "answer": {
+   "accepted": true,
+   "file_name": "vendor-1042.pdf"
+  }
+ },
+ "compact_chat": {
+  "input": {
+   "conversation": [
+    {
+     "from": "owner",
+     "date": null,
+     "text": "Find Marta's last offer."
+    },
+    {
+     "from": "assistant",
+     "date": null,
+     "text": "Her last offer was 54 euros each for March delivery."
+    },
+    {
+     "from": "owner",
+     "date": null,
+     "text": "Draft an acceptance."
+    }
+   ]
+  },
+  "answer": {
+   "summary": "The owner asked for Marta's last offer, 54 euros each for March delivery, and now wants an acceptance drafted."
+  }
+ },
+ "chat_memory": {
+  "input": {
+   "conversation": [
+    {
+     "from": "owner",
+     "date": null,
+     "text": "From now on sign my mail with 'Best, A.'"
+    },
+    {
+     "from": "assistant",
+     "date": null,
+     "text": "Understood."
+    }
+   ]
+  },
+  "answer": {
+   "memories": [
+    "The owner signs mail with 'Best, A.'"
+   ]
+  }
+ },
+ "report_behavior": {
+  "input": {
+   "figures": "Received 1200, sent 300, archived 900. Busiest hour 9 to 10."
+  },
+  "answer": {
+   "findings": [
+    "The owner archives three quarters of the mail received (900 of 1200).",
+    "Mail arrives most between 9 and 10."
+   ]
+  }
+ },
+ "report_labels": {
+  "input": {
+   "figures": "Label Clients: 40 mails. Label Customers: 38 mails, 35 shared with Clients.",
+   "labels": [
+    "Clients",
+    "Customers"
+   ]
+  },
+  "answer": {
+   "suggestions": [
+    {
+     "label": "Customers",
+     "advice": "Merge into Clients: 35 of its 38 mails already carry both."
+    }
+   ]
+  }
+ },
+ "report_response_patterns": {
+  "input": {
+   "figures": "Median reply to Marta: 2 hours. Median reply to news senders: never."
+  },
+  "answer": {
+   "findings": [
+    "Marta gets a reply within about 2 hours.",
+    "Newsletters never get a reply."
+   ]
+  }
+ },
+ "report_email_summary": {
+  "input": {
+   "messages": [
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-02",
+     "text": "Hello, our offer for 400 chairs stands at 52 euros each, delivery in February. Can you confirm by Friday?"
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-03",
+     "text": "Thanks Marta. Could March work for delivery?"
+    },
+    {
+     "from": "marta@linea-supply-example.com",
+     "date": "2026-11-04",
+     "text": "March works if you accept 54 euros each. Shall I send the order form?"
+    }
+   ]
+  },
+  "answer": {
+   "summary": "The period's mail is mostly a supplier negotiation over chair prices and delivery.",
+   "topics": [
+    "chair prices",
+    "delivery date"
+   ]
+  }
+ },
+ "report_persona": {
+  "input": {
+   "figures": "Received 1200, sent 300.",
+   "sent": [
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-04",
+     "text": "Marta, thanks. March works for us. Please send the form. Best, A."
+    },
+    {
+     "from": "owner@whoosh-test.example",
+     "date": "2026-11-05",
+     "text": "Hi Jon, can you move the call to Thursday? I am out Wednesday. Best, A."
+    }
+   ]
+  },
+  "answer": {
+   "persona": "A hands-on buyer who answers suppliers quickly and keeps replies short."
+  }
+ },
+ "report_executive_summary": {
+  "input": {
+   "findings": [
+    "The owner archives 900 of 1200 mails.",
+    "Marta gets a reply within about 2 hours."
+   ]
+  },
+  "answer": {
+   "summary": "The owner clears the inbox quickly and answers key suppliers fast.",
+   "headlines": [
+    "Most mail is archived",
+    "Key suppliers get fast answers"
+   ]
+  }
+ },
+ "report_recommendations": {
+  "input": {
+   "findings": [
+    "The owner archives 900 of 1200 mails.",
+    "Newsletters never get a reply."
+   ]
+  },
+  "answer": {
+   "recommendations": [
+    {
+     "action": "Auto-archive newsletters.",
+     "why": "Newsletters never get a reply."
+    }
+   ]
+  }
+ }
+}

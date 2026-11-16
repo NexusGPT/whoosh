@@ -1,0 +1,49 @@
+{
+  "item": "871b4ee2",
+  "full_id": "871b4ee2-f8c2-4ff3-8fad-763807719a48",
+  "title": "Rank conversations by their best piece",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_related",
+      "pass": "test result: ok\\. 10 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "par-reader-marks-the-passage-of-the-selected-result +pass",
+      "fail": "par-reader-marks-the-passage-of-the-selected-result +(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ reader-passage check, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "\"SELECT id, message_id, part FROM chunk\"",
+      "replace": "\"SELECT id, message_id, part FROM chunk WHERE part = 'body'\"",
+      "proof": 0,
+      "red": "h_the_best_mail_of_a_thread_comes_first.*FAILED|g_a_mail_whose_best_piece_is_an_attachment_carries_the_file_and_its_passage.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "if cos > o.get().0 { o.insert((cos, chunk, attachment)); }",
+      "replace": "if cos < o.get().0 { o.insert((cos, chunk, attachment)); }",
+      "proof": 0,
+      "red": "h_the_best_mail_of_a_thread_comes_first.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Clauses. (a) a conversation's closeness is the best piece of any of its mails, body or attachment: core/crates/engine/tests/engine_search_related.rs:315 h_the_best_mail_of_a_thread_comes_first (thread t-plan: older has body 0.62 and a file at 0.93, newer 0.70, another thread at 0.80; the list is older, other, newer and the thread's first hit is older, with the file name floor-plan.pdf; the screen folds a thread into its first hit, so this is the rank of the conversation). The broken copies: closeness reading body pieces only (search_cmd.rs:530) and the best piece taken as the worst (search_cmd.rs:544). (b) the result opens at the mail and passage that matched: the engine hands the hit's own message_id (the mail holding the piece) and the passage; the reader check is checks/parity/par-searchmac.py:2329 reader_marks_passage, case par-reader-marks-the-passage-of-the-selected-result (PASSAGE_CASE :2287, run at :3132, expected PASSAGE_EXPECT :2339: for a text, an attachment and a thread result the reader's mac-main.reader.passage row names the mail that holds the passage and marks it), with 4 mutants in --selftest (PASSAGE_MUTANTS :2393: marks-nothing, hands-the-row-mail, no-ring, mark-stays-after-close; the selftest prints '1 reader-passage check, 4 mutants, 0 problems', par-searchmac.py:2418). The Swift unit tests of the same behaviour exist (Tests/Unit/ReaderPassageTests.swift:89 anEarlierMailResultHandsTheEarlierMailsIdAndTheReaderFindsItInTheThread) but the owner banned Swift unit runs ('stop with the 700+ swift tests'), so no unit proof is written. 'the reader check shows the matched mail' is the hidden case. Nothing was run by me."
+}

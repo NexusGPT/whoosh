@@ -1,0 +1,40 @@
+{
+  "item": "1bf1a27b",
+  "full_id": "1bf1a27b-d769-4807-ba39-39d453f2670b",
+  "title": "Sort test mail with a second downloaded model",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "(?m)^PASS J5\\.7/a-second-model-downloads-then-becomes-the-model-in-use",
+      "fail": "(?m)^(FAIL|NOT JUDGED) J5\\.7/a-second-model-downloads-then-becomes-the-model-in-use",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/seams/decided-by.py",
+      "pass": "(?m)^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "(?m)^\\s*(FAIL|NOT JUDGED) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "WHOOSH_RIG_HIDDEN=1 python3 checks/laya-real-check.py <bundle> --models <the lead's folder of the KnowLine 0.8B files> --model knowline-0.8b (the real weights, served on 127.0.0.1 only; the hidden copy downloads them, the model is chosen, the fixture's 16 mails are judged)",
+      "pass": "PASS laya-real/why-here-names-the-model with decided_by 'model:knowline-0.8b', PASS laya-real/the-copy-reaches-no-address-outside-this-mac, PASS laya-real/the-server-answered-only-the-five-laya-files, and at least one mail filed in Needs Reply by the model"
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/laya-real-check.py --selftest",
+      "pass": "selftest laya-real: the pass line ok, the fixture's mail ok, the stand-in run ok, the step times ok, another model's run ok, the broken copies ok",
+      "fail": "Traceback|SELFTEST FAIL",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "The acceptance names settingsaimac-check.py and decided-by.py. The download from a loopback stub and the choice are read by settingsaimac-check J5.7/a-second-model-downloads-then-becomes-the-model-in-use (stub weights). That the second model SORTS a mail and is NAMED is read by the real-model run (proof 2, checks/laya-real-check.py --model, case why-here-names-the-model: the core's decided_by 'model:<id>' and the panel's words), since stub weights judge nothing: decided-by.py reads the names of the built-in deciders. The real run's speed and memory lines are judged against Laya's bars (RSS_MODEL_MAX_MB, LAYA_GROWTH_MAX_MB) and are red for a 0.8B model: reported to the owner, not part of this item's acceptance. No broken copy is listed here: the cases' own broken copies live in the two checks' self-tests. Proof file written 16 Nov by the lead."
+}

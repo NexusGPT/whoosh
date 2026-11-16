@@ -1,0 +1,63 @@
+{
+  "item": "614e9827",
+  "full_id": "614e9827-70e8-436b-80a5-ceb97aa011ff",
+  "title": "Make the composer checks print what decides a failure",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-composermac.py --selftest",
+      "pass": "selftest: [0-9]+ checks, 0 mutants not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-attachments.py --selftest",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-quickreply.py --selftest",
+      "pass": "selftest: [0-9]+ checks, [0-9]+ mutants, 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J6.py --selftest",
+      "pass": "selftest: [0-9]+ checks, [0-9]+ mutants red, 0 not run .* 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "(send-and-done-button-sends-and-archives|deleted-file-reads-gone-on-its-tile|send-with-a-gone-file-is-refused-with-its-sentence|forward-opens-with-the-originals-files-as-tiles|forward-file-removed-leaves-the-other|forward-send-carries-the-remaining-file|cmd-z-in-the-body-undoes-the-typed-text) +(pass|fail|unjudged) .+",
+      "fail": "(fail|unjudged) *$",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"picked by baseline index\" journeys/J6.py",
+      "pass": "^1$",
+      "fail": "^0$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "journeys/J6.py",
+      "find": "(picked by baseline index %r)",
+      "replace": "(picked by index)",
+      "proof": 5,
+      "red": "^0$"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Dossier: _captures/tests/r77/dossier-reds77-compose.md (13 cases, shared causes S1 to S5). Self-test lines on the base before this lane: _captures/lead/main81/selftests/checks_parity_par-composermac.log (last line 'selftest: 119 checks, 0 mutants not red or missing'), checks_parity_par-attachments.log (last line '68 checks, 0 failed, 0 not judged'), journeys_J6.log ('selftest: 51 checks, 51 mutants red, 0 not run ...'). The pass regex of proof 1 follows the main81 last line of par-attachments --selftest, unverified at this commit. Fail regex of proof 4 is advisory: the lead sorts each line by hand. tail-small (2026-11-11): the self-tests of proofs 0 to 3 were run by tail-small on this tree, each alone under alarm 300, each exit 0: par-composermac --selftest last line 'selftest: 217 checks, 0 mutants not red or missing'; par-attachments --selftest '68 checks, 0 failed, 0 not judged'; par-quickreply --selftest 'selftest: 33 checks, 33 mutants, 0 not red or missing' (its last line is 'perf file: 8 cases, 0 wrong', the pass regex matches the line before); journeys/J6.py --selftest 'selftest: 52 checks, 52 mutants red, 0 not run (not judged on the ideal), 52 declared rows, 0 not red or missing' (logs: tail-small-out/st-composermac.txt, st-att.txt, st-qr.txt, st-j6.txt, beside the worktree). What remains is the lead's own: the hidden run of proof 4 on a build, each of the 7 composer lines sorted app or check by hand. Earlier gap text: Closed by gap-findings (2026-11-11) from the 'not audited' list: journeys/J6.py why_open (send-closes-the-composer) now prints the baseline index ob7 ('outbox entry %r (picked by baseline index %r) state %r'; proof 5 counts the phrase, J6 self-test exit 0: docs/lanes/gap-findings-runs/J6-selftest2.txt). Read again and already printing the deciding value in the files at this commit, so nothing to change: par-attachments.py:346 size-is-french-in-a-french-app and :344 (size_read, :292-298, prints the header, its code points and the pattern), :416 save-all-starts-no-second-fetch (prints the per-file fetch differences and the bool, :418-421), par-quickreply.py landing-light-ran (landing_of_run, :477 on, raises with the file, line counts, the last line and row). Still open: the hidden run of proof 4 on a build, where each of the 7 composer lines is sorted app or check by the lead, and the self-tests of proofs 0 to 3 as the lead's runs. Previous text: Composer part audited (S); the rest stays open. Table case | prints values on a miss | file:line (par-composermac.py of this lane): send-and-done-button-sends-and-archives | yes (done_read: read triple, list ids, archived flags, composer state) | :905; deleted-file-reads-gone-on-its-tile | yes (expect_files: read + files_state) | :1132; send-with-a-gone-file-is-refused-with-its-sentence | yes (expect_files) | :1134; forward-opens-with-the-originals-files-as-tiles | yes (expect_files, fwd_miss) | :1148; forward-file-removed-leaves-the-other | yes | :1151; forward-send-carries-the-remaining-file"
+}

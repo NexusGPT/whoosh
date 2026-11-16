@@ -1,0 +1,100 @@
+{
+  "item": "8149bdd7",
+  "full_id": "8149bdd7-1e38-475c-afdc-edcdc28d80cf",
+  "title": "Build fn-tests-j2",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J2 2>&1 ; cat \"$D/results\"/J2-*.results.jsonl'",
+      "pass": "J2 GREEN: \\d+ steps, \\d+ checks, 0 failed, 0 not judged",
+      "fail": "J2 (RED|COULD-NOT-DRIVE)|\\\"verdict\\\": \\\"FAIL\\\"|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J2.py --selftest",
+      "pass": "J2 selftest: \\d+ checks, \\d+ mutants, 0 not red or missing",
+      "fail": "NOT RED|STRAY|NO MUTANT|NOT IN THE CATALOGUE|[1-9]\\d* not red or missing",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/search.py --selftest",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^BAD |unrecognised|^NOT JUDGED",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/search.py --bundle $WHOOSH_BUNDLE",
+      "pass": "first results screen over \\d+ runs: median [0-9.]+ ms.*\\n1 checks, 0 failed, 0 not judged",
+      "fail": "FAIL:|NOT JUDGED",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "sh -c 'WHOOSH_THEME=dark WHOOSH_RESULTS_DIR=$D/results-dark python3 journeys/run.py J2 2>&1 ; python3 journeys/lib/summary.py \"$D/results-dark\" J2'",
+      "pass": "(?s)(?=.*J2 GREEN: \\d+ steps, \\d+ checks, 0 failed, 0 not judged)(?=.*THEME J2\\.1 theme-applied PASS got=dark)",
+      "fail": "J2 (RED|COULD-NOT-DRIVE)|STEP J2\\.\\d+ [^\\n]*(FAIL|NOT JUDGED)=|could not drive|THEME J2\\.1 theme-applied (FAIL|NOT JUDGED)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results-themes-dry python3 journeys/run.py --dry --themes light,dark J2 2>&1 | grep -E \"^\\[(light|dark)\\] J2 \"'",
+      "pass": "(?s)\\[light\\] J2 [A-Z-]+: .*\\[dark\\] J2 [A-Z-]+: ",
+      "fail": "\\[light\\] J2 [^\\n]*\\n\\[light\\] J2 |Traceback|takes light or dark",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "theSeedCorpusVerbLeavesExactlyThatManyMailsAndRefusesNoneOrTooMany,aResetBringsTheSampleBackAfterASeededCorpus",
+      "pass": "passed",
+      "fail": "failed|recorded an issue",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "journeys/lib/theme.py",
+      "find": "s.raw(\"fixture\", \"theme\", want)",
+      "replace": "s.raw(\"fixture\", \"theme\", \"light\")",
+      "proof": 4,
+      "red": "THEME J2\\.1 theme-applied FAIL got=light"
+    },
+    {
+      "file": "journeys/run.py",
+      "find": "\"[%s] \" % theme if theme else \"\", r[\"id\"].split(\" (\")[0]",
+      "replace": "\"[%s] \" % \"light\" if theme else \"\", r[\"id\"].split(\" (\")[0]",
+      "proof": 5,
+      "red": "\\[light\\] J2 [^\\n]*\\n\\[light\\] J2 "
+    },
+    {
+      "file": "perf/search.py",
+      "find": "    return median_ms >= budget",
+      "replace": "    return median_ms > budget",
+      "proof": 2,
+      "red": "BAD +a median at the budget fails"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureHistory.swift",
+      "find": "if made.rows.count > n {",
+      "replace": "if false {",
+      "proof": 6,
+      "red": "theSeedCorpusVerbLeavesExactlyThatManyMailsAndRefusesNoneOrTooMany\\(\\) failed|✘ Test theSeedCorpusVerbLeavesExactlyThatManyMailsAndRefusesNoneOrTooMany"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureHistory.swift",
+      "find": "guard n >= 1, n <= Self.seedCorpusMax else {",
+      "replace": "guard n <= Self.seedCorpusMax else {",
+      "proof": 6,
+      "red": "theSeedCorpusVerbLeavesExactlyThatManyMailsAndRefusesNoneOrTooMany\\(\\) failed|✘ Test theSeedCorpusVerbLeavesExactlyThatManyMailsAndRefusesNoneOrTooMany"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "J2 prints its verdict on stderr (journeys/run.py:54) so the proof merges 2>&1; the results jsonl is printed for per-case PASS lines (journeys/lib/harness.py:248-270); a red scaffold is history: _captures/tests-j2/j2-red-real-app.txt:4 ('J2 RED: 7 steps, 36 checks, 7 failed, 28 not judged'), so 'red at scaffold' is not re-provable now and is not claimed. J2 now has 8 steps (J2.1-J2.8, journeys/J2.py:338-520), hence '\\d+ steps'. Selftest: journeys/J2.py:594-618 (dry, no app). perf/search.py: budget SEARCH_FIRST_SCREEN_MS '100 on 1M messages' (docs/CONSTANTS.md:15), exit code rule lines 120-124, NOT JUDGED rules lines 84-114. Proof 3 needs $WHOOSH_BUNDLE (the runner's bundle) and a hidden launch; it cannot pass until (C). Theme (lane gap-themes): journeys/J2.py:342 calls `_theme.apply(s)` (journeys/lib/theme.py:20-24: `fixture theme <WHOOSH_THEME, default light>`, then the case `J2.1/theme-applied` reads uistate theme), TITLE says the theme (J2.py:90), MUTANTS row J2.py:534. Proof 4 runs the journey with WHOOSH_THEME=dark and prints, from journeys/lib/summary.py, the line 'THEME J2.1 theme-applied PASS got=dark'; the light pass is proof 0 (the default theme). Proof 5: `journeys/run.py --dry --themes light,dark J2` prints one line per theme ('[light] J2 ...', '[dark] J2 ...'; no app is launched, so the verdict word there is COULD-NOT-DRIVE and is not read). On a real run `--themes` writes each pass under <results folder>/<theme>/ and both passes drive one app (a fixture core cannot be reset): the lead launches once per theme, as proofs 0 and 4 do. A light run cannot show that the app applies a theme (a build that ignores the verb stays light): only the dark proof can. | lane fix-rest-app: piece (C) is built: `fixture seed-corpus <N>` (FixtureVerbs.swift, FixtureCore.seedCorpus in FixtureHistory.swift: exactly N generated mails over the fixture's accounts, `index/message_count` reads N), unit proof 6. Proof 3 is the first run of the cell on the real verb: N = 1,000,000 generated mails are held in the test copy's memory, and the socket's answer time for the verb at that size is unmeasured (the 300,000 of `fixture load full-history-30` answered in about 1.1 s plus 5.3 s before launch-r3); if the cell prints NOT JUDGED naming the seed, that is the measure to send back."
+}

@@ -1,0 +1,34 @@
+{
+  "item": "ab09a68c",
+  "full_id": "ab09a68c-896b-4b07-aa9d-549b2efcc529",
+  "title": "Build fn-cloud-speech",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p ai-providers --test speech",
+      "pass": "test result: ok\\. 13 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"^#\\[test\\]\" core/crates/ai-providers/tests/speech.rs",
+      "pass": "^13$",
+      "fail": "^0$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/ai-providers/src/speech/deepgram.rs",
+      "find": "[\"results\"][\"channels\"][0][\"alternatives\"][0][\"transcript\"]",
+      "replace": "[\"results\"][\"channels\"][0][\"alternatives\"][0][\"transcriptX\"]",
+      "proof": 0,
+      "red": "deepgram_returns_text_and_sends_the_language.*FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claim 1 'each adapter returns text for the fixture audio': five tests openai_transcription_returns_text, deepgram_returns_text_and_sends_the_language, elevenlabs_scribe_returns_text, groq_returns_text, mistral_voxtral_returns_text (core/crates/ai-providers/tests/speech.rs:52-60, helper transcribes :28 asserts the text and that the audio bytes are in the request). Claim 2 'a refused key returns the provider's words': four refused-key tests, one per provider, :63-73 (helper refused :39 asserts reason_words equals the provider's words and not retryable). That is 5 + 5 refused (openai, deepgram, elevenlabs, groq, mistral) = 10, plus three guards (:76 empty recording, :88 missing key, :99 boundary) = 13 tests. The cargo line 'test result: ok. 13 passed' is the pass line. Recorded fixtures are replayed (Replay), no network."
+}

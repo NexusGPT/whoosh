@@ -1,0 +1,85 @@
+{
+  "item": "021cf2d6",
+  "full_id": "021cf2d6-ab77-44ed-b6b4-78b4316c3b28",
+  "title": "Show the account's folders on Sources",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_replies_settings -- sources_mail_folders_this_mac_and_calendars_with_the_derived_figures a_new_installation_starts_with_auto_off_and_the_inbox_and_the_sent_folder_of_each_account_on",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p reply-sources --test mail_and_order an_account_card_lists_its_folders_inbox_then_sent_then_by_name",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^(FAIL|UNJUDGED) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsreplies-check.py --selftest",
+      "pass": "^selftest: OK \\(0 mutants not red\\)",
+      "fail": "NOT RED|selftest: FAILED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice2",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL|SURVIVED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "on the owner's installed build (or a private copy of the owner's data folder, read as counts only): Settings, Replies, Sources with the one working account; read `rows mac-settings-replies.sources` through the control socket",
+      "pass": "one row kind=account for the account, no no-account footnote row (mac-settings-replies.no-account absent), and mail_folder rows whose `enabled` is true for INBOX and the Sent folder and false for every other folder"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "PASS sources-tiles-calendars-scope",
+      "fail": "FAIL sources-tiles-calendars-scope",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-sources",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^(FAIL|NOT JUDGED) ",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/store/src/replies.rs",
+      "find": "flag(default_on), now_ms]",
+      "replace": "flag(false), now_ms]",
+      "proof": 0,
+      "red": "a_new_installation_starts_with_auto_off.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/reply-sources/src/usecases/mail_tiles.rs",
+      "find": "rank(a).cmp(&rank(b)).then_with(|| a.folder.to_lowercase().cmp(&b.folder.to_lowercase()))",
+      "replace": "a.folder.to_lowercase().cmp(&b.folder.to_lowercase())",
+      "proof": 1,
+      "red": "an_account_card_lists_its_folders_inbox_then_sent_then_by_name.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": "Still missing: the lead's hidden run of proof 7 (python3 checks/realcore-check.py <bundle> --slice-sources on a hidden test copy): it adds the local IMAP account as slice2 does, opens Settings, Replies, Sources, reads `rows mac-settings-replies.sources` and prints PASS lines for one account row, enabled mail_folder rows Inbox and Sent only (Archive listed and off), no `no-account` footnote, no mail text in the rows. The slice and its self-test (7 broken copies, each red) exist and have not run against an app. The fixture-core case sources-tiles-calendars-scope prints its PASS line (proof 6).",
+  "owner": "The owner opens Settings, Replies, Sources on their installed build with their one working account and says the card and its folders are there (acceptance: 'on the owner's real account on an installed build, seen by the owner').",
+  "notes": "Code: Sources/Features/SettingsRepliesMac/RepliesRows.swift:45-52 (account row with foldersLine, then one mail_folder row per folder), SourcesPane.swift:20-21 (AccountSourcesCard per account; RepliesWords.noAccount 'No mail account yet.' only when s.accounts is empty, RepliesWords.swift:49). Core: core/crates/reply-sources/src/usecases/mail_tiles.rs:23-52 mail_folder_tiles; core/crates/store/src/replies.rs:472-495 reply_register_folders (default_on: Inbox and Sent on); core/crates/engine/tests/engine_replies_settings.rs:198 and :614 (real core, local IMAP fake, fresh store); core/crates/reply-sources/tests/mail_and_order.rs:46. Check: checks/settingsreplies-check.py:206 (case), :1554 total line, :1593 selftest line. The first mutant needs the engine test to run on the mutated store crate (cargo rebuilds it). Real-account check by the lead is by counts only; read the `rows` answer, never print mail text."
+}

@@ -1,0 +1,14 @@
+{
+ "id": "192",
+ "category": "quoted-html",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 2,
+ "quoted": {
+  "kind": "html",
+  "visible_contains": "I will send the figures tomorrow morning. ce73",
+  "folded_contains": "Can you confirm the schedule for next week? 8111"
+ },
+ "adversarial": false
+}

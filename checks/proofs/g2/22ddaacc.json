@@ -1,0 +1,84 @@
+{
+  "item": "22ddaacc",
+  "full_id": "22ddaacc-af15-43c3-84b6-2101821f4434",
+  "title": "Build ix-welcomemac-qr",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theQrLivesForTheLedgerValueAndCarriesATokenOnly,theQrImageDecodesToAPairingTokenOnly",
+      "pass": "(?s)(?=.*Test theQrLivesForTheLedgerValueAndCarriesATokenOnly\\(\\) passed)(?=.*Test theQrImageDecodesToAPairingTokenOnly\\(\\) passed)",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "python3 checks/devicesync-check.py",
+      "pass": "(?s)(?=.*PASS F-token-qr-only)(?=.*PASS F-token-expiry)(?=.*PASS F-token-replaced)(?=.*PASS F-token-single-use)",
+      "fail": "FAIL F-token",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaccountsmac-check.py",
+      "pass": "(?s)(?=.*\\d+ checks, 0 failed, 0 not judged)(?=.*PASS qr-row-payload-is-the-token)(?=.*PASS move-to-iphone-shows-qr)(?=.*PASS qr-carries-token-only)(?=.*PASS expired-qr-replaced)",
+      "fail": "FAIL (move-to-iphone-shows-qr|qr-expiry-from-constants|qr-carries-token-only|qr-row-payload-is-the-token|expired-qr-replaced)",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsaccountsmac-check.py --selftest",
+      "pass": "(?s)(?=.*\\| move-to-iphone-shows-qr \\| qr-missing \\| .* \\| red on move-to-iphone-shows-qr \\|)(?=.*\\| qr-expiry-from-constants \\| qr-never \\| .* \\| red on qr-expiry-from-constants \\|)(?=.*\\| qr-carries-token-only \\| qr-leaks \\| .* \\| red on qr-carries-token-only \\|)(?=.*\\| expired-qr-replaced \\| qr-stays \\| .* \\| red on expired-qr-replaced \\|)(?=.*\\| qr-row-payload-is-the-token \\| qr-payload-leaks \\| .* \\| red on qr-row-payload-is-the-token \\|)(?=.*selftest: every check seen red on its mutant)",
+      "fail": "NOT RED|problem\\(s\\)|BASE FAIL",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/CoreBridge/FixtureCore.swift",
+      "find": "if !part.isEmpty, part.allSatisfy({ $0.isASCII && $0.isHexDigit }) { return \"token\" }",
+      "replace": "if !part.isEmpty, part.allSatisfy({ $0.isASCII && $0.isHexDigit }) { return \"token-and-password\" }",
+      "proof": 0,
+      "red": "may carry the pairing token only|Test theQrLivesForTheLedgerValueAndCarriesATokenOnly\\(\\) failed"
+    },
+    {
+      "file": "Sources/Features/DeviceSync/PairingToken.swift",
+      "find": "public var qrPayload: String { \"whoosh-pair:v1:\\(value)\" }",
+      "replace": "public var qrPayload: String { \"whoosh-pair:v1:\\(value):owner@example.test\" }",
+      "proof": 0,
+      "red": "Test theQrImageDecodesToAPairingTokenOnly\\(\\) failed"
+    },
+    {
+      "file": "Sources/Features/DeviceSync/PairingToken.swift",
+      "find": "public var qrPayload: String { \"whoosh-pair:v1:\\(value)\" }",
+      "replace": "public var qrPayload: String { \"whoosh-pair:v1:\\(value):owner@example.test\" }",
+      "proof": 1,
+      "red": "FAIL F-token-qr-only"
+    },
+    {
+      "file": "Sources/Features/DeviceSync/PairingToken.swift",
+      "find": "if clock() >= current.expiresAtMs { return .failure(.expired) }",
+      "replace": "",
+      "proof": 1,
+      "red": "FAIL F-token-expiry"
+    },
+    {
+      "file": "checks/settingsaccountsmac-check.py",
+      "find": "(sorted(keys), [k for k in keys if k in FORBID]), ([\"token\"], [])",
+      "replace": "(sorted(keys), [k for k in keys if k in FORBID]), ([\"token\", \"x\"], [])",
+      "proof": 3,
+      "red": "BASE FAIL qr-carries-token-only|1 problem\\(s\\)"
+    },
+    {
+      "file": "Sources/Features/DeviceSync/PairingToken.swift",
+      "find": "public var qrPayload: String { \"whoosh-pair:v1:\\(value)\" }",
+      "replace": "public var qrPayload: String { \"whoosh-pair:v1:\\(value):owner@example.test\" }",
+      "proof": 2,
+      "red": "FAIL qr-row-payload-is-the-token"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims: (a) click mac-settings-accounts.move-to-iphone shows a QR: WelcomeMacFeature.swift:63 sets qrOpen and refreshes; row qr at :100-105; check case move-to-iphone-shows-qr settingsaccountsmac-check.py:340. (b) payload is a token only: PairingToken.swift:8 qrPayload; case qr-carries-token-only :354-358; unit SettingsAccountsMacTests.swift:30-36; devicesync-check.py MUTANTS F-token-qr-only (line ~370) compiles the real PairingToken.swift. (c) after QR_EXPIRY_S a new code shows: WelcomeQR.swift:19,36-40 refreshIfExpired; cases qr-expiry-from-constants :348 and expired-qr-replaced :361 (clock advance QR+1, link id changes); constants.rs:17 QR_EXPIRY_S=180. Proof 1 (devicesync-check.py) runs xcrun swiftc on Sources/Features/DeviceSync: lead runs it alone (one compile at a time). Proof 3 is the stand-in model, not the app. Not run by me: no check, test or build was run in this lane. gap-findings 2026-11-11: checks/settingsaccountsmac-check.py now has the case qr-row-payload-is-the-token (row mac-welcome-accounts.qr field payload matches ^whoosh-pair:v1:[0-9a-f]+$ and holds no '@'; stand-in mutant qr-payload-leaks, red in the self-test: docs/lanes/gap-findings-runs/settingsaccountsmac-selftest1.txt, exit 0) and its main prints '  PASS <case>: <detail>' per passing case (the real main run against the check's own stand-in model: docs/lanes/gap-findings-runs/settingsaccountsmac-main-on-model.txt, 15 checks, 0 failed, 0 not judged). Not yet run on the app: the lead's hidden run of proof 2."
+}

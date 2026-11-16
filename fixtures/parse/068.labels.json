@@ -1,0 +1,12 @@
+{
+ "id": "068",
+ "category": "link-html",
+ "code": null,
+ "links": [
+  "https://auth.example.org/confirm-email/922f1fd01d3e44b4ac42a4e4"
+ ],
+ "invite": null,
+ "tracker_count": 1,
+ "quoted": null,
+ "adversarial": false
+}

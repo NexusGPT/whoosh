@@ -1,0 +1,14 @@
+# Only a forward, no comment: nothing is folded and the forward shows (never empty).
+subject: Fwd: Room booking
+sender: Eva Schmidt
+fold_from: none
+expect: 0 FORWARDED_CONTENT show
+authored: Room 4 is booked for you on Wednesday from 10 to 11.
+--- text
+---------- Forwarded message ---------
+From: Facilities <facilities@example.net>
+Date: Tue, 10 Nov 2026 at 11:30
+Subject: Room booking
+To: Eva Schmidt <eva@example.com>
+
+Room 4 is booked for you on Wednesday from 10 to 11.

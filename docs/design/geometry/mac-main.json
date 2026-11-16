@@ -1,0 +1,25 @@
+{
+  "surface": "mac-main",
+  "window": {
+    "w": 1280,
+    "h": 820
+  },
+  "aspect": "1280:820",
+  "density": 2,
+  "safe_areas": {
+    "top": 0,
+    "right": 0,
+    "bottom": 0,
+    "left": 0
+  },
+  "notch": null,
+  "min": {
+    "w": 960,
+    "h": 600
+  },
+  "max": {
+    "w": 1512,
+    "h": 945
+  },
+  "source": "the owner's display measured 2026-11-07 with system_profiler: Color LCD 1512 x 982 points, MacBook Pro 14-inch (Mac16,8); default window chosen to fit beside the menu bar; re-measured on the running app at the live-build step"
+}

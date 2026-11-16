@@ -1,0 +1,350 @@
+{
+  "item": "cded3f29",
+  "full_id": "cded3f29-bb5a-4934-b91a-9a7953790045",
+  "title": "Make toolbar Reply all and Forward act",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-macshell.py",
+      "pass": "(?s)J0\\.20/toolbar-reply-all-opens-the-reply-box-with-everyone +pass.*J0\\.20/toolbar-forward-opens-the-forward-window +pass",
+      "fail": "J0\\.20/toolbar-(reply-all|forward)[a-z-]* +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_compose_cmds",
+      "pass": "test result: ok\\. 10 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p outbox --test reply_all",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_reply_to",
+      "pass": "test result: ok\\. 11 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p sync-imap --test reply_to_stored",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p store --test reply_to_0027",
+      "pass": "test result: ok\\. 8 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Shortcuts/Commands.swift",
+      "find": "\"reply-all\": { m in ReplyDoors.replyAll(m) },",
+      "replace": "\"reply-all\": { _ in false },",
+      "proof": 0,
+      "red": "J0\\.20/toolbar-reply-all-opens-the-reply-box-with-everyone +fail"
+    },
+    {
+      "file": "Sources/Features/Shortcuts/Commands.swift",
+      "find": "\"forward\": { m in ReplyDoors.forward(m) },",
+      "replace": "\"forward\": { _ in false },",
+      "proof": 0,
+      "red": "J0\\.20/toolbar-forward-opens-the-forward-window +fail"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "let own = store.own_addresses().map_err(|e| store_failed(\"the accounts could not be read\", e))?;",
+      "replace": "let own: Vec<String> = vec![];",
+      "proof": 1,
+      "red": "reply_all_goes_to_the_sender_and_copies_everyone_else_but_the_owners_own_addresses \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "&m.to, &m.cc, own)",
+      "replace": "&[], &m.cc, own)",
+      "proof": 1,
+      "red": "reply_all_goes_to_the_sender_and_copies_everyone_else_but_the_owners_own_addresses \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "&m.to, &m.cc, own)",
+      "replace": "&m.to, &[], own)",
+      "proof": 1,
+      "red": "reply_all_goes_to_the_sender_and_copies_everyone_else_but_the_owners_own_addresses \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "recipients_for_reply_all(&m.from_address,",
+      "replace": "recipients_for_reply_all(String::new().as_str(),",
+      "proof": 1,
+      "red": "reply_all_goes_to_the_sender_and_copies_everyone_else_but_the_owners_own_addresses \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "\"Re\".into()",
+      "replace": "\"Fwd\".into()",
+      "proof": 1,
+      "red": "the_draft_is_in_the_thread_from_the_account_that_holds_the_mail_with_a_re_subject_and_the_original_quoted \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "m.account_id.clone(), m.thread_id.clone()",
+      "replace": "m.account_id.clone(), String::new()",
+      "proof": 1,
+      "red": "the_draft_is_in_the_thread_from_the_account_that_holds_the_mail_with_a_re_subject_and_the_original_quoted \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "when_words(m.received_at_ms, offset_s), text);",
+      "replace": "when_words(m.received_at_ms, offset_s), String::new());",
+      "proof": 1,
+      "red": "the_draft_is_in_the_thread_from_the_account_that_holds_the_mail_with_a_re_subject_and_the_original_quoted \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "(draft_id.clone(), m.account_id.clone(),",
+      "replace": "(draft_id.clone(), String::new(),",
+      "proof": 1,
+      "red": "the_draft_is_in_the_thread_from_the_account_that_holds_the_mail_with_a_re_subject_and_the_original_quoted \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "kind: \"message\".into(), id: message_id.to_string() })?;",
+      "replace": "kind: \"thread\".into(), id: message_id.to_string() })?;",
+      "proof": 1,
+      "red": "an_unknown_message_or_account_is_refused_in_words_and_nothing_is_written \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "if !found {",
+      "replace": "if false {",
+      "proof": 1,
+      "red": "an_unknown_message_or_account_is_refused_in_words_and_nothing_is_written \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "rusqlite::params![id, account, to_json, cc_json, subject, body, thread, now_ms],",
+      "replace": "rusqlite::params![format!(\"{id}x\"), account, to_json, cc_json, subject, body, thread, now_ms],",
+      "proof": 1,
+      "red": "the_draft_and_the_signature_survive_a_restart \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "store_failed(\"the accounts could not be read\", e))?;",
+      "replace": "store_failed(\"the accounts could not be read\", e))?; std::thread::sleep(std::time::Duration::from_millis(80));",
+      "proof": 1,
+      "red": "both_commands_answer_in_under_50_ms_on_a_store_of_2000_mails \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/delta15.rs",
+      "find": "self.set_signature(&address, text.trim(), now_ms)?;",
+      "replace": "self.set_signature(&address, \"\", now_ms)?;",
+      "proof": 1,
+      "red": "a_saved_signature_is_read_back_by_address_in_any_case_and_by_the_accounts_list_and_clears_when_empty \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/delta15.rs",
+      "find": "self.set_signature(&address, text.trim(), now_ms)?;",
+      "replace": "self.set_signature(&address, text, now_ms)?;",
+      "proof": 1,
+      "red": "a_saved_signature_is_read_back_by_address_in_any_case_and_by_the_accounts_list_and_clears_when_empty \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "fn signature(&self, address: String) -> Option<Signature> { crate::compose_cmds::signature(&self.store, &address) }",
+      "replace": "fn signature(&self, _address: String) -> Option<Signature> { None }",
+      "proof": 1,
+      "red": "a_saved_signature_is_read_back_by_address_in_any_case_and_by_the_accounts_list_and_clears_when_empty \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "a.signature = signatures.get(&a.id).cloned().unwrap_or_default();",
+      "replace": "a.signature = String::new();",
+      "proof": 1,
+      "red": "a_saved_signature_is_read_back_by_address_in_any_case_and_by_the_accounts_list_and_clears_when_empty \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/outbox_tick.rs",
+      "find": "self.store.signature(&a.account.address).map_err(|e| unexpected(format!(\"the signature could not be read: {e}\")))?",
+      "replace": "None",
+      "proof": 1,
+      "red": "a_saved_signature_leaves_with_the_mail_exactly_once_and_clearing_it_stops_it \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "rusqlite::params![id, account, to_json, cc_json, subject, body, thread, now_ms],",
+      "replace": "rusqlite::params![id, account, to_json, cc_json, subject, body, String::new(), now_ms],",
+      "proof": 1,
+      "red": "a_reply_all_draft_is_queued_with_an_undo_entry_threaded_from_the_stored_headers_and_sent_once \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/outbox/src/adapters/reply/mod.rs",
+      "find": "parent_references: h.references",
+      "replace": "parent_references: vec![]",
+      "proof": 2,
+      "red": "a_reply_all_draft_is_held_for_the_undo_window_then_delivered_to_every_recipient_threaded_and_once \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/outbox/src/adapters/reply/mod.rs",
+      "find": "if let Some(found) = self.stored(thread_id, kind)? {",
+      "replace": "if let Some(found) = None::<ReplyContext> {",
+      "proof": 2,
+      "red": "a_reply_all_draft_is_held_for_the_undo_window_then_delivered_to_every_recipient_threaded_and_once \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "if !asked.is_empty() { return asked; }",
+      "replace": "if !asked.is_empty() { return vec![from.to_string()]; }",
+      "proof": 3,
+      "red": "a_reply_goes_to_the_reply_to_else_to_the_sender \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "if asked.is_empty() { return contracts",
+      "replace": "if true { return contracts",
+      "proof": 3,
+      "red": "reply_all_goes_to_the_reply_to_and_copies_every_other_to_and_cc \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": ".filter(|a| !asked.iter().any(|x| same(x, a)))",
+      "replace": ".filter(|_| true)",
+      "proof": 3,
+      "red": "several_reply_to_addresses_are_all_in_to_none_twice \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "own.iter().any(|o| same(o, &a)) || ",
+      "replace": "",
+      "proof": 3,
+      "red": "a_reply_to_that_is_the_owners_own_address_is_ignored \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "store.reply_to(message_id)",
+      "replace": "Ok::<Vec<store::ReplyTo>, store::StoreError>(vec![])",
+      "proof": 3,
+      "red": "reply_all_goes_to_the_reply_to_and_copies_every_other_to_and_cc \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "    unique_not_own(to.iter().cloned(), own)\n",
+      "replace": "    Vec::new()\n",
+      "proof": 3,
+      "red": "a_mail_the_owner_wrote_is_answered_to_its_recipients_or_its_reply_to \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "let items = store.reply_to(id).ok()?;",
+      "replace": "let items: Vec<store::ReplyTo> = vec![];",
+      "proof": 3,
+      "red": "the_stored_reply_to_is_served_to_the_app \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/compose_cmds.rs",
+      "find": "let own = store.own_addresses().map_err(|e| store_failed(\"the accounts could not be read\", e))?;",
+      "replace": "let own = store.own_addresses().map_err(|e| store_failed(\"the accounts could not be read\", e))?; std::thread::sleep(std::time::Duration::from_millis(80));",
+      "proof": 3,
+      "red": "reply_and_reply_all_answer_in_under_50_ms_on_2000_mails \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/thread_headers_fill.rs",
+      "find": "reply_to.push((id.clone(), items.into_iter().map(|(name, address)| ReplyTo { name, address }).collect()));",
+      "replace": "let _ = (id, items);",
+      "proof": 3,
+      "red": "the_fill_in_reads_the_reply_to_in_the_same_call_and_keeps_it_when_the_source_has_none \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/thread_headers_fill.rs",
+      "find": "if let Err(e) = self.store.set_reply_to_quiet(reply_to) {",
+      "replace": "if let Err(e) = self.store.set_reply_to_quiet(Vec::new()) {",
+      "proof": 3,
+      "red": "a_held_page_reply_to_is_written_without_asking_the_server \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/imap_source.rs",
+      "find": "self.bodies.headers.hold_reply_to(page.messages.iter().map(arrival_reply_to));",
+      "replace": "",
+      "proof": 3,
+      "red": "the_synced_mail_is_stored_with_its_reply_to \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/envelope.rs",
+      "find": "reply_to_named: parsed.as_ref().map(|m| named_list(m.reply_to())).unwrap_or_default(),",
+      "replace": "reply_to_named: Vec::new(),",
+      "proof": 4,
+      "red": "a_mail_with_a_reply_to_header_is_fetched_with_every_name_and_address_in_order \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": "(UID BODY.PEEK[HEADER.FIELDS (MESSAGE-ID REFERENCES IN-REPLY-TO REPLY-TO)])",
+      "replace": "(UID BODY.PEEK[HEADER.FIELDS (MESSAGE-ID REFERENCES IN-REPLY-TO)])",
+      "proof": 4,
+      "red": "thread_headers_reply_to_many_reads_the_reply_to_in_the_same_one_fetch \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/reply_to.rs",
+      "find": "WHERE m.id = ?1 AND j.type = 'object' ORDER BY j.key",
+      "replace": "WHERE m.id = ?1 AND j.type = 'object' ORDER BY j.key DESC",
+      "proof": 5,
+      "red": "several_addresses_come_back_with_their_names_in_header_order \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/reply_to.rs",
+      "find": "for (id, items) in rows { changed += set.execute(params![id, encode(items)])?; }",
+      "replace": "for (_id, _items) in rows { changed += 0; }",
+      "proof": 5,
+      "red": "several_addresses_come_back_with_their_names_in_header_order \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/reply_to.rs",
+      "find": "COALESCE(m.reply_to_json, '[]')",
+      "replace": "COALESCE(m.reply_to_json, json_array(json_object('name', '', 'address', 'x@x')))",
+      "proof": 5,
+      "red": "a_mail_not_read_yet_and_a_mail_with_none_both_read_as_no_reply_to \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/reply_to.rs",
+      "find": ".and_then(|r| r.name.split_whitespace().next().map(str::to_string))",
+      "replace": ".map(|r| r.name)",
+      "proof": 5,
+      "red": "the_contracts_reply_to_name_is_the_first_names_first_word \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/reply_to.rs",
+      "find": "        self.submit(move |st| {",
+      "replace": "        if true { return self.write(move |ctx| write_reply_to(ctx.tx, &rows)); }\n        self.submit(move |st| {",
+      "proof": 5,
+      "red": "the_quiet_write_publishes_nothing \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/reply_to.rs",
+      "find": "write_reply_to(self.tx, rows)",
+      "replace": "Ok(0)",
+      "proof": 5,
+      "red": "the_arrival_write_sits_in_the_insert_transaction_and_a_rollback_drops_it \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/reply_to.rs",
+      "find": ".filter(|r| !r.address.trim().is_empty())",
+      "replace": ".filter(|_| true)",
+      "proof": 5,
+      "red": "thread 'an_entry_with_no_address_is_not_kept' (\\(\\d+\\) )?panicked|an_entry_with_no_address_is_not_kept \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The two toolbar cases are par-macshell J0.20 toolbar-reply-all-opens-the-reply-box-with-everyone (checks/parity/par-macshell.py:493-495: clicks mac-main.toolbar.reply-all, reads the quick reply header open == 1 and a To filled) and toolbar-forward-opens-the-forward-window (:499: the forward composer opens, kind forward, subject starts 'Fwd: '); declared mutants :564-565 (WHOOSH_MUTANT_R8=dead-toolbar); the toolbar dispatch table Sources/Features/Shortcuts/Commands.swift:193-203 and ReplyDoors :224-246 (the same door as the key; fix-replydoors: Reply all reads the Reply-To through ReplyToRule.all, tests Tests/Unit/ReplyToDoorsTests.swift). par-macshell prints a line per case (print_cases). The earlier finding 'no toolbar lines in par-macshell-main83.log' is because r83 predates the line-per-case change (harness commit 8d4a5b1f): the cases exist and r83 had 0 failed. 'As the keys do': the key and the toolbar both call ReplyDoors (Commands.swift:224). The two mutants make the command do nothing: the case reads the visible outcome (box open with everyone / forward window with Fwd:) and goes red. real-compose (2026-11-12): the REAL engine now serves ReplyAll and SetSignature (core/crates/engine/src/compose_cmds.rs): proofs 1 and 2 are the engine's and the outbox's tests (core/crates/engine/tests/engine_compose_cmds.rs, core/crates/outbox/tests/reply_all.rs); the broken copies from the compose_cmds.rs, delta15.rs, rust_core.rs, outbox_tick.rs and reply adapter lines follow the fixture ones. Not run by the builder (no cargo). real-replyto (2026-11-12): the real engine keeps and uses a mail's Reply-To (migration 0027, store/src/reply_to.rs): proofs 3 to 5 are engine_reply_to (11 tests), sync-imap reply_to_stored (3) and store reply_to_0027 (8), with their broken copies after the real-compose ones; the migration's own tests (core/crates/store/migrations/tests/migration_v27_reply_to.rs, 2 tests) run in that crate's own workspace and have no proof line here. The three recipient broken copies of real-compose (To, Cc, sender lost) now name the new call `recipients_for_reply_all(...)`. Not run by the builder (no cargo)."
+}

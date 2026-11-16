@@ -1,0 +1,97 @@
+{
+  "item": "72d3259a",
+  "full_id": "72d3259a-a964-407b-bc87-625ee037c816",
+  "title": "Build mob-welcomephone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theScanControlAndTheArrivalRowsAreRegistered,theIphoneNeverPromptsForAPasswordAfterTheScan,theFixtureHoldsThirtyAccountsWithUniqueAddressesAsTheScanMustCarry,theUniquenessProbeSeesADuplicate",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/welcomephone-check.py --selftest",
+      "pass": "(?s)(?=.*clean model: failed=\\[\\] unjudged=\\[\\])(?=.*\\| J4\\.10/thirty-accounts \\| the model carries this mutant \\| RED on this case \\|)(?=.*\\| J4\\.10/same-names \\| .* \\| RED on this case \\|)(?=.*\\| J4\\.10/same-order \\| .* \\| RED on this case \\|)(?=.*\\| J4\\.10/same-colours \\| .* \\| RED on this case \\|)(?=.*\\| J4\\.10/no-password-field \\| .* \\| RED on this case \\|)(?=.*\\| J4\\.10/expired-code-refused \\| .* \\| RED on this case \\|)(?=.*\\| J4\\.10/expired-reason \\| .* \\| RED on this case \\|)(?=.*\\d+ mutants, 0 not seen red; \\d+ acts deleted, 0 not seen red; 0 clean failures, 0 clean not judged)",
+      "fail": "NOT RED|\\b[1-9]\\d* not seen red|\\b[1-9]\\d* clean failures",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/welcomephone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "sh -c 'python3 checks/devicesync-check.py && python3 checks/parity/par-devicesync.py'",
+      "pass": "(?s)(?=.*PASS F-token-expiry)(?=.*PASS F-token-single-use)(?=.*PASS P-qr-accounts)",
+      "fail": "FAIL F-token|FAIL P-qr",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "aCodeIssuedAndLeftPastItsExpiryIsRefusedAsExpiredAndAsksForANewScan,aCodeScannedInTimeIsNotRefusedAndAnUnknownCodeIsRefusedAsNotFromTheMac,theArrivalRowsAreTheFixtureAccountsInNamesColoursAndOrderAndNoStepDrawsAField",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/welcomephone-check.py",
+      "find": "s.expect(\"thirty-accounts\", lambda: len(arrived()), len(ACCOUNTS))",
+      "replace": "s.expect(\"thirty-accounts\", lambda: len(arrived()), len(ACCOUNTS) + 1)",
+      "proof": 1,
+      "red": "clean model: failed=\\[.*thirty-accounts|\\b[1-9]\\d* clean failures"
+    },
+    {
+      "file": "checks/welcomephone-check.py",
+      "find": "s.expect(\"same-order\", lambda: [r[\"id\"] for r in arrived()], [a[\"id\"] for a in ACCOUNTS])",
+      "replace": "s.expect(\"same-order\", lambda: [r[\"id\"] for r in arrived()], list(reversed([a[\"id\"] for a in ACCOUNTS])))",
+      "proof": 1,
+      "red": "clean model: failed=\\[.*same-order|\\b[1-9]\\d* clean failures"
+    },
+    {
+      "file": "checks/welcomephone-check.py",
+      "find": "s.expect(\"expired-reason\", lambda: refusal()[\"reason\"], \"expired\")",
+      "replace": "s.expect(\"expired-reason\", lambda: refusal()[\"reason\"], \"valid\")",
+      "proof": 1,
+      "red": "clean model: failed=\\[.*expired-reason|\\b[1-9]\\d* clean failures"
+    },
+    {
+      "file": "Sources/Features/WelcomePhone/WelcomePhoneCode.swift",
+      "find": "service = PairingService(expirySeconds: WhooshConstants.QR_EXPIRY_S, clock: { clock.nowMs() })",
+      "replace": "service = PairingService(expirySeconds: 100000, clock: { clock.nowMs() })",
+      "proof": 4,
+      "red": "aCodeIssuedAndLeftPastItsExpiryIsRefusedAsExpiredAndAsksForANewScan.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/WelcomePhone/WelcomePhoneFlow.swift",
+      "find": "m.core.accounts().map { a in",
+      "replace": "m.core.accounts().reversed().map { a in",
+      "proof": 4,
+      "red": "theArrivalRowsAreTheFixtureAccountsInNamesColoursAndOrderAndNoStepDrawsAField.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/WelcomePhone/WelcomePhoneFlow.swift",
+      "find": "PhoneAccount(id: a.id, name: AccountNames.display(a), address: a.address, colour: a.colour, group: a.group,",
+      "replace": "PhoneAccount(id: a.id, name: AccountNames.display(a), address: a.address, colour: \"#000000\", group: a.group,",
+      "proof": 4,
+      "red": "theArrivalRowsAreTheFixtureAccountsInNamesColoursAndOrderAndNoStepDrawsAField.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/WelcomePhone/WelcomePhoneFlow.swift",
+      "find": "static func fields(_ step: WelcomeStep) -> [String] { [] }",
+      "replace": "static func fields(_ step: WelcomeStep) -> [String] { step == .scanning ? [\"secure\"] : [] }",
+      "proof": 4,
+      "red": "theArrivalRowsAreTheFixtureAccountsInNamesColoursAndOrderAndNoStepDrawsAField.*failed|✘"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims: (a) same 30 accounts, same order and colours as the Mac fixture: check cases thirty-accounts, same-names, same-order, same-colours at welcomephone-check.py:116-119, expected values from docs/design/fixtures/mac-main-sample.json via lib.fixture. (b) uistate reports no password field: case no-password-field :144 reads rows iphone-welcome.fields on 8+ steps; unit theIphoneNeverPromptsForAPasswordAfterTheScan WelcomePhoneTests.swift:23 reads core state iphone/password_prompts (a fixture counter). (c) an expired token asks for a new code: cases expired-code-refused, expired-reason, expired-reason-words, refused-controls :97-99; code WelcomePhoneCode.swift:53. Selftest labels come from the MUTANTS comment block welcomephone-check.py:150-184. The reader's note that table.txt names 'push-registered-once' does not match this commit: that case name does not exist in welcomephone-check.py (it belongs to an older capture). Proof 1 runs a Python stand-in socket: it proves the judges, not the app. Proof 3 compiles the Swift DeviceSync engine; proof 2 and 3 need the iOS runtime or a compile and must not run in parallel. | gap-phone-a: units added (Tests/Unit/WelcomePhoneTests.swift): the phone's own expiry through WelcomeMacSide on the fixture clock (fixture:issue, clock advance QR_EXPIRY_S+1, fixture:scan-issued: refusal row reason expired, control scan-again), the arrival rows against the fixture accounts' ids, names, colours and order, and rows iphone-welcome.fields empty on first, scanning, refused, arriving and notify. OUTSIDE: the acceptance 'on the simulator with a fixture token' needs the iOS 26.5 simulator runtime (checks/welcomephone-check.py prints the reason); proofs 2 and 3 are the lead's runs there. Not built and not asked: the real scan across the relay (WelcomePhoneCode.swift answers .unreachable). | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 2 is the \"on the simulator with a fixture token\" acceptance (fixture tokens fixture:valid, wrong, foreign, used, issue, clock advance, fixture:scan-issued are served by the fixture core). Proof 3 (devicesync-check.py) is unchanged: it compiles the Swift DeviceSync engine."
+}

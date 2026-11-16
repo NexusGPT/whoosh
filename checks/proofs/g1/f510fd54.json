@@ -1,0 +1,21 @@
+{
+  "item": "f510fd54",
+  "full_id": "f510fd54-8da6-477c-a73f-45f26d2e8562",
+  "title": "Build fn-secrets",
+  "state": "outside",
+  "proofs": [
+    {"kind": "cargo", "run": "--release -p secrets --test keychain -- --nocapture", "pass": "test result: ok\\. 8 passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 600},
+    {"kind": "cargo", "run": "--release -p secrets --test keychain fixture_app_password_round_trips_under_the_rig_identity -- --nocapture", "pass": "test fixture_app_password_round_trips_under_the_rig_identity \\.\\.\\. ok", "fail": "FAILED|panicked", "timeout_s": 600},
+    {"kind": "cargo", "run": "--release -p secrets --test keychain database_dump_holds_the_reference_and_never_the_secret -- --nocapture", "pass": "test database_dump_holds_the_reference_and_never_the_secret \\.\\.\\. ok", "fail": "FAILED|panicked", "timeout_s": 600},
+    {"kind": "cargo", "run": "--release -p secrets --test keychain adapter_query_asks_for_synchronizable_on_the_credential_kinds -- --nocapture", "pass": "test adapter_query_asks_for_synchronizable_on_the_credential_kinds \\.\\.\\. ok", "fail": "FAILED|panicked", "timeout_s": 600},
+    {"kind": "lead", "run": "on a build signed with a keychain-access-groups entitlement and the owner's iCloud Keychain signed in (the owner's own hands, never a cargo run by a helper): cd core && cargo test --release -p secrets --test keychain live_icloud_store_reaches_the_os_with_the_synchronizable_flag -- --nocapture", "pass": "SYNC-LIVE: stored and read back synchronizable = true"}
+  ],
+  "mutants": [
+    {"file": "core/crates/secrets/src/keychain.rs", "find": "o.set_access_synchronized(Some(self.synchronizable(kind)));", "replace": "o.set_access_synchronized(Some(false));", "proof": 3, "red": "adapter_query_asks_for_synchronizable_on_the_credential_kinds \\.\\.\\. FAILED"},
+    {"file": "core/crates/secrets/src/kind.rs", "find": "!matches!(self, SecretKind::DeviceLink)", "replace": "false", "proof": 3, "red": "adapter_query_asks_for_synchronizable_on_the_credential_kinds \\.\\.\\. FAILED"},
+    {"file": "core/crates/secrets/src/keychain.rs", "find": ".map(Secret::new)", "replace": ".map(|_| Secret::new(\"wrong\"))", "proof": 1, "red": "fixture_app_password_round_trips_under_the_rig_identity \\.\\.\\. FAILED"}
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Proofs 0-3 are real-Keychain tests on rig items only (tests/keychain.rs header lines 1-4); they pass today on an unsigned process. Claims: (1) store+read of the fixture app password under the rig identity = core/crates/secrets/tests/keychain.rs:48-55; (2) `sqlite3 .dump | grep -c secret` = 0 = tests/keychain.rs:141-162 (asserts `text.matches(FIXTURE_APP_PASSWORD).count() == 0` at line 158 and the raw db file at 160-161; it builds the db itself with the reference columns, it does not open the app's whoosh.sqlite); (3) kSecAttrSynchronizable = true is proved ONLY on the query the adapter builds: tests/keychain.rs:59-79 against src/keychain.rs:6 and :56-61 and src/kind.rs:30-32. The stored item reading back synchronizable = true needs a process signed with a keychain-access-groups entitlement: tests/keychain.rs:85-101 prints 'SYNC-LIVE: stored and read back synchronizable = true' only then; an unsigned `cargo test` prints 'SYNC-LIVE: refused with -34018 (unsigned process): the flag reached the OS' (line 97) and passes, which is NOT a read-back. Proof 4 is kind lead, not cargo (fix-cargoproofs): its pass line is printed only on a signed process against the owner's iCloud Keychain, which no cargo run of a helper or of the lead may touch, and an unsigned run prints the -34018 line instead; that is the honest state; it is the part that is outside (a signed app run, SIGN_IDENTITY a real Apple team identity). Keychain.attributes (src/keychain.rs:63-93) is the read-back function the signed run would use. Proof 0 shows the line 'SYNC-LIVE: refused with -34018' in its output, evidence the flag was refused by the OS rather than dropped. Mutant 3 (round trip) uses src/keychain.rs read at the Read impl; the earlier run _captures/core-secrets/mutants.txt:22 shows the same test red on a different mutant."
+}

@@ -1,0 +1,10 @@
+# Proton Mail: div.protonmail_quote holding the attribution and the quote.
+subject: Re: Shared calendar
+sender: Emil Laine
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY hide
+authored: I shared the calendar with you, you should see it in a minute.
+history: Can you share the team calendar with me?
+--- html
+<div style="font-family: Arial, sans-serif; font-size: 14px;">I shared the calendar with you, you should see it in a minute.</div><div class="protonmail_quote">On Tuesday, November 10th, 2026 at 11:02, Fanny Roux &lt;fanny@example.fr&gt; wrote:<br><blockquote class="protonmail_quote" type="cite">Can you share the team calendar with me?</blockquote></div>

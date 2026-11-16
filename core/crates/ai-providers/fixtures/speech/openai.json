@@ -1,0 +1,63 @@
+{
+  "provider": "openai",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "key": "sk-FIXTURE-not-a-real-key-0001",
+  "bad_key": "sk-FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "transcribe": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/audio/transcriptions",
+          "headers": {
+            "Authorization": "Bearer sk-FIXTURE-not-a-real-key-0001"
+          },
+          "body_contains": [
+            "name=\"model\"",
+            "gpt-4o-transcribe",
+            "name=\"file\"",
+            "filename=\"clip.wav\"",
+            "Content-Type: audio/wav"
+          ],
+          "content_type_starts": "multipart/form-data; boundary="
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "text": "hold the shipment until Friday and copy Marta"
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/audio/transcriptions",
+          "headers": {
+            "Authorization": "Bearer sk-FIXTURE-not-a-real-key-REFUSED"
+          },
+          "body_contains": [
+            "name=\"model\"",
+            "gpt-4o-transcribe",
+            "name=\"file\"",
+            "filename=\"clip.wav\"",
+            "Content-Type: audio/wav"
+          ],
+          "content_type_starts": "multipart/form-data; boundary="
+        },
+        "response": {
+          "status": 401,
+          "body": {
+            "error": {
+              "message": "Incorrect API key provided: sk-FIXT****FUSED. You can find your API key at https://platform.openai.com/account/api-keys.",
+              "type": "invalid_request_error",
+              "param": null,
+              "code": "invalid_api_key"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

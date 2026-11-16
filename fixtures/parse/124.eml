@@ -1,0 +1,11 @@
+From: Harbor Pay <offers@example.net>
+To: Assem Example <assem@example.org>
+Subject: Your offer inside
+Date: Tue, 10 Nov 2026 23:03:00 +0000
+Message-ID: <858fa5227a546047@accounts.example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+SGkhDQoNClVzZSBwcm9tbyBjb2RlIEZSRUVTSElQIGF0IGNoZWNrb3V0IHRvIGdldCAyMCUgb2Zm
+Lg0KDQpUaGUgSGFyYm9yIFBheSB0ZWFtDQo=

@@ -1,0 +1,33 @@
+From: Postbox Example <security@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: 6390 is your Postbox Example code
+Date: Tue, 10 Nov 2026 08:26:00 +0000
+Message-ID: <7090e1800d7b8b2a@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0315776826683658771=="
+
+--===============0315776826683658771==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Your Postbox Example verification code is 6390. It expires in 10 minutes.
+
+--===============0315776826683658771==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Postbox Example</ti=
+tle><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-=
+size:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellsp=
+acing=3D"0"><tr><td align=3D"center"><img src=3D'http://pixel.example.net/ban=
+ner/165e4587.gif' alt=3D'logo' width=3D'120'><h2>Postbox Example</h2><p>Your =
+verification code is</p><p class=3D"code" style=3D"letter-spacing:6px"><stron=
+g>6390</strong></p><p>It expires in 10 minutes.</p><p style=3D"font-size:11px=
+;color:#888">You receive this because of your account. <a href=3D"https://exa=
+mple.net/unsubscribe?u=3D0ba35b">Unsubscribe</a> | <a href=3D"https://example=
+.net/privacy">Privacy</a></p><IMG SRC=3D"http://cdn.example.net/banner/25d0d1=
+e3.png" ALT=3D"banner"></td></tr></table></body></html>
+
+--===============0315776826683658771==--

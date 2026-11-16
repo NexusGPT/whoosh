@@ -1,0 +1,19 @@
+{
+ "item": "00fbb7cf",
+ "full_id": "00fbb7cf-611b-4d65-ba41-5c5c5a7a7eae",
+ "title": "Offer a choice of on-device decision models",
+ "state": "owner",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "grep -n \"There are a few alternatives to Laya: REAX, Glide, etc.\" docs/SPEC.md",
+   "pass": "^[0-9]+:\\| A133 \\| \"There are a few alternatives to Laya: REAX, Glide, etc\\.",
+   "fail": "^$",
+   "timeout_s": 30
+  }
+ ],
+ "mutants": [],
+ "gap": "L, code and a decision of the owner. Done: the PRD words (docs/SPEC.md:151, row A133, proof 0). Not built: (a) Settings > Decisions has one on-device model, Laya (Sources/Features/SettingsAIMac/AIPaneView.swift:3, AISettingsStore.swift:11-16 take ONE LayaModelStore; Sources/Features/OnDeviceAI/Core/LayaModelStore.swift); grep of Sources, core/crates, checks and docs/lanes finds no model list (no REAX, GLiDE entry; 'glide' hits are only unrelated words). A builder needs: a catalogue of decision models the app can run (name, size, licence, index score; facts in research/decision-model.md and SPEC A133: GLiDE 0.4B 63.7, 0.8B 66.3, 2B 71.0, Laya 0.42B 28.3; REAX 1.3 at 57 B parameters and GLiDE 27B are NOT offered), one adapter per model family, a row per model in Settings > Decisions with size and licence and its own Download, and a choice that is stored through SaveDecisionModel. (b) 'a second model downloads and sorts fixture mail on a hidden build, and decided_by names it': needs the fixture core to serve a second provider/model id, a settings case (checks/settingsaimac-check.py, next to J5.7 laya cases :2002-2193) that downloads it from a loopback stub (WHOOSH_RIG_LAYA_BASE style address), and a case that sorts a fixture mail and reads message/<id>/label/<l>/decided_by (checks/seams/decided-by.py reads that path; Sources/CoreBridge/FixtureLabels.swift:572 serves it) naming the second model. Also needs the contract word for the new decider (decided_by names WHO: Laya, Jev, Owner, Rule, Default) which is a contract delta: owned by the contracts lane. (c) Corrected by the lead 2026-11-11: the picker IS drawn and picked: board decision-models-r1 (work folder docs/design/boards/decision-models-r1/PICK.md): 'M1 one line per model (Recommended)'. The same file records: 'GLiDE models join the list only on their word (Fastino Community License)'. So the list of models cannot grow before the owner's word on that licence; with Laya alone the M1 list has one line, which is what Settings shows today.",
+ "owner": "Say whether the GLiDE models (0.4B, 0.8B, 2B; Fastino Community License) may be offered in Whoosh. Your pick M1 (one line per model) is recorded; the list stays at Laya until your word, because a licence is not a default the lead may take.",
+ "notes": "PRD row docs/SPEC.md:151 (A133). The item's acceptance is four conditions; proof 0 closes only the first. No test, check or journey names a second decision model, so there is no proof to write for conditions 2 to 4 before the build."
+}

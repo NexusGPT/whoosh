@@ -1,0 +1,50 @@
+{
+  "item": "a4d7d860",
+  "full_id": "a4d7d860-56b8-4e90-ab0b-2414c5b2915e",
+  "title": "Stop the composer undo from aborting the app",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "typingThenAnOutsideReloadThenUndoDoesNotThrowAndLeavesAWholeText,typingThenUndoRemovesTheTypedText,anOutsideReplacementThenUndoGivesOneOfTheTwoAllowedResults,anOutsideReplacementDropsTheTypingEntriesOfThatView",
+      "pass": "Test typingThenAnOutsideReloadThenUndoDoesNotThrowAndLeavesAWholeText\\(\\) passed",
+      "fail": "recorded an issue|failed after|NSRangeException|crashed",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "cmd-z-in-the-body-undoes-the-typed-text +pass",
+      "fail": "cmd-z-in-the-body-undoes-the-typed-text +(fail|unjudged)|could not drive|died",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "(attached-file-is-on-the-core-draft|tile-shows-being-added-before-the-core-answers) +(pass|fail|unjudged)",
+      "fail": "instance was gone|DIED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-composermac.py --selftest",
+      "pass": "selftest: [0-9]+ checks, 0 mutants not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/RichText/RichTextEditor.swift",
+      "find": "        tv.undoManager?.removeAllActions()\n        st.setAttributedString(new)",
+      "replace": "        st.setAttributedString(new)",
+      "proof": 0,
+      "red": "anOutsideReplacementDropsTheTypingEntriesOfThatView\\(\\) (recorded an issue|failed)|NSRangeException|crashed"
+    }
+  ],
+  "gap": "S, owner's file. (1) The crash report named in the item (Whoosh-2026-11-11-094005.ips, the owner's DiagnosticReports) is not in the repository or in _captures (grep of _captures for '094005' finds only the audit row file _captures/tests/r83/audit/rows-4.json that quotes the name): it is not needed for the proofs, and this pass did not read ~/Library/Logs (a standing rule); the lead, if it wants the stack, reads that file itself. (2) 'the cases after it judged': proof 2 lists the two cases that follow cmd-z in par-composermac (:1084 onward) and requires the run not to have died; the lead reads that those cases print a verdict line, not a missing one, in the run's log. (3) The unit test runs the typing, an outside replacement (RichStorageSwap.replace), then undo, on a real NSTextView with an UndoManager (Tests/Unit/RichTextUndoTests.swift:33-40); it is macOS only (the file ends with '#endif'), the iOS reload at RichTextEditor.swift:226 has the same drop but no test (S, Tests/Unit/ on iOS cannot run here).",
+  "owner": null,
+  "notes": "Fix: Sources/Features/RichText/RichTextEditor.swift:63-77 (RichStorageSwap.replace: breakUndoCoalescing then removeAllActions before setAttributedString; the comment names the main81 NSRangeException crash), iOS twin :226. Tests: Tests/Unit/RichTextUndoTests.swift:33,42,50,58. Case: checks/parity/par-composermac.py:1062-1082 (types 'Files text.', ' Undo me.', sends keyevent ⌘Z, expects 'Files text.'; on failure it prints the text before and after, the keyevent reply and the monitor rows); model mutant row :1365. The hidden run must be with a build that holds the RichStorageSwap fix: git log -S 'RichStorageSwap' on the lane gives the commit."
+}

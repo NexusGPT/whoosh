@@ -1,0 +1,20 @@
+{
+ "id": "162",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "fc420f6f786d09ea2cbe@mail.example.net",
+  "summary": "Design review",
+  "organizer": "tomas.verbeke@example.org",
+  "all_day": true,
+  "start_utc_ms": null,
+  "start_local": "2026-11-22",
+  "tzid": null,
+  "location": null
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

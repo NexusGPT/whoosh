@@ -1,0 +1,48 @@
+{
+  "item": "02e4065b",
+  "full_id": "02e4065b-25a8-43c8-9376-17f3b1dd818e",
+  "title": "Build con-seams-s5",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "sh -c 'unset D WHOOSH_SOCKET_DIR WHOOSH_IPHONE_SOCKET_DIR ; python3 checks/seams/account-identity.py'",
+      "pass": "(?s)PASS\\s+oracle\\s+all \\d+ labels green.*\\| RED: ",
+      "fail": "STAYED GREEN|FAIL\\s+oracle",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP as above and MAC_APP=<built Mac Whoosh.app>: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --with-mac \"$MAC_APP\" \"$IPHONE_APP\" -- python3 checks/seams/account-identity.py",
+      "pass": "(?s)\\d+ checks, 0 failed, 0 not judged\\s*(?:instances: [^\\n]*\\s*)*\\Z",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 1200
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/seams/account-identity.py",
+      "find": "lambda o: (o[\"welcome\"].reverse() or o)",
+      "replace": "lambda o: o",
+      "proof": 0,
+      "red": "welcome-order \\|.*STAYED GREEN"
+    },
+    {
+      "file": "checks/seams/account-identity.py",
+      "find": "c.act(\"click\", \"mac-welcome-accounts.paste-list\")",
+      "replace": "c.act(\"click\", \"mac-welcome-accounts.paste-listx\")",
+      "proof": 1,
+      "red": "NOT JUDGED +welcome-order@welcome"
+    },
+    {
+      "file": "checks/seams/account-identity.py",
+      "find": "ph.rows(\"iphone_accounts\"), \"mark_colour\")",
+      "replace": "ph.rows(\"iphone_accounts\"), \"colour\")",
+      "proof": 1,
+      "red": "FAIL +accounts@iphone"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Proof 0: the judge's mutant self-test (account-identity.py:56-60 mutants settings-sorted and iphone-colour; saved red lines _captures/seams/live-run.txt:269-270, read only): prints 'PASS oracle ...' and the RED rows, no app. Proof 1 is the live hidden run: today it prints NOT JUDGED for the welcome and iphone labels, so it cannot be green on this Mac; the proof will turn green only when both gaps above are closed (iPhone socket supplied by the lead's simulator, outside). No app mutant is listed: the seam's own mutants are on the observation, not in the app. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Limits that stay (the check prints them, they are not the simulator): Name and colour on the Welcome surface are not judged because no door stages them (WelcomeModel.swift:64-69, finding A1 in docs/lanes/gap-seams.md); the Welcome ORDER (label welcome-order) is. The phone is read at iphone-mailboxes.accounts and mark_colour (InboxPhoneFeature.swift:25, :94). If the lead run prints NOT JUDGED for any label, the state goes back to gap with that label named."
+}

@@ -1,0 +1,19 @@
+[package]
+name = "decision"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh decisions: one ordered list per outcome (Which tab, Needs my reply, Sign-in codes, VIPs, Notify me, Labels) where rules and the model entry share the list; the engine behind the model entry is LOCAL (a downloaded model such as Laya, through LocalModel) or JEV (TypeSafe's classifier, the owner's key read from the Keychain at call time)."
+
+[dependencies]
+contracts = { workspace = true }
+# Started from, not rewritten: the smart-inbox lane's facts, conditions and shipped lists; the ai-providers lane's HTTP seam
+# (Transport, Request with secret headers redacted); the secrets lane's ReadSecret port. serde_json (MIT OR Apache-2.0).
+smart-inbox = { path = "../smart-inbox" }
+ai-providers = { path = "../ai-providers" }
+secrets = { path = "../secrets" }
+serde_json = "1"
+
+[dev-dependencies]
+store = { path = "../store" }
+rusqlite = { version = "0.41", features = ["bundled"] }

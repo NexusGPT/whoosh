@@ -1,0 +1,33 @@
+From: Linea Supply <billing@example.com>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1098
+Date: Wed, 04 Nov 2026 14:26:00 +0000
+Message-ID: <5760ad4b129db367@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============9003835189078066928=="
+
+--===============9003835189078066928==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Invoice 2026-1098 for EUR 1,250.00 is due on 30 November 2026.
+
+--===============9003835189078066928==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Linea Supply</title=
+><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-siz=
+e:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspaci=
+ng=3D"0"><tr><td align=3D"center"><img width=3D"1" height=3D"1" style=3D"disp=
+lay:none" src=3D"http://pixel.example.net/open/2f64c0e3.png" srcset=3D"http:/=
+/pixel.example.net/open/2f64c0e3.png 2x"><h2>Linea Supply</h2><p>Invoice <b>2=
+026-1098</b> for EUR 1940.23 is due on 30 November 2026.</p><p>VAT 21%. IBAN =
+BE68 5390 0754 7034. Payment reference 383/5514/35677.</p><p style=3D"font-si=
+ze:11px;color:#888">You receive this because of your account. <a href=3D"http=
+s://example.net/unsubscribe?u=3Dce2b79">Unsubscribe</a> | <a href=3D"https://=
+example.net/privacy">Privacy</a></p></td></tr></table></body></html>
+
+--===============9003835189078066928==--

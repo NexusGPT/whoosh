@@ -1,0 +1,14 @@
+{
+ "id": "191",
+ "category": "quoted-html",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 1,
+ "quoted": {
+  "kind": "html",
+  "visible_contains": "Agreed. Let's move ahead with the second option. b0e4",
+  "folded_contains": "Can you confirm the schedule for next week? 52a3"
+ },
+ "adversarial": false
+}

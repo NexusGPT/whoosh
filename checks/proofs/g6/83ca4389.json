@@ -1,0 +1,49 @@
+{
+  "item": "83ca4389",
+  "full_id": "83ca4389-296f-465c-92c2-07961762093f",
+  "title": "Search a private copy of the real mail store",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "the lead's private-copy run of checks/ownercopy-search.py on this Mac: sh scripts/launch-one.sh <bundle> -- --rig-hidden sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 checks/ownercopy-search.py consultant' (the snapshot of the installed database by SQLite's backup API into the run folder, mode 0700, the hidden copy restarted on it, the real field typed, Enter, the engine's state read; counts and ids only), on a bundle built from a commit that holds A149 and the merged rows work",
+      "pass": "RESULT: PASS \\| exact (\\d+) of \\1"
+    },
+    {
+      "kind": "lead",
+      "run": "the same run's lines: 'private copy deleted: yes' (printed only after os.path.exists is False), 'DONE (the launcher stops the copy and removes the run folder)', then the launcher's 'instances: rig=0 owner=1 kept=0 perf=0'; then `ls` of the private folder's absolute path (printed in the 'private copy at' line) says 'No such file or directory'",
+      "pass": "private copy deleted: yes"
+    },
+    {
+      "kind": "lead",
+      "run": "the same run's last lines show the copy gone: `DONE (the launcher stops the copy and removes the run folder ...` and `instances: rig=0 owner=1 kept=0 perf=0`; then `ls` of the private folder's absolute path prints 'No such file or directory'",
+      "pass": "instances: rig=0 owner=1 kept=0 perf=0"
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_inside -- --nocapture",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/ownercopy-search.py --selftest",
+      "pass": "0 problems; the working folder is gone: True",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/search-text/src/query.rs",
+      "find": "while scanned < SUBSTRING_SCAN_MAX && all.advance() {",
+      "replace": "while false && all.advance() {",
+      "proof": 2,
+      "red": "b_consultant_puts_the_three_mails_holding_its_letters_in_the_match_group \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "What exists. (1) The engine rule is judged in process by core/crates/engine/tests/engine_search_inside.rs:133 b_consultant_puts_the_three_mails_holding_its_letters_in_the_match_group (the test mirrors the counts of the owner's copy, docs/lanes/match-inside.md:171-172) and core/crates/search-text/tests/inside.rs:33 a_consultant_finds_the_three_mails_that_hold_its_letters_and_only_those (item 64f2e8a7 has the full proofs). That proves the rule, not the owner's mail. (2) The earlier private-copy runs (read-only evidence): _captures/lead/main85/owner-copy-search-3.log: 'copy holds 173 mails; folders {INBOX: 173}', 'mails whose subject or text holds the letters consultant: 3', 'RESULT: PASS | exact 1 of 3 | rows 3 of 3 | engine 173 mails | stage no_model' and the launcher ending 'instances: rig=0 owner=1 kept=0 perf=0'; that was before the inside-word rule (A149), so exact was 1 of 3; after A149 the expected line is 'exact 3 of 3'. Privacy: only counts and ids are read; the subject strings are never printed (the log prints none). Standing rules: hidden only (WHOOSH_RIG_HIDDEN=1), nothing leaves this Mac, the copy is deleted after. The two lead proofs are the fallback until the script is committed: the lead reads the printed counts only. Note on proof 0: its pass regex assumes the lead's verdict line keeps the shape of the older run. | gap-search-cases: the script is checks/ownercopy-search.py (brought in from the lead's scratch script, updated to today's rule). Pass line: 'RESULT: PASS | exact K of M | rows | evidence | related | engine N mails | stage S' is PASS only when K == M >= 1 (the match group holds every mail whose subject, sender name, sender address or text holds the letters, folded, Junk and Trash left out) and the rows, the evidence of every match row, the related count (the header's and search/last/related) and the A148 reads (reader follows, Enter opens it) hold. 'NOT JUDGED: no installed database' (exit 1) when the installed database is absent. Every printed line goes through say(), which refuses a line that holds a word of the copy's own subjects (the words of the script's own sentences are exempt). The self-test (proof 3, no owner data) judges the expected ids on a made-up database, the snapshot (source untouched, mode 0700), each broken read red, and the privacy guard on a canary word. The lead's older pass line 'exact 1 of 3' (before A149) is not today's."
+}

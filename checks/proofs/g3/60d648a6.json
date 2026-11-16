@@ -1,0 +1,58 @@
+{
+  "item": "60d648a6",
+  "full_id": "60d648a6-004c-4ad5-a805-bf0fb9d44ed1",
+  "title": "Fix the palette jump to a nested label",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-palettemac.py --selftest",
+      "pass": "MUTANTS \\| label-jump-opens-the-parents-first \\| green \\|.*\\| red \\| en",
+      "fail": "STILL GREEN|RED ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-palettemac.py",
+      "pass": "nested-label-row-click-selects-the-label +pass",
+      "fail": "nested-label-row-click-selects-the-label +fail",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-palettemac.py",
+      "pass": "label-jump-opens-the-parents-first +pass",
+      "fail": "label-jump-opens-the-parents-first +fail",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-palettemac.py",
+      "pass": "label-jump-opens-the-folded-parents-driven +pass",
+      "fail": "label-jump-opens-the-folded-parents-driven +fail",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Sidebar/SidebarTargets.swift",
+      "find": "t[\"mac-main.sidebar.label.\\(l.id).jump\"] = { _ in st.revealLabel(l.id) }",
+      "replace": "t[\"mac-main.sidebar.label.\\(l.id).jump\"] = { _ in st.focusLabel(l.id); return true }",
+      "proof": 2,
+      "red": "label-jump-opens-the-parents-first +fail"
+    },
+    {
+      "file": "Sources/Features/Sidebar/SidebarTargets.swift",
+      "find": "t[\"mac-main.sidebar.label.\\(l.id).jump\"] = { _ in st.revealLabel(l.id) }",
+      "replace": "t[\"mac-main.sidebar.label.\\(l.id).jump\"] = { _ in st.focusLabel(l.id); return true }",
+      "proof": 3,
+      "red": "label-jump-opens-the-folded-parents-driven +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Seen red on its mutant: the file's --selftest runs each door check clean and on a mutated copy of the source (par-palettemac.py:592-624) and prints 'MUTANTS | <check> | green | ... | red | en' per check and language, ending 'doors-nav: N checks x 2 languages, 0 problems'. The source mutant above is the real break (the jump door no longer reveals the parents); the case's regex (:441) goes red on it. Pass lines exist per case in this check (check name + 'pass'), but the check's opening MUTANTS list does not print the word pass, so the pass regex is not fooled by it. Built on lane/gap-keys (checks/parity/par-palettemac.py): the copy's language is pinned to English through mac-settings-general.appearance.language.en when it reads 'system' and put back after (the __main__ block), so the 12 catalogue-word cases are judged; c_label_parents_driven (case label-jump-opens-the-folded-parents-driven) folds the top parent with the Left key on the sidebar, clicks the palette jump to the depth-3 label, then reads mac-main.sidebar.labels (every parent open, label visible) and the selection; it is in the selftest on a stand-in (green clean, red on its mutant, en and fr: 'doors-nav: 13 checks x 2 languages, 0 problems'). Unrun on the app: the case needs Left on the focused label to fold it (SidebarState.labelLeft); if the fold does not happen the case says 'not judged' with the reason, never green."
+}

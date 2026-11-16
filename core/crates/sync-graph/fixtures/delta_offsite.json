@@ -1,0 +1,4 @@
+{
+  "@odata.nextLink": "http://elsewhere.example.net/v1.0/me/mailFolders/inbox-id/messages/delta?$skiptoken=poisoned",
+  "value": []
+}

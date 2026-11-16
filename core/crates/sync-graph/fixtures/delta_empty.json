@@ -1,0 +1,4 @@
+{
+  "@odata.deltaLink": "{BASE}/v1.0/me/mailFolders/folder/messages/delta?$deltatoken=empty-example",
+  "value": []
+}

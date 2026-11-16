@@ -1,0 +1,76 @@
+{
+ "item": "dcdaafbf",
+ "full_id": "dcdaafbf-1fe3-45e1-bb99-44e6e9baa212",
+ "title": "Clear the title bar in the main window",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/par-macshell.py",
+   "pass": "J0\\.21/main-controls-clear-the-band-at-1280\\s+pass[\\s\\S]*J0\\.21/main-controls-clear-the-band-at-960\\s+pass[\\s\\S]*J0\\.21/main-controls-clear-the-band-with-the-sidebar-hidden\\s+pass",
+   "fail": "J0\\.21/(?!main-controls-clear-the-band-in-full-screen\\s)\\S+\\s+(fail|unjudged)",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/mcpnotesmac-check.py",
+   "pass": "^\\d+ checks, 0 failed, 0 not judged",
+   "fail": "^(FAIL|UNJUDGED) .*outside-apps-close-pill",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/probes-check.py",
+   "pass": "^OK +no-control-under-the-title-bar: \\d+ windows, \\d+ full-size",
+   "fail": "^(FAIL|NOT JUDGED) +no-control-under-the-title-bar",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/probes-check.py --selftest",
+   "pass": "ok +mutant band-zero is red on no-control-under-the-title-bar[\\s\\S]*ok +mutant skip-under-band is red on no-control-under-the-title-bar",
+   "fail": "^RED ",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/shots-sheet.py \"$D/shots-dcdaafbf\" --screens mac-main,mac-mcp-notes",
+   "pass": "^PASS mac-main (light|dark) [\\s\\S]*^PASS mac-mcp-notes (light|dark) ",
+   "fail": "^FAIL ",
+   "timeout_s": 600
+  },
+  {
+   "kind": "lead",
+   "run": "read the mac-main picture (light and dark, both sizes) and the mac-mcp-notes (Outside apps) picture",
+   "pass": "the window's own toolbar (the sidebar toggle beside the traffic lights, the ten action buttons at the right end) sits in the title-bar line by design (docs/surfaces/mac-main.md:16, par-macshell.py:1102); the tabs, the search field, the list and the reader start below the band; in mac-mcp-notes the close pill sits below the band"
+  },
+  {
+   "kind": "lead",
+   "run": "On the owner's copy: open Whoosh, press Control+Command+F (or the green button) to take the main window full screen, then move the pointer to the top of the screen so the menu bar slides down and away. Look at the top of the list, the reader and the sidebar.",
+   "pass": "in full screen the toolbar buttons, the tabs and the search field sit just under the top edge with no empty strip the height of the title bar above them, and nothing is hidden under the menu bar when it slides down (par-macshell J0.21/main-controls-clear-the-band-in-full-screen is not judged on the hidden copy: it refuses full screen)"
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/MacShell/MacShellRoot.swift",
+   "find": "extra: clearance.extra(p.rawValue)",
+   "replace": "extra: 0",
+   "proof": 0,
+   "red": "J0\\.21/main-controls-clear-the-band-at-\\d+\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpPaneView.swift",
+   "find": ".padding(.top, clearance.extra(\"mcp\"))",
+   "replace": ".padding(.top, 0)",
+   "proof": 1,
+   "red": "FAIL J5\\.7/outside-apps-close-pill-clears-the-title-bar"
+  }
+ ],
+ "gap": "S, kind check: the SHARED case checks/probes-check.py band_case (lines 512-530, `no-control-under-the-title-bar`) judges only the windows `winbands` lists at that moment, at one size: it opens only the Settings windows (shot at lines 359-376, 557) and never resizes, so on its own it neither opens the Outside apps window nor judges 'every size'. The two windows are covered by their own cases built on the same helper (par-macshell J0.21 at 1280, 960, sidebar hidden and full screen; mcpnotesmac-check J5.7 at the default and the minimum size). To make the shared case do it: in probes-check.py drive() `shot mac-mcp-notes` before band_case and `resize` main through TB_SIZES-like sizes (S). The Outside apps window is the surface mac-mcp-notes (Sources/Features/McpNotesMac).",
+ "owner": null,
+ "notes": "Code: Sources/Features/MacShell/TitleBandClearance.swift (extra top room from the real band), MacShellRoot.swift:8, :60 (BandRoom extra), McpNotesMac/McpPaneView.swift:34 (close pill `.padding(.top, clearance.extra(\"mcp\"))`), McpNotesMacFeature.swift:31 (`mac-mcp-notes.controls` row), MacShellFeature.swift:13 (`mac-main.controls`). Cases: checks/parity/par-macshell.py:1008-1066 (J0.21; steps at 1056-1066, mutants listed 1069-1073; print_cases at line 1183 prints `label  pass|fail|unjudged  detail` per case), checks/mcpnotesmac-check.py:203-217 (c_band), checks/probes-check.py:512-532 (band_case), :758 prints `%-8s %s: %s` (state upper-cased, ok -> OK), :608-615 selftest lines for the fake windows and the three titlebar mutants; shared helper checks/checklib/titlebar.py:28-52 offenders. The full-screen case is NOT JUDGED by design on a hidden rig (par-macshell.py:1041-1047), so the proof regex does not ask for it. Commit d4b362d8 (doors-nav round 2) holds the code. The shots-sheet pictures: mac-main and mac-mcp-notes are in its SCREENS list (checks/shots-sheet.py:38-42)."
+}

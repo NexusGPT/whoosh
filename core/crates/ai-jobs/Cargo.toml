@@ -1,0 +1,11 @@
+[package]
+name = "ai-jobs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Single-shot AI jobs: each job has a typed input, its own prompt and an output schema. A job runs through the CompleteText port of ai-providers; a malformed model answer is refused in words and never surfaced raw."
+
+[dependencies]
+contracts = { workspace = true }
+ai-providers = { path = "../ai-providers" }
+serde_json = "1"

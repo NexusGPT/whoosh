@@ -1,0 +1,53 @@
+{
+  "item": "9e2fcfb2",
+  "full_id": "9e2fcfb2-e5e1-433d-95e1-3e1d3ca5a571",
+  "title": "Run the unrun state_parity test and mutants",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test state_parity",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/state-parity-run.py --selftest",
+      "pass": "^0 problems$",
+      "fail": "FAIL|[1-9]\\d* problems",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "git merge-base --is-ancestor 7452a100 HEAD && echo ancestor",
+      "pass": "^ancestor$",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "python3 checks/state-parity-run.py --go --target <a new folder whose name contains state-parity> (needs 8 GB free on /System/Volumes/Data and load under 30; it edits and restores core/crates/engine/tests/state_parity.rs and docs/STATE-PATHS.json itself, so run it on a private copy of the tree). Read the last line of each of its five printed rows",
+      "pass": "clean +AS EXPECTED \\| test result: ok\\. 3 passed.*\\nP8 +AS EXPECTED .*but only 0 concrete paths were asked[\\s\\S]*gap-control +AS EXPECTED[\\s\\S]*P9 +AS EXPECTED .*only 0 gap path\\(s\\) were put to the core[\\s\\S]*P10 +AS EXPECTED .*UNTYPED inbox/tabs: add its kind"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/tests/state_parity.rs",
+      "find": "    for row in rows {\n        if let Some(why) = row[\"rig_only\"].as_str()",
+      "replace": "    for row in rows {\n        continue;\n        if let Some(why) = row[\"rig_only\"].as_str()",
+      "proof": 0,
+      "red": "but only 0 concrete paths were asked"
+    },
+    {
+      "file": "core/crates/engine/tests/state_parity.rs",
+      "find": "    let declared_gaps = rows.iter().filter(|r| r[\"gap\"].is_string()).count();\n",
+      "replace": "    let declared_gaps = rows.iter().filter(|r| !r[\"gap\"].is_string()).count();\n",
+      "proof": 0,
+      "red": "only 0 gap path\\(s\\) were put to the core"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The two mutants are exactly the edits P8 and P9 of checks/state-parity-run.py:28-39 (functions p8 and p9; each anchor occurs once, which the --selftest proves, lines 108-109). The test: core/crates/engine/tests/state_parity.rs:61 every_state_path_the_shell_reads_answers_its_json_kind_on_a_new_installation (asserts: rows >= 30 at :64, `tested > 0 && tested >= rows - rig_only`, `gap_paths_seen >= declared_gaps`), :113, :185. P9 goes red on the current tree because docs/STATE-PATHS.json holds 3 gap rows (mcp_grant/<app>, smart_folder/<folder>/count, split_tab/<tab>/name; read with python on 0aa1558e), so `gap_paths_seen` is then needed; the runner's 'gap-control' run covers a tree with one scratch gap row. Commit 7452a100 is an ancestor of 0aa1558e (git merge-base --is-ancestor, exit 0 here). The previous log _captures/engine-act-r6/r6-state-parity-run.log named no tree, so the proof is a new run on this tree; the asserts' red lines are the quoted ones, named by their message text, and the P8 and P9 lines are what the lead reads. The runner prints `<name> AS EXPECTED | <test result line> | <first finding>` (state-parity-run.py:96); if the lead runs the mutants by cargo instead of the runner, the proof indexes 0 apply."
+}

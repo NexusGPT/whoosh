@@ -1,0 +1,56 @@
+{
+  "item": "bcb68849",
+  "full_id": "bcb68849-58fb-40f1-827e-29a2719cfdfa",
+  "title": "Pin the first-run defaults in one golden file",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_first_run",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test state_parity",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/probes-check.py",
+      "pass": "^OK +install-state-equals-the-golden: every served path equals the golden; \\d+ paths of the golden are not served by the fixture",
+      "fail": "^FAIL +install-state-equals-the-golden",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/probes-check.py --selftest",
+      "pass": "install-state-equals-the-golden is red when one served path differs",
+      "fail": "^RED ",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/replies.rs",
+      "find": "matches!(role, Inbox | Sent)",
+      "replace": "matches!(role, Inbox)",
+      "proof": 0,
+      "red": "a_new_installation_equals_the_first_run_golden.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/replies.rs",
+      "find": "[\"reply\", \"sources\"] => Some(sources_json(store)?),",
+      "replace": "[\"reply\", \"sources\"] => None,",
+      "proof": 1,
+      "red": "every_state_path_the_shell_reads_answers_its_json_kind_on_a_new_installation.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Golden: docs/FIRST-RUN.json (about line 2, `defaults.reads` and `defaults.state`). Tests: core/crates/engine/tests/engine_first_run.rs:20 a_new_installation_equals_the_first_run_golden (diffs against golden['defaults']), :30 the_golden_names_the_owners_defaults_in_plain_checks, :72 the_golden_is_written (writes only with WHOOSH_WRITE_FIRST_RUN=1, so a plain run only counts it as passed); core/crates/engine/tests/state_parity.rs:61, :113, :185. Replies source defaults: core/crates/engine/src/replies.rs:176-185 register_folders (Inbox | Sent on). The `reply/sources` arm: replies.rs:273. Fixture side: checks/probes-check.py:332-343 golden_driven (`fixture install-state new`, compare_paths), :749 (case name install-state-equals-the-golden), :758 per-case print line `%-8s %s: %s` (state upper-cased, so OK/FAIL/NOT JUDGED), :761 total line, selftest lines :655 and :658. engine_first_run mutant header: engine_first_run.rs:6-8. The equality 'docs/FIRST-RUN.json equals what the real core serves' is proof 0's first test. Built in this lane: golden_driven (checks/probes-check.py) now prints the whole list of unserved paths and the whole list of differing paths (no [:12], no [:20]); the self-test line 'install-state-equals-the-golden lists every one of the N unserved paths, none cut at 12' proves it with a fixture that serves none (54 paths on this golden). gap-findings 2026-11-11: Sources/CoreBridge/FixtureFirstRunData.swift regenerated with render(golden) (commit 9374e5a7e); the self-test of checks/probes-check.py now ends '75 checks, 0 not as expected' (docs/lanes/gap-findings-runs/probes-selftest1.txt). The F1-F8 mutants named in engine_first_run.rs:6-8 are still not saved: the lead runs the two source mutants of this file."
+}

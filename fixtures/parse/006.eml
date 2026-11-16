@@ -1,0 +1,11 @@
+From: Tessel Health <no-reply@example.org>
+To: Assem Example <assem@example.org>
+Subject: Your Tessel Health sign-in code
+Date: Thu, 12 Nov 2026 03:34:00 +0000
+Message-ID: <f7384c1c11a90576@mail.example.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+WW91ciBsb2dpbiBQSU46IDU0NC01MjENCk5ldmVyIHNoYXJlIHlvdXIgUElOLiBUZXNzZWwgSGVh
+bHRoIHdpbGwgbmV2ZXIgYXNrIGZvciBpdC4NCg==

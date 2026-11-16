@@ -1,0 +1,16 @@
+[package]
+name = "reply-sources"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh AI replies: what a reply may read beside the mail index, kept on this Mac. Folders of this Mac read into excerpts and kept up to date, the mail folders in scope per account or across accounts, calendar events as excerpts, and the progress of each source. Pure logic behind ports."
+
+[dependencies]
+contracts = { workspace = true }
+# the file kinds, the PDF reader and the TextReader port (docx, pages, PDFKit) the attachments already use
+attachment-index = { path = "../attachment-index" }
+# sanitise_html + safe_html_to_text: the one HTML-to-text the mail bodies already go through
+parse = { path = "../parse" }
+
+[dev-dependencies]
+tempfile = "3.27.0"

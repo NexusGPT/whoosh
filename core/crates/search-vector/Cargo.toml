@@ -1,0 +1,16 @@
+[package]
+name = "search-vector"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[dependencies]
+contracts = { workspace = true }
+usearch = "2.26.6"
+# pieces: the model's own tokenizer (tokenizer.json), Apache-2.0, Hugging Face. No download features (no `http`), no progress bar;
+# `onig` is the regex engine its pre-tokenizers need.
+tokenizers = { version = "0.21", default-features = false, features = ["onig"] }
+
+[dev-dependencies]
+tempfile = "3.27.0"

@@ -1,0 +1,15 @@
+{
+ "id": "179",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "________________________________",
+  "visible_contains": "Yes, please book it. 0a82",
+  "folded_contains": "Please review the attached draft. bad4"
+ },
+ "adversarial": false
+}

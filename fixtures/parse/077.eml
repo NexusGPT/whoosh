@@ -1,0 +1,18 @@
+From: Brightfield <hello@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: Your sign-in link
+Date: Sun, 15 Nov 2026 13:07:00 +0000
+Message-ID: <b5829e97bb2ed6ca@example.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Hello,
+
+Log in by opening this link:
+
+https://auth.example.org/login/callback?code=c2304ac9e46fec46ee874239
+
+If you did not ask for it, ignore this email.
+
+To stop these emails visit https://example.net/unsubscribe?u=9d88e0

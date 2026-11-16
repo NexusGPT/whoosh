@@ -1,0 +1,35 @@
+{
+  "item": "8146440c",
+  "full_id": "8146440c-ef8c-414f-9ed7-74832ff6a453",
+  "title": "Correct the first-start check's order of AI needs",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-firststart.py --selftest",
+      "pass": "mutant ai-rings-fill-as-each-need-is-met +-> RED",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-firststart.py",
+      "pass": "ai-rings-fill-as-each-need-is-met +pass",
+      "fail": "ai-rings-fill-as-each-need-is-met +(fail|unjudged)",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/parity/par-firststart.py",
+      "find": "self.ai_need(n)[\"usable\"] and not self.on(\"ai-rings-fill-as-each-need-is-met\")",
+      "replace": "False",
+      "proof": 0,
+      "red": "RED on the model: .*ai-rings-fill-as-each-need-is-met"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "par-firststart.py: case at :314-315, staging :313 (fixture providers none, Sources/CoreBridge/FixtureAgents.swift:53), model :905-913, mutant row :619, selftest entry :1135 (--selftest at :46). The main81 hidden run died before the case (ValueError: sleep length must be non-negative, fixed in commit 7d164815), so the case has no pass line on record. Done in this lane: the lambda that put the read in stage order is gone; par-firststart.py now reads card(s)['rings'] and expects [True, False, False] (AINeed order: writing, decision, meaning; FirstStartAIRows.swift:42 card() maps AINeed.allCases). FirstStartAI.swift:160-162 only DRAWS the lines in stage order; the row the check reads is the card's, in AINeed order. The hidden proof settles it on a build."
+}

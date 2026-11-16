@@ -1,0 +1,163 @@
+{
+  "item": "c1436f49",
+  "full_id": "c1436f49-5531-4033-bfb9-94dbcbe5dc74",
+  "title": "Cut mail text so the model reads every word",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p search-vector --test pieces",
+      "pass": "test result: ok\\. 23 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_pieces",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "WHOOSH_EMBED_WEIGHTS=<the installed model folder that holds tokenizer.json> cargo test --release -p search-vector --test pieces real_tokenizer_counts_when_the_weights_are_given -- --nocapture (the lead's hands: the folder is under the app's Models folder, which a helper never reads). Without the variable the test prints 'WHOOSH_EMBED_WEIGHTS unset: skipped' and still counts as passed, so that line must be absent",
+      "pass": "test result: ok. 1 passed; 0 failed, and neither 'unset: skipped' nor 'no tokenizer.json in WHOOSH_EMBED_WEIGHTS: skipped' in the output (every piece of the link-heavy mail with its title is within MODEL_INPUT_TOKENS by the model's own tokenizer)"
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/ownercopy-pieces.py --selftest",
+      "pass": "one word in no piece: RESULT: FAIL \\| words in no vector outside code pieces 1 of 80[\\s\\S]*code pieces only: RESULT: PASS \\| words in no vector outside code pieces 0 of 40 \\| words in code pieces 3[\\s\\S]*\\n0 problems",
+      "fail": "SELFTEST FAIL|Traceback",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "WHOOSH_RIG_HIDDEN=1 sh scripts/launch-one.sh <bundle> -- --rig-hidden sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 checks/ownercopy-pieces.py' (the lead's hands: a private snapshot of the installed database in the launcher's run folder, counts only, deleted at the end)",
+      "pass": "the last line reads 'RESULT: PASS | words in no vector outside code pieces 0 of <N> | words in code pieces <C> | ...' with N above 0 (mails under the cap INDEX_BODY_MAX_CHARS) and the words in code pieces C printed beside it (the lead's ruling, 13 Nov round 21: a piece left out as mostly codes keeps no vector by pieces::mostly_codes, so the finish line counts the words outside such pieces), and 'counter: model tokenizer'; counts only, never a word of a mail"
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_stale_pieces",
+      "pass": "test result: ok\\. 4 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "if end == units.len() { break; }",
+      "replace": "if end + 1 >= units.len() { break; }",
+      "proof": 0,
+      "red": "thread 'every_length_of_mail_keeps_its_last_word_in_the_last_piece' (\\(\\d+\\) )?panicked|every_length_of_mail_keeps_its_last_word_in_the_last_piece \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "back + units[next - 1].1 <= overlap",
+      "replace": "back + units[next - 1].1 <= 0",
+      "proof": 0,
+      "red": "neighbouring_pieces_share_the_overlap.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "Some(cut_title(tok, subject, PIECE_TITLE_TOKENS))",
+      "replace": "Some(subject.to_string())",
+      "proof": 0,
+      "red": "a_long_subject_is_cut_and_every_piece_still_fits.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "letters * 2 < all || all == 0",
+      "replace": "all == 0",
+      "proof": 0,
+      "red": "a_piece_of_digits_gets_no_vector.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "let host = host_of(&word[i..]);",
+      "replace": "let host = word[i..].to_string();",
+      "proof": 0,
+      "red": "clean_a_link_becomes_its_site.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "if w.chars().any(|c| c.is_ascii_digit()) { return true; }",
+      "replace": "if false { return true; }",
+      "proof": 0,
+      "red": "clean_tracking_codes_leave.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "if t.starts_with('>') { i += 1; continue; }",
+      "replace": "",
+      "proof": 0,
+      "red": "clean_quoted_lines_leave.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "out.push(if first { '\\n' } else { ' ' });",
+      "replace": "out.push_str(\"  \");",
+      "proof": 0,
+      "red": "clean_white_space_runs_become_one.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "for _ in 0..c.len_utf8()",
+      "replace": "for _ in 0..1",
+      "proof": 0,
+      "red": "the_byte_bound_counts_every_byte.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "} else if dir.exists() && !rule.exists() {",
+      "replace": "} else if false {",
+      "proof": 1,
+      "red": "thread 'a_mail_cut_by_the_old_rule_is_cut_again_once_by_the_token_rule' (\\(\\d+\\) )?panicked|a_mail_cut_by_the_old_rule_is_cut_again_once_by_the_token_rule \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "no_vector += outside_v.len() as u64;",
+      "replace": "no_vector += 0;",
+      "proof": 1,
+      "red": "thread 'index_pieces_counts_the_words_whose_piece_has_no_vector' (\\(\\d+\\) )?panicked|index_pieces_counts_the_words_whose_piece_has_no_vector \\.\\.\\. FAILED"
+    },
+    {
+      "file": "checks/ownercopy-pieces.py",
+      "find": "ok = sums[\"words\"] >= 1 and outside == 0 and sums[\"pieces_cut\"] == 0",
+      "replace": "ok = sums[\"words\"] >= 1 and sums[\"pieces_cut\"] == 0",
+      "proof": 3,
+      "red": "SELFTEST FAIL a mail with a word in no piece passes"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "if s <= last.1 { last.1 = last.1.max(e); continue; }",
+      "replace": "if false && s <= last.1 { last.1 = last.1.max(e); continue; }",
+      "proof": 0,
+      "red": "a_word_cut_inside_is_in_the_pieces_that_hold_its_parts.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "from = s + clean[s..].chars().next().map_or(1, char::len_utf8);",
+      "replace": "from = s;",
+      "proof": 0,
+      "red": "a_mail_that_repeats_a_passage_loses_no_word.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "self.store.unembed_body_chunks(&queued).map_err(|e| e.to_string())?;",
+      "replace": "let _ = &queued;",
+      "proof": 5,
+      "red": "thread 'a_body_changed_with_no_model_is_cut_again_when_the_model_comes_back' (\\(\\d+\\) )?panicked|a_body_changed_with_no_model_is_cut_again_when_the_model_comes_back \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "pub const PIECE_RULE_MARKER: &str = \"pieces-v2\";",
+      "replace": "pub const PIECE_RULE_MARKER: &str = \"pieces-v1\";",
+      "proof": 5,
+      "red": "thread 'an_index_cut_before_the_marker_moved_is_cut_again_once' (\\(\\d+\\) )?panicked|an_index_cut_before_the_marker_moved_is_cut_again_once \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Tests, read from the files: core/crates/search-vector/tests/pieces.rs holds 19 #[test] (grep -c '^#\\[test\\]' = 19): :61 a_mail_with_links_and_a_quoted_reply_is_read_whole_within_the_limit (pieces sized in the model's tokens, whole text covered, each with its title under the limit), :85 neighbouring_pieces_share_the_overlap, :102 a_long_subject_is_cut_and_every_piece_still_fits, :114 a_piece_of_digits_gets_no_vector, :143 clean_a_link_becomes_its_site, :153 clean_tracking_codes_leave, :165 clean_query_strings_leave, :175 clean_quoted_lines_leave, :183-:225 the five reply-header languages and the original-message line, :236 clean_white_space_runs_become_one, :244 clean_a_mail_that_is_only_a_quote_keeps_it, :251 the_byte_bound_counts_every_byte, :264 real_tokenizer_counts_when_the_weights_are_given (returns early and PASSES when WHOOSH_EMBED_WEIGHTS is unset: it proves nothing in a plain cargo run, hence the lead proof). core/crates/engine/tests/engine_pieces.rs: :105 a_mail_cut_by_the_old_rule_is_cut_again_once_by_the_token_rule (every stored piece fits with its title, links and the quote gone, pieces_over_limit 0, words of the mail in no vector 0 at :156), :157 a_files_pieces_carry_the_subject_and_the_file_name. Nine broken copies in pieces.rs (lines 138, 142, 91, 118, 219, 244, 259, 205, 320 of core/crates/search-vector/src/pieces.rs, each find checked to occur once) and one in indexer.rs:437; the two other clean_* tests and the language clauses of is_reply_header have broken copies in docs/lanes/pieces.md:144-161 that are not one-line unique finds here. The red regexes name the test the lane notes (docs/lanes/pieces.md:144-166) say goes red; none was run by me (no cargo). | hid-search round 17: the finish line's count is built. The engine read `index/pieces/<after rowid>/<limit>` (core/crates/engine/src/rust_core.rs state, indexer.rs Indexer::piece_counts) counts, for the stored mails under INDEX_BODY_MAX_CHARS, words of the cleaned text (the engine's text_of and pieces::clean_for_meaning), words in no stored body piece, words in no piece with a vector, pieces, pieces that do not fit the model's input with their title (pieces_cut), attachment pieces with a vector, as JSON numbers only; engine_pieces.rs's first test now also reads it (proof 1: mails 1, words in no vector 0, pieces = the stored pieces, pieces_cut 0). checks/ownercopy-pieces.py (proof 4, the lead's hands) snapshots the installed database as ownercopy-search.py does (it imports that file's snapshot, stop_copy, protect_words and say), pages through the engine read and prints counts only; its last line is 'RESULT: PASS | words in no vector 0 of <N> | ...'. Proof 3 is its self-test on made-up engine replies: a mail with one word in no piece is red. Broken copies: the engine's no-vector count removed (proof 1 red), the script's verdict without the no-vector test (proof 3 red: seen red on a copy, hid-search-out/r17/pieces-selftest-mutant.log). Proof 2 (the real tokenizer) stays as it was. Not run by me: cargo (no compile in this lane); the Rust is read, not built. | hid-search round 20 (main111 lead run: 'words in no vector 4 of 72809'): the count is by byte coverage now (search_vector::pieces::words_outside, two tests in core/crates/search-vector/tests/pieces.rs: a word cut inside by the cutter is held by the pieces that hold its parts; a word no piece holds is counted), and the engine read names each word's cause (words_lost_by_the_cut, words_in_code_pieces, words_in_stale_pieces) and the mail rows (row id, count, cause); the script prints them. Proof 0 now expects 21 tests (19 + 2). Not compiled here (no cargo). | hid-search round 23 (main112: 'lost by the cut 50, in pieces left out as codes 137'; row 32 '116 cut'): the cut kept every byte; the count searched each piece's text again from the previous piece's start, so in a mail that repeats a passage every later copy landed on the first and its words counted as lost. Now a current mail's pieces are read as byte ranges of the cut (pieces::cut_ranges, piece_ranges, words_outside_ranges), and a text search starts one character after the previous start; test a_mail_that_repeats_a_passage_loses_no_word. The mail rows now carry the cleaned text's bytes, the stored piece count and the words outside the cut. The line's sums: a 'cut' mail's words outside the cut count as lost by the cut, the rest of its words in no piece as code pieces (row 32: 116 = 50 + 66; 137 = 66 + 70 + 1)."
+}

@@ -1,0 +1,12 @@
+{
+ "id": "073",
+ "category": "link-html",
+ "code": null,
+ "links": [
+  "https://auth.example.com/activate?key=fa31bde1897f92e1cb504ce2"
+ ],
+ "invite": null,
+ "tracker_count": 1,
+ "quoted": null,
+ "adversarial": false
+}

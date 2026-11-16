@@ -1,0 +1,28 @@
+From: Orchard Pay <digest@example.org>
+To: Assem Example <assem@example.org>
+Subject: Weekly digest
+Date: Fri, 13 Nov 2026 01:56:00 +0000
+Message-ID: <7276ec7b473b8389@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0075597586480802766=="
+
+--===============0075597586480802766==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello, safe text. after
+
+--===============0075597586480802766==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PGh0bWw+PGhlYWQ+PHRpdGxlPng8L3RpdGxlPjwvaGVhZD48Ym9keT48cD5IZWxsbywgc2FmZSB0
+ZXh0IDhmMzE8L3A+PGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL2V2aWwuZXhh
+bXBsZS5uZXQvcy5jc3MiPjxtZXRhIGh0dHAtZXF1aXY9InJlZnJlc2giIGNvbnRlbnQ9IjA7dXJs
+PWh0dHBzOi8vZXZpbC5leGFtcGxlLm5ldCI+PGJhc2UgaHJlZj0iaHR0cHM6Ly9ldmlsLmV4YW1w
+bGUubmV0LyI+PGZvcm0gYWN0aW9uPSJodHRwczovL2V2aWwuZXhhbXBsZS5uZXQvcG9zdCI+PGlu
+cHV0IG5hbWU9InAiPjwvZm9ybT48cD5hZnRlcjwvcD48L2JvZHk+PC9odG1sPg0K
+
+--===============0075597586480802766==--

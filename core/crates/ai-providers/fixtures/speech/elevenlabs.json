@@ -1,0 +1,64 @@
+{
+  "provider": "elevenlabs",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "key": "FIXTURE-not-a-real-key-0001",
+  "bad_key": "FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "transcribe": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/speech-to-text",
+          "headers": {
+            "xi-api-key": "FIXTURE-not-a-real-key-0001"
+          },
+          "body_contains": [
+            "name=\"model_id\"",
+            "scribe_v1",
+            "name=\"file\"",
+            "filename=\"clip.wav\"",
+            "Content-Type: audio/wav"
+          ],
+          "content_type_starts": "multipart/form-data; boundary="
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "language_code": "eng",
+            "language_probability": 0.98,
+            "text": "hold the shipment until Friday and copy Marta",
+            "words": []
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/speech-to-text",
+          "headers": {
+            "xi-api-key": "FIXTURE-not-a-real-key-REFUSED"
+          },
+          "body_contains": [
+            "name=\"model_id\"",
+            "scribe_v1",
+            "name=\"file\"",
+            "filename=\"clip.wav\"",
+            "Content-Type: audio/wav"
+          ],
+          "content_type_starts": "multipart/form-data; boundary="
+        },
+        "response": {
+          "status": 401,
+          "body": {
+            "detail": {
+              "status": "invalid_api_key",
+              "message": "Invalid API key"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

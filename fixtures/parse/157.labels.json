@@ -1,0 +1,20 @@
+{
+ "id": "157",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "CANCEL",
+  "uid": "9b1636ec0febfd5ad67a@example.org",
+  "summary": "Team lunch",
+  "organizer": "jonas.peeters@example.net",
+  "all_day": false,
+  "start_utc_ms": 1794306600000,
+  "start_local": null,
+  "tzid": null,
+  "location": "https://meet.example.net/387d85"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

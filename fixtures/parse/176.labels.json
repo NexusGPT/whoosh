@@ -1,0 +1,15 @@
+{
+ "id": "176",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "Op ma 2 nov. 2026 om 10:14 schreef Pia Kowalski <pia.kowalski@accounts.example.com>:",
+  "visible_contains": "Yes, please book it. 3bc7",
+  "folded_contains": "Can you confirm the schedule for next week? 2afe"
+ },
+ "adversarial": false
+}

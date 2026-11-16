@@ -1,0 +1,56 @@
+{
+  "item": "ede2484c",
+  "full_id": "ede2484c-5728-4f78-8399-e319461cddd2",
+  "title": "Wire the app to the background download",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/background-check.py",
+      "pass": "(?s)ok +engine-conditions-call.*ok +engine-activity-call.*ok +engine-embedder-call",
+      "fail": "FAIL +[a-z-]+",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/background-check.py --live",
+      "pass": "(?s)ok +low-battery-pauses.*ok +plugging-in-resumes",
+      "fail": "FAIL +[a-z-]+|NOT JUDGED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/background-check.py --selftest",
+      "pass": "red +drop-conditions-call +red: engine-conditions-call",
+      "fail": "MISSED|NOT APPLIED",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/BackgroundWork/BackgroundConditions.swift",
+      "find": "engine.setConditions(",
+      "replace": "_ = (",
+      "proof": 0,
+      "red": "FAIL +engine-conditions-call"
+    },
+    {
+      "file": "Sources/Features/BackgroundWork/ConditionsGate.swift",
+      "find": "batteryPercent < floor",
+      "replace": "batteryPercent <= floor",
+      "proof": 0,
+      "red": "FAIL +hold-rule-matches-engine"
+    },
+    {
+      "file": "Sources/Features/Shortcuts/ShortcutEngine.swift",
+      "find": "BackgroundWork.noteOwnerActivity()",
+      "replace": "()",
+      "proof": 0,
+      "red": "FAIL +command-door-notes"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Three hooks: set_background_conditions (BackgroundEngineLive.swift:11, fed by BackgroundConditions.swift:79 on each change, IOPS notification no polling), note_owner_activity (BackgroundEngineLive.swift:14, called from ShortcutEngine.swift:159 on each acting key), set_background_embedder (BackgroundEngineLive.swift:16, hand-over once the model is ready). Source judge: checks/background-check.py:79-100 (cases engine-conditions-call, engine-activity-call, engine-embedder-call, command-door-notes, handover-at-launch, hold-rule-matches-engine; print format 'ok   name  why' / 'FAIL name why', :413). Driven case (proof 1): the check's --live mode drives the rig with `fixture power <percent> <charging|battery> <nominal|fair|serious|critical>` and reads row mac-main.background: start-reads-power, low-battery-pauses (30 percent on battery: told at once, paused for battery), plugging-in-resumes, floor-is-strict, heat-pauses, cooling-resumes, critical-counts-as-heat (check lines :205-245). Mutants of the file itself: SOURCE_MUTANTS :381-392 run by --selftest (proof 2, prints 'red  <mutant> red: <case>'). r83: 32 checks, 0 failed (summary.txt:72); the --live and --selftest modes are not in the r83 list: run them. The three source mutants above are real app breaks: the conditions call removed, the floor made inclusive, the owner-activity call removed; each turns its named source case red (static proof 0 first line sets the pass), so mutants index proof 0."
+}

@@ -1,0 +1,20 @@
+{
+ "id": "159",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REPLY",
+  "uid": "b1ffb3cf4a4a701a8b7d@example.com",
+  "summary": "Team lunch",
+  "organizer": "pia.kowalski@accounts.example.com",
+  "all_day": false,
+  "start_utc_ms": 1795080600000,
+  "start_local": null,
+  "tzid": null,
+  "location": "https://meet.example.net/74d72f"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

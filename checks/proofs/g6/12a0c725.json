@@ -1,0 +1,70 @@
+{
+  "item": "12a0c725",
+  "full_id": "12a0c725-e83b-4e5e-8a7f-f3391105985e",
+  "title": "Score attachments in the meaning search",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_related",
+      "pass": "test result: ok\\. 10 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_pieces",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p search-vector --test pieces -- a_file_piece_carries_the_subject_and_the_file_name",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "par-attachment-result-shows-its-passage-line +pass",
+      "fail": "par-attachment-result-shows-its-passage-line +(fail|unjudged)",
+      "timeout_s": 1500
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "\"SELECT id, message_id, part FROM chunk\"",
+      "replace": "\"SELECT id, message_id, part FROM chunk WHERE part = 'body'\"",
+      "proof": 0,
+      "red": "g_a_mail_whose_best_piece_is_an_attachment_carries_the_file_and_its_passage.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "let attachment_name = c.attachment.as_deref().and_then(&file_name);",
+      "replace": "let attachment_name: Option<String> = None;",
+      "proof": 0,
+      "red": "g_a_mail_whose_best_piece_is_an_attachment_carries_the_file_and_its_passage.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "self.file_pieces(&b.message_id, &b.subject, tok.as_ref(), embedder.as_ref(), &vector);",
+      "replace": "",
+      "proof": 1,
+      "red": "a_files_pieces_carry_the_subject_and_the_file_name.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/search-vector/src/pieces.rs",
+      "find": "let whole = format!(\"{subject} · {name}\");",
+      "replace": "let whole = subject.to_string();",
+      "proof": 2,
+      "red": "a_file_piece_carries_the_subject_and_the_file_name.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Clauses. (a) attachment pieces carry subject and file name: core/crates/search-vector/tests/pieces.rs:129 a_file_piece_carries_the_subject_and_the_file_name (the rule, src pieces.rs:77) and core/crates/engine/tests/engine_pieces.rs:163 a_files_pieces_carry_the_subject_and_the_file_name (the title 'Quote for May · devis.pdf'). (b) embedded: the same engine test asserts the file is embedded once under that title and its chunks are marked embedded (:181-:186). (c) the search's closeness reads them: core/crates/engine/tests/engine_search_related.rs:290 g_a_mail_whose_best_piece_is_an_attachment_carries_the_file_and_its_passage (closeness reads every part, search_cmd.rs:530; the broken copy adds WHERE part = 'body'). (d) a mail found by its attachment's meaning is listed with the passage and the file name: the same test asserts matched_in Related, attachment_name 'office-plan.pdf', the snippet equal to the attachment piece's passage and the state search/last/hit/<n>/attachment_name; the screen side is the hidden case par-attachment-result-shows-its-passage-line (checks/parity/par-searchmac.py:2425 name list, run at :3122 in step J2.9; its model at :2621-2625), which compares the row's source and file name on the fixture corpus. The pass line is the harness's one line per case, '<case> +pass' (journeys/lib/harness.py case_line). Not an unreal test: g_ builds the piece's vector itself through search_vector (docs/lanes/rank.md 'How the attachment pieces get a vector in g and h'), while engine_pieces proves the indexer embeds file pieces; no single test chains indexer to search on one file. Nothing was run by me."
+}

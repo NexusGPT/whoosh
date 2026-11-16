@@ -1,0 +1,20 @@
+{
+  "item": "7c5301c6",
+  "full_id": "7c5301c6-ba8c-4957-b2aa-303e6ba5c266",
+  "title": "Set the related cut-off number on a private copy",
+  "state": "prove",
+  "proofs": [
+    {"kind": "lead", "run": "WHOOSH_RIG_HIDDEN=1 sh scripts/launch-one.sh <bundle> -- --rig-hidden sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 checks/ownercopy-related.py' (the real engine on a private copy of the owner's mail, counts and closeness figures only; the copy is deleted by the run)", "pass": "(?s)(?=.*^PICK: )(?=.*^FLOOR: 0\\.70 \\| made-up queries marking a mail 0 of 12 \\| topic queries with at least one 12 of 16)(?=.*private copy deleted: yes)"},
+    {"kind": "static", "run": "python3 checks/ownercopy-related.py --selftest", "pass": "11 checks, 0 failed, 0 not judged", "fail": "BAD|STILL GREEN|^FAIL", "timeout_s": 120},
+    {"kind": "static", "run": "grep -c \"^| RELATED_MIN_COSINE | 0.70 | .*0 of 12.*12 of 16\" docs/CONSTANTS.md", "pass": "^1$", "timeout_s": 30},
+    {"kind": "static", "run": "python3 tools/gen-constants.py --check", "pass": "\\[exit 0\\]", "timeout_s": 60},
+    {"kind": "cargo", "run": "-p engine --test engine_search_related", "pass": "test result: ok\\. 11 passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 1500}
+  ],
+  "mutants": [
+    {"file": "core/crates/engine/src/search_cmd.rs", "find": " && f64::from(c.cos) >= RELATED_MIN_COSINE", "replace": "", "proof": 4, "red": "d2_a_mail_that_stands_out_under_the_closeness_floor_is_not_related \\.\\.\\. FAILED"},
+    {"file": "docs/CONSTANTS.md", "find": "| RELATED_MIN_COSINE | 0.70 |", "replace": "| RELATED_MIN_COSINE | 0.60 |", "proof": 3, "red": "\\[exit 1\\]"}
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Runs of 14 Nov 2026 on keep-main180 (the measure reads the engine, it does not depend on the floor being built): run 1 and 2, 8 topic and 2 made-up queries, cut-offs 1.0 to 5.0; run 3, 16 topic and 12 made-up queries with the closeness floors 0.64 to 0.74. The copy holds 310 mails in scope. The first rule (the lowest cut-off at which at most one topic query is over RELATED_MAX and half mark a mail) picks 1.0 and is NOT adopted: it was written for a mailbox where the cap binds, and at 1.0 a search marks 33 to 54 of 310 mails; the made-up queries mark as many mails as the topics at every cut-off, which is why the lift alone cannot be the rule. The second rule, written in the file before run 3, picks the floor 0.70; RELATED_LIFT_MIN stays 2.0 with the counts in its row. Engine: core/crates/engine/src/search_cmd.rs related_of; test d2 in core/crates/engine/tests/engine_search_related.rs, seen red on broken copy 0 (10 passed, 1 failed) and green on the tree (11 passed). Test engine: Sources/CoreBridge/FixtureSearch.swift liftRelated and relatedCut. Spec: docs/SPEC.md A150 last cell; docs/lanes/rank.md last section."
+}

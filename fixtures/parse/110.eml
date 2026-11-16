@@ -1,0 +1,38 @@
+From: Linea Supply <news@example.com>
+To: Assem Example <assem@example.org>
+Subject: Our November newsletter
+Date: Wed, 04 Nov 2026 15:39:00 +0000
+Message-ID: <ae71953225349e3f@example.com>
+List-Unsubscribe: <https://example.net/unsubscribe?u=b97404>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5678004683602203518=="
+
+--===============5678004683602203518==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+November news. Read more at https://example.net/blog/abc123
+
+--===============5678004683602203518==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Linea Supply</title=
+><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-siz=
+e:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspaci=
+ng=3D"0"><tr><td align=3D"center"><img alt=3D"x" src=3Dhttp://track.example.o=
+rg/banner/4217de50.png><h2>Linea Supply</h2><h3>November news</h3><p>Join 500=
+0 readers. In 2026 we shipped 12 releases. Ten percent off until 30 November.=
+</p><p>Book a call: +32 5 790 20 84</p><p><a href=3D'https://example.net/blog=
+/1d4e87'>Read more</a></p><p style=3D"font-size:11px;color:#888">You receive =
+this because of your account. <a href=3D"https://example.net/unsubscribe?u=3D=
+1acbfe">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Privacy</a>=
+</p><img alt=3D"x" src=3Dhttp://img.example.com/px/367363a3.jpg><img alt=3D"x=
+" src=3Dhttps://track.example.org/logo/c33409dc.jpg><img src=3D"//img.example=
+.com/open/139eb994.png" width=3D"1" height=3D"1"><img src=3D"https://img.exam=
+ple.com/px/40dea5f8.gif" width=3D"1" height=3D"1" alt=3D""></td></tr></table>=
+</body></html>
+
+--===============5678004683602203518==--

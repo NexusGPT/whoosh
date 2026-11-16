@@ -1,0 +1,104 @@
+{
+ "item": "e47f3f32",
+ "full_id": "e47f3f32-8bb9-4cdd-a52d-cd20e584d398",
+ "title": "Build ux-welcome-imap",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J4 ; cat \"$D/results\"/J4-*.results.jsonl'",
+   "pass": "(?s)(?=.*\"step\": \"J4.6\", \"case\": \"thirty-rows\", \"verdict\": \"PASS\")(?=.*\"step\": \"J4.6\", \"case\": \"failing-row-says-why\", \"verdict\": \"PASS\")(?=.*\"step\": \"J4.6\", \"case\": \"other-29-carry-on\", \"verdict\": \"PASS\")",
+   "fail": "FAIL|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "python3 journeys/J4.py --selftest",
+   "pass": "selftest: \\d+ checks, \\d+ mutants red, \\d+ not run \\(not judged on the ideal\\), \\d+ declared rows, 0 not red or missing",
+   "fail": "NOT RED|STRAY|NO MUTANT|[1-9]\\d* not red or missing",
+   "timeout_s": 300
+  },
+  {
+   "kind": "unit",
+   "run": "theGoogleRouteShowsItsAppPasswordStepsAndLink,aRefusedHostSaysWrongPasswordOr2StepIsOff,aPastedListOfFiveAddressesMakesFiveRows,oneRefusedRowShowsItsReasonWhileTheOthersProgress",
+   "pass": "(?s)(?=.*Test theGoogleRouteShowsItsAppPasswordStepsAndLink\\(\\) passed)(?=.*Test aRefusedHostSaysWrongPasswordOr2StepIsOff\\(\\) passed)(?=.*Test aPastedListOfFiveAddressesMakesFiveRows\\(\\) passed)(?=.*Test oneRefusedRowShowsItsReasonWhileTheOthersProgress\\(\\) passed)",
+   "fail": "failed",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/shots-sheet.py --selftest",
+   "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+   "fail": "selftest FAIL|[1-9]\\d* not red",
+   "timeout_s": 300
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/shots-sheet.py --list-states",
+   "pass": "state welcome-refused-row \\(item",
+   "fail": "Traceback|usage:",
+   "timeout_s": 60
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/shots-sheet.py _captures/results/gap-shots/welcome-refused-row --states welcome-refused-row",
+   "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b8 checks, 0 failed, 0 not judged",
+   "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+   "timeout_s": 1800
+  },
+  {
+   "kind": "lead",
+   "run": "open pictures state-welcome-refused-row-<window|closeup>-<light|dark>-<1280x820|960x600>.png (and each ...-closeup.png crop) of _captures/results/gap-shots/welcome-refused-row/index.html",
+   "pass": "one row says why it was refused, the other rows read Ready; the close-up shows that row whole"
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeModel.swift",
+   "find": "let made = parts.filter { add($0, secret: nil) }.count",
+   "replace": "let made = parts.prefix(1).filter { add($0, secret: nil) }.count",
+   "proof": 0,
+   "red": "\"step\": \"J4.6\", \"case\": \"thirty-rows\", \"verdict\": \"FAIL\""
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeRoutes.swift",
+   "find": "steps: [\"Turn on 2-step sign-in in your Google account.\", \"Make an app password named Whoosh.\", \"Paste the 16 letters here.\"],",
+   "replace": "steps: [\"Turn on 2-step sign-in in your Google account.\", \"Make an app password named Whoosh.\"],",
+   "proof": 2,
+   "red": "Test theGoogleRouteShowsItsAppPasswordStepsAndLink\\(\\) failed"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeRoutes.swift",
+   "find": "Words.text(\"wrong password, or 2-step sign-in is off at %@\", name)",
+   "replace": "Words.text(\"wrong password at %@\", name)",
+   "proof": 2,
+   "red": "Test aRefusedHostSaysWrongPasswordOr2StepIsOff\\(\\) failed"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeModel.swift",
+   "find": "let made = parts.filter { add($0, secret: nil) }.count",
+   "replace": "let made = parts.prefix(1).filter { add($0, secret: nil) }.count",
+   "proof": 2,
+   "red": "Test aPastedListOfFiveAddressesMakesFiveRows\\(\\) failed"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeRow.swift",
+   "find": "if a.contains(\"refused\") || secret == \"wrong-password\" { return .refused(words: route.refusedWords(), link: route.link ?? \"\") }",
+   "replace": "if secret == \"wrong-password\" { return .refused(words: route.refusedWords(), link: route.link ?? \"\") }",
+   "proof": 2,
+   "red": "Test oneRefusedRowShowsItsReasonWhileTheOthersProgress\\(\\) failed"
+  },
+  {
+   "file": "checks/shots-sheet.py",
+   "find": "    fr = (sr.get(\"frames\") or {}).get(ax)",
+   "replace": "    fr = {\"x\": 40.0, \"y\": 200.0, \"w\": 600.0, \"h\": 60.0}",
+   "proof": 3,
+   "red": "selftest FAIL: states mutant no-frames is red"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Today's real flow: the Add account sheet (mac-add-account) replaced the Welcome address column: checks/welcomemac-check.py:2-3 says RETIRED AS A MANIFEST CELL and its wrong-password text 'wrong password: check the app password' (line ~408 in its Model) is a stand-in model, not the app. The Welcome list screen survives as mac-welcome-accounts, reached by Settings > Accounts 'Move accounts to iPhone' (journeys/J4.py:403-440 comment). Proof 0: J4.6 paste of 30 addresses (journeys/J4.py:417-437): thirty-rows (418), failing-row-says-why (436), other-29-carry-on (437); this is the 30-address version of 'a pasted list pre-creates rows' and 'one refused row shows its reason while the others keep progressing'; it does NOT run 5 addresses and does NOT check the string 'wrong password, or 2-step sign-in is off'. The Google steps and link are judged only on the Add-account sheet by J4.5 gmail-app-password-route (J4.py:394) and par-addaccount.py:400 note-gmail-takes-an-app-password, not on the Welcome route table WelcomeRoutes.google, which no check or test reads (grep of Tests, checks, journeys for WelcomeRoutes finds nothing). journeys/run.py prints no per-case line, so Proof 0 reads the results jsonl the harness writes (journeys/lib/harness.py:248-270) with WHOOSH_RESULTS_DIR=$D/results; the pass is a PASS line per case. Proof 1 is the dry stand-in selftest (J4.py:1136-1146, run_selftest 804-899) that proves each J4 check goes red on its mutant; no app. The mutant needs an app rebuild. J4 as a whole is not GREEN until slice 7 (J4.9-J4.11 could-not-drive) so proof 0 reads the jsonl, not the exit code. | gap-welcome: the four tests use WelcomeModel(defaults: private suite) with WelcomeFakeConnector and `await settle()` (WelcomeModel.swift, new); they run without an app window. The refusal line now comes from the catalogue (Words.text key 'wrong password, or 2-step sign-in is off at %@', already in Localizable.xcstrings), so the test compares with the same key and checks the English fragment only when the language is English. | gap-shots (2026-11-11): checks/shots-sheet.py STATES 'welcome-refused-row' (screen mac-welcome-accounts): `click mac-welcome-accounts.reset`, `type` the addresses of the fixture's first four healthy accounts and of its failing one (docs/design/fixtures/mac-main-sample.json: assem@provanta-example.be), `click ...paste-list`, `click ...connect-waiting`, then `rows ...accounts` until no row is waiting and one is refused (the way journeys/J4.py:417-437 does it); views window and closeup, 1280x820 and 960x600 (the first-start geometry), light and dark: 8 files. || fix-screens (2026-11-11): Sources/Features/WelcomeMac/WelcomeRowView.swift:34 now reads .whooshAx(\"mac-welcome-accounts.accounts.\\(row.id)\"), so the close-up crop of the refused row can be measured; the hidden run (proof 5) judges it; not run by the builder."
+}

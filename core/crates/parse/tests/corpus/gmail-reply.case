@@ -1,0 +1,16 @@
+# Gmail's reply shape: div.gmail_quote holding the attribution (div.gmail_attr) and blockquote.gmail_quote. Written; history hidden.
+subject: Re: Slides for Thursday
+sender: Ulla Virtanen
+layout: written
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY hide
+authored: I added the two charts you asked for, see slides 6 and 7.
+history: Could you add the sales charts to the deck before Thursday?
+--- text
+I added the two charts you asked for, see slides 6 and 7.
+
+On Mon, Nov 9, 2026 at 5:10 PM Victor Lund <victor@example.se> wrote:
+> Could you add the sales charts to the deck before Thursday?
+--- html
+<div dir="ltr">I added the two charts you asked for, see slides 6 and 7.</div><br><div class="gmail_quote"><div dir="ltr" class="gmail_attr">On Mon, Nov 9, 2026 at 5:10 PM Victor Lund &lt;<a href="mailto:victor@example.se">victor@example.se</a>&gt; wrote:<br></div><blockquote class="gmail_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir="ltr">Could you add the sales charts to the deck before Thursday?</div></blockquote></div>

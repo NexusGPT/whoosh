@@ -1,0 +1,13 @@
+[package]
+name = "store"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh store: one writer thread, WAL, per-table change feed, the read queries the inbox needs."
+
+[dependencies]
+contracts = { workspace = true }
+# the attachment index's AttachmentRows door (contracts delta 10 hook)
+attachment-index = { path = "../attachment-index" }
+# SQLite itself: rusqlite (MIT) with the bundled SQLite (public domain), the same pair the migrations crate uses.
+rusqlite = { version = "0.41", features = ["bundled", "hooks"] }

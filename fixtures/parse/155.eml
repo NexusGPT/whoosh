@@ -1,0 +1,31 @@
+From: Jonas Peeters <jonas.peeters@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Invitation: Supplier call
+Date: Sun, 08 Nov 2026 01:39:00 +0000
+Message-ID: <f6e520ce4ec21439@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6435724386086668246=="
+
+--===============6435724386086668246==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Jonas Peeters invites you to Supplier call.
+
+--===============6435724386086668246==
+Content-Type: application/ics
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="invite.ics"
+MIME-Version: 1.0
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vRXhhbXBsZSBDYWxlbmRhci8vRU4NClZFUlNJT046
+Mi4wDQpNRVRIT0Q6UkVRVUVTVA0KQkVHSU46VkVWRU5UDQpVSUQ6YTA4MzY4OWU2NjgzYjE2YjM3
+OGRAbWFpbC5leGFtcGxlLm5ldA0KRFRTVEFSVDoyMDI2MTExNlQxMDMwMDBaDQpEVEVORDoyMDI2
+MTExNlQxMTMwMDBaDQpTVU1NQVJZOlN1cHBsaWVyIGNhbGwNCkxPQ0FUSU9OOlJvb20gQWxwaGEN
+Ck9SR0FOSVpFUjtDTj1Kb25hcyBQZWV0ZXJzOm1haWx0bzpqb25hcy5wZWV0ZXJzQGFjY291bnRz
+LmV4YW1wbGUuY29tDQpBVFRFTkRFRTtDTj1Bc3NlbSBFeGFtcGxlO1JPTEU9UkVRLVBBUlRJQ0lQ
+QU5UO1BBUlRTVEFUPU5FRURTLUFDVElPTjtSU1ZQPVQNCiBSVUU6bWFpbHRvOmFzc2VtQGV4YW1w
+bGUub3JnDQpTVEFUVVM6Q09ORklSTUVEDQpTRVFVRU5DRTowDQpFTkQ6VkVWRU5UDQpFTkQ6VkNB
+TEVOREFSDQo=
+
+--===============6435724386086668246==--

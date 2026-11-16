@@ -1,0 +1,77 @@
+{
+ "schema": "whoosh-search-corpus/1",
+ "note": "attachments-mac gallery fixture: three photos; thirty files (12 images, 2 videos, 16 documents); inline images",
+ "messages": [
+  {
+   "id": "msg-g1",
+   "thread": "thr-g1",
+   "account": "acc-10",
+   "from_name": "Sophie Chammah",
+   "from": "sophie@family-example.net",
+   "date": "2026-11-07T10:00:00",
+   "subject": "Photos from the garden",
+   "body": "Here are the ones from the garden. The last one is the keeper.",
+   "attachments": [
+    "IMG_2041.jpg",
+    "IMG_2044.jpg",
+    "IMG_2051.jpg"
+   ]
+  },
+  {
+   "id": "msg-g2",
+   "thread": "thr-g2",
+   "account": "acc-04",
+   "from_name": "Karim Haddad",
+   "from": "karim@haddad-example.com",
+   "date": "2026-11-06T10:00:00",
+   "subject": "Site visit: everything from today",
+   "body": "All the photos, the two walkthrough videos and the documents from the site visit.",
+   "attachments": [
+    "IMG_3101.jpg",
+    "IMG_3102.jpg",
+    "IMG_3103.jpg",
+    "IMG_3104.jpg",
+    "IMG_3105.jpg",
+    "IMG_3106.jpg",
+    "walkthrough-1.mp4",
+    "spec-part-1.pdf",
+    "spec-part-2.pdf",
+    "spec-part-3.pdf",
+    "spec-part-4.pdf",
+    "spec-part-5.pdf",
+    "spec-part-6.pdf",
+    "spec-part-7.pdf",
+    "spec-part-8.pdf",
+    "IMG_3107.jpg",
+    "IMG_3108.jpg",
+    "IMG_3109.jpg",
+    "IMG_3110.jpg",
+    "screenshot-1.png",
+    "screenshot-2.png",
+    "walkthrough-2.mp4",
+    "minutes-1.docx",
+    "minutes-2.docx",
+    "minutes-3.docx",
+    "minutes-4.docx",
+    "minutes-5.docx",
+    "assets-1.zip",
+    "assets-2.zip",
+    "assets-3.zip"
+   ]
+  },
+  {
+   "id": "msg-g3",
+   "thread": "thr-g3",
+   "account": "acc-02",
+   "from_name": "Marie Lefèvre",
+   "from": "marie@lefevre-example.fr",
+   "date": "2026-11-05T10:00:00",
+   "subject": "The floor plan, inline",
+   "body": "Here is the plan as we discussed [[inline:floor-plan.png]] and the sketch from this morning [[inline-data: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]] with the notes attached.",
+   "attachments": [
+    "floor-plan.png",
+    "notes.pdf"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,83 @@
+{
+  "item": "00a15e42",
+  "full_id": "00a15e42-7fbe-4633-ab5c-4c3819ef948c",
+  "title": "Build mob-palettephone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "thePhonePaletteListsNoMacOnlyCommandAndKeepsTheSharedOnes,everyPhoneCommandAlsoExistsInTheMacRegistry,theResultRowsCanBePicked",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/palettephone-check.py --selftest",
+      "pass": "(?s)(?=.*\\| open \\| open-noop \\| yes \\|)(?=.*\\| type-and-match \\| no-filter \\| yes \\|)(?=.*\\| run-archive \\| archive-keeps-row \\| yes \\|)(?=.*\\| nested-label \\| no-nested-labels \\| yes \\|)(?=.*\\| mailbox-jump \\| jump-stays-open \\| yes \\|)(?=.*\\| undo-entry-written \\| no-undo-entry \\| yes \\|)(?=.*\\| steps-equal-the-mac-journey \\| journey-gains-a-step \\| yes \\|)(?=.*\\| no-mac-only-command \\| lists-window-command \\| yes \\|)(?=.*selftest: (\\d+) cases green on the clean stand-in, \\1 of \\1 mutants seen red, 0 problems)",
+      "fail": "\\| NO \\||SELFTEST FAIL",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/palettephone-check.py --steps",
+      "pass": "(?s)(?=.*ok +J1\\.9/arrive:mac-palette )(?=.*ok +J1\\.9/palette-result )(?=.*ok +J1\\.9/key-hint-column-exists )(?=.*ok +J1\\.9/palette-closes-to-inbox )(?=.*ok +J1\\.9/moved-in-core )(?=.*ok +J1\\.9/row-shows-under-target-account )(?=.*ok +J1\\.9/undo-entry-written )(?=.*7 steps, 0 failed, 0 not judged)",
+      "fail": "FAIL |NOT JUDGED",
+      "timeout_s": 120
+    },
+    {
+      "kind": "unit",
+      "run": "thePhoneCommandIdsAreExactlyTheDocumentedList",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/palettephone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/palettephone-check.py",
+      "find": "(False, False, \"done\", \"command:archive\", True))",
+      "replace": "(True, False, \"done\", \"command:archive\", True))",
+      "proof": 1,
+      "red": "SELFTEST FAIL clean run: run-archive|[1-9]\\d* problems"
+    },
+    {
+      "file": "checks/palettephone-check.py",
+      "find": "@case(\"clear\", \"clear-noop\", (\"\", True))",
+      "replace": "@case(\"clear\", \"clear-noop\", (\"x\", True))",
+      "proof": 1,
+      "red": "SELFTEST FAIL clean run: clear|[1-9]\\d* problems"
+    },
+    {
+      "file": "checks/palettephone-check.py",
+      "find": "\"palette-result\": (\"substituted\", \"type-and-match\",",
+      "replace": "\"palette-resultx\": (\"substituted\", \"type-and-match\",",
+      "proof": 2,
+      "red": "FAIL J1\\.9/palette-result"
+    },
+    {
+      "file": "checks/palettephone-check.py",
+      "find": "@case(\"undo-entry-written\", \"no-undo-entry\", (True, True))",
+      "replace": "@case(\"undo-entry-written\", \"no-undo-entry\", (True, False))",
+      "proof": 1,
+      "red": "SELFTEST FAIL clean run: undo-entry-written|[1-9]\\d* problems"
+    },
+    {
+      "file": "Sources/Features/PalettePhone/PalettePhoneItems.swift",
+      "find": "Spec(id: \"search\", symbol: \"magnifyingglass\", leads: PalettePhoneWords.kindSearch, act: .screen(\"iphone-search\", needsMail: false)),",
+      "replace": "Spec(id: \"search\", symbol: \"magnifyingglass\", leads: PalettePhoneWords.kindSearch, act: .screen(\"iphone-search\", needsMail: false)),\n            Spec(id: \"notch\", symbol: \"bell\", leads: PalettePhoneWords.kindMail, act: .undo),",
+      "proof": 3,
+      "red": "thePhoneCommandIdsAreExactlyTheDocumentedList.*failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "OUTSIDE: the iOS 26.5 simulator runtime (not installed), for the driven run at 402x874 (proof 2, lead). Built here: the step table STEP_TABLE in checks/palettephone-check.py maps each J1.9 check of journeys/J1.py (7 of them) to a phone case (same, substituted) or a named exclusion with its reason, judged one printed line per step by `--steps` (proof 2) and as the case steps-equal-the-mac-journey in the selftest; a new case undo-entry-written reads undo_entry/count before and after a palette command (the Mac's J1.9 undo-entry-written); unit test thePhoneCommandIdsAreExactlyTheDocumentedList (proof 3) names the phone's command ids against the documented list, so a Mac-only command is caught by id and not by its title. The new undo case is written against the stand-in's model of undo_entry/count and has not met the real app. Proof indices: 0 unit, 1 selftest, 2 --steps (static), 3 new unit, 4 lead. Selftest printer palettephone-check.py:571-592: table rows `| case | mutant | yes|NO |` then `selftest: N cases green on the clean stand-in, M of N mutants seen red, P problems`. Cases and their mutants: open/open-noop :130, suggested-first/groups-unordered :138, type-and-match/no-filter :148, empty-words/no-empty-words :158, run-archive/archive-keeps-row :166, run-snooze :173, nested-label :180, mailbox-jump :192, submit-runs-first :198, doors/settings-missing :206, no-mac-only-command/lists-window-command :215, titles-unique :226, clear :234, close :243. Unit tests PalettePhoneTests.swift:47,61,74 prove the phone list holds no Mac-only command and every phone command exists in the Mac registry, below the simulator. The reader's stand-in count '14 of 14' matches the 14 @case lines. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 4 is the driven run (402x874 is the iPhone 17 Pro of the rig device). The undo case undo-entry-written was written against the stand-in and meets the real app only in this run."
+}

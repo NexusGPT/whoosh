@@ -1,0 +1,31 @@
+{
+ "domain": "me.com",
+ "address": "assem.fixture@me.com",
+ "password": "fixture-wrong-password",
+ "source": "ispdb",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "imap.mail.me.com",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.mail.me.com",
+  "smtpPort": 587,
+  "smtpSecurity": "starttls",
+  "username": "assem.fixture",
+  "authMethod": "password"
+ },
+ "case": "wrong-password",
+ "validates": false,
+ "refused_by": "imap.mail.me.com",
+ "refusal_words_contain": [
+  "imap.mail.me.com",
+  "wrong password"
+ ],
+ "link_prefix": "https://",
+ "reopens": "manual"
+}

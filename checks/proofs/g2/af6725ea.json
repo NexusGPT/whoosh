@@ -1,0 +1,90 @@
+{
+  "item": "af6725ea",
+  "full_id": "af6725ea-8649-41d7-873c-3d4225d78d96",
+  "title": "Build mob-threadphone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "openingAThreadMarksItReadAndNeverArchivesIt,openingTheSameThreadTwiceCountsOnce,markingReadThenUnreadRestoresTheCount,theThreadScreenRegistersTheCodePillAndItsRows",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/threadphone-check.py --selftest",
+      "pass": "(?s)(?=.*clean model: failed=\\[\\] unjudged=\\[\\])(?=.*\\| threadphone-pill/copied-label \\| .* \\| RED on this case \\|)(?=.*\\| threadphone-pill/clipboard-is-the-code \\| .* \\| RED on this case \\|)(?=.*\\| threadphone-pill/code-mail-marked-read \\| .* \\| RED on this case \\|)(?=.*\\| threadphone-pill/copying-never-archives \\| .* \\| RED on this case \\|)(?=.*\\| threadphone-pill/copied-mail-stays-in-the-inbox \\| .* \\| RED on this case \\|)(?=.*\\| threadphone-offline/offline-body-says-so \\| .* \\| RED on this case \\|)(?=.*\\| threadphone-offline/offline-sentence-in-words \\| .* \\| RED on this case \\|)(?=.*\\d+ mutants, 0 not seen red; \\d+ acts deleted, 0 not seen red; 0 clean failures, 0 clean not judged)",
+      "fail": "NOT RED|\\b[1-9]\\d* not seen red|\\b[1-9]\\d* clean failures",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/threadphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "tappingTheCodePillCopiesTheCodeMarksTheMailReadAndLeavesItInTheInbox,aMailWithoutACodeShowsNoPillAndTheCodePillClickIsRefused,aBodyTheCoreDoesNotHoldSaysNotDownloadedYetAndAHeldBodyShows",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "aCoreOfflineWithholdsABodyUntilItIsOnlineAgain,theThreadSaysNotDownloadedYetWhileTheCoreIsOfflineAndShowsTheBodyOnceOnline",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneFeature.swift",
+      "find": "\"iphone-thread.code-pill\": { m in state.copyCode(m) },",
+      "replace": "\"iphone-thread.code-pilx\": { m in state.copyCode(m) },",
+      "proof": 0,
+      "red": "theThreadScreenRegistersTheCodePillAndItsRows.*failed|✘"
+    },
+    {
+      "file": "checks/threadphone-check.py",
+      "find": "NOT_DOWNLOADED = \"not downloaded yet\"",
+      "replace": "NOT_DOWNLOADED = \"downloaded\"",
+      "proof": 1,
+      "red": "clean model: failed=\\[.*offline-sentence-in-words|\\b[1-9]\\d* clean failures"
+    },
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneActions.swift",
+      "find": "m.perform(.markRead(messageIds: [t.messageId], read: true))",
+      "replace": "_ = 0",
+      "proof": 3,
+      "red": "tappingTheCodePillCopiesTheCodeMarksTheMailReadAndLeavesItInTheInbox.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneActions.swift",
+      "find": "ThreadClipboard.put(code)",
+      "replace": "_ = code",
+      "proof": 3,
+      "red": "tappingTheCodePillCopiesTheCodeMarksTheMailReadAndLeavesItInTheInbox.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneWords.swift",
+      "find": "Words.text(\"Not downloaded yet\")",
+      "replace": "Words.text(\"\")",
+      "proof": 3,
+      "red": "aBodyTheCoreDoesNotHoldSaysNotDownloadedYetAndAHeldBodyShows.*failed|✘"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCore.swift",
+      "find": "if lock.withLock({ outboxHold.offline }) { return nil }",
+      "replace": "if false { return nil }",
+      "proof": 4,
+      "red": "aCoreOfflineWithholdsABodyUntilItIsOnlineAgain.*failed|theThreadSaysNotDownloadedYetWhileTheCoreIsOfflineAndShowsTheBodyOnceOnline.*failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims: (a) tap copies the code: ThreadPhoneCodePill.swift:13 Button(action: copy) -> ThreadPhoneFeature.swift:29 -> ThreadPhoneActions.swift:11 copyCode puts the code on ThreadClipboard (ThreadPhoneClipboard.swift, localOnly). (b) message read and still in the inbox: copyCode calls m.perform(.markRead) and never archive; the core-level invariants are proved by unit openingAThreadMarksItReadAndNeverArchivesIt (ThreadPhoneTests.swift:35) which runs .openThread, not the pill. (c) net off says 'not downloaded yet': ThreadPhoneWords.swift:7, ThreadPhoneMessage.swift:9 and :53, probe ThreadPhoneProbe.swift:63; check case threadphone-offline/offline-sentence-in-words threadphone-check.py:135, constant :42. The selftest stand-in answers 'Not downloaded yet' at :399-401, so it proves the judge, not the app. Pass rows come from the MUTANTS comment block :186-221 and the selftest printer :496-520. | gap-phone-a: units in Tests/Unit/ThreadPhoneTests.swift. The pill test writes to a private pasteboard (ThreadClipboard.board, AppKit only), never the owner's clipboard. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). The check sets `fixture offline on` itself (the net off) and expects \"not downloaded yet\"; the stale header line 11 of the check is not this item's."
+}

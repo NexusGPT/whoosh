@@ -1,0 +1,24 @@
+[package]
+name = "import"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+description = "Import mail from this Mac into the local database: Apple Mail message files, an Outlook for Mac export and a Thunderbird or Unix mbox. Streams one message at a time; imported mail is local-only rows, never pushed to a server."
+
+[dependencies]
+contracts = { workspace = true }
+# the RFC 822 parser every message goes through (bodies, sanitised HTML, preview, login code)
+parse = { path = "../parse" }
+# the store's public insert (NewMessage) and its error
+store = { path = "../store" }
+# The Apple plist trailer and the Outlook message XML. Pure-Rust XML reader, MIT OR Apache-2.0, already used by autoconfig.
+roxmltree = { version = "0.21.2", default-features = false, features = ["std"] }
+# Content hash for a message with no Message-ID. MIT OR Apache-2.0, already in the tree.
+sha2 = "0.10"
+# The .olm archive is a zip. zip (MIT) with the pure-Rust deflate backend, no C code and none of the encryption or compression extras.
+zip = { version = "9", default-features = false, features = ["deflate-flate2"] }
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+
+[dev-dependencies]
+tempfile = "3"

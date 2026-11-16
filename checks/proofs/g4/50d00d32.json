@@ -1,0 +1,78 @@
+{
+  "item": "50d00d32",
+  "full_id": "50d00d32-dd6e-453f-b525-d035eda4a24c",
+  "title": "Show the full formatted body when a mail is selected (A129)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/messagebody-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-perf.py <bundle>",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_body_wire -- three_fetched_bodies_carry_the_engines_result_after_a_restart a_stored_mail_is_read_without_running_the_engine",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-50d00d32\" --screens mac-main",
+      "pass": "^PASS mac-main (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "read two pictures of mac-main with a mail selected (no Enter pressed): the designed (HTML) sample and the written (plain text) sample, light",
+      "pass": "each shows the mail's whole body, not the one-line preview; the designed mail keeps its paper, the written one reads in the app's colours with paragraphs"
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-mailview",
+      "pass": "(?s)\\A(?=.*?\\nPASS +selection-shows-the-whole-html-body )(?=.*?\\nPASS +selection-shows-the-whole-plain-body )(?=.*?\\nPASS +selected-html-body-is-longer-than-the-list-preview )(?=.*?\\nPASS +selected-plain-body-is-longer-than-the-list-preview )(?=.*?\\nPASS +selection-commit-of-the-html-mail-is-under-the-budget )(?=.*?\\nPASS +selection-commit-of-the-plain-mail-is-under-the-budget )",
+      "fail": "^(FAIL|NOT JUDGED) (selection|selected)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice mailview: model all 22 cases pass, 17 broken answers each red on its own case",
+      "fail": "WRONG|FAILS",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "parts.trackers_blocked, parts.prepared.as_deref()))",
+      "replace": "parts.trackers_blocked, None))",
+      "proof": 2,
+      "red": "three_fetched_bodies_carry_the_engines_result_after_a_restart.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyContent.swift",
+      "find": "let parts = quotedOpen ? [s.main, s.folded] : [s.main]",
+      "replace": "let parts = [s.main]",
+      "proof": 0,
+      "red": "FAIL J1\\.6/dots-key-opens-everything"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/Features/MessageBody/MessageBodyView.swift, MessageBodyFeature.swift, MessageBodyContent.swift:124-130 (visibleParagraphs). Core: core/crates/engine/src/rust_core.rs:386-390 stored_body (reads the kept prepared form with the body: body_from_stored), tests core/crates/engine/tests/engine_body_wire.rs:125 (three fetched bodies carry the engine's result after a restart), :184 (a stored mail is read without running the engine: W3), :203; header W1-W8 lines 8-16. perf: perf/interaction.py:1-25 (33 next + 33 open moves; commit under INTERACTION_COMMIT_MS = 50 per docs/CONSTANTS.md:14), checks/realcore-perf.py:1-25 (real core with latency; last line `N checks, M failed, K not judged`; run with a bundle; it launches its own hidden copy through scripts/launch-one.sh). The 50 ms of this item is the owner's rule 'under 50 ms for any operation'. The pass line of proof 1 is the aggregate; the figures are printed only on --baseline. The mutant 1 breaks the read of the stored prepared form. Lane gap-mailview-checks: the two halves are joined in checks/realcore-check.py --slice-mailview (drive_mailview, judge_mailview): the REAL core against the local fake holds an HTML newsletter and a written mail; J selects each with no Enter, the reader's `rows mac-main.reader.body` paragraphs must hold every sentence of the mail (no raw markup), be longer than the list row's preview, and `measure mac-main.interaction.commit` right after the key must be under INTERACTION_COMMIT_MS. The body is waited for (the prefetch lands in the background); the printed line carries the seconds. Broken copy of each case: the self-test's broken answers (proof 6). Not proved here: that the body is read from the store with no network at the time of selection (the cargo test a_stored_mail_is_read_without_running_the_engine, proof 2)."
+}

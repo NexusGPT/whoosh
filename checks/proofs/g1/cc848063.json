@@ -1,0 +1,85 @@
+{
+  "item": "cc848063",
+  "full_id": "cc848063-9c27-4c36-ae7b-47023b13780a",
+  "title": "Build con-seams-pick",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "sh -c 'unset D WHOOSH_SOCKET_DIR WHOOSH_IPHONE_SOCKET_DIR ; python3 checks/seams/account-mark.py'",
+      "pass": "(?s)PASS\\s+oracle\\s+all \\d+ labels green.*\\| RED: ",
+      "fail": "STAYED GREEN|FAIL\\s+oracle",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "sh -c 'unset D WHOOSH_SOCKET_DIR WHOOSH_IPHONE_SOCKET_DIR ; python3 checks/seams/split-count.py'",
+      "pass": "(?s)PASS\\s+oracle\\s+all \\d+ labels green.*\\| RED: ",
+      "fail": "STAYED GREEN|FAIL\\s+oracle",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "sh -c 'unset D WHOOSH_SOCKET_DIR WHOOSH_IPHONE_SOCKET_DIR ; python3 checks/seams/decided-by.py'",
+      "pass": "(?s)PASS\\s+oracle\\s+all \\d+ labels green.*\\| RED: ",
+      "fail": "STAYED GREEN|FAIL\\s+oracle",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP as above and MAC_APP=<built Mac Whoosh.app>: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --with-mac \"$MAC_APP\" \"$IPHONE_APP\" -- python3 checks/seams/account-mark.py",
+      "pass": "(?s)\\d+ checks, 0 failed, 0 not judged\\s*(?:instances: [^\\n]*\\s*)*\\Z",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/seams/split-count.py",
+      "pass": "(?s)\\d+ checks, 0 failed, 0 not judged\\s*(?:instances: [^\\n]*\\s*)*\\Z",
+      "fail": "FAIL |NOT JUDGED  |STAYED GREEN",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/seams/decided-by.py",
+      "pass": "(?s)\\d+ checks, 0 failed, 0 not judged\\s*(?:instances: [^\\n]*\\s*)*\\Z",
+      "fail": "FAIL |NOT JUDGED  |STAYED GREEN",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/InboxList/ListProbe.swift",
+      "find": "\"account_icon\": a.iconId ?? NSNull(), \"account_attention\"",
+      "replace": "\"account_icon\": NSNull(), \"account_attention\"",
+      "proof": 3,
+      "red": "FAIL\\s+.*list-row"
+    },
+    {
+      "file": "Sources/Features/Reader/ReaderHeaderProbe.swift",
+      "find": "\"account_icon\": a.iconId ?? NSNull()]",
+      "replace": "\"account_icon\": NSNull()]",
+      "proof": 3,
+      "red": "FAIL\\s+.*reader-meta"
+    },
+    {
+      "file": "Sources/Features/InboxList/ListProbe.swift",
+      "find": "\"decided_by\": WhyWords.decidedBy(r) ?? NSNull(),",
+      "replace": "\"decided_by\": NSNull(),",
+      "proof": 5,
+      "red": "FAIL\\s+decider@row"
+    },
+    {
+      "file": "checks/seams/account-mark.py",
+      "find": "pick(pr, \"id\", exp[\"id\"], \"mark_icon\")",
+      "replace": "pick(pr, \"id\", exp[\"id\"], \"account_icon\")",
+      "proof": 3,
+      "red": "NOT JUDGED +icon@iphone-row"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Proofs 0-2 run the seam with no socket: seamlib.run (checks/seams/seamlib.py:215-257) prints 'PASS oracle all N labels green on the fixture-derived observation' when the judge passes the correct observation, then one row '| mutant | ... | RED: <label>: <detail> |' per mutant (or 'STAYED GREEN (judge blind to this defect)'), and the live-drive section prints 'NOT JUDGED live-drive no socket' (so the exit code is 1; the proof reads the lines, not the exit code). The runner must unset D and WHOOSH_SOCKET_DIR (the `sh -c 'unset ...'` does) so no app is driven. checks/seams/run.py:20-21 names the three as slice 'pick' (`--slice pick --mutants-only` runs the same). Proofs 3-5: the live drive under launch-one (hidden): per label 'PASS|FAIL|NOT JUDGED <label> <detail>' (seamlib.py:226-231) and the totals line; the pass regex demands 0 failed and 0 not judged, anchored at the end of the output. The mutants are app mutants (list row icon, reader header icon, decided_by on the row): each needs an app rebuild; their red lines name the surface label (list-row, reader-meta, decider@row; labels defined in account-mark.py:42-52 and decided-by.py docstring). The reader's 'red-on-mutant in the same output' is what proofs 0-2 print. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proofs 4 and 5 (split-count, decided-by) need the Mac rig only and are unchanged. The iPhone row of account-mark (labels icon@iphone-row, colour@iphone-row) is read from the phone row fields mark_icon and mark_colour (checks/seams/account-mark.py:58, InboxPhoneFeature.swift:76) through the rig in proof 3."
+}

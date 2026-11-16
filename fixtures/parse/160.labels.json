@@ -1,0 +1,20 @@
+{
+ "id": "160",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REPLY",
+  "uid": "6fc782881a6de7cc63d3@example.net",
+  "summary": "Supplier call",
+  "organizer": "luc.martens@example.org",
+  "all_day": false,
+  "start_utc_ms": 1795770000000,
+  "start_local": null,
+  "tzid": null,
+  "location": null
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

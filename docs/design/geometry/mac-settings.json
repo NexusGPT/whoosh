@@ -1,0 +1,19 @@
+{
+  "surface": "mac-settings",
+  "window": { "w": 940, "h": 680 },
+  "min": { "w": 700, "h": 480 },
+  "resizable": true,
+  "sidebar": { "w": 250, "min_w": 210, "never_hides": true, "top_clear": 48, "side_pad": 10,
+               "search": { "h": 28, "radius": 8, "key": "⌘F" },
+               "summary": { "radius": 10, "marks": 5 },
+               "pane_row": { "h": 28, "radius": 7, "icon": 20, "icon_radius": 5 },
+               "group_header_h": 22 },
+  "toolbar": { "h": 52, "side_pad": 18, "nav_button": 28, "keys": ["⌘[", "⌘]"] },
+  "content": { "side_pad": 28, "top_pad": 4, "bottom_pad": 24, "max_w": 720,
+               "header_icon": 40, "header_icon_radius": 10 },
+  "card": { "radius": 10, "row_min_h": 44, "row_pad_x": 14, "row_pad_y": 8, "hairline": 0.5 },
+  "controls": { "popup_h": 24, "switch": { "w": 32, "h": 19 }, "button_h": 26, "field_h": 24, "mini_window": { "w": 62, "h": 40 } },
+  "panes": ["general", "accounts", "viewing", "signatures", "decisions", "junk", "ai", "notifications", "shortcuts", "outside"],
+  "groups": { "mail": ["general", "accounts", "viewing", "signatures"], "sorting": ["decisions", "junk"], "ai": ["ai"], "alerts": ["notifications", "shortcuts", "outside"] },
+  "source": "docs/design/boards/settings-r1/settings-sb (layout, owner pick SB) and settings-r2/settings-sb-s3 (look, owner pick S3), CSS values read from the board's stylesheet (.sb .srch .sum .sbr .tb .phead .card .row .pop .sw .btn .ffld .mini); window 940x680 default and 700x480 minimum from the layout board's notes; the measure at run time is par-settingswindow."
+}

@@ -1,0 +1,48 @@
+{
+  "item": "b7a881b4",
+  "full_id": "b7a881b4-a28e-4fd7-8852-2b1b557e03f8",
+  "title": "Find why the meaning model fails to embed a query in the hidden copy",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_query_embed_note",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/advisor-mail-ranks-first-by-meaning-after-the-exact-group",
+      "fail": "FAIL +search/(advisor-mail-ranks-first-by-meaning-after-the-exact-group|a-query-with-no-shared-word-ranks-the-seeded-pair-first-by-meaning)|model_failed",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/a-query-with-no-shared-word-ranks-the-seeded-pair-first-by-meaning",
+      "fail": "FAIL +search/a-query-with-no-shared-word-ranks",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "if a meaning case fails: read the rig run folder's core.log of that run (the folder named in the run's first line, 'rig copy: ...') and grep the engine's note",
+      "pass": "search: the model did not embed the query: the search model could not (load|tokenise|run|check): "
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "format!(\"the model did not embed the query: {}; the first list stays\", model_words(&e, words))",
+      "replace": "format!(\"the model did not embed the query{}; the first list stays\", \"\")",
+      "proof": 0,
+      "red": "the_log_keeps_the_models_own_words .*FAILED|panicked"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Hidden run form: checks/realcore-check.py header :78-90 (slice-search, WHOOSH_EMBED_WEIGHTS passed in the check's environment: :2398-2400, the check never looks for the owner's own weights), it prints one line per case ('PASS|FAIL|NOT JUDGED search/<case>  detail') and a total '10 checks, N failed, N not judged'. The run is seeded (the engine stores the mail pair, 'SEEDED-SLICE-SEARCH' line), so it proves the engine path, not a first run of an installed app (see b43515ba). Lane note: docs/lanes/query-embed.md (the failed path: search_cmd.rs:152 embed_query, GemmaEmbedder.swift:70 embedQuery, :74-91 embedSync, :102 loadContainer). | OLD GAP (before lane gap-states, 2026-11-12): M, lead run and the cause. (1) The engine's note carries the model's own words: commit b6f90810 and the cargo test core/crates/engine/tests/engine_query_embed_note.rs:112 the_log_keeps_the_models_own_words (the line 'search: the model did not embed the query: the search model could not load: config.json names no model type' asserted at :119) and :127 the_log_never_holds_the_query. (2) The cause in a hidden copy is NOT named with proof: docs/lanes/query-embed.md section 1 ranks four causes by reading only (rank 1: loadContainer refused the symbolic-link folder, Sources/Features/Embedding/GemmaEmbedder.swift:103; rank 2: MLX metallib missing; rank 3: vector check; rank 4: weights missing) and says 'Not settled by reading'. The lane's own change passes the RESOLVED folder to the library, so rank 1 cannot recur. The only run on record with a real folder, _captures/lead/main85/realcore-search-model-3.log, passes the two meaning cases (lines 4 and 5, SEEDED slice), the earlier _captures/lead/main85/realcore-search-model-debug2.log shows stage 'model_failed' (symbolic link). So the item is closed by the lead's run, proofs 1 and 2 on a build holding b6f90810 and the resolved-folder change (it passes) or, when they fail, proof 3's line naming the cause with file and lines. (3) The mutant drops the model's own words from the note (core/crates/engine/src/search_cmd.rs:217); the_log_keeps_the_models_own_words is its judge."
+}

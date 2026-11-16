@@ -1,0 +1,50 @@
+{
+  "item": "fc7dedea",
+  "full_id": "fc7dedea-48eb-4150-9311-e19693af72ac",
+  "title": "Make the Rust core link for both iPhone targets",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "cd <repo> && WHOOSH_SLICES=ios sh scripts/gen-swift.sh; echo exit=$? (the lead's own run, one compile at a time, output saved whole; it runs cargo build --release for two iOS targets)",
+      "pass": "built core/target/aarch64-apple-ios-sim/release/libwhoosh_ffi\\.a\n"
+    },
+    {
+      "kind": "lead",
+      "run": "the same saved output: the pre-linked lines of both targets",
+      "pass": "pre-linked core/target/aarch64-apple-ios/release/prelinked/libwhoosh_ffi\\.a \\([0-9]+ symbols exported\\)"
+    },
+    {
+      "kind": "lead",
+      "run": "the same saved output: the pre-linked line of the simulator target, and the exit line",
+      "pass": "pre-linked core/target/aarch64-apple-ios-sim/release/prelinked/libwhoosh_ffi\\.a \\([0-9]+ symbols exported\\)",
+      "fail": "PRE-LINK FAILED|skipped aarch64-apple-ios|chkstk_darwin|built for newer iOS version|^exit=[1-9]"
+    },
+    {
+      "kind": "static",
+      "run": "sh scripts/gen-swift.sh --check",
+      "pass": "generated Swift matches the contract",
+      "fail": "DRIFT:",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "scripts/gen-swift.sh",
+      "find": "*) dt=\"IPHONEOS_DEPLOYMENT_TARGET=$IOS_MIN\" ;;",
+      "replace": "*) dt=\"WHOOSH_NO_DEPLOYMENT_TARGET=1\" ;;",
+      "proof": 2,
+      "red": "undefined.*___chkstk_darwin|built for newer iOS version|PRE-LINK FAILED|^exit=[1-9]"
+    },
+    {
+      "file": "scripts/gen-swift.sh",
+      "find": "  ios) TRIPLES=\"aarch64-apple-ios-sim aarch64-apple-ios\" ;;",
+      "replace": "  ios) TRIPLES=\"aarch64-apple-ios-sim\" ;;",
+      "proof": 1,
+      "red": "^$"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Script: scripts/gen-swift.sh: WHOOSH_SLICES switch :27-31 (ios = aarch64-apple-ios-sim aarch64-apple-ios), deployment target for rustc and the cc crate :96-99 (IPHONEOS_DEPLOYMENT_TARGET from Package.swift's platforms line, :64-65, the cause named in the comment at :93-95: C objects built for iOS 26.5 call ___chkstk_darwin that libSystem at the default 10.0 does not offer), cargo build :100, 'built ...' echo :101, prelink() :67-92 and its echo :90 ('pre-linked core/target/<triple>/release/prelinked/libwhoosh_ffi.a (N symbols exported)'), a missing rustup target prints 'skipped <t>: rustup target not installed' :110 (red for this item: proof 2's fail regex), --check :44-50. The second mutant drops a target; its red is the absence of the pre-linked line of aarch64-apple-ios, so the runner must read 'proof 1 pass line missing' as red (its red field is a placeholder that matches an empty line). The only gen-swift output on record is _captures/contracts/gen-swift-d7-final.txt (a Mac run, no ios line). Proof 0 and 1 and 2 are one run read three times: run it once. The brief says the run fails on main79's tree; at this commit the lead's run is the first measurement."
+}

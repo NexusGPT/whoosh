@@ -1,0 +1,12 @@
+From: Quill Docs <no-reply@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Your Quill Docs sign-in code
+Date: Wed, 04 Nov 2026 14:31:00 +0000
+Message-ID: <2c045fa38afa0de9@mail.example.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+SGksDQoNCkVudGVyIHRoaXMgY29kZSB0byBjb250aW51ZToNCg0KICAgIDkzMzcyDQoNCklmIHlv
+dSBkaWRuJ3QgdHJ5IHRvIHNpZ24gaW4sIHlvdSBjYW4gc2FmZWx5IGlnbm9yZSB0aGlzIGVtYWls
+Lg0KDQpUaGUgUXVpbGwgRG9jcyB0ZWFtDQo=

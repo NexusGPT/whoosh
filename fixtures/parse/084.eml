@@ -1,0 +1,35 @@
+From: Postbox Example <no-reply@example.org>
+To: Assem Example <assem@example.org>
+Subject: Your Postbox Example sign-in code
+Date: Tue, 10 Nov 2026 15:47:00 +0000
+Message-ID: <6efc5159a1bb4a4d@mail.example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============7349628627464993136=="
+
+--===============7349628627464993136==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Your code is 362361.
+Or sign in with one click: https://auth.example.com/verify?token=3D6c56786412=
+7076dd3f909158&email=3Dassem%40example.org
+
+--===============7349628627464993136==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Postbox Example</ti=
+tle><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-=
+size:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellsp=
+acing=3D"0"><tr><td align=3D"center"><IMG SRC=3D"http://track.example.org/ope=
+n/233430d5.png" ALT=3D"banner"><h2>Postbox Example</h2><p>Your code is <b>362=
+361</b>.</p><p>Or <a href=3D"https://auth.example.com/verify?token=3D6c567864=
+127076dd3f909158&amp;email=3Dassem%40example.org">sign in with one click</a>.=
+</p><p style=3D"font-size:11px;color:#888">You receive this because of your a=
+ccount. <a href=3D"https://example.net/unsubscribe?u=3Dda4a3f">Unsubscribe</a=
+> | <a href=3D"https://example.net/privacy">Privacy</a></p></td></tr></table>=
+</body></html>
+
+--===============7349628627464993136==--

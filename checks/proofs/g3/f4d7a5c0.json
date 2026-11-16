@@ -1,0 +1,64 @@
+{
+  "item": "f4d7a5c0",
+  "full_id": "f4d7a5c0-2739-4564-b1c6-b86eb69924fd",
+  "title": "Archive on the real core animates the row like the fixture",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "\\d+ checks, 0 failed, \\d+ not judged",
+      "fail": "J1\\.48/[a-z0-9-]* +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theWholeExitTakesNoMoreThanTheMotionCeiling,aSecondRemovalThirtyMillisecondsAfterTheFirstIsAnimated",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-perf.py --selftest",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^BAD ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-perf.py <bundle> --archive 34",
+      "pass": "(?m)^ok +archive-frame median .*\\(budget \\d+\\)\\n(?s:.*)^ok +archive-collapse-glided \\d+ of \\d+ \\(budget all\\)",
+      "fail": "^OVER |^NOT JUDGED|[1-9]\\d* failed",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/CoreBridge/Generated/Constants.swift",
+      "find": "public static let ROW_COLLAPSE_MS: Int = 120",
+      "replace": "public static let ROW_COLLAPSE_MS: Int = 900",
+      "proof": 1,
+      "red": "theWholeExitTakesNoMoreThanTheMotionCeiling.*failed"
+    },
+    {
+      "file": "checks/realcore-perf.py",
+      "find": "rows.append((\"%s %s\" % (label, name), \"%.1f\" % v, \"< %g\" % lim, v >= lim))",
+      "replace": "rows.append((\"%s %s\" % (label, name), \"%.1f\" % v, \"< %g\" % lim, v >= lim + 100000))",
+      "proof": 2,
+      "red": "^BAD archive: a median frame over|[1-9]\\d* failed"
+    },
+    {
+      "file": "checks/realcore-perf.py",
+      "find": "rows.append((label, \"%d of %d\" % (sum(1 for x in xs if x), len(xs)), \"all\", not all(xs)))",
+      "replace": "rows.append((label, \"%d of %d\" % (sum(1 for x in xs if x), len(xs)), \"all\", False))",
+      "proof": 2,
+      "red": "^BAD archive: one row did not glide|[1-9]\\d* failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Fixture path today: par-inboxlist J1.48 (checks/parity/par-inboxlist.py:743-780: E collapses the leaving line, rows glide up, a second key jumps; cases the-removal-glided, mid-collapse-the-next-row-is-between-its-old-and-new-place) and the unit tests Tests/Unit/RowExitMotionTests.swift:68 (theWholeExitTakesNoMoreThanTheMotionCeiling) and :73 (aSecondRemovalThirtyMillisecondsAfterTheFirstIsAnimated). ROW_COLLAPSE_MS = 120 (Sources/CoreBridge/Generated/Constants.swift:76). par-inboxlist currently has 3 not judged (J1.52 tag cases, r83) so its pass line is the total with 0 failed. gap-engine-state: checks/realcore-perf.py `--archive N` now JUDGES the archive series when `--baseline` is not given (before: baseline only, realcore-perf.py:218-219): archive-frame and archive-commit median and p95 against INTERACTION_COMMIT_MS + FRAME_MS and INTERACTION_COMMIT_MS (the budgets perf/interaction.py judges its 34 archive actions by), one line per figure `ok   archive-frame median 12.3 (budget 66)`, plus `archive-collapse-glided N of N` (mac-main.list.state collapse_glided after each E) and `archive-focus-next-row N of N` (the focused row of mac-main.list is the row that was below the focused one). The ROW_COLLAPSE_MS duration itself is not readable from the app (only the boolean); if the hidden run reads OVER, the app fix (collapse first, commit after) is needed in Sources/ and is not part of this lane. The static selftest (`--selftest`, ran here: `42 checks, 0 failed, 0 not judged`) holds 11 archive cases."
+}

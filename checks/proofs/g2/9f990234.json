@@ -1,0 +1,307 @@
+{
+  "item": "9f990234",
+  "full_id": "9f990234-493f-4922-afa1-1be9d44e1616",
+  "title": "Build mob-searchphone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theSearchScreenRegistersItsResultsChipsAndStatusRegions,resultsAreOneRowPerThreadWithTheAccountOfTheMessage,everyChipIsOneOfTheNamedFilterKinds",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/searchphone-check.py",
+      "pass": "(?ms)^ok +no-literal-text .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "(?m)^FAIL ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/searchphone-check.py --selftest",
+      "pass": "(?s)(?=.*red +journey:journey-gains-a-step )(?=.*red +journey:journey-moves-a-value )(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "(?m)MISSED|NOT APPLIED|^FAIL ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/searchphone-check.py",
+      "pass": "(?s)(?=.*(?m:^)ok +step J2\\.1/grouped-by-thread )(?=.*(?m:^)ok +step J2\\.1/results-footer-line )(?=.*(?m:^)ok +step J2\\.2/filter-chips )(?=.*(?m:^)ok +step J2\\.3/exact-message-ranks-first )(?=.*(?m:^)ok +step J2\\.8/photo-message-ranks-first )(?=.*(?m:^)ok +step J2\\.4/thread-subject )(?=.*(?m:^)ok +step J2\\.5/duplicate-name-refused )(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "(?m)^FAIL ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/searchphone-check.py --live",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "thePhoneListShowsMatchesThenRelatedAndKeepsTheRestBehindTheClosedLine,aTapOnTheClosedLineOpensTheRestAndASecondTapClosesIt,whileTheFirstAnswerWaitsForItsRankingNoOtherMailIsListedAndNoClosedLineShows,theCountLineSaysMatchesAndRelatedInTheMacsWords,theResultsRowsNameTheirPartAndTheClosedLineRowAgreesWithTheCounts,j21TypingLetsTheResultsAppearWithoutReturnOneRowPerThreadWithItsAccount,j22TheAttachmentFilterNarrowsTheListAndTakingItOffWidensIt,j23AQuotedFigureRanksItsMessageFirst,j24SavingTheSearchMakesASmartFolderAndASecondOfTheSameNameIsRefused",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/searchphone-check.py --selftest",
+      "pass": "(?s)(?=.*red +model:count-line-counts-conversations )(?=.*red +model:part-missing )(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "MISSED|NOT APPLIED|^FAIL ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "theRelatedLineStandsWhereRelatedMailStandsAndSaysWhatTheEngineIsDoingWhileItRanks,theListSaysNoMatchWhenNothingMatchesAndNothingIsRelatedAndKeepsTheClosedLine,thePhoneGroupingAndItsWordsAreTheMacsOwnFunctionsOnTheSameResults,aResultFoundInAnAttachmentTheTextOrTheThreadShowsItsPassageAndItsSource,theTypedLettersOfAMatchAreBoldInTheSenderTheSubjectAndThePassageAndARelatedMailShowsNone,typingADomainOffersFromDomainWithItsPeopleAndChoosingItMakesThePillFromAtDomain,theDomainPillKeepsOnlyMailFromThatDomainAndTakingItOffWidensTheList,theDomainPillTravelsInTheRuleOfASavedSmartFolder,openingAResultNamesTheMailThatHoldsThePassage,theSkeletonHoldKeepsTheFirstAnswerOffTheListUntilItIsReleased",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/searchphone-check.py",
+      "pass": "(?s)(?=.*(?m:^)ok +step J2\\.1/first\\-screen\\-ms .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.1/skeleton\\-rows\\-on\\-the\\-same\\-frame .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.1/skeleton\\-rows\\-fill\\-the\\-pane .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.1/meaning\\-only\\-row\\-tints\\-nothing .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.1/paperclip\\-only\\-where\\-the\\-match\\-is\\-in\\-the\\-attachment .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.2/typed\\-from\\-makes\\-no\\-pill .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.3/bar\\-shows\\-only\\-the\\-exact\\-query .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.3/figure\\-highlighted .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.8/bar\\-holds\\-exactly\\-the\\-query .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.8/photo\\-message\\-ranks\\-first .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.8/photo\\-attachment\\-named\\-in\\-the\\-row .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.8/photo\\-found\\-by\\-what\\-it\\-shows .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.8/not\\-downloaded\\-row\\-says\\-so .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.8/unreadable\\-kind\\-searched\\-by\\-name\\-and\\-says\\-so .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.4/one\\-interaction\\-budget\\-ms .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.4/marked\\-read .*(?:same|substituted) -> )(?=.*(?m:^)ok +step J2\\.4/attachment\\-shown .*(?:same|substituted) -> )(?=.*(?m:^)ok +domain-offers-are-the-macs )(?=.*(?m:^)ok +related-line-is-the-macs )(?=.*(?m:^)ok +passage-is-the-engines )(?=.*(?m:^)ok +hit-mail-is-read )(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "(?m)^FAIL |NOT JUDGED",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/searchphone-check.py --selftest",
+      "pass": "(?s)(?=.*red +model:skeleton-never )(?=.*red +model:skeleton-too-small )(?=.*red +model:meaning-row-tinted )(?=.*red +model:paperclip-everywhere )(?=.*red +model:typed-from-makes-a-pill )(?=.*red +model:field-clear-keeps-text )(?=.*red +model:figure-not-highlighted )(?=.*red +model:attachment-not-searched )(?=.*red +model:row-names-no-attachment )(?=.*red +model:attachment-content-not-read )(?=.*red +model:not-downloaded-silent )(?=.*red +model:unreadable-dropped )(?=.*red +model:open-does-not-mark-read )(?=.*red +model:thread-back-dead )(?=.*red +model:thread-no-attachments )(?=.*red +model:related-line-missing )(?=.*red +model:found-missing )(?=.*red +model:opened-hit-missing )(?=.*red +model:no-bold )(?=.*red +model:domain-offer-missing )(?=.*red +model:domain-filter-dead )(?=.*red +model:domain-pill-stays )(?=.*red +model:no-result-title-old )(?=.*red +own-domain-offers )(?=.*red +own-related-line )(?=.*red +own-passage )(?=.*red +hit-not-read )(?=.*nj +model:measure-refused )(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "MISSED|NOT APPLIED|^FAIL ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "aResultInNoLoadedRowIsStillAMailTheWindowKnows,aResultOpensItsThreadOnItsOwnMailWhereverItIs,theEarlierMailThatHoldsThePassageIsUnfoldedWhenTheThreadAppears,theUnfoldIsAppliedOnceAndTheScreenReappearingDoesNotUnfoldAFoldedMailAgain,aResultWhoseOwnMailHoldsThePassageOrWhoseHitIsNotInTheThreadUnfoldsNothing,openingAMailTheWindowDoesNotKnowChangesNothing",
+      "pass": "passed",
+      "fail": "failed|recorded an issue",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneResults.swift",
+      "find": ".accessibilityIdentifier(\"iphone-search.list\")",
+      "replace": ".accessibilityIdentifier(\"iphone-search.listx\")",
+      "proof": 1,
+      "red": "(?m)^FAIL "
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneResults.swift",
+      "find": ".accessibilityIdentifier(\"iphone-search.skeleton\")",
+      "replace": ".accessibilityIdentifier(\"iphone-search.skeletonx\")",
+      "proof": 1,
+      "red": "(?m)^FAIL "
+    },
+    {
+      "file": "checks/searchphone-check.py",
+      "find": "(\"J2.3/exact-message-ranks-first\", \"same\",",
+      "replace": "(\"J2.3/exact-message-ranks-firstx\", \"same\",",
+      "proof": 3,
+      "red": "(?m)^FAIL step J2\\.3/exact-message-ranks-first"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "results = restOpen ? everyResult : everyResult.filter { $0.part != .rest }\n    }\n\n    /// How many conversations match",
+      "replace": "results = everyResult\n    }\n\n    /// How many conversations match",
+      "proof": 5,
+      "red": "thePhoneListShowsMatchesThenRelatedAndKeepsTheRestBehindTheClosedLine.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "        restOpen.toggle()",
+      "replace": "        restOpen = false",
+      "proof": 5,
+      "red": "aTapOnTheClosedLineOpensTheRestAndASecondTapClosesIt.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "everyResult = listed.filter { !(stage == \"words\" && $0.part != .match) }",
+      "replace": "everyResult = listed",
+      "proof": 5,
+      "red": "whileTheFirstAnswerWaitsForItsRankingNoOtherMailIsListedAndNoClosedLineShows.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "SearchMacModel.countLine(matches: matchedCount, related: relatedCount)",
+      "replace": "SearchMacModel.countLine(matches: everyResult.count, related: 0)",
+      "proof": 5,
+      "red": "theCountLineSaysMatchesAndRelatedInTheMacsWords.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneRows.swift",
+      "find": "\"matched_in\": r.matchedIn, \"part\": r.part.rawValue,",
+      "replace": "\"matched_in\": r.matchedIn,",
+      "proof": 5,
+      "red": "theResultsRowsNameTheirPartAndTheClosedLineRowAgreesWithTheCounts.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneSave.swift",
+      "find": ".saveSmartFolder(name: n, ruleWords: rule)",
+      "replace": ".saveSmartFolder(name: n, ruleWords: \"\")",
+      "proof": 5,
+      "red": "j24SavingTheSearchMakesASmartFolderAndASecondOfTheSameNameIsRefused.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "SearchResultsList.titles(related: relatedCount, rest: restCount, stage: stage, tailPending: tailPending).first",
+      "replace": "SearchResultsList.titles(related: 0, rest: restCount, stage: stage, tailPending: tailPending).first",
+      "proof": 7,
+      "red": "theRelatedLineStandsWhereRelatedMailStandsAndSaysWhatTheEngineIsDoingWhileItRanks.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "tailPending = stage == \"words\" && listed.contains { $0.part != .match }",
+      "replace": "tailPending = false",
+      "proof": 7,
+      "red": "theRelatedLineStandsWhereRelatedMailStandsAndSaysWhatTheEngineIsDoingWhileItRanks.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "SearchResultsList.titles(related: relatedCount, rest: restCount, stage: stage, tailPending: tailPending).first",
+      "replace": "SearchResultsList.titles(related: relatedCount, rest: 0, stage: stage, tailPending: tailPending).first",
+      "proof": 7,
+      "red": "thePhoneGroupingAndItsWordsAreTheMacsOwnFunctionsOnTheSameResults.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneParts.swift",
+      "find": "(phase == .results || phase == .none) && upperCount == 0 && !tailPending",
+      "replace": "phase == .none && upperCount == 0 && !tailPending",
+      "proof": 7,
+      "red": "theListSaysNoMatchWhenNothingMatchesAndNothingIsRelatedAndKeepsTheClosedLine.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneFound.swift",
+      "find": "r.found?.source.rawValue ?? \"\"",
+      "replace": "\"\"",
+      "proof": 7,
+      "red": "aResultFoundInAnAttachmentTheTextOrTheThreadShowsItsPassageAndItsSource.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneFound.swift",
+      "find": "guard r.part == .match else { return [] }",
+      "replace": "guard true else { return [] }",
+      "proof": 7,
+      "red": "theTypedLettersOfAMatchAreBoldInTheSenderTheSubjectAndThePassageAndARelatedMailShowsNone.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneDomain.swift",
+      "find": ".filter { $0.kind == .domain }",
+      "replace": ".filter { $0.kind == .from }",
+      "proof": 7,
+      "red": "typingADomainOffersFromDomainWithItsPeopleAndChoosingItMakesThePillFromAtDomain.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneDomain.swift",
+      "find": "filters.domain = chip.value",
+      "replace": "filters.domain = nil",
+      "proof": 7,
+      "red": "theDomainPillTravelsInTheRuleOfASavedSmartFolder.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneFilters.swift",
+      "find": "if let d = domain { parts.append(\"from:@\\(d)\") }",
+      "replace": "if let d = domain { _ = d }",
+      "proof": 7,
+      "red": "theDomainPillKeepsOnlyMailFromThatDomainAndTakingItOffWidensTheList.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneFilters.swift",
+      "find": "&& !attachment && domain == nil }",
+      "replace": "&& !attachment }",
+      "proof": 7,
+      "red": "theDomainPillKeepsOnlyMailFromThatDomainAndTakingItOffWidensTheList.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneActs.swift",
+      "find": "openedMessageId = r.messageId; openedHitMessageId = hit",
+      "replace": "openedMessageId = r.messageId; openedHitMessageId = r.messageId",
+      "proof": 7,
+      "red": "openingAResultNamesTheMailThatHoldsThePassage.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneSearch.swift",
+      "find": "if holdSkeleton, !isIdleInput {",
+      "replace": "if false, !isIdleInput {",
+      "proof": 7,
+      "red": "theSkeletonHoldKeepsTheFirstAnswerOffTheListUntilItIsReleased.*failed"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneDivider.swift",
+      "find": ".accessibilityIdentifier(\"iphone-search.divider\")",
+      "replace": ".accessibilityIdentifier(\"iphone-search.dividerx\")",
+      "proof": 1,
+      "red": "(?m)^FAIL "
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneDomain.swift",
+      "find": ".accessibilityIdentifier(\"iphone-search.domains\")",
+      "replace": ".accessibilityIdentifier(\"iphone-search.domainsx\")",
+      "proof": 1,
+      "red": "(?m)^FAIL "
+    },
+    {
+      "file": "checks/searchphone-check.py",
+      "find": "add(\"open-marks-read\", d.core(",
+      "replace": "add(\"open-marks-readx\", d.core(",
+      "proof": 8,
+      "red": "(?m)^FAIL step J2\\.4/marked-read"
+    },
+    {
+      "file": "checks/searchphone-check.py",
+      "find": "(\"J2.8/photo-message-ranks-first\", \"same\", \"photo-message-ranks-first\", ",
+      "replace": "(\"J2.8/photo-message-ranks-first\", \"same\", \"photo-message-ranks-firstx\", ",
+      "proof": 8,
+      "red": "(?m)^FAIL step J2\\.8/photo-message-ranks-first"
+    },
+    {
+      "file": "Sources/App/AppModel.swift",
+      "find": "if let r = SearchPhoneModel.shared.everyResult.first(where: { $0.row.messageId == messageId })?.row { return r }",
+      "replace": "",
+      "proof": 10,
+      "red": "aResultInNoLoadedRowIsStillAMailTheWindowKnows\\(\\) failed|✘ Test aResultInNoLoadedRowIsStillAMailTheWindowKnows"
+    },
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneState.swift",
+      "find": "if let i = earlierIndex(of: hit, in: m) { expanded.insert(i) }",
+      "replace": "_ = hit",
+      "proof": 10,
+      "red": "theEarlierMailThatHoldsThePassageIsUnfoldedWhenTheThreadAppears\\(\\) failed|✘ Test theEarlierMailThatHoldsThePassageIsUnfoldedWhenTheThreadAppears"
+    },
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneState.swift",
+      "find": "        if let hit = pendingUnfold {\n            pendingUnfold = nil\n",
+      "replace": "        if let hit = pendingUnfold {\n",
+      "proof": 10,
+      "red": "theUnfoldIsAppliedOnceAndTheScreenReappearingDoesNotUnfoldAFoldedMailAgain\\(\\) failed|✘ Test theUnfoldIsAppliedOnceAndTheScreenReappearingDoesNotUnfoldAFoldedMailAgain"
+    },
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneState.swift",
+      "find": "guard m.knownRow(id) != nil else { return false }",
+      "replace": "_ = id",
+      "proof": 10,
+      "red": "openingAMailTheWindowDoesNotKnowChangesNothing\\(\\) failed|✘ Test openingAMailTheWindowDoesNotKnowChangesNothing"
+    },
+    {
+      "file": "Sources/Features/SearchPhone/SearchPhoneActs.swift",
+      "find": "if !ThreadPhoneState.shared.open(messageId: r.messageId, unfolding: hit, in: app) { app.overlay = \"iphone-thread\" }",
+      "replace": "app.overlay = \"iphone-thread\"",
+      "proof": 10,
+      "red": "aResultOpensItsThreadOnItsOwnMailWhereverItIs\\(\\) failed|✘ Test aResultOpensItsThreadOnItsOwnMailWhereverItIs"
+    },
+    {
+      "file": "Sources/Features/ThreadPhone/ThreadPhoneState.swift",
+      "find": "pendingUnfold = (hit == nil || hit == id) ? nil : hit",
+      "replace": "pendingUnfold = hit",
+      "proof": 10,
+      "red": "aResultWhoseOwnMailHoldsThePassageOrWhoseHitIsNotInTheThreadUnfoldsNothing\\(\\) failed|✘ Test aResultWhoseOwnMailHoldsThePassageOrWhoseHitIsNotInTheThreadUnfoldsNothing"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Modes (searchphone-check.py:6-14, main :760-777): no flag judges the sources of Sources/Features/SearchPhone (no app, no socket), prints `ok   <name> <why>` per case and `N checks, F failed, U not judged`; --selftest runs the real sources, then the stand-in, then each mutant (printer :725-757, `red ` / `MISSED` lines); --live drives the socket. So a passing case prints a line: no gap of kind check here. The source mutants of the selftest are regex edits on copies (:17-60). My two mutants edit the real sources: the source judge `need` list (:104-106) requires iphone-search.list and iphone-search.skeleton ids. Exit codes: 1 when F or U > 0. Reader's table line 61 (91 checks) is from the main81 capture, not re-run here. Added in this change: STEP_ROWS, mac_steps, judge_steps in checks/searchphone-check.py: 47 rows, one printed line per Mac check call of J2.1, J2.2, J2.3, J2.8, J2.4, J2.5 (`ok   step J2.x/<name> <kind> -> <phone case>: <reason>`), judged in the default run (proof 3) and in the selftest, which now also has two journey mutants (a step added to J2.3, a literal moved) in proof 2. The kind 'same' requires the same literal on the Mac line and in the phone case's code. Added by gap-phone-search: SearchPhoneDivider.swift, SearchPhoneDomain.swift, SearchPhoneFound.swift; the Mac's own functions are called, not copied (SearchResultsList.titles, SearchMacModel.countLine, SearchSuggest.build on DomainRead.domains, SearchResult.found, senderMarks, hitMessageId; all internal to the module, none private). checks/searchphone-check.py: 17 earlier not-driven STEP_ROWS now map to live cases (print: `ok   step J2.x/<name> <kind> -> <case>`), 7 new live cases (related-line-above-related-mail, passage-line-names-its-source, opens-the-mail-with-the-passage, typed-letters-are-bold-on-a-match, domain-offered-with-its-people, domain-pill-keeps-only-that-domain, domain-pill-comes-off), `measure` for the timing and frame cases (a refused measure is NOT JUDGED, never a pass), limits read from docs/CONSTANTS.md (const()), 24 new model mutants, 1 not-judged mutant, 4 source mutants. Self-test: 200 checks, 0 failed, 0 not judged. | STATE outside (lane fix-rest-app): what was missing in the app is built: AppModel.knownRow reads the phone search's results (finding 1), and ThreadPhoneState.open(messageId:unfolding:in:) opens the thread on the result's own mail with the earlier mail that holds the passage unfolded when the screen appears, called by SearchPhoneModel.openResult (finding 2); unit proof 10. What is left needs a device: every live case of checks/searchphone-check.py runs against the iPhone on the iOS 26.5 simulator at 402x874, a runtime this Mac does not have (proof 4). | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 4 runs the live cases of checks/searchphone-check.py (flag --live, :1298) on the iPhone of the rig; the first lines of the output are the source and stand-in cases, then the live ones, then the totals line."
+}

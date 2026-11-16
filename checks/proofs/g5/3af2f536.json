@@ -1,0 +1,50 @@
+{
+  "item": "3af2f536",
+  "full_id": "3af2f536-138e-4d50-9965-8163912a9f76",
+  "title": "Show the search model download on its line",
+  "state": "gap",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "aSearchModelDownloadTheLineDidNotStartIsShownAsDownloadingWithRisingBytes,theEndOfASearchModelDownloadShowsReadyOnTheLineWithNoFurtherAct,noTimerRunsOnTheSearchModelLineWhenNothingDownloads",
+      "pass": "Test theEndOfASearchModelDownloadShowsReadyOnTheLineWithNoFurtherAct\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theStateIsDownloadingTheMomentTheDownloadStartsBeforeTheFirstByteAndThreeByteCountsFollow,aSecondClickDuringTheDownloadStartsNothing,aMissingFileEndsFailedWithTheFileNamedAndRetryWorks",
+      "pass": "Test aMissingFileEndsFailedWithTheFileNamedAndRetryWorks\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "PASS J5\\.9/meaning-download-survives-a-relaunch",
+      "fail": "FAIL J5\\.9/meaning-download-survives-a-relaunch|NOT JUDGED J5\\.9/meaning-download|UNJUDGED J5\\.9/meaning-download|FAIL J5\\.9/meaning-downloads-with-moving-figures",
+      "timeout_s": 900,
+      "launch": "WHOOSH_RIG_EMBED_PORT=<a free loopback port, e.g. 18793> in the environment of `sh scripts/launch-one.sh` (it becomes the copy's WHOOSH_RIG_EMBED_BASE=http://127.0.0.1:<port>/ and the check's stub listens on it); WHOOSH_RIG_HIDDEN=1 as always, because the case calls `sh scripts/launch-one.sh --relaunch` from inside the driven command"
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsaimac-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "selftest: FAILED|CLEAN-RUN",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsAIMac/MeaningSetupRow.swift",
+      "find": "func follow() { state = store.state }",
+      "replace": "func follow() { }",
+      "proof": 0,
+      "red": "theEndOfASearchModelDownloadShowsReadyOnTheLineWithNoFurtherAct\\(\\) (recorded an issue|failed)"
+    }
+  ],
+  "gap": "Left: the hidden run of proof 2 on a build that holds hid-search's resume at launch (commit c0b331932: MeaningModelStore.resumeIfInterrupted, Sources/Features/Embedding/MeaningModelStore.swift:121, called from BackgroundWork.start, Sources/Features/BackgroundWork/BackgroundWork.swift:29); main107 is the first. main105 (e46cf3c70) does not hold it (c0b331932 is not its ancestor) and its settingsaimac-check run reads FAIL (_captures/lead/main105/proofs-hidden/again-004.log:62: 'before the quit ('downloading', 0); after the relaunch the line read 11 times, first ('notDownloaded', None)'). The green J5 of again-024.log:81 ('J5 GREEN: 10 steps, 73 checks') does not prove it: again-024 is `journeys/run.py J2 J5`, and the journey holds no J5.9/meaning-* check (0 lines in that log); the case exists only in checks/settingsaimac-check.py:2734 (hid-ai round 15). The copy needs WHOOSH_RIG_EMBED_PORT=<free port> in the launcher's environment.",
+  "owner": null,
+  "notes": "Unit: Tests/Unit/ModelLineStateTests.swift:119 (rising bytes, the line did not start the download), :137 (ready at the end, no further act), :148 (no timer when idle); Tests/Unit/MeaningModelStoreTests.swift:46,65,76. Case: checks/settingsaimac-check.py:2239-2262 (shows after-click, next and end states, expects received to rise and the end to be ready), evidence hook :2309. SPEC A135 (docs/SPEC.md:153). MeaningLineModel: Sources/Features/SettingsAIMac/MeaningSetupRow.swift:8-32. | fix-checks: relaunch case at checks/settingsaimac-check.py `c_meaning_relaunch`; helper `real_relaunch` runs `sh scripts/launch-one.sh --relaunch` (never in a self-test: RELAUNCH['fn'] is the stand-in's). | OLD GAP (before lane gap-states, 2026-11-12): Only the lead's hidden run is missing: the case `J5.9/meaning-download-survives-a-relaunch` (checks/settingsaimac-check.py, search `def c_meaning_relaunch`) is written and self-tested (proof 3: `selftest: OK (0 mutants not red)`, its model mutant `meaning-lost-on-relaunch` is red) but unrun on the app. It needs the copy launched with WHOOSH_RIG_EMBED_PORT=<free port> and WHOOSH_RIG_HIDDEN=1 (scripts/launch-one.sh lines 99-103 turn the port into WHOOSH_RIG_EMBED_BASE; the case relaunches the copy twice through `sh scripts/launch-one.sh --relaunch`: once so the copy reads the small file list the case writes to <run folder>/embed-fixture.json, once in the middle of the download). A copy launched without the port prints NOT JUDGED naming WHOOSH_RIG_EMBED_BASE, never a pass. What the case expects after the second relaunch is the item's reading of A135 (the line follows a download the line did not start): the row reads downloading with received rising, then ready; the real app's behaviour there is unverified."
+}

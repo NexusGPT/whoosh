@@ -1,0 +1,40 @@
+{
+ "domain": "nothing.example.test",
+ "address": "assem.fixture@nothing.example.test",
+ "password": "fixture-password",
+ "source": "manual",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "miss"
+  },
+  {
+   "id": "autoconfig",
+   "outcome": "miss"
+  },
+  {
+   "id": "srv",
+   "outcome": "miss"
+  },
+  {
+   "id": "autodiscover",
+   "outcome": "miss"
+  },
+  {
+   "id": "guess",
+   "outcome": "miss"
+  }
+ ],
+ "config": {
+  "imapHost": "",
+  "imapPort": "",
+  "imapSecurity": "",
+  "smtpHost": "",
+  "smtpPort": "",
+  "smtpSecurity": "",
+  "username": "",
+  "authMethod": ""
+ },
+ "validates": false,
+ "mode": "manual"
+}

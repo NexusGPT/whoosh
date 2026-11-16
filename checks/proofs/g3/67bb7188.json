@@ -1,0 +1,69 @@
+{
+  "item": "67bb7188",
+  "full_id": "67bb7188-6f5e-4559-bcb8-7bb8c3660319",
+  "title": "Add the crawl records to the contract",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p contracts --test replies_d21",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--manifest-path core/crates/store/migrations/Cargo.toml --test migration_v14",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_sync_full_r1 j_a_crawl_place_file_from_the_first_version_is_handed_over_to_the_store_once",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_replies_settings reply_progress_serves_the_crawls_figures_per_folder_in_the_contracts_spelling",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/contract-types-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/contracts/src/reply_ai_d21.rs",
+      "find": "pub fn chunk_vector_key(chunk_id: i64) -> u64 { chunk_id.max(0) as u64 }",
+      "replace": "pub fn chunk_vector_key(chunk_id: i64) -> u64 { (chunk_id.max(0) as u64) + 1 }",
+      "proof": 0,
+      "red": "a_chunk_is_keyed_by_its_own_id_and_has_one_spelling.*FAILED"
+    },
+    {
+      "file": "core/crates/contracts/src/reply_ai_d21.rs",
+      "find": "place.before_ms.is_some() == place.before_id.is_some() && !(place.done_ms.is_some() && place.before_ms.is_some())",
+      "replace": "true",
+      "proof": 0,
+      "red": "a_crawl_place_has_both_halves_and_a_finished_walk_has_none.*FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "const CURSOR_FILE: &str = \"body-crawl.tsv\";",
+      "replace": "const CURSOR_FILE: &str = \"body-crawl-x.tsv\";",
+      "proof": 2,
+      "red": "j_a_crawl_place_file_from_the_first_version.*FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": "Keep the one-time hand-over of a body-crawl.tsv left by the first version (it moves the old place into the database once, then deletes the file), or remove that code and let the first walk restart from the top?",
+  "notes": "Place per folder in the contract: BodyCrawlPlace (core/crates/contracts/src/reply_ai_d21.rs:113-125, DATA-MAP row body-crawl-place), stored as columns of folder_sync_state by migration 0014 (core/crates/store/migrations/sql/0014_calendars_chunks_crawl.sql; tests core/crates/store/migrations/tests/migration_v14.rs: a_crawl_place_has_both_halves_and_a_finished_walk_has_none :74, a_chunk_id_is_never_reused_and_a_chunk_goes_with_its_message :46, a_copy_of_a_version_13_database_migrates_and_keeps_every_row :106, the_reversal_gives_back_0013 :140). Chunk with its own id as the meaning-index key: chunk_vector_key (reply_ai_d21.rs:92) and tests/replies_d21.rs:88 a_chunk_is_keyed_by_its_own_id_and_has_one_spelling ('the vector is filed under the chunk's own id, never the message's rowid'); also search-vector text keys (core/crates/search-vector/tests/text_keys.rs:19). Progress read per account and folder: FolderProgress (replies_d21.rs:107-112, the_progress_figures_are_nested_and_the_pane_state_is_derived_from_them) and engine_replies_settings.rs:544; the fixture core serves it (Sources/CoreBridge/FixtureReplies.swift:412, path reply/progress). The earlier finding 'body-crawl.tsv still read' is the one-time hand-over by design (core/crates/engine/src/crawl.rs:8 and :434-450: read once, written to the columns, file removed): test engine_sync_full_r1.rs:473-476 j_a_crawl_place_file_from_the_first_version_is_handed_over_to_the_store_once. The earlier 'no test of the chunk id as meaning-index key' is wrong: replies_d21.rs:88-98. If the owner wants the hand-over code gone as well (no read of the old file at all), that is a small change, see owner."
+}

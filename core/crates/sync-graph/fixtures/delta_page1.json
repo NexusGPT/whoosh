@@ -1,0 +1,28 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(message)",
+  "@odata.nextLink": "{BASE}/v1.0/me/mailFolders/inbox-id/messages/delta?$skiptoken=page2-example",
+  "value": [
+    {
+      "@odata.etag": "W/\"CQAAABYAAADtExample1\"",
+      "id": "AAMkExample001=",
+      "conversationId": "AAQkConvExampleA=",
+      "subject": "Quarterly numbers",
+      "bodyPreview": "The numbers are in the shared sheet.",
+      "receivedDateTime": "2026-11-02T08:15:00Z",
+      "isRead": false,
+      "from": { "emailAddress": { "name": "Dana Example", "address": "dana@example.net" } },
+      "toRecipients": [ { "emailAddress": { "name": "Owner Example", "address": "owner@example.net" } } ]
+    },
+    {
+      "@odata.etag": "W/\"CQAAABYAAADtExample2\"",
+      "id": "AAMkExample002=",
+      "conversationId": "AAQkConvExampleA=",
+      "subject": "Re: Quarterly numbers",
+      "bodyPreview": "Thanks, looking now.",
+      "receivedDateTime": "2026-11-02T09:02:00Z",
+      "isRead": true,
+      "from": { "emailAddress": { "name": "Owner Example", "address": "owner@example.net" } },
+      "toRecipients": [ { "emailAddress": { "name": "Dana Example", "address": "dana@example.net" } } ]
+    }
+  ]
+}

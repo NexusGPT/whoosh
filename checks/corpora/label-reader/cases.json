@@ -1,0 +1,201 @@
+{
+ "note": "Made-up mail for the port's known-answer comparison (no real mail). State: fields in sorted order, then text.",
+ "cases": [
+  {
+   "id": "reply-wanted",
+   "state": {
+    "from": "Dana Whitfield <dana@harborfreight.example>",
+    "subject": "Can you confirm Thursday?",
+    "text": "Hi,\n\nCould you confirm that Thursday at 10:00 still works for the site visit? I need to book the van today.\n\nThanks,\nDana"
+   },
+   "questions": {
+    "q1": {
+     "type": "noul",
+     "instructions": "The sender asks the reader a direct question or expects an answer."
+    }
+   }
+  },
+  {
+   "id": "newsletter",
+   "state": {
+    "from": "The Weekly Roast <news@weeklyroast.example>",
+    "list": "weekly.weeklyroast.example",
+    "subject": "Five beans to try this autumn",
+    "text": "This week: a washed Ethiopian, a honey-processed Costa Rican and three more.\nRead the full guide on our site.\n\nYou receive this because you subscribed. Unsubscribe at any time."
+   },
+   "questions": {
+    "q1": {
+     "type": "noul",
+     "instructions": "The sender asks the reader a direct question or expects an answer."
+    },
+    "q2": {
+     "type": "noul",
+     "instructions": "This is a newsletter or a marketing mail sent to many people."
+    }
+   }
+  },
+  {
+   "id": "four-way",
+   "state": {
+    "from": "billing@cloudnine.example",
+    "subject": "Your invoice INV-2041 is ready",
+    "text": "Your invoice for October is attached. Amount due: 48.00 EUR by 30 November. No action is needed if you pay by direct debit."
+   },
+   "questions": {
+    "kind": {
+     "type": "choice",
+     "instructions": "What kind of mail is this?",
+     "criteria": {
+      "receipt": "an invoice, a receipt or a payment notice",
+      "newsletter": "news or marketing sent to many people",
+      "personal": "a person writes to the reader",
+      "alert": "a security or sign-in notice"
+     }
+    }
+   }
+  },
+  {
+   "id": "urgency",
+   "state": {
+    "from": "Marc Oduya <marc@oduya-partners.example>",
+    "subject": "Contract draft, need your comments before noon",
+    "text": "Please read section 4 and send me your comments before noon. The client signs at 14:00."
+   },
+   "questions": {
+    "u": {
+     "type": "score",
+     "instructions": "How urgent is this mail for the reader?",
+     "criteria": [
+      "low",
+      "medium",
+      "high"
+     ]
+    }
+   }
+  },
+  {
+   "id": "long-thread",
+   "state": {
+    "from": "Priya Raman <priya@northfield.example>",
+    "subject": "Re: Re: Offsite agenda",
+    "text": "Thanks all.\n\nI moved the budget review to the second day. Tomas, can you send the room list by Friday?\n\nOn Tuesday Tomas wrote:\n> The venue has three rooms. I can ask for a fourth.\n> Do we need a projector in each?\n\nOn Monday Priya wrote:\n> Draft agenda attached. Comments welcome."
+   },
+   "questions": {
+    "q1": {
+     "type": "noul",
+     "instructions": "The sender asks the reader a direct question or expects an answer."
+    },
+    "kind": {
+     "type": "choice",
+     "instructions": "Who must act next?",
+     "criteria": {
+      "reader": "the reader of this mail",
+      "sender": "the person who wrote it",
+      "nobody": "no action is asked",
+      "other": "a third person named in the mail"
+     }
+    }
+   }
+  },
+  {
+   "id": "twelve-way",
+   "state": {
+    "from": "no-reply@parcelpoint.example",
+    "subject": "Your parcel is out for delivery",
+    "text": "Parcel 7H2K arrives today between 13:00 and 15:00. Track it in the app."
+   },
+   "questions": {
+    "topic": {
+     "type": "choice",
+     "instructions": "Pick the topic of this mail.",
+     "criteria": {
+      "travel": null,
+      "delivery": null,
+      "finance": null,
+      "health": null,
+      "school": null,
+      "work": null,
+      "family": null,
+      "shopping": null,
+      "security": null,
+      "social": null,
+      "events": null,
+      "other": null
+     }
+    }
+   }
+  },
+  {
+   "id": "edges-whitespace",
+   "state": {
+    "from": "  Léa Dupont <lea@exemple.example>  ",
+    "subject": "",
+    "text": "\n\n  Bonjour,\r\n\r\nPouvez-vous valider le devis ? 🙂\r\n\r\n-- \nLéa\n\n\n"
+   },
+   "questions": {
+    "r": {
+     "type": "choice",
+     "instructions": "Le lecteur doit-il répondre ?",
+     "criteria": {
+      "oui": "le lecteur doit répondre  ",
+      "non": null
+     }
+    }
+   }
+  },
+  {
+   "id": "five-levels",
+   "state": {
+    "from": "ops@northfield.example",
+    "subject": "Server disk at 91 %",
+    "text": "The disk of db-2 is at 91 %. It fills in about two days at this rate.\tPlease plan a cleanup."
+   },
+   "questions": {
+    "u": {
+     "type": "score",
+     "instructions": "How urgent is this mail for the reader?",
+     "criteria": [
+      "not at all",
+      "a little",
+      "somewhat",
+      "very",
+      "act now"
+     ]
+    },
+    "q": {
+     "type": "noul",
+     "instructions": null
+    }
+   }
+  },
+  {
+   "id": "text-ends-on-the-key",
+   "state": {
+    "from": "a@b.example",
+    "subject": "One line",
+    "text": "Just one line."
+   },
+   "questions": {
+    "q": {
+     "type": "noul",
+     "instructions": "This mail has more than one line of text."
+    }
+   }
+  },
+  {
+   "id": "field-of-several-lines",
+   "state": {
+    "from": "x@y.example",
+    "note": "first line\nsecond line\n",
+    "subject": "A note with two lines",
+    "text": "Body."
+   },
+   "questions": {
+    "q": {
+     "type": "noul",
+     "instructions": "The note has two lines."
+    }
+   }
+  }
+ ]
+}

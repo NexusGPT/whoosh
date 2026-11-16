@@ -1,0 +1,74 @@
+{
+ "domain": "srv.example.test",
+ "address": "assem.fixture@srv.example.test",
+ "password": "fixture-password",
+ "source": "srv",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "miss"
+  },
+  {
+   "id": "autoconfig",
+   "outcome": "miss"
+  },
+  {
+   "id": "srv",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "imap.srv.example.test",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.srv.example.test",
+  "smtpPort": 587,
+  "smtpSecurity": "starttls",
+  "username": "assem.fixture@srv.example.test",
+  "authMethod": "password"
+ },
+ "validates": true,
+ "ops": [
+  "IMAP LOGIN",
+  "IMAP LIST",
+  "SMTP EHLO",
+  "SMTP AUTH"
+ ],
+ "folders": [
+  {
+   "name": "INBOX",
+   "attrs": []
+  },
+  {
+   "name": "Verzonden",
+   "attrs": [
+    "\\Sent"
+   ]
+  },
+  {
+   "name": "Concepten",
+   "attrs": [
+    "\\Drafts"
+   ]
+  },
+  {
+   "name": "Prullenbak",
+   "attrs": [
+    "\\Trash"
+   ]
+  },
+  {
+   "name": "Ongewenst",
+   "attrs": [
+    "\\Junk"
+   ]
+  }
+ ],
+ "folder_map": {
+  "sent": "Verzonden",
+  "drafts": "Concepten",
+  "trash": "Prullenbak",
+  "junk": "Ongewenst"
+ },
+ "note": "folder names no name heuristic could guess: only SPECIAL-USE maps them"
+}

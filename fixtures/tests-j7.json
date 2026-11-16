@@ -1,0 +1,36 @@
+{
+  "_note": "Test data owned by tests-j7. Not a screen value: every field is an input the iPhone checks feed the app, or a word the spec names. Account ids and sender names come from docs/design/fixtures/mac-main-sample.json.",
+  "arrival": {
+    "id": "msg-j7-code",
+    "thread": "thr-j7-code",
+    "account": "acc-04",
+    "sender": "Linea Supply",
+    "subject": "Your sign-in code",
+    "code": "482913"
+  },
+  "dictation": {
+    "spoken": "thanks i will send the file tomorrow"
+  },
+  "refused_account": "acc-18",
+  "no_push_providers": ["iCloud", "IMAP"],
+  "palette": {
+    "query": "move",
+    "pick": "Move to another account",
+    "mac_only_titles": ["Notch settings"],
+    "mac_only_probe": "notch"
+  },
+  "ask": {
+    "question": "what did suppliers quote me this spring?",
+    "propose": "label these as Supplier quotes"
+  },
+  "search": {
+    "meaning": "supplier price quote spring",
+    "filters": " from:\"Linea Supply\" before:2026-06-01 has:attachment",
+    "exact": "\"0.84 EUR\""
+  },
+  "labels": {
+    "smart_folder": "Supplier quotes",
+    "parent": "Work",
+    "empty_rule": "attachments from nobody mentioning nothing"
+  }
+}

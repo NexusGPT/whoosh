@@ -1,0 +1,53 @@
+{
+  "item": "ae0add0a",
+  "full_id": "ae0add0a-225a-4297-8366-f9656c490bd4",
+  "title": "Design the real-engine first-run tests",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "awk -F'|' '/^\\| T-[0-9]+/ {n++; if ($9 ~ /^ *$/ || $10 ~ /^ *$/) bad++} END {print \"rows\", n, \"empty\", bad+0}' docs/lanes/realcore-firstrun.testplan.md",
+      "pass": "^rows (1[6-9]|[2-9][0-9]) empty 0$",
+      "fail": "empty [1-9]|^rows ([0-9]|1[0-5]) ",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "grep -c -E '^## [1-6]\\. (THE RIG|FIRST RUN|REAL KEYS|PERMISSIONS|FIXTURE AND REAL CORE PARITY|PRUNE)$' docs/lanes/realcore-firstrun.testplan.md",
+      "pass": "^6$",
+      "fail": "^[0-5]$",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "for a in A115 A116 A117 A118 A119 A120 A121 A122; do printf '%s ' $a; grep '^| T-' docs/lanes/realcore-firstrun.testplan.md | awk -F'|' -v a=$a '$4 ~ a' | wc -l; done",
+      "pass": "A115 +[1-9]\\s+A116 +[1-9]\\s+A117 +[1-9]\\s+A118 +[1-9]\\s+A119 +[1-9]\\s+A120 +[1-9]\\s+A121 +[1-9]\\s+A122 +[1-9]",
+      "fail": "A1[12][0-9] +0\\b",
+      "timeout_s": 60
+    },
+    {
+      "kind": "lead",
+      "run": "read docs/lanes/realcore-firstrun.testplan.md sections 1 to 6 and the Table: for each of the eight reports A115 to A122, find the row(s) and judge whether the red-first edit really goes red on that fault and the runner can start it on a hidden copy",
+      "pass": "each of the eight reports has at least one row whose red-first edit is a one-line break of the product and whose runner is an existing command or one that section 1 names as to be built (R1-R7)"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "docs/lanes/realcore-firstrun.testplan.md",
+      "find": "## 3. REAL KEYS",
+      "replace": "## 3. KEYS",
+      "proof": 1,
+      "red": "^5$"
+    },
+    {
+      "file": "docs/lanes/realcore-firstrun.testplan.md",
+      "find": "## 4. PERMISSIONS",
+      "replace": "## 4. ROUTES",
+      "proof": 1,
+      "red": "^5$"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The document: docs/lanes/realcore-firstrun.testplan.md: sections at lines 13 (1 THE RIG), 38 (2 FIRST RUN), 56 (3 REAL KEYS), 74 (4 PERMISSIONS), 82 (5 FIXTURE AND REAL CORE PARITY), 94 (6 PRUNE), table header at 114 with columns T-id | risk | owner report or default it covers | type | real input | entry path | visible assertion | red-first edit | runner | budget; awk fields $9 = red-first edit and $10 = runner. I counted with these exact commands on commit 0aa1558e: 28 data rows (the file's first column holds `T-id` in the header, so `grep -c '^| T-'` says 29 and includes it), 0 rows with an empty red-first or runner cell; the report column ($4) names A115 1x, A116 1x, A117 2x, A118 1x, A119 3x, A120 1x, A121 4x, A122 1x. The eight reports of 2026-11-10 are A115 to A122 (header line 6). The static proofs are shell command lines (pipes, awk) run from the repository root through a shell; they contain $9, $10 and $a on purpose. The two mutants edit the document itself: this item's behaviours are in prose, so the only breaks available are a deleted section; the quality of the red-first edits is the lead's reading (proof 3). Nothing in the plan was run, by its own header (line 3); the item only asks for the plan."
+}

@@ -1,0 +1,8 @@
+# Field names of an embedded header block, one per line: <field> <TAB> <regex of the name>, read case-insensitively at the start of a line,
+# followed by optional "*" (bold in a plain rendering) and a colon. A field alone is weak; a block is strong only on HEADER_BLOCK_MIN_LINES
+# consecutive fields that include `from` and a date-like `date` field.
+from	(from|de|von|van|da|od|kellelt|lähettäjä|från|от|expéditeur|absender|remitente|mittente|remetente|afzender|nadawca|saatja)
+date	(sent|date|envoyé|gesendet|datum|enviado|fecha|inviato|data|verzonden|wysłano|saadetud|lähetetty|skickat|отправлено|дата|le)
+to	(to|à|an|para|a|aan|do|adressaat|vastaanottaja|till|кому|destinataire|empfänger|destinatario|destinatário)
+cc	(cc|kopie|copia|cópia|kopia|koopia|kopio|копия)
+subject	(subject|objet|betreff|asunto|oggetto|assunto|onderwerp|temat|teema|aihe|ämne|тема)

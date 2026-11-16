@@ -1,0 +1,35 @@
+{
+  "item": "d8b631da",
+  "full_id": "d8b631da-532c-431f-b993-f6677a1fea4d",
+  "title": "Fix the notch arrival measure",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 perf/notch-arrival.py --selftest",
+      "pass": "(?s)ok +fast-arrival-passes.*ok +slowed-arrival-fails.*ok +mutant own-refusal-unjudges is red on fast-arrival-passes.*ok +mutant ignore-budget is red on slowed-arrival-fails",
+      "fail": "RED|NOT RED",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/notch-arrival.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9]\\d* failed|not judged: |0 failed, [1-9]\\d* not judged",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "perf/notch-arrival.py",
+      "find": "return \"pass\" if ms <= budget_ms else \"fail\"",
+      "replace": "return \"pass\"",
+      "proof": 0,
+      "red": "RED slowed-arrival-fails"
+    }
+  ],
+  "gap": null,
+  "owner": "The notch arrival budget is 5000 ms in docs/CONSTANTS.md (an architect value, 'owner confirms'); your standing rule is under 50 ms for any operation. Confirm 5000 ms for the server-to-notch arrival (a network event), or set a tighter number.",
+  "notes": "The fix: perf/notch-arrival.py:44-52 own_measure never voids the measured time (a refused 'mac-notch.arrival' measure is words, line 'the app serves no own measure'); the judged number is the time the script itself measures from the deliver verb's reply to the row in mac-notch.list (measure :55-70). The selftest (:97-119, proof 0) judges a fast arrival pass, a slowed one fail, and each mutant red (own-refusal-unjudges re-creates the old line 49). The mutant above edits the judge (the judge at perf/notch-arrival.py:39-41): not the app; a slowed arrival in the app is not a one-line source change, so 'seen red on a slowed arrival' is proof 0's second case (delay budget + 0.5 s). Proof 1 needs the machine load under PERF_LOAD_MAX 12 (r83: 'perf-notch not run: load 12 over PERF_LOAD_MAX 12', summary.txt:45): quiet machine, builders' compiles held. The ledger budget NOTCH_ARRIVAL_MS is 5000 ms (docs/CONSTANTS.md:61), not the owner's 50 ms rule: see owner."
+}

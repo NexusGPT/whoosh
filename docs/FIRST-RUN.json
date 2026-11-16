@@ -1,0 +1,693 @@
+{
+  "about": "The first-run defaults of the REAL core on a new installation (docs/lanes/realcore-firstrun.testplan.md section 5, T-26). Read from what the core does after a first sync against two fake IMAP servers. Written by engine_first_run.rs `the_golden_is_written`; the fixture core's `fixture install-state new` must equal `defaults` after the same masks.",
+  "defaults": {
+    "reads": {
+      "accounts": [
+        {
+          "address": "one@example.test",
+          "healthy": true,
+          "name": "one@example.test",
+          "provider": "Imap",
+          "unread": 0
+        },
+        {
+          "address": "two@example.test",
+          "healthy": true,
+          "name": "two@example.test",
+          "provider": "Imap",
+          "unread": 0
+        }
+      ],
+      "agent_configs": [
+        {
+          "allowed": [
+            "read_mail",
+            "search",
+            "label"
+          ],
+          "built_in": true,
+          "id": "inbox",
+          "instructions": "",
+          "model": "claude-sonnet-5-5",
+          "name": "Ask my inbox",
+          "provider_id": "anthropic",
+          "purpose": "Answers questions about your mail and proposes labels"
+        },
+        {
+          "allowed": [
+            "read_mail",
+            "search",
+            "draft"
+          ],
+          "built_in": true,
+          "id": "writer",
+          "instructions": "",
+          "model": "claude-sonnet-5-5",
+          "name": "Writer",
+          "provider_id": "anthropic",
+          "purpose": "Drafts replies in your voice"
+        }
+      ],
+      "ai_providers": [
+        {
+          "connected": false,
+          "id": "openai",
+          "keychain": false,
+          "mail_consent_at_ms": null,
+          "models": [],
+          "name": "OpenAI"
+        },
+        {
+          "connected": false,
+          "id": "anthropic",
+          "keychain": false,
+          "mail_consent_at_ms": null,
+          "models": [],
+          "name": "Anthropic"
+        },
+        {
+          "connected": false,
+          "id": "gemini",
+          "keychain": false,
+          "mail_consent_at_ms": null,
+          "models": [],
+          "name": "Google Gemini"
+        },
+        {
+          "connected": false,
+          "id": "openrouter",
+          "keychain": false,
+          "mail_consent_at_ms": null,
+          "models": [],
+          "name": "OpenRouter"
+        },
+        {
+          "connected": true,
+          "id": "local",
+          "keychain": false,
+          "mail_consent_at_ms": null,
+          "models": [
+            "on-device"
+          ],
+          "name": "On this Mac"
+        }
+      ],
+      "decision_model": null,
+      "labels": [
+        {
+          "ai_enabled": true,
+          "ai_reads": {
+            "attachments": false,
+            "body": true,
+            "rest_of_thread": false,
+            "subject": true
+          },
+          "colour": null,
+          "depth": 1,
+          "description": "Emails that wait for a reply from me: a question, a request, a decision that someone is waiting for.",
+          "entry_enabled": true,
+          "exit_enabled": true,
+          "exit_fallback": "primary",
+          "id": "needs-reply",
+          "kind": "built_in",
+          "name": "Needs Reply",
+          "order": 1,
+          "parent_id": null,
+          "path": "Needs Reply",
+          "pinned": true,
+          "scope": "all"
+        },
+        {
+          "ai_enabled": true,
+          "ai_reads": {
+            "attachments": false,
+            "body": true,
+            "rest_of_thread": false,
+            "subject": true
+          },
+          "colour": null,
+          "depth": 1,
+          "description": "Automatic notices about my accounts and orders: receipts, shipping and delivery news, confirmations, alerts, statements.",
+          "entry_enabled": true,
+          "exit_enabled": false,
+          "exit_fallback": null,
+          "id": "updates",
+          "kind": "built_in",
+          "name": "Updates",
+          "order": 2,
+          "parent_id": null,
+          "path": "Updates",
+          "pinned": true,
+          "scope": "all"
+        },
+        {
+          "ai_enabled": false,
+          "ai_reads": {
+            "attachments": false,
+            "body": true,
+            "rest_of_thread": false,
+            "subject": true
+          },
+          "colour": null,
+          "depth": 1,
+          "description": "Marketing and offers: newsletters, sales, discounts and promotional campaigns.",
+          "entry_enabled": true,
+          "exit_enabled": false,
+          "exit_fallback": null,
+          "id": "promotions",
+          "kind": "built_in",
+          "name": "Promotions",
+          "order": 3,
+          "parent_id": null,
+          "path": "Promotions",
+          "pinned": true,
+          "scope": "all"
+        },
+        {
+          "ai_enabled": true,
+          "ai_reads": {
+            "attachments": false,
+            "body": true,
+            "rest_of_thread": false,
+            "subject": true
+          },
+          "colour": null,
+          "depth": 1,
+          "description": "Messages from social networks and communities: invitations, mentions, new followers and activity of my contacts.",
+          "entry_enabled": true,
+          "exit_enabled": false,
+          "exit_fallback": null,
+          "id": "social",
+          "kind": "built_in",
+          "name": "Social",
+          "order": 4,
+          "parent_id": null,
+          "path": "Social",
+          "pinned": false,
+          "scope": "all"
+        }
+      ],
+      "speech_engine": {
+        "kind": "local",
+        "ready": false
+      }
+    },
+    "state": {
+      "agent_config/inbox/allowed": [
+        "readMail",
+        "search",
+        "label"
+      ],
+      "agent_config/writer/allowed": [
+        "readMail",
+        "search",
+        "draft"
+      ],
+      "ai_provider/anthropic/connected": false,
+      "ai_provider/anthropic/key": null,
+      "ai_provider/anthropic/models": [],
+      "ai_provider/anthropic/refusal": null,
+      "ai_provider/anthropic/state": "not connected",
+      "ai_provider/gemini/connected": false,
+      "ai_provider/gemini/key": null,
+      "ai_provider/gemini/models": [],
+      "ai_provider/gemini/refusal": null,
+      "ai_provider/gemini/state": "not connected",
+      "ai_provider/local/connected": true,
+      "ai_provider/local/key": null,
+      "ai_provider/local/models": [
+        "on-device"
+      ],
+      "ai_provider/local/refusal": null,
+      "ai_provider/local/state": "connected",
+      "ai_provider/openai/connected": false,
+      "ai_provider/openai/key": null,
+      "ai_provider/openai/models": [],
+      "ai_provider/openai/refusal": null,
+      "ai_provider/openai/state": "not connected",
+      "ai_provider/openrouter/connected": false,
+      "ai_provider/openrouter/key": null,
+      "ai_provider/openrouter/models": [],
+      "ai_provider/openrouter/refusal": null,
+      "ai_provider/openrouter/state": "not connected",
+      "inbox/tabs": [
+        {
+          "id": "primary",
+          "kind": "view",
+          "name": "Primary",
+          "unread": 0,
+          "waiting": 0
+        },
+        {
+          "id": "all",
+          "kind": "view",
+          "name": "All",
+          "unread": 0,
+          "waiting": 0
+        },
+        {
+          "id": "needs-reply",
+          "kind": "label",
+          "name": "Needs Reply",
+          "unread": 0,
+          "waiting": 0
+        },
+        {
+          "id": "updates",
+          "kind": "label",
+          "name": "Updates",
+          "unread": 0,
+          "waiting": 0
+        },
+        {
+          "id": "promotions",
+          "kind": "label",
+          "name": "Promotions",
+          "unread": 0,
+          "waiting": 0
+        }
+      ],
+      "label/needs-reply/chains/entry": [],
+      "label/needs-reply/chains/exit": [
+        {
+          "chain_id": 0,
+          "conditions": [
+            {
+              "fact": "unanswered",
+              "kind": "fact",
+              "wanted": true
+            }
+          ],
+          "facts": {
+            "cc_me": "any",
+            "has_attachment": "any",
+            "mailing_list": "any",
+            "replied_by_me": "any",
+            "starred": "any",
+            "unanswered": "yes",
+            "unread": "any",
+            "vip_sender": "any"
+          },
+          "match": "all",
+          "rows": []
+        }
+      ],
+      "label/needs-reply/flow/ai_enabled": true,
+      "label/needs-reply/flow/ai_reads": {
+        "attachments": false,
+        "body": true,
+        "subject": true
+      },
+      "label/needs-reply/flow/ai_refusal": {
+        "code": "ai_no_model",
+        "words": "No model is set for sorting mail: choose one in Settings, Decisions."
+      },
+      "label/needs-reply/flow/counts": {
+        "caught_by_entry": 0,
+        "kept_by_exit": 0,
+        "sent_to_fallback": 0,
+        "sorted_by_ai": 0,
+        "waiting_for_ai": 0
+      },
+      "label/needs-reply/flow/entry_enabled": true,
+      "label/needs-reply/flow/exit_enabled": true,
+      "label/needs-reply/flow/exit_fallback": "primary",
+      "label/promotions/chains/entry": [
+        {
+          "chain_id": 0,
+          "conditions": [
+            {
+              "fact": "mailing_list",
+              "kind": "fact",
+              "wanted": true
+            }
+          ],
+          "facts": {
+            "cc_me": "any",
+            "has_attachment": "any",
+            "mailing_list": "yes",
+            "replied_by_me": "any",
+            "starred": "any",
+            "unanswered": "any",
+            "unread": "any",
+            "vip_sender": "any"
+          },
+          "match": "all",
+          "rows": []
+        }
+      ],
+      "label/promotions/chains/exit": [],
+      "label/promotions/flow/ai_enabled": false,
+      "label/promotions/flow/ai_reads": {
+        "attachments": false,
+        "body": true,
+        "subject": true
+      },
+      "label/promotions/flow/ai_refusal": null,
+      "label/promotions/flow/counts": {
+        "caught_by_entry": 0,
+        "kept_by_exit": 0,
+        "sent_to_fallback": 0,
+        "sorted_by_ai": 0,
+        "waiting_for_ai": 0
+      },
+      "label/promotions/flow/entry_enabled": true,
+      "label/promotions/flow/exit_enabled": false,
+      "label/promotions/flow/exit_fallback": null,
+      "label/social/chains/entry": [],
+      "label/social/chains/exit": [],
+      "label/social/flow/ai_enabled": true,
+      "label/social/flow/ai_reads": {
+        "attachments": false,
+        "body": true,
+        "subject": true
+      },
+      "label/social/flow/ai_refusal": {
+        "code": "ai_no_model",
+        "words": "No model is set for sorting mail: choose one in Settings, Decisions."
+      },
+      "label/social/flow/counts": {
+        "caught_by_entry": 0,
+        "kept_by_exit": 0,
+        "sent_to_fallback": 0,
+        "sorted_by_ai": 0,
+        "waiting_for_ai": 0
+      },
+      "label/social/flow/entry_enabled": true,
+      "label/social/flow/exit_enabled": false,
+      "label/social/flow/exit_fallback": null,
+      "label/updates/chains/entry": [],
+      "label/updates/chains/exit": [],
+      "label/updates/flow/ai_enabled": true,
+      "label/updates/flow/ai_reads": {
+        "attachments": false,
+        "body": true,
+        "subject": true
+      },
+      "label/updates/flow/ai_refusal": {
+        "code": "ai_no_model",
+        "words": "No model is set for sorting mail: choose one in Settings, Decisions."
+      },
+      "label/updates/flow/counts": {
+        "caught_by_entry": 0,
+        "kept_by_exit": 0,
+        "sent_to_fallback": 0,
+        "sorted_by_ai": 0,
+        "waiting_for_ai": 0
+      },
+      "label/updates/flow/entry_enabled": true,
+      "label/updates/flow/exit_enabled": false,
+      "label/updates/flow/exit_fallback": null,
+      "provider_credential/anthropic/stored": false,
+      "provider_credential/gemini/stored": false,
+      "provider_credential/local/stored": null,
+      "provider_credential/openai/stored": false,
+      "provider_credential/openrouter/stored": false,
+      "reply/calendars/enabled": [],
+      "reply/calendars/events": [],
+      "reply/counts": {
+        "after_ai": 0,
+        "after_entry": 0,
+        "after_exit": 0,
+        "days": 7,
+        "drafts": 0,
+        "received": 0
+      },
+      "reply/filter": {
+        "ai": {
+          "attachments": false,
+          "body": true,
+          "description": "Emails that wait for a reply from me: a question, a request, a decision that someone is waiting for.",
+          "enabled": true,
+          "rest_of_thread": true,
+          "subject": true
+        },
+        "entry": {
+          "enabled": true,
+          "rule": {
+            "conditions": [],
+            "facts": {
+              "cc_me": "any",
+              "has_attachment": "any",
+              "mailing_list": "any",
+              "replied_by_me": "any",
+              "starred": "any",
+              "unanswered": "any",
+              "unread": "any",
+              "vip_sender": "any"
+            },
+            "match": "all",
+            "rows": []
+          }
+        },
+        "exit": {
+          "enabled": true,
+          "rule": {
+            "conditions": [],
+            "facts": {
+              "cc_me": "any",
+              "has_attachment": "any",
+              "mailing_list": "any",
+              "replied_by_me": "any",
+              "starred": "any",
+              "unanswered": "any",
+              "unread": "any",
+              "vip_sender": "any"
+            },
+            "match": "all",
+            "rows": []
+          }
+        },
+        "scope": {
+          "all": true,
+          "label_ids": []
+        }
+      },
+      "reply/notes": [],
+      "reply/on_demand": {
+        "change_after": true,
+        "instruction_before": true
+      },
+      "reply/progress": [],
+      "reply/prompt/current": {
+        "created_at_ms": 0,
+        "current": true,
+        "prompt_id": "replies",
+        "text": "You are replying to {{message}}. You have read {{thread}} and {{excerpts}}. My availability is in {{calendar}}.\nWrite the reply in this tone: {{tone}}. Follow {{instruction}} when there is one. Always keep in mind: {{notes}}.\nAnswer the question first. Never promise a price or a deadline.\n// One sentence per rule. This line is a note: the model does not read it.",
+        "version": 1
+      },
+      "reply/prompt/variables": [
+        {
+          "id": "message",
+          "meaning_key": "reply.var.message.meaning",
+          "name_key": "reply.var.message.name",
+          "placeholder": "{{message}}"
+        },
+        {
+          "id": "thread",
+          "meaning_key": "reply.var.thread.meaning",
+          "name_key": "reply.var.thread.name",
+          "placeholder": "{{thread}}"
+        },
+        {
+          "id": "instruction",
+          "meaning_key": "reply.var.instruction.meaning",
+          "name_key": "reply.var.instruction.name",
+          "placeholder": "{{instruction}}"
+        },
+        {
+          "id": "excerpts",
+          "meaning_key": "reply.var.excerpts.meaning",
+          "name_key": "reply.var.excerpts.name",
+          "placeholder": "{{excerpts}}"
+        },
+        {
+          "id": "calendar",
+          "meaning_key": "reply.var.calendar.meaning",
+          "name_key": "reply.var.calendar.name",
+          "placeholder": "{{calendar}}"
+        },
+        {
+          "id": "tone",
+          "meaning_key": "reply.var.tone.meaning",
+          "name_key": "reply.var.tone.name",
+          "placeholder": "{{tone}}"
+        },
+        {
+          "id": "notes",
+          "meaning_key": "reply.var.notes.meaning",
+          "name_key": "reply.var.notes.name",
+          "placeholder": "{{notes}}"
+        }
+      ],
+      "reply/prompt/versions": [
+        {
+          "created_at_ms": 0,
+          "current": true,
+          "prompt_id": "replies",
+          "text": "You are replying to {{message}}. You have read {{thread}} and {{excerpts}}. My availability is in {{calendar}}.\nWrite the reply in this tone: {{tone}}. Follow {{instruction}} when there is one. Always keep in mind: {{notes}}.\nAnswer the question first. Never promise a price or a deadline.\n// One sentence per rule. This line is a note: the model does not read it.",
+          "version": 1
+        }
+      ],
+      "reply/retrieval": {
+        "ai_filter_question": "Does this excerpt help to answer?",
+        "attached_fields": {
+          "date": true,
+          "folder": true,
+          "sender": true,
+          "subject": true
+        },
+        "clash_rule": "keep_both_dated",
+        "excerpt_size": "paragraph",
+        "excerpts_per_question": 5,
+        "keep_n": 6,
+        "questions_max": 3,
+        "retrieval_prompt": "From {{message}} and {{instruction}}, write up to 3 short questions to find what I need to know before I reply.",
+        "scope": "this_account"
+      },
+      "reply/sources": {
+        "accounts": [
+          {
+            "account_id": "$ACCOUNT_1",
+            "enabled_folders": 2,
+            "enabled_items": 0,
+            "folders": [
+              {
+                "enabled": true,
+                "item_count": 0,
+                "key": "mail\u001f$ACCOUNT_1\u001fINBOX",
+                "owner_enabled": null,
+                "progress": {
+                  "state": "up_to_date"
+                },
+                "source": {
+                  "account_id": "$ACCOUNT_1",
+                  "folder": "INBOX",
+                  "kind": "mail_folder"
+                }
+              },
+              {
+                "enabled": false,
+                "item_count": 0,
+                "key": "mail\u001f$ACCOUNT_1\u001fProjects",
+                "owner_enabled": null,
+                "progress": {
+                  "state": "not_started"
+                },
+                "source": {
+                  "account_id": "$ACCOUNT_1",
+                  "folder": "Projects",
+                  "kind": "mail_folder"
+                }
+              },
+              {
+                "enabled": true,
+                "item_count": 0,
+                "key": "mail\u001f$ACCOUNT_1\u001fÉléments envoyés",
+                "owner_enabled": null,
+                "progress": {
+                  "state": "up_to_date"
+                },
+                "source": {
+                  "account_id": "$ACCOUNT_1",
+                  "folder": "Éléments envoyés",
+                  "kind": "mail_folder"
+                }
+              }
+            ],
+            "total_folders": 3
+          },
+          {
+            "account_id": "$ACCOUNT_2",
+            "enabled_folders": 2,
+            "enabled_items": 0,
+            "folders": [
+              {
+                "enabled": true,
+                "item_count": 0,
+                "key": "mail\u001f$ACCOUNT_2\u001fINBOX",
+                "owner_enabled": null,
+                "progress": {
+                  "state": "up_to_date"
+                },
+                "source": {
+                  "account_id": "$ACCOUNT_2",
+                  "folder": "INBOX",
+                  "kind": "mail_folder"
+                }
+              },
+              {
+                "enabled": false,
+                "item_count": 0,
+                "key": "mail\u001f$ACCOUNT_2\u001fReceipts",
+                "owner_enabled": null,
+                "progress": {
+                  "state": "not_started"
+                },
+                "source": {
+                  "account_id": "$ACCOUNT_2",
+                  "folder": "Receipts",
+                  "kind": "mail_folder"
+                }
+              },
+              {
+                "enabled": true,
+                "item_count": 0,
+                "key": "mail\u001f$ACCOUNT_2\u001fSent Items",
+                "owner_enabled": null,
+                "progress": {
+                  "state": "up_to_date"
+                },
+                "source": {
+                  "account_id": "$ACCOUNT_2",
+                  "folder": "Sent Items",
+                  "kind": "mail_folder"
+                }
+              }
+            ],
+            "total_folders": 3
+          }
+        ],
+        "calendars": [],
+        "enabled_total": 4,
+        "local_folders": [],
+        "scope": "this_account"
+      },
+      "reply/use/auto": {
+        "enabled": false,
+        "kind": "auto",
+        "match_thread": true,
+        "prompt_id": "replies",
+        "tone_id": "voice"
+      },
+      "reply/use/on_demand": {
+        "enabled": true,
+        "kind": "on_demand",
+        "match_thread": true,
+        "prompt_id": "replies",
+        "tone_id": "voice"
+      },
+      "reply/voice": {
+        "analysis": {
+          "state": "idle"
+        },
+        "tones": [],
+        "voice": {
+          "analysed_at_ms": null,
+          "same_person_examples": 3,
+          "sample_size": 100,
+          "tone_text": ""
+        }
+      },
+      "speech_engine/chosen/state": null
+    }
+  },
+  "setup": {
+    "accounts": [
+      "$ACCOUNT_1 = one@example.test: INBOX, Éléments envoyés (SPECIAL-USE \\Sent), Projects",
+      "$ACCOUNT_2 = two@example.test: INBOX, Sent Items (no SPECIAL-USE), Receipts"
+    ],
+    "masks": "the generated account ids are written $ACCOUNT_1 and $ACCOUNT_2; a source key is `mail`, the account id and the folder joined by U+001F",
+    "messages": 0
+  }
+}

@@ -1,0 +1,39 @@
+From: Northwind Cloud <hello@example.net>
+To: Assem Example <assem@example.org>
+Subject: Activate your account
+Date: Tue, 03 Nov 2026 21:17:00 +0000
+Message-ID: <de691ffe62dbe679@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5077707339610057353=="
+
+--===============5077707339610057353==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Sign in to Northwind Cloud: https://auth.example.org/magic-link/d9037e9c13918=
+7ac8893b9b2
+
+The link works once.
+
+--===============5077707339610057353==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Northwind Cloud</ti=
+tle><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-=
+size:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellsp=
+acing=3D"0"><tr><td align=3D"center"><img width=3D"1" height=3D"1" style=3D"d=
+isplay:none" src=3D"https://img.example.com/o/bcd11ed7.gif" srcset=3D"https:/=
+/img.example.com/o/bcd11ed7.gif 2x"><h2>Northwind Cloud</h2><p>Click the butt=
+on below to finish. The link works once.</p><p><a href=3D"https://auth.exampl=
+e.org/magic-link/d9037e9c139187ac8893b9b2" style=3D"background:#06c;color:#ff=
+f">Sign in to Northwind Cloud</a></p><p style=3D"font-size:11px;color:#888">Y=
+ou receive this because of your account. <a href=3D"https://example.net/unsub=
+scribe?u=3D9d2467">Unsubscribe</a> | <a href=3D"https://example.net/privacy">=
+Privacy</a></p><img width=3D"1" height=3D"1" style=3D"display:none" src=3D"ht=
+tps://img.example.com/logo/cf7b52cb.gif" srcset=3D"https://img.example.com/lo=
+go/cf7b52cb.gif 2x"></td></tr></table></body></html>
+
+--===============5077707339610057353==--

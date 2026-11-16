@@ -1,0 +1,26 @@
+{
+  "provenance": "Jev request and answer in the shape of the org's client (retrieval-dossier-jev.md Need 3: jev_client.py body line {state, model, questions}, readers: noul under 'noul', choice with 'confidence'; Need 4: 401 and 422 refusals). Written in the replay format, NOT recorded from the live service: nothing may leave this Mac. The key is invented.",
+  "key": "jev-test-key-7f3a",
+  "request": {
+    "method": "POST",
+    "url": "https://api.typesafe.ai/v1/systemone",
+    "authorization": "Bearer jev-test-key-7f3a",
+    "model": "jev-latest",
+    "question_types": { "which-tab/model": "choice", "needs-reply/model": "noul", "sign-in-codes/model": "noul" }
+  },
+  "answers": {
+    "status": 200,
+    "body": {
+      "answers": {
+        "which-tab/model": { "type": "choice", "choice": "Updates", "confidence": 0.93 },
+        "needs-reply/model": { "type": "noul", "noul": 0.12 },
+        "sign-in-codes/model": { "type": "noul", "noul": 0.03 }
+      },
+      "usage": { "input_tokens": 412 },
+      "model": "jev-latest"
+    }
+  },
+  "refused_key": { "status": 401, "body": { "error": { "message": "Invalid API key: jev-test-key-7f3a is not recognised" } } },
+  "caller_error": { "status": 422, "body": { "detail": "criteria must be an object" } },
+  "bad_shape": { "status": 200, "body": { "answers": { "which-tab/model": { "type": "choice", "choice": "Updates", "confidence": 0.93 } } } }
+}

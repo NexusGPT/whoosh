@@ -1,0 +1,36 @@
+From: Kestrel VPN <billing@example.com>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1983
+Date: Tue, 03 Nov 2026 01:01:00 +0000
+Message-ID: <a1fe6c6f7d45b233@mail.example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0443082284617227958=="
+
+--===============0443082284617227958==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+SW52b2ljZSAyMDI2LTE5ODMgZm9yIEVVUiAxLDI1MC4wMCBpcyBkdWUgb24gMzAgTm92ZW1iZXIg
+MjAyNi4NCg==
+
+--===============0443082284617227958==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5L
+ZXN0cmVsIFZQTjwvdGl0bGU+PHN0eWxlPmJvZHl7Zm9udC1mYW1pbHk6SGVsdmV0aWNhLEFyaWFs
+LHNhbnMtc2VyaWY7Y29sb3I6IzIyMn0uY29kZXtmb250LXNpemU6MjhweH08L3N0eWxlPjwvaGVh
+ZD48Ym9keT48dGFibGUgd2lkdGg9IjEwMCUiIGNlbGxwYWRkaW5nPSIwIiBjZWxsc3BhY2luZz0i
+MCI+PHRyPjx0ZCBhbGlnbj0iY2VudGVyIj48SU1HIFNSQz0iaHR0cDovL3RyYWNrLmV4YW1wbGUu
+b3JnL3B4LzE0N2VlOGI0LmdpZiIgQUxUPSJiYW5uZXIiPjxoMj5LZXN0cmVsIFZQTjwvaDI+PHA+
+SW52b2ljZSA8Yj4yMDI2LTE5ODM8L2I+IGZvciBFVVIgMzA5Ni40OCBpcyBkdWUgb24gMzAgTm92
+ZW1iZXIgMjAyNi48L3A+PHA+VkFUIDIxJS4gSUJBTiBCRTY4IDUzOTAgMDc1NCA3MDM0LiBQYXlt
+ZW50IHJlZmVyZW5jZSA5NjIvMzAwNy8xMjEzNy48L3A+PHAgc3R5bGU9ImZvbnQtc2l6ZToxMXB4
+O2NvbG9yOiM4ODgiPllvdSByZWNlaXZlIHRoaXMgYmVjYXVzZSBvZiB5b3VyIGFjY291bnQuIDxh
+IGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvdW5zdWJzY3JpYmU/dT1jZTJlMDQiPlVuc3Vic2Ny
+aWJlPC9hPiB8IDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvcHJpdmFjeSI+UHJpdmFjeTwv
+YT48L3A+PC90ZD48L3RyPjwvdGFibGU+PC9ib2R5PjwvaHRtbD4NCg==
+
+--===============0443082284617227958==--

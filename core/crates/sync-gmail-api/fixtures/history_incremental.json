@@ -1,0 +1,173 @@
+{
+ "note": "Shaped after the Gmail REST reference (users.history.list, users.messages.get format=raw). Written by hand with invented addresses; no real mailbox was read.",
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "history",
+   "query": [
+    [
+     "startHistoryId",
+     "1000"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "history": [
+     {
+      "id": "1001",
+      "messages": [
+       {
+        "id": "m-new-1",
+        "threadId": "t-1"
+       }
+      ],
+      "messagesAdded": [
+       {
+        "message": {
+         "id": "m-new-1",
+         "threadId": "t-1",
+         "labelIds": [
+          "INBOX",
+          "UNREAD"
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "id": "1002",
+      "messages": [
+       {
+        "id": "m-old-7",
+        "threadId": "t-7"
+       }
+      ],
+      "labelsAdded": [
+       {
+        "message": {
+         "id": "m-old-7",
+         "threadId": "t-7",
+         "labelIds": [
+          "INBOX",
+          "STARRED"
+         ]
+        },
+        "labelIds": [
+         "STARRED"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "1003",
+      "messages": [
+       {
+        "id": "m-gone-3",
+        "threadId": "t-3"
+       }
+      ],
+      "messagesDeleted": [
+       {
+        "message": {
+         "id": "m-gone-3",
+         "threadId": "t-3",
+         "labelIds": [
+          "INBOX"
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "id": "1004",
+      "messages": [
+       {
+        "id": "m-new-2",
+        "threadId": "t-2"
+       }
+      ],
+      "messagesAdded": [
+       {
+        "message": {
+         "id": "m-new-2",
+         "threadId": "t-2",
+         "labelIds": [
+          "INBOX"
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "id": "1005",
+      "messages": [
+       {
+        "id": "m-new-2",
+        "threadId": "t-2"
+       }
+      ],
+      "messagesDeleted": [
+       {
+        "message": {
+         "id": "m-new-2",
+         "threadId": "t-2",
+         "labelIds": [
+          "INBOX"
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "id": "1006",
+      "messages": [
+       {
+        "id": "m-old-8",
+        "threadId": "t-8"
+       }
+      ],
+      "labelsRemoved": [
+       {
+        "message": {
+         "id": "m-old-8",
+         "threadId": "t-8",
+         "labelIds": [
+          "INBOX"
+         ]
+        },
+        "labelIds": [
+         "UNREAD"
+        ]
+       }
+      ]
+     }
+    ],
+    "historyId": "1006"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages/m-new-1",
+   "query": [
+    [
+     "format",
+     "raw"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "id": "m-new-1",
+    "threadId": "t-1",
+    "labelIds": [
+     "INBOX",
+     "UNREAD"
+    ],
+    "snippet": "Are you free at noon on Thursday?",
+    "historyId": "1001",
+    "internalDate": "1793696400000",
+    "sizeEstimate": 271,
+    "raw": "RnJvbTogQWxpY2UgRXhhbXBsZSA8YWxpY2VAZXhhbXBsZS50ZXN0Pg0KVG86IG93bmVyQGV4YW1wbGUudGVzdA0KU3ViamVjdDogTHVuY2ggb24gVGh1cnNkYXk_DQpNZXNzYWdlLUlEOiA8bS1uZXctMUBtYWlsLmV4YW1wbGUudGVzdD4NCkRhdGU6IFR1ZSwgMyBOb3YgMjAyNiAwOTowMDowMCArMDAwMA0KTUlNRS1WZXJzaW9uOiAxLjANCkNvbnRlbnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD11dGYtOA0KDQpBcmUgeW91IGZyZWUgYXQgbm9vbiBvbiBUaHVyc2RheT8NCg"
+   }
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "178",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "Am 02.11.2026 um 10:14 schrieb Jonas Peeters <jonas.peeters@example.org>:",
+  "visible_contains": "Looks good, one small change in section 2. e9f6",
+  "folded_contains": "Here are the three options we discussed. be86"
+ },
+ "adversarial": false
+}

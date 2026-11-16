@@ -1,0 +1,39 @@
+From: Marlow Travel <news@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Our November newsletter
+Date: Sun, 15 Nov 2026 16:43:00 +0000
+Message-ID: <75a57a766e46c1b3@mail.example.net>
+List-Unsubscribe: <https://example.net/unsubscribe?u=43b944>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5679493773690570814=="
+
+--===============5679493773690570814==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+November news. Read more at https://example.net/blog/abc123
+
+--===============5679493773690570814==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5N
+YXJsb3cgVHJhdmVsPC90aXRsZT48c3R5bGU+Ym9keXtmb250LWZhbWlseTpIZWx2ZXRpY2EsQXJp
+YWwsc2Fucy1zZXJpZjtjb2xvcjojMjIyfS5jb2Rle2ZvbnQtc2l6ZToyOHB4fTwvc3R5bGU+PC9o
+ZWFkPjxib2R5Pjx0YWJsZSB3aWR0aD0iMTAwJSIgY2VsbHBhZGRpbmc9IjAiIGNlbGxzcGFjaW5n
+PSIwIj48dHI+PHRkIGFsaWduPSJjZW50ZXIiPjxpbWcgc3JjPSIvL2ltZy5leGFtcGxlLmNvbS9w
+eC80OTk2ZWRjOS5naWYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxoMj5NYXJsb3cgVHJhdmVsPC9o
+Mj48aDM+Tm92ZW1iZXIgbmV3czwvaDM+PHA+Sm9pbiA1MDAwIHJlYWRlcnMuIEluIDIwMjYgd2Ug
+c2hpcHBlZCAxMiByZWxlYXNlcy4gVGVuIHBlcmNlbnQgb2ZmIHVudGlsIDMwIE5vdmVtYmVyLjwv
+cD48cD5Cb29rIGEgY2FsbDogKzMyIDggMTA3IDQyIDEwPC9wPjxwPjxhIGhyZWY9J2h0dHBzOi8v
+ZXhhbXBsZS5uZXQvYmxvZy82ODUzZjknPlJlYWQgbW9yZTwvYT48L3A+PHAgc3R5bGU9ImZvbnQt
+c2l6ZToxMXB4O2NvbG9yOiM4ODgiPllvdSByZWNlaXZlIHRoaXMgYmVjYXVzZSBvZiB5b3VyIGFj
+Y291bnQuIDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvdW5zdWJzY3JpYmU/dT1hZTQ2ODki
+PlVuc3Vic2NyaWJlPC9hPiB8IDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvcHJpdmFjeSI+
+UHJpdmFjeTwvYT48L3A+PElNRyBTUkM9Imh0dHBzOi8vaW1nLmV4YW1wbGUuY29tL29wZW4vYWM4
+NDQwZTMucG5nIiBBTFQ9ImJhbm5lciI+PC90ZD48L3RyPjwvdGFibGU+PC9ib2R5PjwvaHRtbD4N
+Cg==
+
+--===============5679493773690570814==--

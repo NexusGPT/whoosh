@@ -1,0 +1,12 @@
+{
+ "id": "080",
+ "category": "code-and-link",
+ "code": "667461",
+ "links": [
+  "https://auth.example.org/magic-link/9c8a42efbfe2d5604e12f568"
+ ],
+ "invite": null,
+ "tracker_count": 1,
+ "quoted": null,
+ "adversarial": false
+}

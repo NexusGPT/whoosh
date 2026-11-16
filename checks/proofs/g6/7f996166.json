@@ -1,0 +1,99 @@
+{
+  "item": "7f996166",
+  "full_id": "7f996166-5e61-4814-8b29-a9a195c1f94c",
+  "title": "Make the test engine and the label screen follow the three steps",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "aMailStepOnePicksIsNotInTheLabelUntilTheAiAccepts,theAiIsAskedOnlyAboutPickedMails,picksArePickedAndWaitingBeforeTheAiHasRuled,withTheAiOffStepOneAloneFilesTheMail,aLabelWithNoEntryChainAndTheAiOffFilesNothing,aMailTheExitFilterRejectsGoesToTheFallback,theWhyTagNamesStepOneAndTheAiAnswer,theCardsSayPicksAcceptedAndTheAiRulesOn,noWarningRowExistsAnyMore,theNewWordsAreInTheCatalogueInFrench,theNeedsReplyLabelHasRowsThatExerciseEveryCard,aRerunOfTheNeedsReplyLabelFollowsThePipeline,fixtureReplyFlipsTheFactsAndMovesTheMessageToTheFallbackAtOnce,theExitCardSaysKeepsNOfMWithMTheAcceptedOrThePicked,everyThreeStepSentenceIsInAll14Languages",
+      "pass": "Test run with 15 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --coverage",
+      "pass": "coverage: GREEN",
+      "fail": "coverage: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "(?s)a140-step-1-picks-37\\s+pass .*a140-the-ai-accepts-32\\s+pass .*a140-the-exit-filter-keeps-24\\s+pass .*a140-8-go-to-primary\\s+pass .*a140-a-reply-moves-one-message-out-of-the-label\\s+pass ",
+      "fail": "a140-[a-z0-9-]+\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "sh -c \"grep -r -i -E 'amber|will see none' Sources/Features/LabelsContactsMac | wc -l\"",
+      "pass": "^\\s*0\\s*$",
+      "fail": "^\\s*[1-9]",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+      "fail": "NOT RED|selftest FAIL|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/shots-label --states label-inspector-open --deadline 600",
+      "pass": "(?s)PASS label-inspector-open/inspector .*4 checks, 0 failed, 0 not judged",
+      "fail": "FAIL label-inspector-open|NOT JUDGED label-inspector-open",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/LabelsContactsMac/LabelFlowModel.swift",
+      "find": "var entryCountText: String { counts.map { Words.text(\"picks %lld\", $0.entry) } ?? \"\" }",
+      "replace": "var entryCountText: String { counts.map { Words.text(\"picks %lld\", $0.ai) } ?? \"\" }",
+      "proof": 0,
+      "red": "theCardsSayPicksAcceptedAndTheAiRulesOn\\(\\) failed|✘ Test theCardsSayPicksAccepted"
+    },
+    {
+      "file": "Sources/Features/LabelsContactsMac/LabelFlowModel.swift",
+      "find": "var exitCountText: String { counts.map { Words.text(\"keeps %lld of %lld\", $0.kept, saved.flow.aiOn ? $0.ai : $0.entry) } ?? \"\" }",
+      "replace": "var exitCountText: String { counts.map { Words.text(\"keeps %lld of %lld\", $0.kept, $0.entry) } ?? \"\" }",
+      "proof": 3,
+      "red": "a140-the-exit-filter-keeps-24\\s+fail"
+    },
+    {
+      "file": "Sources/Features/LabelsContactsMac/LabelFlowModel.swift",
+      "find": "var exitCountText: String { counts.map { Words.text(\"keeps %lld of %lld\", $0.kept, saved.flow.aiOn ? $0.ai : $0.entry) } ?? \"\" }",
+      "replace": "var exitCountText: String { counts.map { Words.text(\"keeps %lld of %lld\", $0.kept, $0.entry) } ?? \"\" }",
+      "proof": 0,
+      "red": "theExitCardSaysKeepsNOfMWithMTheAcceptedOrThePicked\\(\\) failed|✘ Test theExitCardSaysKeepsNOfM"
+    },
+    {
+      "file": "Sources/Resources/Localizable.xcstrings",
+      "find": "\"value\": \"beholder %lld af %lld\"",
+      "replace": "\"value\": \"beholder %lld af\"",
+      "proof": 0,
+      "red": "everyThreeStepSentenceIsInAll14Languages\\(\\) failed|✘ Test everyThreeStepSentenceIsInAll14Languages"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "[(\"click\", \"%s.open.modify.%s\" % (INS, LABEL_BOARD)), (\"wait\", INS, \"open\", True), (\"wait\", INS, \"mode\", \"modify\"), (\"settle\", SETTLE_S)],",
+      "replace": "[(\"click\", \"%s.open.modify.%s\" % (INS, LABEL_BOARD)), (\"settle\", SETTLE_S)],",
+      "proof": 5,
+      "red": "NOT RED|selftest FAIL"
+    }
+  ],
+  "gap": null,
+  "owner": "Only the eyes step is left: compare the pictures of the label inspector (_captures/results/g6/shots-label/index.html, light and dark, 1280x820 and 960x632) with the picked board. Built in lane fix-rest-app (finding L1): the look state `label-inspector-open` of checks/shots-sheet.py (self-test proof 5, pictures proof 6). Read from the code: the inspector opens in the MAIN window, not in `mac-labels-contacts` (ReaderPane.swift:17 mounts LabelInspectorView in pane 3 when LabelInspector.isOpen), so the state is a shot of `mac-main` after the door `mac-labels.inspector.open.modify.needs-reply`.",
+  "notes": "Claims and judges. (1) the test engine files by SPEC A140: Sources/CoreBridge/FixtureFlow.swift and FixtureCore (docs/lanes/flow3-swift.md section 1-4: fileOnArrivalLocked, meaningLabelLocked(among:), fileByModelLocked(byEntry:), rerunMeaningLocked); Tests/Unit/LabelPipelineTests.swift:30 aMailStepOnePicksIsNotInTheLabelUntilTheAiAccepts, :45 theAiIsAskedOnlyAboutPickedMails, :56 picksArePickedAndWaitingBeforeTheAiHasRuled, :69 withTheAiOffStepOneAloneFilesTheMail, :81 aLabelWithNoEntryChainAndTheAiOffFilesNothing, :90 aMailTheExitFilterRejectsGoesToTheFallback, :105 theWhyTagNamesStepOneAndTheAiAnswer; Tests/Unit/FixtureFlowTests.swift:54 fixtureReplyFlipsTheFactsAndMovesTheMessageToTheFallbackAtOnce, :74 theNeedsReplyLabelHasRowsThatExerciseEveryCard, :101 aRerunOfTheNeedsReplyLabelFollowsThePipeline. (2) the three cards say step 1 picks N, the AI accepts N of M, step 3 keeps N: Sources/Features/LabelsContactsMac/LabelFlowModel.swift:164 entryCountText ('picks %lld'), :167 exitCountText ('keeps %lld of %lld'), aiCountText; LabelPipelineTests.swift:139 theCardsSayPicksAcceptedAndTheAiRulesOn; check cases a140-step-1-picks-37, a140-the-ai-accepts-32, a140-the-exit-filter-keeps-24 (proof 3). (3) the amber warning is gone: LabelPipelineTests.swift:154 noWarningRowExistsAnyMore (catalogue holds no 'The AI will see none of them'), check case a140-no-warning-says-the-ai-will-see-none, proof 4 (counts the hits of 'amber' and 'will see none' under Sources/Features/LabelsContactsMac: must be 0; the reader's finding is the same search, which gave no hit). (4) the preview says picked: LabelPipelineTests.swift:139 (`Words.text(\"%lld picked · the AI rules on each after Save\", 48)`), LabelCountsPreviewTests.swift:98 (French). (5) 14 languages: proofs 1 and 2; docs/lanes/flow3-swift.md:19 says 13 keys were added in 14 languages. (6) unit tests green: proof 0 is the first run (the lane says swift was never run: flow3-swift.md:65 and the RESULT line 104 'unbuilt'). Find strings occur once at 0aa1558e. gap-labels: the two new unit tests are proof 0 (15 tests now); their broken copies are mutants 2 and 3."
+}

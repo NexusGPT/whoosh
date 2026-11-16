@@ -1,0 +1,70 @@
+{
+  "item": "39cf4180",
+  "full_id": "39cf4180-17da-49e8-9c65-eaba65ed1663",
+  "title": "Let a check start with no AI provider connected",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-welcomemac.py --selftest",
+      "pass": "selftest: every check seen red on its mutant",
+      "fail": "NOT RED|BASE (FAIL|UNJUDGED)",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-firststart.py --selftest",
+      "pass": "[0-9]+ checks green on the model, [0-9]+ mutants, 0 not red",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-welcomemac.py",
+      "pass": "(?sm)(?=.*^[0-9]+ checks, 0 failed, 0 not judged)(?=.*^  PASS ai-setup-no-provider-says-so-in-one-sentence$)(?=.*^  PASS ai-setup-skip-leaves-the-marks-on$)(?=.*^  PASS ai-setup-marks-say-what-the-board-draws$)",
+      "fail": "(FAIL|UNJUDGED) ai-setup-(no-provider|skip|marks)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-firststart.py",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J9\\.10/ai-skip-leaves-the-marks-on|NOT JUDGED J9\\.10/",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "after proofs 2 and 3, read the results files the two checks write (_captures/results/par-welcomemac/ and _captures/results/par-firststart/, *.results.jsonl, or $WHOOSH_RESULTS_DIR) and grep the four cases",
+      "pass": "\"case\": \"(ai-setup-no-provider-says-so-in-one-sentence|ai-setup-skip-leaves-the-marks-on|ai-setup-marks-say-what-the-board-draws|ai-skip-leaves-the-marks-on)\", \"verdict\": \"PASS\""
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-firststart.py --selftest",
+      "pass": "[0-9]+ checks green on the model, [0-9]+ mutants, 0 not red",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-firststart.py",
+      "pass": "J9\\.10/ai-skip-leaves-the-marks-on +pass",
+      "fail": "J9\\.10/ai-skip-leaves-the-marks-on +(fail|unjudged)",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/CoreBridge/FixtureAgents.swift",
+      "find": "for i in providers.indices { providers[i].connected = false; providers[i].keychain = nil }",
+      "replace": "for i in providers.indices { providers[i].connected = true; providers[i].keychain = nil }",
+      "proof": 2,
+      "red": "FAIL ai-setup-no-provider-says-so-in-one-sentence"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Fixture verb: Sources/CoreBridge/FixtureAgents.swift:53-61 (stageProviders), documented docs/CONTROL-SOCKET.md:253. Cases: par-welcomemac.py:405 (no-provider), :429 (skip), :456 and :468 (marks), staging :389 (fixture providers none); par-firststart.py:314,:329 (ai-skip-leaves-the-marks-on, J9.10; staging :305). Mutant row names: par-welcomemac selftest 'every check seen red on its mutant' (main81 log _captures/lead/main81/selftests/checks_parity_par-welcomemac.log last line). Old red runs: _captures/tests/r76/par-welcomemac-main76.log:6 (expected provider-none, got ok), before the verb existed. par-firststart.py case at the end of steps_ai (:~375): staging `fixture providers none` then ai-setup.reset before the Skip case. gap-findings 2026-11-11: checks/welcomemac-check.py main now prints '  PASS <case>' per passing case (line 213-215; par-welcomemac.py runs that main, line 1182), so proof 2 reads the three cases' own lines; gap-welcome ran the real main against the stand-in: 59 PASS lines (docs/lanes/gap-welcome.md). Proof 4 (the lead's read of the results jsonl) is now redundant with it."
+}

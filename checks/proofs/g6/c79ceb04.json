@@ -1,0 +1,29 @@
+{
+  "item": "c79ceb04",
+  "full_id": "c79ceb04-6c07-4dfc-a82b-e97f771c07b1",
+  "title": "Bound the on-device model's memory while it judges mail",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "python3 checks/laya-sanity.py \"<bundle>\" --models \"<copy of the owner's Models/laya folder>\"   (the hidden copy, the real Laya weights; the plain run: the per-question cache release in place)",
+      "pass": "PASS +laya-sanity/laya-peak-under-RSS_MODEL_MAX_MB .*\\nPASS +laya-sanity/laya-growth-under-LAYA_GROWTH_MAX_MB ",
+      "fail": "(FAIL|NOT JUDGED) +laya-sanity/laya-(peak-under-RSS_MODEL_MAX_MB|growth-under-LAYA_GROWTH_MAX_MB)|Traceback"
+    },
+    {
+      "kind": "lead",
+      "run": "python3 checks/laya-sanity.py \"<bundle>\" --models \"<copy of the owner's Models/laya folder>\" --mutant   (WHOOSH_LAYA_MUTANT=keep-cache, rig only: the release after each question removed; the runner ends the copy by its pids at the first sample past RSS_MODEL_MAX_MB or grown LAYA_GROWTH_MAX_MB above its first sample (round 13), never past twice RSS_MODEL_MAX_MB, at most 48 questions; needs a build holding the mutant switch, LayaTrace.keepCache)",
+      "pass": "mutant keep-cache: RED as it must be \\(the cache kept, the footprint (grew past LAYA_GROWTH_MAX_MB|passed RSS_MODEL_MAX_MB)",
+      "fail": "mutant keep-cache: (SURVIVED|NOT JUDGED)|Traceback"
+    },
+    {
+      "kind": "lead",
+      "run": "the installed build (holding the per-question release, LayaEngine.answer) judges a batch of mail on the owner's Mac; read the memory guard's log (~/work/smart-email/guards/memguard.log) for that time, counts only",
+      "pass": "no line naming the installed Whoosh above 8 GB while the batch is judged"
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "Release: Sources/Features/OnDeviceAI/Core/LayaEngine.swift `answer`: `defer { if !LayaTrace.keepCache { MLX.Memory.clearCache() } }` (the lead's line, 8cb22d2a1; the rig-only broken copy `WHOOSH_LAYA_MUTANT=keep-cache`, Sources/Features/OnDeviceAI/Core/LayaTrace.swift `keepCache`). Check: checks/laya-sanity.py `memory_cases` (the case laya-peak-under-RSS_MODEL_MAX_MB, the peak while Laya judges against the ledger's RSS_MODEL_MAX_MB 2200), `mutant_stop`, `end_copy`, `mutant_verdict` (round 10: the mutant run ends the copy by its pids at the first sample past the bound, reading the footprint every 0.25 s, asking the production form only: at most 48 questions); `python3 checks/laya-sanity.py --selftest` covers every one of them without a launch. Expected: the plain run's peak is the loaded model plus one question's buffers (unmeasured here; the judge run of 12 Nov printed peak 154 MB with Apple's model out of process, which does not load Laya); the mutant run stops at about RSS_MODEL_MAX_MB plus one sampling step's growth (the owner's app grew 10 to 19 GB over about 200 questions, about 50 to 90 MB a question). Round 13: main111's mutant run survived RSS_MODEL_MAX_MB (peak 2181 MB under 2200), so a second bar: LAYA_GROWTH_MAX_MB 1400 (docs/CONSTANTS.md), the peak while Laya judged minus the first sample before the first mail (`start_mb`, `growth_case`); on main111 the plain run grew 944 MB and the kept cache 2023 MB (1903 MB after its first 3 mails). docs/lanes/fix-aisort.md Round 7, Round 10 and Round 13."
+}

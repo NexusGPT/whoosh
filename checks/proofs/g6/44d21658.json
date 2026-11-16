@@ -1,0 +1,90 @@
+{
+  "item": "44d21658",
+  "full_id": "44d21658-357f-49d3-9a9f-9a76493cdb31",
+  "title": "Remove mail that left a folder on a server without change lists",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p sync-imap --test a144_plain_resync --test r2_sync",
+      "pass": "(?s)test result: ok\\. 8 passed; 0 failed.*test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_sync_full_r1",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_plain_resync",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": ".partition(|u| live.contains(u))",
+      "replace": ".partition(|_| true)",
+      "proof": 0,
+      "red": "a_known_mail_removed_on_the_server_is_in_vanished \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": ".filter(|u| *u > max_known)",
+      "replace": ".filter(|_| false)",
+      "proof": 0,
+      "red": "a_new_mail_above_the_known_ones_is_in_new \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": "if chunk.binary_search(&uid).is_ok() {",
+      "replace": "if false {",
+      "proof": 0,
+      "red": "a_flag_set_on_the_server_is_in_flag_changes \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": "still.chunks(IMAP_UID_SET_CHUNK)",
+      "replace": "still.chunks(usize::MAX)",
+      "proof": 0,
+      "red": "the_flag_read_of_many_known_uids_goes_in_chunks_that_keep_each_line_short \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/sync.rs",
+      "find": "if row.is_some_and(|m| m.archived &&",
+      "replace": "if false && row.is_some_and(|m| m.archived &&",
+      "proof": 1,
+      "red": "h_a_qresync_vanish_of_an_archived_inbox_uid_keeps_the_owners_row \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": ".partition(|u| live.contains(u))",
+      "replace": ".partition(|_| true)",
+      "proof": 2,
+      "red": "a_mail_moved_out_of_inbox_on_a_server_without_change_lists_leaves_inbox_in_the_store \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/sync.rs",
+      "find": "if row.is_some_and(|m| m.archived &&",
+      "replace": "if false && row.is_some_and(|m| m.archived &&",
+      "proof": 2,
+      "red": "a_mail_archived_with_e_stays_on_a_server_without_change_lists \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": "if chunk.binary_search(&uid).is_ok() {",
+      "replace": "if false {",
+      "proof": 2,
+      "red": "a_flag_set_on_the_server_follows_on_a_server_without_change_lists \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges that exist. Server without CONDSTORE: core/crates/sync-imap/tests/a144_plain_resync.rs:22-25 (plain_server: qresync false, cap_condstore false), :65 assert_no_change_list (no CHANGEDSINCE or QRESYNC command was sent). (1) a mail moved out of INBOX leaves INBOX: :71 a_known_mail_removed_on_the_server_is_in_vanished (adapter: the vanished list; code adapter.rs:543-570 resync_plain, one `UID SEARCH UID 1:*`); engine side only on QRESYNC (gap). (2) new mail above the known ones: :94 a_new_mail_above_the_known_ones_is_in_new (the lane's round 3 fixed its expected value to the bare Message-ID `5@example.test`, docs/lanes/sync-vanish.md 'Round 3'; the reader's red run _captures/lead/main84-verify/cargo-syncvanish-1.log:189 is that case before the fix, so it is 'already there' at that commit and is expected green now: proof 0 decides). (3) flags follow: :119 a_flag_set_on_the_server_is_in_flag_changes, :142 the_flag_read_of_many_known_uids_goes_in_chunks_that_keep_each_line_short (IMAP_UID_SET_CHUNK 500, sync-imap/src/consts.rs), core/crates/engine/tests/thread_headers_fill.rs:217 repeated_flags_write_nothing_and_one_changed_seen_writes_once (the engine writes only changed flags, engine::sync::apply_flag_changes). (4) reset cases: :162 a_changed_uidvalidity_or_no_known_uid_still_resets; core/crates/sync-imap/tests/r2_sync.rs:69 without_qresync_known_uids_out_of_order_still_use_the_highest_one, :97 a_server_with_no_condstore_and_known_uids_answers_a_delta_by_uid_range, :115 a_server_with_no_condstore_and_no_known_uid_still_resets_so_the_folder_is_read_again. (5) archived with E stays on QRESYNC: engine_sync_full_r1.rs:406 h_a_qresync_vanish_of_an_archived_inbox_uid_keeps_the_owners_row (shared rule at core/crates/engine/src/sync.rs:264). (6) 'each seen red on one broken copy': the five mutants are the lane's table (docs/lanes/sync-vanish.md 'Tests and their broken copies'); the find strings occur once at 0aa1558e (adapter.rs:549 and :701 both hold `if u64::from(uv) != want_uv {`, so the reset mutant is not usable as an exact find and is left out). Earlier mutant logs exist (_captures/lead/main84-verify/mut-sv-1.log to mut-sv-8.log), not opened by this proof writer. (7) gap-engine-tests: proof 2 is new, core/crates/engine/tests/engine_plain_resync.rs, three tests through the real sync over the in-process FakeImap with qresync false and cap_condstore false (the harness of junk_r2.rs synced()): a_mail_moved_out_of_inbox_on_a_server_without_change_lists_leaves_inbox_in_the_store, a_mail_archived_with_e_stays_on_a_server_without_change_lists, a_flag_set_on_the_server_follows_on_a_server_without_change_lists (the second resync is checked by a store table-change counter on the message table: it must not move). Written, not run. (8) The red case of the older run: _captures/lead/main84-verify/cargo-syncvanish-1.log:189 a_new_mail_above_the_known_ones_is_in_new, panicked at a144_plain_resync.rs:108 'fetched in full by fetch_set', left Some(\"5@example.test\") right Some(\"<5@example.test>\"): the test expected the Message-ID with angle brackets, the adapter's message_id_header keeps the bare form (envelope.rs, mail-parser's message_id()). The test's expected value was corrected by commit 06d218f5d (an ancestor of this commit, git log of a144_plain_resync.rs); it is a wrong expected value in the test, not a fault of the adapter."
+}

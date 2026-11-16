@@ -1,0 +1,69 @@
+{
+  "item": "5c6a43eb",
+  "full_id": "5c6a43eb-0729-40eb-b374-59424fd7eab5",
+  "title": "Put the EmbeddingGemma 2 weights in the install",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theStateIsDownloadingTheMomentTheDownloadStartsBeforeTheFirstByteAndThreeByteCountsFollow,aSecondClickDuringTheDownloadStartsNothing,aMissingFileEndsFailedWithTheFileNamedAndRetryWorks,aRigCopyReachesNothingWithoutALoopbackAddressAndWritesOnlyInItsRunFolder,theEngineIsHandedTheModelAfterTheDownloadWithoutARelaunch,aTestProcessLooksForTheWeightsOnlyInItsOwnFolders",
+      "pass": "Test run with 6 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -n -E '^\\| (EMBED_MODEL_BYTES|EMBED_MODEL_FILES) \\|' docs/CONSTANTS.md",
+      "pass": "(?s)EMBED_MODEL_BYTES \\| 1488915288.*EMBED_MODEL_FILES \\| 7",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "grep -n -E '^\\| (q8 text|bf16 as downloaded|q8 all three)' docs/lanes/embedding.md",
+      "pass": "(?s)bf16 as downloaded.*q8 text.*q8 all three towers",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "aDownloadCutHalfwayResumesFromItsPartFileAndAsksOnlyTheRest,aFileWhoseSha256DoesNotMatchTheSpecIsRefusedAndNotKept,theWeightsReadBackFromTheInstallFolderAtTheirPublishedSizes",
+      "pass": "Test theWeightsReadBackFromTheInstallFolderAtTheirPublishedSizes\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/OnDeviceAI/Core/FileFetcher.swift",
+      "find": "if offset > 0 { req.setValue(\"bytes=\\(offset)-\", forHTTPHeaderField: \"Range\") }",
+      "replace": "if offset > 0 { _ = offset }",
+      "proof": 4,
+      "red": "aDownloadCutHalfwayResumesFromItsPartFileAndAsksOnlyTheRest\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/OnDeviceAI/Core/ModelInstaller.swift",
+      "find": "guard got.bytes == file.bytes, file.sha256.isEmpty || got.sha256 == file.sha256 else {",
+      "replace": "guard got.bytes == file.bytes else {",
+      "proof": 4,
+      "red": "aFileWhoseSha256DoesNotMatchTheSpecIsRefusedAndNotKept\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/Embedding/GemmaWeights.swift",
+      "find": "public func isIntact(spec: MlxModelSpec = .embeddingGemma2) -> Bool { readBack(spec: spec).allSatisfy(\\.ok) }",
+      "replace": "public func isIntact(spec: MlxModelSpec = .embeddingGemma2) -> Bool { readBack(spec: spec).contains(where: \\.ok) }",
+      "proof": 4,
+      "red": "theWeightsReadBackFromTheInstallFolderAtTheirPublishedSizes\\(\\) (recorded an issue|failed)"
+    }
+  ],
+  "gap": null,
+  "owner": "Unchanged, and now the only thing left: the owner decides the install size and hosting (docs/lanes/embedding.md 'questions_for_owner' 1 to 3) and, with it, the encoders 'when the probe passes' (GemmaMediaEmbedder and the trait method for media vectors, docs/lanes/embedding.md 'Still open'; the files list already carries the media towers inside model.safetensors, so the install carries them whatever the probe says). The owner decides the install size and hosting (docs/lanes/embedding.md 'questions_for_owner' 1 to 3): the files as published (1.53 GB, image and audio search on day one, the default proposal) or a smaller one (0.99 GB with audio 8-bit, or text-only 8-bit 0.33 GB with images by OCR and audio by transcript), and whether our own converted files may be hosted (outbound, theirs to decide). Today the code installs the published bf16 files by download on first use (the proposed EMBED_MODEL_ID row, docs/lanes/embedding.md:76: 'the search model the install step downloads'); nothing is carried inside the .app. If the owner wants the weights inside the installer package itself, that is a different change (size 1.5 GB per download of the app).",
+  "notes": "TESTS WRITTEN (lane tail-settings), proof 4, in Tests/Unit/MeaningModelStoreTests.swift: aDownloadCutHalfwayResumesFromItsPartFileAndAsksOnlyTheRest (a ModelInstaller is paused after 8,000 bytes of the 48,000-byte fixture file, a new MeaningModelStore over the same folder finishes it: the server's log shows the second GET of model.safetensors starting at the part file's size, config.json asked once, file whole, SHA-256 equal to the spec's, no .part left), aFileWhoseSha256DoesNotMatchTheSpecIsRefusedAndNotKept (right length, one byte altered: failed, the sentence names the file and the expected checksum, nothing under the final name, no .part, onReady never ran), theWeightsReadBackFromTheInstallFolderAtTheirPublishedSizes (download into a folder, GemmaWeights.readBack/isIntact true; one byte short or missing: false; GemmaWeights.files equals the installer spec's file list). Loopback only, the fixture's own spec, no real weights read. Tests/Unit/SlowFileServer.swift gained `gets` (the start byte of each GET). Broken copies: the three mutants (each find occurs once in its file). Not compiled or run by the builder: the lead runs them. Claims and what exists. (1) 'the installer carries the weights (text path, plus the encoders when the probe passes)': the install step downloads the seven files of the pinned revision into the app support folder on first use: Sources/Features/OnDeviceAI/Core/MlxModelSpec.swift:41-58 (embeddingGemma2: revision 914f7f89..., files with bytes and SHA-256), Sources/Features/Embedding/GemmaWeights.swift:5-22 (files, folder), Sources/Features/Embedding/MeaningModelStore.swift (the download and its state), MeaningModelRig.swift:22-26; unit proof 0 runs the store's six tests (progress states, retry on a missing file, one download at a time, rig safety, engine hand-over without relaunch). The reader's finding 'the installer change not found' stands for the .app package: nothing bundles the weights; it matches the Qwen model's route (download on first use). (2) 'sizes in docs/CONSTANTS.md once each': rows EMBED_MODEL_BYTES (the one safetensors file, 1488915288) and EMBED_MODEL_FILES (7) exist (docs/CONSTANTS.md:150-151; proof 1 greps them). The model id and the revision are NOT ledger rows: they sit as proposed rows in docs/lanes/embedding.md:76-77 and in code (MlxModelSpec.swift:41); they are not sizes. The reader's finding that no row exists was wrong at this commit. A second EMBED_MODEL_BYTES line (1525783164, the sum of the seven files) exists in docs/lanes/embedding.md's proposal text, not in the ledger; the ledger row's own note explains the two numbers (contracts delta 15). The per-file sizes sit once in MlxModelSpec.swift, not in the ledger. (3) '8-bit MLX quantisation tried and its size and cosine delta recorded': docs/lanes/embedding.md:80-90 (table: bf16 1,488,915,288 bytes; q8 text 1,234,975,481 with worst cosine delta 0.000253; q8 text and audio 948,698,996, 0.000505; q8 text only 288,116,561, 0.000253; q8 all three towers 806,249,638, image 0.344491, REJECTED), proof 2 greps the table; the run behind it is QuantiseTests.swift and quantise-q8.json named there (not re-run by this proof). (4) 14 languages for any install sentences: proof 3."
+}

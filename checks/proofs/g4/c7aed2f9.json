@@ -1,0 +1,48 @@
+{
+  "item": "c7aed2f9",
+  "full_id": "c7aed2f9-6fc0-47c6-b692-f394bea0757b",
+  "title": "Give a window opened for a screen a real title",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/probes-check.py",
+      "pass": "^OK +window-titles-are-words: \\d+ windows, no title is an id",
+      "fail": "^(FAIL|NOT JUDGED) +window-titles-are-words",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/probes-check.py --selftest",
+      "pass": "^\\d+ checks, 0 not as expected$",
+      "fail": "^RED ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-c7aed2f9\" --screens mac-composer",
+      "pass": "^PASS mac-composer (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "run `python3 checks/shots-sheet.py _captures/results/shots-c7aed2f9 --screens mac-composer` (the hidden proof 2 above; add it to the run list) and read _captures/results/shots-c7aed2f9/pics/sheet-mac-composer-light-1280x820.png; the sheet's line also reads the window's title band from `winbands` ('title band reads ...'), and a title that is an id is a FAIL",
+      "pass": "the title band reads the catalogue word 'New message' in the app's language (or nothing), never mac-composer"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/App/WindowBridge.swift",
+      "find": "\"mac-composer\": \"New message\", \"mac-palette\": \"Command palette\",",
+      "replace": "\"mac-composer\": \"mac-composer\", \"mac-palette\": \"Command palette\",",
+      "proof": 0,
+      "red": "FAIL +window-titles-are-words"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/App/WindowBridge.swift:12-19 (titleKeys: mac-composer 'New message', mac-palette 'Command palette', mac-ask 'Ask', mac-search 'Search', mac-quickreply 'Quick reply', mac-trainer 'Whoosh trainer', mac-mcp-notes 'Outside AI apps', mac-add-account 'Add account', mac-labels-contacts 'Labels'; title(for:) returns the catalogue word or an empty string, never the id), Sources/App/ShellScenes.swift:20-30 (the tag view WindowSurfaceTag). Check: checks/probes-check.py:534-541 titles_case; selftest lines print `ok  ` or `RED ` and the total `N checks, N not as expected` (line 713); the per-case line of the driven run is `%-8s %s: %s` (line 758) so a pass reads `OK       window-titles-are-words: N windows, no title is an id (...)`. The shots-sheet picture shows the title band because the hidden render is the window's full frame (docs/CONTROL-SOCKET.md delta 39). Built in this lane (checks/probes-check.py): titles_driven opens the composer (`shot mac-composer`) before reading winbands and the app's language (rows mac-settings-general.settings, field language); titles_case requires a window with surface mac-composer (else NOT JUDGED) whose title is the catalogue word of 'New message' in that language (any language's word when the language is not a catalogue code), never a typed English literal at the judge. Self-test lines: no composer window is NOT JUDGED; a title that is words but not the catalogue's is red; French passes in French; the English word is red in French; the id as title is red. gap-findings 2026-11-11: FixtureFirstRunData.swift regenerated (commit 9374e5a7e); proof 1 now reads '75 checks, 0 not as expected' (docs/lanes/gap-findings-runs/probes-selftest1.txt)."
+}

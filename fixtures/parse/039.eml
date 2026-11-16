@@ -1,0 +1,19 @@
+From: Postbox Example <security@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Your one-time code
+Date: Mon, 02 Nov 2026 17:59:00 +0000
+Message-ID: <ab068f47982132f3@example.net>
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Postbox Example</ti=
+tle><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-=
+size:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellsp=
+acing=3D"0"><tr><td align=3D"center"><img src=3D"https://cdn.example.net/bann=
+er/2b5d556b.gif" width=3D"1" height=3D"1" alt=3D""><h2>Postbox Example</h2><d=
+iv>Security code: <span style=3D"font-family:monospace;font-size:24px">42W39D=
+</span></div><p style=3D"font-size:11px;color:#888">You receive this because =
+of your account. <a href=3D"https://example.net/unsubscribe?u=3Dab51ff">Unsub=
+scribe</a> | <a href=3D"https://example.net/privacy">Privacy</a></p></td></tr=
+></table></body></html>

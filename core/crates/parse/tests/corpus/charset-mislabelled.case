@@ -1,0 +1,11 @@
+# A body declared UTF-8 whose bytes are windows-1252 (written as latin-1 by the harness): decoded again as windows-1252, with a warning.
+fold_from: none
+warning: read as windows-1252
+authored: Le café de la réunion sera prêt à neuf heures, déjà payé.
+--- raw-latin1
+From: Sami Haddad <sami@example.fr>
+To: Tina Roy <tina@example.fr>
+Subject: Café
+Content-Type: text/plain; charset=utf-8
+
+Le café de la réunion sera prêt à neuf heures, déjà payé.

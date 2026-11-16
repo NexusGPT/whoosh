@@ -1,0 +1,58 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Length 646 >>
+stream
+0.16 0.38 0.92 rg 0 520 420 75 re f
+1 1 1 rg BT /F2 22 Tf 32 552 Td (Quotation) Tj ET
+1 1 1 rg BT /F1 11 Tf 32 532 Td (Q1 print run, Linea Supply) Tj ET
+0.2 0.2 0.22 rg BT /F2 12 Tf 32 480 Td (Item) Tj 220 0 Td (Units) Tj 90 0 Td (EUR) Tj ET
+0.85 0.87 0.92 RG 1 w 32 470 m 388 470 l S
+0.2 0.2 0.22 rg BT /F1 11 Tf 32 450 Td (Brochure A5, 16 pages) Tj 220 0 Td (12,000) Tj 90 0 Td (10,080) Tj ET
+BT /F1 11 Tf 32 428 Td (Delivery to the warehouse) Tj 220 0 Td (1) Tj 90 0 Td (420) Tj ET
+0.95 0.96 0.99 rg 32 360 356 40 re f
+0.16 0.38 0.92 rg BT /F2 14 Tf 44 375 Td (Total 10,500 EUR) Tj ET
+0.45 0.47 0.52 rg BT /F1 9 Tf 32 40 Td (Page 1 of 2) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 420 595] /Contents 5 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> >>
+endobj
+7 0 obj
+<< /Length 308 >>
+stream
+0.2 0.2 0.22 rg BT /F2 16 Tf 32 552 Td (Terms) Tj ET
+BT /F1 11 Tf 32 520 Td (Valid until 30 June.) Tj 0 -18 Td (Payment within 30 days of delivery.) Tj 0 -18 Td (Proof approved before the run starts.) Tj ET
+0.16 0.38 0.92 RG 2 w 32 430 m 200 430 l S
+0.45 0.47 0.52 rg BT /F1 9 Tf 32 40 Td (Page 2 of 2) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 420 595] /Contents 7 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> >>
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000000266 00000 n 
+0000000963 00000 n 
+0000001099 00000 n 
+0000001458 00000 n 
+trailer << /Size 9 /Root 1 0 R >>
+startxref
+1594
+%%EOF

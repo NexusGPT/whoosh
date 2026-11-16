@@ -1,0 +1,61 @@
+{
+  "item": "a0073150",
+  "full_id": "a0073150-983c-460b-8713-8fd92e171d17",
+  "title": "Run the speed checks on a quiet machine",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "sysctl -n vm.loadavg",
+      "pass": "^\\{ ([0-9]|1[01])\\.[0-9]+ ",
+      "fail": "^\\{ (1[2-9]|[2-9][0-9])",
+      "timeout_s": 10
+    },
+    {
+      "kind": "lead",
+      "run": "python3 perf/launch.py --bundle <newest main bundle> --samples 5",
+      "pass": "\\d+ checks, 0 failed, 0 not judged"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/interaction.py --bundle <newest main bundle>",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "OVER|[1-9]\\d* failed|0 failed, [1-9]\\d* not judged",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/memory-mac.py --accounts 30 --bundle <newest main bundle>",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "OVER|[1-9]\\d* failed|0 failed, [1-9]\\d* not judged",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "python3 perf/footprint.py <newest main bundle>   (about 7 minutes; own instance)",
+      "pass": "\\d+ checks, 0 failed, 0 not judged"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/notch-arrival.py --bundle <newest main bundle>",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9]\\d* failed|0 failed, [1-9]\\d* not judged",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-perf.py <newest main bundle>",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "OVER|[1-9]\\d* failed|0 failed, [1-9]\\d* not judged",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": "The ledger budgets are the architect's: say whether launch (400 ms warm) and the notch arrival (5000 ms) stay as budgets or tighten (owner rule: under 50 ms for any operation).",
+  "notes": "Each command takes the bundle path; the runner substitutes the newest main bundle it is judging (the path of the installed-class build). perf/launch.py and perf/footprint.py start their own rig instance through launch-one.sh (hidden); none shows a window. No part of this was run by me. | OLD GAP (before lane gap-states, 2026-11-12): Not a code gap: the run itself has never happened in the required conditions (S, the lead's own hands). r83 (C/tests/r83/summary.txt:9-12,45): perf-launch exit 1, warm same copy median 915.99 ms over the budget 400 (LAUNCH_SAME_COPY_MS, docs/CONSTANTS.md:12), 4 failed; perf-interaction, perf-footprint 0 checks, 1 not judged; perf-memory 'machine load 33.56 is above PERF_LOAD_MAX 12.0'; perf-notch 'not run: load 12 over PERF_LOAD_MAX 12'. So: (1) hold every builder's compile and any other run, then check proof 0 (load under 12; the proof's regex reads the first number of vm.loadavg); (2) run proofs 1 to 6 once each, one at a time, on the newest main bundle (scripts/main-job.sh:54-62 shows the exact forms: launch and footprint start their own instance, interaction and memory and notch run under scripts/launch-one.sh with --fixture-core --rig-hidden, realcore-perf under launch-one.sh on the real core with its local latency servers); (3) copy each output to ~/work/smart-email/whoosh/_captures/tests/<label>/<name>-<label>.log; (4) if any figure is over its ledger budget the run ends judged but red, and a fix item is opened for that figure (the r83 launch figure 916 ms against 400 ms is already one). The 'real-engine open-mail walk' is checks/realcore-perf.py (moves next, open, archive on the real core under latency; the judged figures are the next and open series, the archive series is baseline only, see item f4d7a5c0)."
+}

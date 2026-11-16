@@ -1,0 +1,11 @@
+# Quote marks alone at the end, no attribution: never enough to hide; collapsed and folded.
+subject: Re: Keys
+sender: Nora Weber
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY collapse
+authored: I left the keys with the porter.
+--- text
+I left the keys with the porter.
+
+> Where did you leave the keys?

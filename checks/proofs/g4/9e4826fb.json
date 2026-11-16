@@ -1,0 +1,94 @@
+{
+  "item": "9e4826fb",
+  "full_id": "9e4826fb-a925-4c12-b34c-3c3e8eb3b214",
+  "title": "Let the owner change an agent's model",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^(FAIL|UNJUDGED) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsaimac-check.py --selftest",
+      "pass": "^selftest: OK \\(0 mutants not red\\)",
+      "fail": "NOT RED|selftest: FAILED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_ai_settings -- the_model_to_use_is_refused_in_words_before_a_save_and_is_the_provider_after agents_are_saved_as_the_fixture_core_saves_them",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-9e4826fb\" --screens mac-settings-ai",
+      "pass": "^PASS mac-settings-ai (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "read the light pictures of `python3 checks/shots-sheet.py --states settings-ai-agent-cards` (hid-ai round 20): state-settings-ai-agent-cards-cards-light-1280x820.png and -700x480.png, the AI and agents pane opened by its sidebar row and scrolled to its end, where the Ask my inbox and Writer cards are (the line reads `rows mac-settings-ai.agents.card` name, provider, model); the dark pictures are beside them",
+      "pass": "each of the two cards shows a pill reading '<Provider> · <model>' with a mark, not a plain label"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.6/model-menu-lists-only-connected-models",
+      "fail": "^FAIL J5\\.6/model-menu-lists-only-connected-models",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.6/built-in-agent-model-changes",
+      "fail": "^FAIL J5\\.6/built-in-agent-model-changes",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.6/made-agent-model-changes",
+      "fail": "^FAIL J5\\.6/made-agent-model-changes",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.6/provider-without-key-cannot-be-chosen",
+      "fail": "^FAIL J5\\.6/provider-without-key-cannot-be-chosen",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+      "find": "a.providerId = c.provider.id; a.model = model",
+      "replace": "a.providerId = c.provider.id",
+      "proof": 0,
+      "red": "FAIL J5\\.6/built-in-agent-model-changes"
+    },
+    {
+      "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+      "find": "guard n <= s.cards.count, k <= choices.count, choices[k - 1].enabled else { return false }",
+      "replace": "guard n <= s.cards.count, k <= choices.count else { return false }",
+      "proof": 0,
+      "red": "FAIL J5\\.6/provider-without-key-cannot-be-chosen"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner opens Settings, AI and agents on the next build, picks another model on Ask my inbox and the Writer and sees the pill change (acceptance: 'seen by the owner').",
+  "notes": "Code: Sources/Features/SettingsAIMac/AgentsView.swift:86-101 ModelMenu (Button { store.setModel(agent.id, to: c) }), :118 accessibilityIdentifier agents.model.<slot>; AISettingsStore.swift:300-316 modelChoices and setModel; SettingsAIMacFeature.swift:89-95 rows source mac-settings-ai.agents.model.<n>, :150-160 doors agents.model.<n>.choose.<k>. Check cases (checks/settingsaimac-check.py): :1733 c_model_menu, :1747 c_model_builtin (click choose.2, expect claude-haiku-5-5 on the card and ticked), :1757 c_model_made, :1767 c_model_grey. Core: core/crates/engine/tests/engine_ai_settings.rs:296 and :326; core/crates/engine/src/ai_settings.rs:301 save_agent. Mutants need a rebuild of the hidden copy; the second mutant's Swift line is in SettingsAIMacFeature.swift near line 156 and occurs once. gap-settings-checks: settingsaimac-check main() prints 'PASS <label>: <detail>' for each passing case; the last four proofs read the four model cases by name."
+}

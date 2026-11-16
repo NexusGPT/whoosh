@@ -1,0 +1,98 @@
+{
+  "item": "b7e46ae6",
+  "full_id": "b7e46ae6-e289-413e-bf94-ead1c548a47b",
+  "title": "Build mob-account-mark-iphone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theIphoneListShowsTheFixtureMailPinnedFirstWithAccountMarks,theMailboxesMarksCarryTheMacsAccountNameColourAndIconInTheMacsOrder,everyListRowMarkIsLabelledWithItsAccountNameAndAnAccountWithoutAPickedIconSaysProviderDefault",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/seams/account-mark.py",
+      "pass": "(?s)(?=.*PASS +oracle +all \\d+ labels green)(?=.*\\| list-provider \\| .* \\| RED: icon@list-row)(?=.*\\| search-generic \\| .* \\| RED: icon@search-result)(?=.*\\| notch-colour \\| .* \\| RED: colour@notch)(?=.*\\| search-dead \\| .* \\| RED: control-search-finds-row)",
+      "fail": "STAYED GREEN|FAIL +oracle",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/seams/account-mark.py",
+      "pass": "(?s)(?=.*PASS +icon@list-row)(?=.*PASS +colour@list-row)(?=.*PASS +colour@notch)",
+      "fail": "FAIL +(icon|colour)@",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/inboxphone-check.py --selftest",
+      "pass": "(?s)(?=.*\\| J7\\.3/account-mark-label-per-row \\| .* \\| RED on this case \\|)(?=.*19 mutants, 0 not seen red; 0 clean failures, 0 clean not judged)",
+      "fail": "NOT RED|\\b[1-9]\\d* not seen red",
+      "timeout_s": 300
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP as above and MAC_APP=<built Mac Whoosh.app>: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --with-mac \"$MAC_APP\" \"$IPHONE_APP\" -- python3 checks/seams/account-mark.py",
+      "pass": "(?s)(?=.*PASS +icon@iphone-row)(?=.*PASS +colour@iphone-row)",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/inboxphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/seams/account-mark.py",
+      "find": "setk([\"colour\", \"notch\"], \"#007AFF\")",
+      "replace": "setk([\"colour\", \"notch\"], E[\"colour\"])",
+      "proof": 1,
+      "red": "STAYED GREEN"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"mark_label\": a.markLabel, \"mark_colour\": a.colour, \"mark_icon\": a.markIcon, \"mark_attention\"",
+      "replace": "\"mark_label\": a.markLabel, \"mark_colour\": \"#000000\", \"mark_icon\": a.markIcon, \"mark_attention\"",
+      "proof": 0,
+      "red": "theIphoneListShowsTheFixtureMailPinnedFirstWithAccountMarks.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"mark_label\": a.markLabel, \"mark_colour\": a.colour, \"mark_icon\": a.markIcon, \"mark_attention\"",
+      "replace": "\"mark_label\": \"\", \"mark_colour\": a.colour, \"mark_icon\": a.markIcon, \"mark_attention\"",
+      "proof": 0,
+      "red": "everyListRowMarkIsLabelledWithItsAccountName.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/PhoneAccounts.swift",
+      "find": "public var markLabel: String { name }",
+      "replace": "public var markLabel: String { address }",
+      "proof": 0,
+      "red": "theMailboxesMarksCarryTheMacsAccountName.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/PhoneAccounts.swift",
+      "find": "iconId: $0.icon_id, needsAttention: failing.contains($0.id)) }",
+      "replace": "iconId: nil, needsAttention: failing.contains($0.id)) }",
+      "proof": 0,
+      "red": "theMailboxesMarksCarryTheMacsAccountNameColourAndIcon.*failed|✘"
+    },
+    {
+      "file": "checks/inboxphone-check.py",
+      "find": "    s.expect(\"account-mark-label-per-row\", lambda: [r[\"mark_label\"] for r in s.ctl.rows(L)],",
+      "replace": "    s.expect(\"account-mark-label-per-rowx\", lambda: [r[\"mark_label\"] for r in s.ctl.rows(L)],",
+      "proof": 3,
+      "red": "NO MUTANT|\\b[1-9]\\d* not seen red|labels without a mutant=\\['J7"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Seam (checks/seams/account-mark.py) judges six places: list-row, sidebar-ring, reader-meta, search-result, notch and iphone-row for icon and colour; its judge is proved by 4 declared mutants (:76-86) on a fixture-derived observation, no app (proof 1). Proof 2 drives the Mac hidden copy alone: with no iPhone socket the iphone-row cases are NOT JUDGED (account-mark.py:60 `NJ(\"no iPhone rig socket ...\")`), so proof 2 does not touch the phone. The reader's log seams-all-mutants.log line 146 (6 checks, 1 not judged) is from main81. The unit mutant edits only line 76 (the list row); line 94 (accounts probe) holds the same text up to `mark_icon` but continues with `picked`, so the find string occurs once. docs/lane-dag.json: inboxphone acceptance 'added at the direction pick: mob-account-mark-iphone'; the plan item is docs/plan.json:4934. | gap-phone-a: a real defect fixed: the phone dropped the fixture accounts' icon_id (PhoneAccounts.swift decoded no icon_id, so every mark said provider-default while the Mac showed e.g. `code` for acc-08); PhoneAccount.markLabel added so the probe and the tile share one label. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 4 reads the iPhone row of the seam on both rigs; proof 5 is the phone check that holds account-mark-label-per-row (the row's mark_label equals the account name). Undefined and kept as an owner question outside this proof: \"the tab order equals the Mac's\" (recorded under questions_for_owner in docs/lanes/gap-phone-rest.md; the default reading is unit-proved by theMailboxesMarksCarryTheMacsAccountNameColourAndIconInTheMacsOrder)."
+}

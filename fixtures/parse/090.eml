@@ -1,0 +1,16 @@
+From: Orchard Pay <orders@example.org>
+To: Assem Example <assem@example.org>
+Subject: Your order has shipped
+Date: Sun, 15 Nov 2026 05:56:00 +0000
+Message-ID: <8962c2dcbc23a130@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Thanks for your order!
+
+Order #70427-55 is confirmed.
+Total: EUR 239.69
+Estimated delivery: 12 November 2026.
+
+Questions? Call 0466 82 12 43.

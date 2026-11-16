@@ -1,0 +1,14 @@
+# The second defining case: an answer, an attribution line, the quoted earlier message. The tail is REPLY_HISTORY, hidden.
+subject: Re: Budget figures
+sender: Bruno Lemaire
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY hide
+authored: Thanks, the figures look right to me. Send them to finance.
+history: Here are the budget figures for the next quarter.
+--- text
+Thanks, the figures look right to me. Send them to finance.
+
+On Friday, Alice wrote:
+> Here are the budget figures for the next quarter.
+> Tell me if anything looks off.

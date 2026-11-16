@@ -1,0 +1,49 @@
+{
+  "item": "57502a0f",
+  "full_id": "57502a0f-b7ad-4f0b-9d20-6751d5ebce6b",
+  "title": "Build the picked mail body view (A129)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/messagebody-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/reader-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-57502a0f\" --screens mac-main",
+      "pass": "^PASS mac-main (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "read the mac-main pictures in light and dark with (a) a written mail with a folded earlier message, (b) the same after the dots key, (c) the designed sample, against the picks B3 (paper only when the mail is designed) and F2 (three dots) recorded at docs/SPEC.md:147",
+      "pass": "the history, signature details and legal footer sit behind ONE three-dot pill that shows its key cap; opened, the text appears in place and the lines above do not move; nothing the sender wrote is hidden; light and dark both read well"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyContent.swift",
+      "find": "let parts = quotedOpen ? [s.main, s.folded] : [s.main]",
+      "replace": "let parts = [s.main]",
+      "proof": 0,
+      "red": "FAIL J1\\.6/dots-key-opens-everything"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The drawing is the pair of picks B3 and F2 of docs/SPEC.md:147 (A129 row); no board of them was found in docs/design/boards (message-card-r1 is the message row, not the body view), so the lead compares with the pick text. Cases (checks/messagebody-check.py): :50 selection-shows-the-whole-body, :55 the-dots-pill-shows-its-key, :57 fold-follows-the-engines-segments, :63 older-quoted-text-folded, :68 show-quoted-click-unfolds, :79 dots-key-opens-everything, :86 dots-key-again-folds, :88 dots-click-opens-everything, :90 dots-click-again-folds, the no-jump read at :74-78 (box text_above_y before and after O), :205-221 the pictures line and Load once. Every control the body view draws is clicked once there (its header lists them: the quoted-text toggle and the blocked-images button; links and blocked images are web-view drawn and not controls). Light and dark: checks/shots-sheet.py renders both themes (THEMES at line 36). reader-check.py is run for the reader keys the fold key lives in (Sources/Features/Reader/ReaderKeys.swift:80). The whole run of messagebody-check prints only the total line; a per-case line is a gap of kind check (S: print_cases from journeys/lib/harness.py)."
+}

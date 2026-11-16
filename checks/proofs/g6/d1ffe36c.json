@@ -1,0 +1,140 @@
+{
+  "item": "d1ffe36c",
+  "full_id": "d1ffe36c-3e11-4b85-b698-a65029b32ef7",
+  "title": "Build the search suggestions in look S1",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theSuggestionKindsComeInTheDrawnOrder,onePersonGetsAFromRowAndAToRowWithTheirAddressAndABoldStart,aPersonSeenOnlyInSentMailIsOfferedAsTo,thePeopleReadDecodesWhatTheEngineServes,tabOnAToRowMakesThePillAndTheQueryStringCarriesIt,typingFromAndAPersonStaysWordsUntilTabTakesTheRow,typingHasAttachmentOrBeforeJuneMakesNoPillAndOffersTheSuggestion,tabOnTheBeforeRowMakesTheDatePillAndTheRestStaysWords,everyPillReadsBackFromItsColonFormAndIsSentInThatForm",
+      "pass": "Test run with 9 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J2\\.",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "lead",
+      "run": "grep -c -E '\"case\": \"par-(suggestions-in-the-drawn-order|tab-on-a-from-row-makes-the-pill-with-the-address|typed-words-make-no-pill|person-only-in-sent-mail-is-offered-as-to|dropdown-subject-and-attachment-rows|door-arrows-and-tab-in-the-field-go-to-the-search|door-dropdown-tab-adds-the-chip|door-escape-in-the-field-closes-the-search|pill-is-sent-to-the-engine-as-its-colon-form)\", \"verdict\": \"PASS\"' _captures/results/g6/par-searchmac-g6.results.jsonl",
+      "pass": "^9$",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/shots-mac-search --screens mac-search",
+      "pass": "(?s)PASS mac-search .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL mac-search|NOT JUDGED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+      "fail": "selftest FAIL|[1-9]\\d* not red",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state search-typing-domain \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state search-after-enter \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state search-closed-line-selected \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state search-closed-line-opened \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state search-related-from-attachment \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state search-nothing-matches \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/search-s1 --states search-typing-domain,search-after-enter,search-closed-line-selected,search-closed-line-opened,search-related-from-attachment,search-nothing-matches",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b28 checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "open the 28 pictures state-search-*-<light|dark>-<1280x820|960x632>.png of _captures/results/g6/search-s1/index.html (the one folder proof 12 writes, all six states) beside the page 'Search: the three parts of the list' (docs/design/boards/search-r3-parts/designs.js: After Enter, On a related mail, The closed line selected and opened, Typing a domain, Nothing matches)",
+      "pass": "each state matches its drawing in both themes at both sizes; a tile marked NOT JUDGED names the row that never said the state was reached"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchMac/SearchSuggest.swift",
+      "find": "if p.toCount > 0 {",
+      "replace": "if false {",
+      "proof": 0,
+      "red": "aPersonSeenOnlyInSentMailIsOfferedAsTo\\(\\) failed|✘ Test aPersonSeenOnlyInSentMailIsOfferedAsTo"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchSuggest.swift",
+      "find": "if p.fromCount > 0 {",
+      "replace": "if false {",
+      "proof": 0,
+      "red": "onePersonGetsAFromRowAndAToRowWithTheirAddressAndABoldStart\\(\\) failed|✘ Test onePersonGetsAFromRow"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchSuggest.swift",
+      "find": "if !plain.isEmpty {",
+      "replace": "if false {",
+      "proof": 0,
+      "red": "theSuggestionKindsComeInTheDrawnOrder\\(\\) failed|✘ Test theSuggestionKindsComeInTheDrawnOrder|✘ Test"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "        idx = next((i for i, r in enumerate(rows) if all(r.get(k) == v for k, v in cond.items())), None)",
+      "replace": "        idx = 0",
+      "proof": 5,
+      "red": "selftest FAIL: states mutant no-related is red"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) the rows under the field in the drawn order: Search all mail, From a person, To a person, Subject, Attachment, Label, Recent: Sources/Features/SearchMac/SearchSuggest.swift:125-175 (build; people at :143-155 give From and To rows with the address as detail, subject :158-162, attachment :163, filters, labels :168, folders, recents), SearchDropdown.swift:146 ('Search all mail for ...'); unit Tests/Unit/SearchSuggestTests.swift:57 theSuggestionKindsComeInTheDrawnOrder, :63 onePersonGetsAFromRowAndAToRow..., :75 aPersonSeenOnlyInSentMailIsOfferedAsTo, :91 thePeopleReadDecodes...; check cases par-suggestions-in-the-drawn-order, par-person-only-in-sent-mail-is-offered-as-to, par-dropdown-subject-and-attachment-rows. (2) Tab makes a pill: SearchSuggestTests.swift:98 tabOnAToRowMakesThePillAndTheQueryStringCarriesIt, :149 tabOnTheBeforeRow...; par-tab-on-a-from-row-makes-the-pill-with-the-address, par-door-dropdown-tab-adds-the-chip. (3) no pill from typed words: SearchSuggestTests.swift:112 typingFromAndAPersonStaysWordsUntilTabTakesTheRow, :124 typingHasAttachmentOrBeforeJune...; par-typed-words-make-no-pill. (4) Up, Down, Enter, Esc: par-door-arrows-and-tab-in-the-field-go-to-the-search, par-door-escape-in-the-field-closes-the-search, par-door-return-after-typing-launches-the-search (par-searchmac.py DOOR_CASES). (5) the pill goes to the engine in its colon form: SearchSuggestTests.swift:164 everyPillReadsBackFromItsColonForm...; par-pill-is-sent-to-the-engine-as-its-colon-form. (6) 14 languages: proof 3 (checks/i18n-check.py --catalogue, 'catalogue: GREEN' line at i18n-check.py:275, every key in 14 languages); the sentences of this item are existing catalogue keys ('Search all mail for ...', 'Smart folder'). The reader's finding that only a build log (_captures/searchmac/r5-build-1.txt) names SearchSuggest.swift stands: no earlier unit run is cited. Proof 2's count of 9 is the number of case names listed in its regex; each name was checked to exist in par-searchmac.py. Mutants: three one-line Swift breaks in SearchSuggest.swift, each find occurs once at 0aa1558e; the first two have named judges, the third uses a generic failed regex. | gap-shots (2026-11-11): six states of checks/shots-sheet.py, all on the corpus fixtures/tests-j2.json (the drawing's lorvan-hotels example does not exist in the fixture: Linea Supply, linea-supply-example.com, stands for it; the query is the check's own 'supplier price quote spring'): typing-domain (key /, type 'line', rows mac-search.dropdown row 1 = the domain; second view: Down, Tab = the pill), after-enter, closed-line-selected, closed-line-opened, related-from-attachment (queries in turn until a result with part related and source attachment, then Down to it), nothing-matches (`from:@linea-supply-example.com zzqxvk`). The Related part and the attachment source need the meaning index; on a rig without the model weights those states are NOT JUDGED naming the rows read (the pictures are still saved). Sizes 1280x820 and 960x632 (the drawing's small window), light and dark: 28 files. | hid-search round 18: proofs 12 and 13 name ONE folder, _captures/results/g6/search-s1, for all six states (main107 wrote them to a folder named by the comma list, and the lead proof named gap-shots/search-s1, which no run wrote)."
+}

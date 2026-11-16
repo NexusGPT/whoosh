@@ -1,0 +1,15 @@
+{
+ "id": "183",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "-----Original Message-----",
+  "visible_contains": "Yes, please book it. 6aa3",
+  "folded_contains": "Here are the three options we discussed. 89bb"
+ },
+ "adversarial": false
+}

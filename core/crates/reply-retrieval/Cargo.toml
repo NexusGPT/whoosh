@@ -1,0 +1,10 @@
+[package]
+name = "reply-retrieval"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh AI replies, retrieval: one message (and an optional instruction) becomes the context a draft needs. The model writes the questions, the index finds dated excerpts in the enabled sources, the best are kept, clashes handled, an optional AI filter, a label line per excerpt, and a report of what each step did. Pure logic behind three ports; no store, no network, no engine."
+
+[dependencies]
+# The shared records (RetrievalSettings, ReplySourcesRead, ReplyExcerpt, ReplyRetrievalReport, CoreError) and the prompt rule that drops `//` lines.
+contracts = { workspace = true }

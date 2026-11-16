@@ -1,0 +1,62 @@
+{
+ "item": "8ee25032",
+ "full_id": "8ee25032-f929-4bfd-81b0-34b8a435e459",
+ "title": "Bodies download in the background and are kept in the local database",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "cargo",
+   "run": "--release -p engine --test engine_body_r1",
+   "pass": "test result: ok\\. 6 passed; 0 failed",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "cargo",
+   "run": "--release -p engine --test engine_body_r1 the_newest_bodies",
+   "pass": "test result: ok\\. 3 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "cargo",
+   "run": "--release -p engine --test engine_body_r1 e_a_downloaded_body_is_served_after_a_relaunch_without_the_network -- --nocapture",
+   "pass": "test e_a_downloaded_body_is_served_after_a_relaunch_without_the_network \\.\\.\\. ok",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "cargo",
+   "run": "--release -p engine --test engine_body_r1 b_body_answers_at_once_and_the_downloaded_body_lands_with_one_thread_event -- --nocapture",
+   "pass": "test result: ok\\. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "cargo",
+   "run": "--release -p engine --test engine_body_wire a_stored_mail_is_read_without_running_the_engine",
+   "pass": "test result: ok\\. 1 passed; 0 failed",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  }
+ ],
+ "mutants": [
+  {
+   "file": "core/crates/engine/src/rust_core.rs",
+   "find": "if let Some(b) = Self::stored_body(&parts) { return Some(b); }",
+   "replace": "if let Some(_b) = Self::stored_body(&parts) { }",
+   "proof": 2,
+   "red": "thread 'e_a_downloaded_body_is_served_after_a_relaunch_without_the_network' (\\(\\d+\\) )?panicked|e_a_downloaded_body_is_served_after_a_relaunch_without_the_network \\.\\.\\. FAILED"
+  },
+  {
+   "file": "core/crates/engine/src/bodies.rs",
+   "find": "self.store.bodies_missing(&account, &folder, BODY_PREFETCH_COUNT as usize)",
+   "replace": "self.store.bodies_missing(&account, &folder, 0)",
+   "proof": 1,
+   "red": "thread 'd2_with_the_crawl_held_the_prefetch_alone_stores_the_newest_bodies' (\\(\\d+\\) )?panicked|d2_with_the_crawl_held_the_prefetch_alone_stores_the_newest_bodies \\.\\.\\. FAILED"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Both clauses have a cargo test over the production core of the hidden test copy, using the real sync against an in-process IMAP fake (127.0.0.1 only, no network leaves the Mac): (1) 'after a sync the newest bodies are in whoosh.sqlite without any open' = core/crates/engine/tests/engine_body_r1.rs:232 d_after_a_fetch_the_newest_bodies_arrive_unasked (doc comment 229-231: BODY_PREFETCH_COUNT newest stored, asked BODY_PREFETCH_BATCH UIDs per `UID FETCH`, the oldest wait) and :203 d_the_prefetch_stores_the_newest_bodies_in_batches_and_repairs_raw_previews (store side); (2) 'after a relaunch with the network off, opening shows the full body' = :149 e_a_downloaded_body_is_served_after_a_relaunch_without_the_network (the core is dropped with its body source, the data folder is reopened, body() answers the stored body and the new source counts zero calls); (3) 'no lag' = :122 b_body_answers_at_once_and_the_downloaded_body_lands_with_one_thread_event (body() under 50 ms while the server takes 500 ms; one ThreadChanged). :178 c_a_failed_download_is_not_tried_again_within_the_retry_time. The test file's five tests are the whole binary (5 passed). Code: core/crates/engine/src/bodies.rs:365-375 (prefetch_run, BODY_PREFETCH_COUNT), core/crates/engine/src/rust_core.rs:656-667 (body(): stored body first, otherwise `bodies.request` in the background, the preview shown meanwhile). The reader's finding that 'exit 101' is not a behavioural failure is wrong for these: the saved mutant logs (docs/lanes/body-r1.md:34-39) show the assertion text, e.g. 'body() waited 511.6ms'; a cargo test that panics exits 101, so 101 IS the red. Mutant 1 (body() ignores the stored body, the lane's mutant 5) goes red on proof 2; mutant 2 (the prefetch asks for 0 bodies) goes red on proof 1. The env mutant WHOOSH_CORE_MUTANT=body-fetch-sync (rust_core.rs:166; body() waits on the network) is the third, proved by proof 3 with the env set: the runner may add it. The owner's quotes ('shouldn't it try to download in background', 'Also it should store locally') are covered by these tests on a fake server; on the owner's real account the live drive is `python3 checks/realcore-perf.py <bundle> --latency-ms 300` (docs/lanes/body-r1.md:45-46), the lead's, not needed for the cargo claim. Nothing in this item is missing in code; state prove."
+}

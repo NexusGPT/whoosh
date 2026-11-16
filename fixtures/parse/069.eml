@@ -1,0 +1,40 @@
+From: Kestrel VPN <hello@example.org>
+To: Assem Example <assem@example.org>
+Subject: Confirm your account
+Date: Thu, 05 Nov 2026 19:18:00 +0000
+Message-ID: <8318d3350ac862a2@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============2608688970417341388=="
+
+--===============2608688970417341388==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+U2lnbiBpbiB0byBLZXN0cmVsIFZQTjogaHR0cHM6Ly9hdXRoLmV4YW1wbGUubmV0L21hZ2ljLWxp
+bmsvNzJmNDhiMjQ0YTY4NTNlMmQwZGQ1ZmNlDQoNClRoZSBsaW5rIHdvcmtzIG9uY2UuDQo=
+
+--===============2608688970417341388==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5L
+ZXN0cmVsIFZQTjwvdGl0bGU+PHN0eWxlPmJvZHl7Zm9udC1mYW1pbHk6SGVsdmV0aWNhLEFyaWFs
+LHNhbnMtc2VyaWY7Y29sb3I6IzIyMn0uY29kZXtmb250LXNpemU6MjhweH08L3N0eWxlPjwvaGVh
+ZD48Ym9keT48dGFibGUgd2lkdGg9IjEwMCUiIGNlbGxwYWRkaW5nPSIwIiBjZWxsc3BhY2luZz0i
+MCI+PHRyPjx0ZCBhbGlnbj0iY2VudGVyIj48aW1nIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHN0eWxl
+PSJkaXNwbGF5Om5vbmUiIHNyYz0iaHR0cHM6Ly90cmFjay5leGFtcGxlLm9yZy9weC9kNzBkZTgx
+ZC5qcGciIHNyY3NldD0iaHR0cHM6Ly90cmFjay5leGFtcGxlLm9yZy9weC9kNzBkZTgxZC5qcGcg
+MngiPjxoMj5LZXN0cmVsIFZQTjwvaDI+PHA+Q2xpY2sgdGhlIGJ1dHRvbiBiZWxvdyB0byBmaW5p
+c2guIFRoZSBsaW5rIHdvcmtzIG9uY2UuPC9wPjxwPjxhIGhyZWY9Imh0dHBzOi8vYXV0aC5leGFt
+cGxlLm5ldC9tYWdpYy1saW5rLzcyZjQ4YjI0NGE2ODUzZTJkMGRkNWZjZSIgc3R5bGU9ImJhY2tn
+cm91bmQ6IzA2Yztjb2xvcjojZmZmIj5TaWduIGluIHRvIEtlc3RyZWwgVlBOPC9hPjwvcD48cCBz
+dHlsZT0iZm9udC1zaXplOjExcHg7Y29sb3I6Izg4OCI+WW91IHJlY2VpdmUgdGhpcyBiZWNhdXNl
+IG9mIHlvdXIgYWNjb3VudC4gPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC91bnN1YnNjcmli
+ZT91PWQ4MzgxMCI+VW5zdWJzY3JpYmU8L2E+IHwgPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5l
+dC9wcml2YWN5Ij5Qcml2YWN5PC9hPjwvcD48aW1nIHNyYz0naHR0cDovL2ltZy5leGFtcGxlLmNv
+bS9iYW5uZXIvZTM1YmZhN2QuZ2lmJyBhbHQ9J2xvZ28nIHdpZHRoPScxMjAnPjwvdGQ+PC90cj48
+L3RhYmxlPjwvYm9keT48L2h0bWw+DQo=
+
+--===============2608688970417341388==--

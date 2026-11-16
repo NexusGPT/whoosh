@@ -1,0 +1,24 @@
+{
+ "domain": "outlook.com",
+ "address": "assem.fixture@outlook.com",
+ "password": "fixture-password",
+ "source": "ispdb",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "outlook.office365.com",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.office365.com",
+  "smtpPort": 587,
+  "smtpSecurity": "starttls",
+  "username": "assem.fixture@outlook.com",
+  "authMethod": "oauth2"
+ },
+ "coming_soon": "Sign in with Microsoft: coming soon",
+ "driven_by_journey": false
+}

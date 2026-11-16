@@ -1,0 +1,14 @@
+# Gmail with answers written between the quoted questions: every question stays visible (INLINE_QUOTE), nothing folded.
+subject: Re: Office move
+sender: Ulla Virtanen
+fold_from: none
+expect: 0 NEW_CONTENT show
+expect: 1 INLINE_QUOTE show
+expect: 2 NEW_CONTENT show
+expect: 3 INLINE_QUOTE show
+expect: 4 NEW_CONTENT show
+authored: Answers below.
+authored: The movers come on the 20th.
+authored: Yes, the desks go with us.
+--- html
+<div dir="ltr">Answers below.</div><div class="gmail_quote"><div class="gmail_attr">On Tue, Nov 10, 2026 at 9:00 AM Victor Lund &lt;victor@example.se&gt; wrote:</div><blockquote class="gmail_quote"><div>When do the movers come?</div></blockquote><div>The movers come on the 20th.</div><blockquote class="gmail_quote"><div>Do the desks go with us?</div></blockquote><div>Yes, the desks go with us.</div></div>

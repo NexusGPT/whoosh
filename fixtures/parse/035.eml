@@ -1,0 +1,32 @@
+From: Brightfield <security@example.org>
+To: Assem Example <assem@example.org>
+Subject: Your one-time code
+Date: Sat, 14 Nov 2026 15:26:00 +0000
+Message-ID: <e48ea7531e9001b9@mail.example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============2880771268257733116=="
+
+--===============2880771268257733116==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Your Brightfield verification code is LN6CQE. It expires in 10 minutes.
+
+--===============2880771268257733116==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Brightfield</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img width=3D"1" height=3D"1" style=3D"displ=
+ay:none" src=3D"http://pixel.example.net/o/9d012208.jpg" srcset=3D"http://pix=
+el.example.net/o/9d012208.jpg 2x"><h2>Brightfield</h2><p>Enter <b>LN6CQE</b> =
+to confirm your login to Brightfield.</p><p style=3D"font-size:11px;color:#88=
+8">You receive this because of your account. <a href=3D"https://example.net/u=
+nsubscribe?u=3D165dd3">Unsubscribe</a> | <a href=3D"https://example.net/priva=
+cy">Privacy</a></p></td></tr></table></body></html>
+
+--===============2880771268257733116==--

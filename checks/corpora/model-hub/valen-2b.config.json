@@ -1,0 +1,6 @@
+{
+ "model_type": "valen_qwen",
+ "architectures": [
+  "ValenQwenForDecisionMaking"
+ ]
+}

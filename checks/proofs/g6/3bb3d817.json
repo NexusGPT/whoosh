@@ -1,0 +1,35 @@
+{
+  "item": "3bb3d817",
+  "full_id": "3bb3d817-49a2-4304-b7e2-747f63843568",
+  "title": "Make the test engine match every typed word",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "J2\\.9/par-a-match-holds-every-typed-word +pass",
+      "fail": "J2\\.9/par-a-match-holds-every-typed-word +(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "model, a match holds every typed word: green=True; mutant one-word-is-a-match red=True",
+      "fail": "SELFTEST FAIL|Traceback",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/CoreBridge/FixtureSearch.swift",
+      "find": "let every = indexed != nil || Self.holdsEvery(ts, r)",
+      "replace": "let every = indexed != nil || ts.contains { t in Self.holdsEvery([t], r) }",
+      "proof": 0,
+      "red": "J2\\.9/par-a-match-holds-every-typed-word +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "lane every-word (docs/lanes/every-word.md). The rule: Sources/CoreBridge/FixtureSearch.swift `holdsEvery` and `holds` (one place), used by `run` (`let every = ...`); the real engine's: core/crates/search-text/src/query.rs run_ranked ('a typed word no message holds: the conjunction matches nothing', `meet`) and the module note ('Several typed words: every one must be held'). The case: checks/parity/par-searchmac.py EVERY_CASE (par-a-match-holds-every-typed-word), driven in the J2.9 step (s.expect(EVERY_CASE, ...)), its stand-in EveryWordModel and broken copy one-word-is-a-match in passage_selftest. The mutant puts back the any-word rule: msg-s05 (one of the two words of 'quote signed') becomes a match."
+}

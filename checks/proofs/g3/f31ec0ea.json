@@ -1,0 +1,164 @@
+{
+  "item": "f31ec0ea",
+  "full_id": "f31ec0ea-db57-434d-8f4f-00392e430f5a",
+  "title": "A sidebar label click drives the list and the reader",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "(?s)J1\\.55/label-click-pinned-opens-its-tab +pass.*J1\\.55/label-click-unpinned-lists-only-its-messages +pass.*J1\\.55/label-click-reader-shows-the-first-row +pass.*J1\\.55/label-click-empty-label-says-so-and-clears-the-reader +pass",
+      "fail": "J1\\.55/label-click[a-z0-9-]* +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxlist.py --selftest",
+      "pass": "MUTANTS \\| label-click-pinned-opens-its-tab \\| green \\|.*\\| red",
+      "fail": "\\| STILL |\\| RED |names no mutant",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-sidebar.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-labelclick",
+      "pass": "(?s)PASS +labelclick/label-click-pinned-opens-its-tab.*PASS +labelclick/label-click-unpinned-lists-only-its-messages.*PASS +labelclick/label-click-reader-shows-the-first-row.*PASS +labelclick/label-click-empty-label-says-so-and-clears-the-reader.*PASS +labelclick/label-click-all-inboxes-ends-it",
+      "fail": "FAIL +labelclick/|NOT JUDGED +labelclick/",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-labelclick --mutant",
+      "pass": "RED as it must be",
+      "fail": "SURVIVED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice label-click: model all 5 cases pass, 8 broken models each red on its own cases, nothing clicked NOT JUDGED",
+      "fail": "SURVIVED|WRONG|FAILS",
+      "timeout_s": 300
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_label_cmds",
+      "pass": "test result: ok\\. 15 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test realcore_s2",
+      "pass": "test result: ok\\.",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Sidebar/SidebarSelection.swift",
+      "find": "if model.tabIds.contains(labelId) {",
+      "replace": "if false {",
+      "proof": 0,
+      "red": "J1\\.55/label-click-pinned-opens-its-tab +fail"
+    },
+    {
+      "file": "Sources/Features/Sidebar/SidebarTargets.swift",
+      "find": "st.focusLabel(l.id)\n                return true",
+      "replace": "return true",
+      "proof": 0,
+      "red": "J1\\.55/label-click[a-z0-9-]* +fail"
+    },
+    {
+      "file": "checks/realcore-check.py",
+      "find": "s[\"ids\"] == [budget] and answer.get(\"unpinned_now\", {}).get(\"Answered\") is False,",
+      "replace": "True,",
+      "proof": 5,
+      "red": "selftest slice label-click: .*SURVIVE"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "c if label_cmds::is_command(&c) =>",
+      "replace": "c if false && label_cmds::is_command(&c) =>",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/store/src/counts.rs",
+      "find": "tabs.push(one_tab(id, figures));",
+      "replace": "let _ = (id, figures);",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/store/src/read.rs",
+      "find": "label_id: Some(label)",
+      "replace": "label_id: None",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/store/src/label_meta.rs",
+      "find": "self.label_tab_follow(id)",
+      "replace": "Ok(())",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/label_cmds.rs",
+      "find": "Ok(Some(actions::usecases::undo::push_entry(ctx, &UndoAction::Unlabel { message_ids: taken, label_id: label_id.clone() }, now)?))",
+      "replace": "Ok(None)",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/label_cmds.rs",
+      "find": "carrier_refs(ctx, id)? {",
+      "replace": "carrier_refs(ctx, id)?.into_iter().take(0) {",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/label_cmds.rs",
+      "find": "[\"labels\", \"tree\"] => {",
+      "replace": "[\"labels\", \"tree-off\"] => {",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/label_cmds.rs",
+      "find": "back.push((account, l.path, r));",
+      "replace": "let _ = (account, l.path, r);",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/label_cmds.rs",
+      "find": "ctx.label_rename(&label_id, &n, now)?;",
+      "replace": "let _ = (&label_id, &n, now);",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/label_cmds.rs",
+      "find": "ctx.label_reorder(&label_id, parent_id, u32::MAX)?;",
+      "replace": "ctx.label_reorder(&label_id, None, u32::MAX)?;",
+      "proof": 6,
+      "red": "FAILED|panicked"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Earlier reader finding 'no case' was wrong: J1.55 exists and is called at par-inboxlist.py:877 (label_click_step). The J1.55 mutants (par-inboxlist.py:2516-2523) are judged by the file's own stand-in (--selftest, run at :3127 against mutants); the two source mutants above are real app breaks (the pinned branch of showInList, SidebarSelection.swift:73; the click door no longer focusing the label, SidebarTargets.swift:86-89). par-inboxlist r83: 316 checks, 0 failed, 3 not judged (J1.52 tag cases) so the pass regex accepts any not-judged count while the fail regex names the J1.55 cases only. Journey style: FAIL lines and the total only. gap-engine-state: the real-core cell is checks/realcore-check.py `--slice-labelclick` (drive_labelclick, judge_labelclick, main_slice_labelclick; its slice-table entry in main()). It adds the seeded labels of slice 3 (Contracts, Answered, Renewals, all pinned), clicks `mac-main.sidebar.label.<id>`: Contracts (pinned: uistate tab == its id, reader shows the first row), Answered and Renewals unpinned through their `.pin` doors, Answered (list == only the Budget message, reader shows it), Renewals (empty words name it, reader cleared), then `mac-main.sidebar.mailbox.all-inboxes`. Expected rows come from the seeded mail by subject, not from the core's filing record, so `--mutant` (WHOOSH_CORE_MUTANT=flow-never-files) must read RED. The selftest (ran here, part of `python3 checks/realcore-check.py --selftest`, exit 0) holds one broken model per case. Unverified until the lead's run: the `.pin` door unpins a label on the real core and the sidebar rows carry `pinned` there as in the fixture. real-labels (lane/real-labels, docs/lanes/real-labels.md): the real core serves PinLabel and the other nine label commands (core/crates/engine/src/label_cmds.rs, dispatch arm in rust_core.rs run); a pinned owner label is a tab in the counts (core/crates/store/src/counts.rs build, label_tab_figures) and its tab read lists the mail filed under it (core/crates/store/src/read.rs label_tab_query); a built-in label's pin switches its split tab (label_meta.rs label_tab_follow). realcore_s2.rs a_view_refuses_pin_and_every_label_door_in_words_and_a_real_label_passes_the_door now expects Ok and label/updates/pinned true. Proofs 6 and 7 are the lead's cargo runs (not run by the builder: gap-common.md bars cargo for builders); the real-core hidden runs 3 and 4 settle the five labelclick cases on a build."
+}

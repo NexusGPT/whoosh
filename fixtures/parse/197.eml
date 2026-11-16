@@ -1,0 +1,26 @@
+From: Tessel Health <digest@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Weekly digest
+Date: Mon, 09 Nov 2026 14:13:00 +0000
+Message-ID: <a99955009554d1e2@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5222034471593625879=="
+
+--===============5222034471593625879==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+SGVsbG8sIHNhZmUgdGV4dC4gYWZ0ZXINCg==
+
+--===============5222034471593625879==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><head><title>x</title></head><body><p>Hello, safe text 0d28</p><svg onl=
+oad=3D"alert(1)"><script>alert(2)</script></svg><img src=3D'http://img.exampl=
+e.com/banner/745e1018.jpg' alt=3D'logo' width=3D'120'><p>after</p></body></ht=
+ml>
+
+--===============5222034471593625879==--

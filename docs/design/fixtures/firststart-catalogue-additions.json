@@ -1,0 +1,170 @@
+{
+ "Writing model": {
+  "en": "Writing model",
+  "fr": "Modèle d’écriture"
+ },
+ "Meaning model": {
+  "en": "Meaning model",
+  "fr": "Modèle de sens"
+ },
+ "A provider is connected.": {
+  "en": "A provider is connected.",
+  "fr": "Un fournisseur est connecté."
+ },
+ "No provider is connected. Paste a key.": {
+  "en": "No provider is connected. Paste a key.",
+  "fr": "Aucun fournisseur n’est connecté. Collez une clé."
+ },
+ "Checking the key…": {
+  "en": "Checking the key…",
+  "fr": "Vérification de la clé…"
+ },
+ "The provider refused the key. Paste another.": {
+  "en": "The provider refused the key. Paste another.",
+  "fr": "Le fournisseur a refusé la clé. Collez-en une autre."
+ },
+ "The decision model is on this Mac.": {
+  "en": "The decision model is on this Mac.",
+  "fr": "Le modèle de décision est sur ce Mac."
+ },
+ "The decision model is not downloaded.": {
+  "en": "The decision model is not downloaded.",
+  "fr": "Le modèle de décision n’est pas téléchargé."
+ },
+ "Jev decides, with your key and your consent.": {
+  "en": "Jev decides, with your key and your consent.",
+  "fr": "Jev décide, avec votre clé et votre accord."
+ },
+ "The Jev key is missing.": {
+  "en": "The Jev key is missing.",
+  "fr": "La clé Jev manque."
+ },
+ "Jev needs your consent.": {
+  "en": "Jev needs your consent.",
+  "fr": "Jev a besoin de votre accord."
+ },
+ "Decisions are off. Rules only.": {
+  "en": "Decisions are off. Rules only.",
+  "fr": "Les décisions sont désactivées. Règles seulement."
+ },
+ "The meaning model is on this Mac.": {
+  "en": "The meaning model is on this Mac.",
+  "fr": "Le modèle de sens est sur ce Mac."
+ },
+ "The meaning model is not on this Mac.": {
+  "en": "The meaning model is not on this Mac.",
+  "fr": "Le modèle de sens n’est pas sur ce Mac."
+ },
+ "Paste a key": {
+  "en": "Paste a key",
+  "fr": "Coller une clé"
+ },
+ "Paste the Jev key": {
+  "en": "Paste the Jev key",
+  "fr": "Coller la clé Jev"
+ },
+ "Give consent": {
+  "en": "Give consent",
+  "fr": "Donner l’accord"
+ },
+ "Choose a decision model": {
+  "en": "Choose a decision model",
+  "fr": "Choisir un modèle de décision"
+ },
+ "Downloading %@ of %@": {
+  "en": "Downloading %@ of %@",
+  "fr": "Téléchargement : %@ sur %@"
+ },
+ "Not on this Mac yet. %@, downloaded once.": {
+  "en": "Not on this Mac yet. %@, downloaded once.",
+  "fr": "Pas encore sur ce Mac. %@, téléchargé une fois."
+ },
+ "The AI cannot sort yet: the decision model is not on this Mac.": {
+  "en": "The AI cannot sort yet: the decision model is not on this Mac.",
+  "fr": "L’IA ne peut pas encore trier : le modèle de décision n’est pas sur ce Mac."
+ },
+ "needs a writing model": {
+  "en": "needs a writing model",
+  "fr": "demande un modèle d’écriture"
+ },
+ "No writing model is connected.": {
+  "en": "No writing model is connected.",
+  "fr": "Aucun modèle d’écriture n’est connecté."
+ },
+ "Search by meaning is off: the meaning model is not on this Mac.": {
+  "en": "Search by meaning is off: the meaning model is not on this Mac.",
+  "fr": "La recherche par le sens est inactive : le modèle de sens n’est pas sur ce Mac."
+ },
+ "Connect a model": {
+  "en": "Connect a model",
+  "fr": "Connecter un modèle"
+ },
+ "Download · %@": {
+  "en": "Download · %@",
+  "fr": "Télécharger · %@"
+ },
+ "Reply with AI · connect a model": {
+  "en": "Reply with AI · connect a model",
+  "fr": "Répondre avec l’IA · connecter un modèle"
+ },
+ "What the AI may use": {
+  "en": "What the AI may use",
+  "fr": "Ce que l’IA peut utiliser"
+ },
+ "Three things make the AI parts work. Set them now or later: Whoosh marks what is missing.": {
+  "en": "Three things make the AI parts work. Set them now or later: Whoosh marks what is missing.",
+  "fr": "Trois choses font marcher les parties IA. Réglez-les maintenant ou plus tard : Whoosh signale ce qui manque."
+ },
+ "Laya, on this Mac. 843 MB, once.": {
+  "en": "Laya, on this Mac. 843 MB, once.",
+  "fr": "Laya, sur ce Mac. 843 Mo, une fois."
+ },
+ "Writing and asking": {
+  "en": "Writing and asking",
+  "fr": "Écrire et demander"
+ },
+ "Your key for Anthropic, OpenAI, Google or Mistral. Kept in the Keychain.": {
+  "en": "Your key for Anthropic, OpenAI, Google or Mistral. Kept in the Keychain.",
+  "fr": "Votre clé Anthropic, OpenAI, Google ou Mistral. Gardée dans le Trousseau."
+ },
+ "Search by meaning": {
+  "en": "Search by meaning",
+  "fr": "Recherche par le sens"
+ },
+ "On this Mac. 1.5 GB, once.": {
+  "en": "On this Mac. 1.5 GB, once.",
+  "fr": "Sur ce Mac. 1,5 Go, une fois."
+ },
+ "Use Jev": {
+  "en": "Use Jev",
+  "fr": "Utiliser Jev"
+ },
+ "Connected": {
+  "en": "Connected",
+  "fr": "Connecté"
+ },
+ "The text of the mail a label's AI card ticks is sent to Jev to sort it. Nothing else.": {
+  "en": "The text of the mail a label's AI card ticks is sent to Jev to sort it. Nothing else.",
+  "fr": "Le texte des messages que coche la carte IA d’une étiquette est envoyé à Jev pour les trier. Rien d’autre."
+ },
+ "%@ · %lld models": {
+  "en": "%@ · %lld models",
+  "fr": "%@ · %lld modèles"
+ },
+ "Sorted, written, found.": {
+  "en": "Sorted, written, found.",
+  "fr": "Trié, écrit, retrouvé."
+ },
+ "Sorting your mail into labels": {
+  "en": "Sorting your mail into labels",
+  "fr": "Trier votre courrier en étiquettes"
+ },
+ "Summaries, drafts, Ask": {
+  "en": "Summaries, drafts, Ask",
+  "fr": "Résumés, brouillons, Demander"
+ },
+ "The meaning model could not be downloaded.": {
+  "en": "The meaning model could not be downloaded.",
+  "fr": "Le modèle de sens n’a pas pu être téléchargé."
+ }
+}

@@ -1,0 +1,90 @@
+{
+ "item": "8b30c6bf",
+ "full_id": "8b30c6bf-e068-49a1-8916-918bcd21300a",
+ "title": "Build ux-welcome-all",
+ "state": "owner",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J4 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J4-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+   "pass": "(?s)(?=.*STEP J4\\.3 PASS=\\d+\\n)(?=.*STEP J4\\.5 PASS=\\d+\\n)(?=.*STEP J4\\.6 PASS=\\d+\\n)",
+   "fail": "STEP J4\\.[356] [^\\n]*(FAIL|NOT JUDGED)=|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/par-welcomemac.py",
+   "pass": "(?s)(?=.*PASS +welcome-admin-blocked-line)(?=.*PASS +order-persists-across-relaunch)(?=.*\\d+ checks, 0 failed, 0 not judged)",
+   "fail": "FAIL |NOT JUDGED|could not drive",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/par-welcomemac.py --source",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL ",
+   "timeout_s": 120
+  },
+  {
+   "kind": "lead",
+   "run": "the four accounts of record 2 (docs/JOURNEYS.md:2 and :131: the owner's first four accounts, one each on Google, Microsoft 365 or Outlook, iCloud and JMAP/Fastmail) added on the installed build through the Welcome and Add-account doors; counts only: read the four rows' phase",
+   "pass": "4 of 4 rows healthy"
+  },
+  {
+   "kind": "unit",
+   "run": "theFourRoutesOfRecord2MakeFourHealthyRows,anAdminBlockedMicrosoftAddressShowsTheAdminLine,thirtyRowsKeepTheirMovedOrderAfterARelaunch",
+   "pass": "(?s)(?=.*Test theFourRoutesOfRecord2MakeFourHealthyRows\\(\\) passed)(?=.*Test anAdminBlockedMicrosoftAddressShowsTheAdminLine\\(\\) passed)(?=.*Test thirtyRowsKeepTheirMovedOrderAfterARelaunch\\(\\) passed)",
+   "fail": "failed",
+   "timeout_s": 600
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeModel.swift",
+   "find": "let made = parts.filter { add($0, secret: nil) }.count",
+   "replace": "let made = parts.prefix(1).filter { add($0, secret: nil) }.count",
+   "proof": 0,
+   "red": "STEP J4\\.6 [^\\n]*FAIL="
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeModel.swift",
+   "find": "ids.forEach { connect($0, secret: nil) }",
+   "replace": "ids.dropLast().forEach { connect($0, secret: nil) }",
+   "proof": 4,
+   "red": "Test theFourRoutesOfRecord2MakeFourHealthyRows\\(\\) failed"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeRow.swift",
+   "find": "return .refused(words: Words.text(SignInWords.adminBlocked), link: \"\")",
+   "replace": "return .refused(words: Words.text(\"blocked\"), link: \"\")",
+   "proof": 4,
+   "red": "Test anAdminBlockedMicrosoftAddressShowsTheAdminLine\\(\\) failed"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeModel.swift",
+   "find": "rows = r; save()",
+   "replace": "rows = r",
+   "proof": 4,
+   "red": "Test thirtyRowsKeepTheirMovedOrderAfterARelaunch\\(\\) failed"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeModel.swift",
+   "find": "rows = r; save()",
+   "replace": "rows = r",
+   "proof": 1,
+   "red": "FAIL order-persists-across-relaunch"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeRow.swift",
+   "find": "return .refused(words: Words.text(SignInWords.adminBlocked), link: \"\")",
+   "replace": "return .refused(words: Words.text(\"blocked\"), link: \"\")",
+   "proof": 1,
+   "red": "FAIL welcome-admin-blocked-line"
+  }
+ ],
+ "gap": "Only the real form of 'Adding the 4 routes of record 2 shows 4 healthy rows' remains (proof 3, the lead's run on the owner's own four accounts): this lane builds no fake of it. Built here: (1) the fixture form, unit test theFourRoutesOfRecord2MakeFourHealthyRows (Google, Microsoft, iCloud, Fastmail addresses, 4 rows all .healthy); (2) the admin-blocked Microsoft line on the Welcome row: WelcomeFakeConnector.refusal (WelcomeRow.swift) refuses a Microsoft address whose local part holds 'admin-blocked' with SignInWords.adminBlocked from the catalogue, unit test anAdminBlockedMicrosoftAddressShowsTheAdminLine, hidden case welcome-admin-blocked-line in par-welcomemac (a J4.3 step in journeys/J4.py was not added: that file is outside this lane); (3) 30 rows reorder and persist: unit test thirtyRowsKeepTheirMovedOrderAfterARelaunch (a new WelcomeModel over the same store reads the moved order) and hidden case order-persists-across-relaunch (paste, drag row 1 onto row 5 through the drag verb, scripts/launch-one.sh --relaunch, read the order again).",
+ "owner": "Record 2, the owner's four real accounts, are the owner's to name or to add; 'four healthy rows' on their real mailboxes is their account and their word.",
+ "notes": "Proof 0: journeys/J4.py J4.3 (:356-370 Microsoft 365 tenant, sign-in), J4.5 (:384-402 Fastmail, Gmail app-password route, unlisted host), J4.6 (:403-437 thirty-rows :418, order-on-screen :419, failing-row-says-why :436, other-29-carry-on :437); proof pure PASS per step. Proof 1: checks/parity/par-welcomemac.py: the five parity routes (Proton through Bridge, Zoho regions, Spacemail, Yahoo, AOL: its docstring lines 2-5; case names @check at :47-71) and the import step; it prints only the totals line and the failures (not per case). Proof 2: its --source mode, no app. Saved: _captures/welcomemac/CAPTURES.md:5 row 'thirty' ('26 ready, 3 refused, other rows carried on; drag order by list'): screenshots, not a drag. The reader's 'four routes exist' list (WelcomeRoutes.swift:51-72: google, microsoft, icloud, fastmail, yahoo, aol, proton, spacemail) is the route table, not a run. | gap-welcome: the hidden case order-persists-across-relaunch could not be run by this lane (it launches no app); its stand-in model is selftested red on order-lost-on-relaunch (par-welcomemac.py --selftest)."
+}

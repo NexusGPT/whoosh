@@ -1,0 +1,57 @@
+{
+  "item": "e56eb4f7",
+  "full_id": "e56eb4f7-ce43-4765-960f-1de679c09dd3",
+  "title": "Show a message when a forward with files is refused",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-composermac.py --selftest",
+      "pass": "selftest: [0-9]+ checks, 0 mutants not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "forward-the-core-refuses-says-its-sentence +pass",
+      "fail": "forward-the-core-refuses-says-its-sentence +(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "(too-large-file|missing-file|unusable-file)-is-refused-with-its-sentence +pass",
+      "fail": "-is-refused-with-its-sentence +(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "0 missing",
+      "fail": "missing [1-9]",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Files.swift",
+      "find": "case CoreError.Action, CoreError.Invalid: line = Self.words(error)",
+      "replace": "case CoreError.Action, CoreError.Invalid: break",
+      "proof": 1,
+      "red": "forward-the-core-refuses-says-its-sentence +fail"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Files.swift",
+      "find": "else { line = Self.forwardRefusedWords; return }",
+      "replace": "else { return }",
+      "proof": 1,
+      "red": "forward-the-core-refuses-says-its-sentence +fail"
+    }
+  ],
+  "gap": "S, check: the hidden case judges the core-refusal path only (fixture verb forward-refuse on gives 'The server refused to forward this message.', par-composermac.py:1159); the fallback sentence of the silent createdId==nil path (ComposerModel+Files.swift:160) has no case on the app, and the selftest (proof 0) judges the case against its own model only (its mutant row is par-composermac.py:1385). Add a case or a fixture verb variant that returns createdId nil (S). The attach-failure paths (:68,:75) are judged by the r7 cases too-large-file / missing-file / unusable-file (par-composermac.py:1110-1113), which print a pass line through print_cases.",
+  "owner": null,
+  "notes": "Code: Sources/Features/ComposerMac/ComposerModel+Files.swift:154-166 (adoptForwardDraft; forwardRefusedWords :155, line set :160 and :165-166), :60-75 (settleFiles, attach errors set line). Case: checks/parity/par-composermac.py:1151-1162 (needs the fixture verb 'fixture forward-refuse on|off', Sources/ControlSocket/FixtureVerbs.swift:207-212; documented at FixtureVerbs.swift:22). Selftest entry: par-composermac.py:2337-2365, mutant row :1385. Catalogue: Sources/Resources/Localizable.xcstrings holds 'This message could not be forwarded.' (2 occurrences); the 14-language rule is judged by checks/i18n-check.py --catalogue (:1000). Older runs of the case were red with an empty line (_captures/tests/r79/par-composermac-main79.log:187), before the verb existed."
+}

@@ -1,0 +1,10 @@
+# Zimbra: hr#zwchr and its header lines.
+subject: Re: Lab access
+sender: Ivan Petrov
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY hide
+authored: Your badge now opens the lab from 7 to 19.
+history: My badge does not open the lab door.
+--- html
+<html><body><div style="font-family: arial, helvetica, sans-serif; font-size: 12pt; color: #000000"><div>Your badge now opens the lab from 7 to 19.</div><hr id="zwchr" data-marker="__DIVIDER__"><div data-marker="__HEADERS__"><b>From: </b>"Julia Weiss" &lt;julia@example.de&gt;<br><b>To: </b>"Ivan Petrov" &lt;ivan@example.de&gt;<br><b>Sent: </b>Tuesday, 10 November, 2026 08:30:00<br><b>Subject: </b>Lab access<br></div><div data-marker="__QUOTED_TEXT__"><div>My badge does not open the lab door.</div></div></div></body></html>

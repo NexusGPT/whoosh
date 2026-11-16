@@ -1,0 +1,24 @@
+{
+  "value": [
+    {
+      "subscriptionId": "sub-inbox-example",
+      "subscriptionExpirationDateTime": "2026-11-13T23:59:00Z",
+      "changeType": "created",
+      "resource": "Users/00000000-0000-0000-0000-0000000000aa/Messages/AAMkNewExample01=",
+      "resourceData": {
+        "@odata.type": "#Microsoft.Graph.Message",
+        "@odata.id": "Users/00000000-0000-0000-0000-0000000000aa/Messages/AAMkNewExample01=",
+        "id": "AAMkNewExample01="
+      },
+      "clientState": "client-state-example",
+      "tenantId": "00000000-0000-0000-0000-0000000000bb"
+    },
+    {
+      "subscriptionId": "sub-inbox-example",
+      "changeType": "created",
+      "resourceData": { "id": "AAMkForged01=" },
+      "clientState": "not-our-state",
+      "tenantId": "00000000-0000-0000-0000-0000000000bb"
+    }
+  ]
+}

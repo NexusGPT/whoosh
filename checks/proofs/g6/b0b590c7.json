@@ -1,0 +1,34 @@
+{
+  "item": "b0b590c7",
+  "full_id": "b0b590c7-826a-4fe0-9a37-3d5cf6608be5",
+  "title": "Hand every newly stored mail to the search index",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_index_on_store",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/import_run.rs",
+      "find": "crate::bodies::crawl::enqueue_for_store(&self.store, &fresh);",
+      "replace": "",
+      "proof": 0,
+      "red": "an_imported_mail_is_found_by_meaning_with_no_restart \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/outbox_tick.rs",
+      "find": "crate::bodies::crawl::enqueue_for_store(&self.store, &[sent_id.clone()]);",
+      "replace": "",
+      "proof": 0,
+      "red": "the_copy_of_a_sent_mail_is_found_by_meaning_with_no_restart \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "core/crates/engine/tests/engine_index_on_store.rs, 2 tests, a hashing fake embedder handed to the core (RustCore::background().set_embedder) before the mail is stored, no second hand-over, no reopen: :147 an_imported_mail_is_found_by_meaning_with_no_restart (the import fixture and run of import_listed_r2.rs; every imported mail holds body chunks with their vector mark, the meaning search finds the invoice first) and :231 the_copy_of_a_sent_mail_is_found_by_meaning_with_no_restart (the send rig of engine_compose_cmds.rs, the sync-imap fake and an SMTP listener on 127.0.0.1; the copy sent-<outbox id> holds body chunks with their vector mark and the meaning search finds it first). The calls under test: core/crates/engine/src/import_run.rs:330 (after insert_imported) and core/crates/engine/src/outbox_tick.rs:192 (after insert_messages of the sent copy). Each mutant's find occurs once in its file; each was seen red by its assertion (docs/lanes/index-queue.md, logs under _captures/index-queue/). The pre-send settle has a 120 s ceiling: one mutant run at load 159.2 stopped there (logged), so a red seen only as a settle timeout is not the mutant's red."
+}

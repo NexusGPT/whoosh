@@ -1,0 +1,20 @@
+{
+ "id": "149",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "3bbe12e195ca61cd8fc9@example.net",
+  "summary": "Quarterly planning",
+  "organizer": "luc.martens@mail.example.net",
+  "all_day": false,
+  "start_utc_ms": 1795516200000,
+  "start_local": null,
+  "tzid": null,
+  "location": "Rue Example 12, Brussels"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

@@ -1,0 +1,82 @@
+{
+  "item": "bec4e25c",
+  "full_id": "bec4e25c-ae2a-41fe-87bc-2951cd1a0268",
+  "title": "Run the iPhone rounds on the 26.5 simulator",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "xcrun simctl list runtimes",
+      "pass": "iOS 26\\.5",
+      "fail": "^$|error",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --selftest",
+      "pass": "selftest: 22 cases, 0 failed",
+      "fail": "FAIL ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app after `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/inboxphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|REFUSED|NO SOCKET|NO INSTANCE|DIED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app after `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/parity/par-inboxphone.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|REFUSED|NO SOCKET|NO INSTANCE|DIED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app after `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/searchphone-check.py --live",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|REFUSED|NO SOCKET|NO INSTANCE|DIED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app after `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/threadphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|REFUSED|NO SOCKET|NO INSTANCE|DIED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app after `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/welcomephone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|REFUSED|NO SOCKET|NO INSTANCE|DIED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/phone-shots.py --selftest",
+      "pass": "selftest: 9 cases, 0 failed",
+      "fail": "FAIL ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "sh scripts/iphone-round.sh --selftest",
+      "pass": "selftest: 13 cases, 0 failed",
+      "fail": "FAIL ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP and MAC_APP as in the notes: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-round.sh \"$IPHONE_APP\" \"$MAC_APP\" <out folder>   (every phone check and every Mac-and-phone check, one log each under <out folder>/logs, the pictures in <out folder>/shots/index.html)",
+      "pass": "round: 19 checks run, 0 not green",
+      "fail": "[1-9][0-9]* not green|REFUSED",
+      "timeout_s": 6000
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "The iOS 26.5 runtime is installed (proof 0 reads `xcrun simctl list runtimes`). The phone checks run on the simulator through scripts/iphone-rig.sh (docs/lanes/iphone-rig.md): it uses only `xcrun simctl` (no Simulator.app, no `open`), creates its own device 'Whoosh rig iPhone 17 Pro', launches the app with --fixture-core and a private socket folder, exports WHOOSH_SOCKET_DIR and WHOOSH_IPHONE_SOCKET_DIR, runs the command, then terminates the app and shuts the device down. Proof 1 is the script's own selftest with a fake xcrun (launches nothing). Proofs 2 to 6 are the lead's run on the real simulator, one per phone check, each printing its totals line. Each parity check is also run once on a broken copy to be seen red: a throwaway worktree with `refreshedAt = Date()` at Sources/Features/InboxPhone/InboxPhoneState.swift:79 changed to `refreshedAt = refreshedAt`, built into another <out>, run with proof 3's command; it must print `1 failed` for par-inboxphone-refresh/refresh-reads-again (declared at checks/parity/par-inboxphone.py:78). Search check: `--live` is the flag at checks/searchphone-check.py:1298 (without it the check runs on its stand-in); the lead confirms by the run's own output. Shots at 402x874 (docs/design/geometry/iphone-inbox.json:4-7): see docs/lanes/iphone-rig.md, they are read as pictures by the lead. | Round 2: the rig now uninstalls the app after the boot and before the install (a fresh container every run), the default app arguments are the lead's (--fixture-core -AppleLanguages (en) -AppleLocale en_US); proofs 7 to 9 are the pictures tool's selftest, the one-command round's selftest and the round itself."
+}

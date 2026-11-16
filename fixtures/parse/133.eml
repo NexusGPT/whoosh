@@ -1,0 +1,37 @@
+From: Postbox Example <security@example.com>
+To: Assem Example <assem@example.org>
+Subject: New sign-in to your account
+Date: Thu, 12 Nov 2026 12:41:00 +0000
+Message-ID: <7ab1ee8b2f6725fc@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0106843608367022166=="
+
+--===============0106843608367022166==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+We noticed a new sign in to your account from Chrome on a Mac at 14:32. Revie=
+w recent activity: https://example.com/security/activity
+
+--===============0106843608367022166==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5Q
+b3N0Ym94IEV4YW1wbGU8L3RpdGxlPjxzdHlsZT5ib2R5e2ZvbnQtZmFtaWx5OkhlbHZldGljYSxB
+cmlhbCxzYW5zLXNlcmlmO2NvbG9yOiMyMjJ9LmNvZGV7Zm9udC1zaXplOjI4cHh9PC9zdHlsZT48
+L2hlYWQ+PGJvZHk+PHRhYmxlIHdpZHRoPSIxMDAlIiBjZWxscGFkZGluZz0iMCIgY2VsbHNwYWNp
+bmc9IjAiPjx0cj48dGQgYWxpZ249ImNlbnRlciI+PGltZyBzcmM9Ii8vaW1nLmV4YW1wbGUuY29t
+L3B4LzJjMjBkNzdiLmdpZiIgd2lkdGg9IjEiIGhlaWdodD0iMSI+PGgyPlBvc3Rib3ggRXhhbXBs
+ZTwvaDI+PHA+V2Ugbm90aWNlZCBhIG5ldyBzaWduIGluIHRvIHlvdXIgYWNjb3VudCBmcm9tIENo
+cm9tZSBvbiBhIE1hYyBhdCAxNDozMi48L3A+PHA+SWYgdGhpcyB3YXMgeW91LCBubyBhY3Rpb24g
+aXMgbmVlZGVkLiBJZiBub3QsIDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvc2VjdXJpdHkv
+YWN0aXZpdHkiPnJldmlldyByZWNlbnQgYWN0aXZpdHk8L2E+LjwvcD48cCBzdHlsZT0iZm9udC1z
+aXplOjExcHg7Y29sb3I6Izg4OCI+WW91IHJlY2VpdmUgdGhpcyBiZWNhdXNlIG9mIHlvdXIgYWNj
+b3VudC4gPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC91bnN1YnNjcmliZT91PWNhMjZjOSI+
+VW5zdWJzY3JpYmU8L2E+IHwgPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC9wcml2YWN5Ij5Q
+cml2YWN5PC9hPjwvcD48L3RkPjwvdHI+PC90YWJsZT48L2JvZHk+PC9odG1sPg0K
+
+--===============0106843608367022166==--

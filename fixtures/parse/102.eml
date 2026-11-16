@@ -1,0 +1,32 @@
+From: Mosaic Notes <billing@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1998
+Date: Mon, 02 Nov 2026 19:33:00 +0000
+Message-ID: <29c4531942e13975@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============4742260616237677898=="
+
+--===============4742260616237677898==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+SW52b2ljZSAyMDI2LTE5OTggZm9yIEVVUiAxLDI1MC4wMCBpcyBkdWUgb24gMzAgTm92ZW1iZXIg
+MjAyNi4NCg==
+
+--===============4742260616237677898==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Mosaic Notes</title=
+><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-siz=
+e:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspaci=
+ng=3D"0"><tr><td align=3D"center"><h2>Mosaic Notes</h2><p>Invoice <b>2026-199=
+8</b> for EUR 6425.76 is due on 30 November 2026.</p><p>VAT 21%. IBAN BE68 53=
+90 0754 7034. Payment reference 629/4815/10756.</p><p style=3D"font-size:11px=
+;color:#888">You receive this because of your account. <a href=3D"https://exa=
+mple.net/unsubscribe?u=3D1e8590">Unsubscribe</a> | <a href=3D"https://example=
+.net/privacy">Privacy</a></p></td></tr></table></body></html>
+
+--===============4742260616237677898==--

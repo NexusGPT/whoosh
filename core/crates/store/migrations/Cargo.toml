@@ -1,0 +1,16 @@
+[package]
+name = "store-migrations"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Whoosh SQLite schema: migration v1 (one table per docs/DATA-MAP.md record that lives in SQLite) and the runner."
+
+# Own workspace root: core/Cargo.toml lists crates/* only, so this nested crate is not a member.
+# See docs/lanes/migrations.md "## Contract deltas" for how core-store wires it.
+[workspace]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+rusqlite = { version = "0.41", features = ["bundled"] }

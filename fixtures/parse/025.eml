@@ -1,0 +1,18 @@
+From: Harbor Pay <security@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: Sign in to Harbor Pay
+Date: Wed, 04 Nov 2026 15:14:00 +0000
+Message-ID: <3cb5fe2659b3bb2b@accounts.example.com>
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Harbor Pay</title><=
+style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size:=
+28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacing=
+=3D"0"><tr><td align=3D"center"><h2>Harbor Pay</h2><p>Your verification code =
+is</p><p class=3D"code" style=3D"letter-spacing:6px"><strong>07160698</strong=
+></p><p>It expires in 10 minutes.</p><p style=3D"font-size:11px;color:#888">Y=
+ou receive this because of your account. <a href=3D"https://example.net/unsub=
+scribe?u=3Db5f02c">Unsubscribe</a> | <a href=3D"https://example.net/privacy">=
+Privacy</a></p></td></tr></table></body></html>

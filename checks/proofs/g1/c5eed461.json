@@ -1,0 +1,50 @@
+{
+ "item": "c5eed461",
+ "full_id": "c5eed461-4925-4542-ae7b-99e00eda0742",
+ "title": "Build fn-tests-j1",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results WHOOSH_THEME=light python3 journeys/run.py J1 2>&1 ; cat \"$D/results\"/J1-*.results.jsonl'",
+   "pass": "(?s)J1 GREEN: 12 steps, \\d+ checks, 0 failed, 0 not judged.*\"step\": \"J1.1\", \"case\": \"theme-applied\", \"verdict\": \"PASS\"",
+   "fail": "J1 (RED|COULD-NOT-DRIVE)|\"verdict\": \"FAIL\"|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results WHOOSH_THEME=dark python3 journeys/run.py J1 2>&1 ; cat \"$D/results\"/J1-*.results.jsonl'",
+   "pass": "(?s)J1 GREEN: 12 steps, \\d+ checks, 0 failed, 0 not judged.*\"step\": \"J1.1\", \"case\": \"theme-applied\", \"verdict\": \"PASS\"",
+   "fail": "J1 (RED|COULD-NOT-DRIVE)|\"verdict\": \"FAIL\"|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/mutant-coverage-check.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "NO MUTANT|STRAY|[1-9]\\d* failed",
+   "timeout_s": 300
+  },
+  {
+   "kind": "static",
+   "run": "python3 journeys/J1.py --selftest",
+   "pass": "J1 selftest: \\d+ checks, \\d+ mutants, 0 not red or missing",
+   "fail": "NO MUTANT|STRAY|NOT IN THE CATALOGUE|[1-9]\\d* not red or missing",
+   "timeout_s": 300
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/ControlSocket/Verbs.swift",
+   "find": "\"theme\": WindowControl.theme,",
+   "replace": "\"theme\": \"light\",",
+   "proof": 1,
+   "red": "\"step\": \"J1.1\", \"case\": \"theme-applied\", \"verdict\": \"FAIL\""
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "J1 prints its verdict line on stderr from journeys/run.py:54 ('%s %s: %d steps, %d checks, %d failed, %d not judged: %s'), so a pass reads 'J1 GREEN: 12 steps, 87 checks, 0 failed, 0 not judged: all 87 checks passed' (journeys/lib/harness.py:360). The acceptance's '12 checks' is the 12 steps J1.1-J1.12 (journeys/J1.py has 12 j.step calls; the last saved run counted 87 checks in 12 steps); the totals line on stdout is 'N checks, 0 failed, 0 not judged' (run.py:67). One launch per theme: WHOOSH_THEME=light|dark (J1.py:5, 97, 257-258); the proof runs them as two hidden proofs, each wrapped in sh -c so the harness's per-case jsonl (journeys/lib/harness.py:248-270, WHOOSH_RESULTS_DIR) is printed as well and a pass is a PASS line per case, not only an absence of FAIL. The runner must not pass 2>&1 twice. 'Before slice 1 lands, exit 1' is history: saved red runs _captures/tests-j1/J1-live-light.txt:4 and J1-live-dark.txt:4 (26 failed, 21 not judged); it cannot be re-run on this build, so it is not a proof here. Proofs 2 and 3 are the mutant half: checks/mutant-coverage-check.py:20-40 (every check names a mutant, exit 0, dry, no app; it covers all journeys, so it also covers every slice-1 check) and journeys/J1.py:540-560 (selftest, dry). The state is prove because every piece exists; whether J1 is green on this build is what proofs 0 and 1 will say (the saved run was red). J1.6 one-interaction-budget-ms (J1.py:331-339) and J1.1 launch-budget-ms are load-sensitive: they are judged only on a quiet machine (under_load). Mutant: the app reports the theme it was asked for (Sources/ControlSocket/Verbs.swift:59, uistate theme = WindowControl.theme); forcing 'light' must turn the dark proof red on theme-applied (J1.py:258; mutant row J1.py:448). It needs an app rebuild."
+}

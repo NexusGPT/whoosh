@@ -1,0 +1,18 @@
+{
+  "item": "275bed0c",
+  "full_id": "275bed0c-8115-4093-8861-4e5494b7a39c",
+  "title": "Search stored reply excerpts under 50 ms",
+  "state": "prove",
+  "proofs": [
+    {"kind": "lead", "run": "read the machine load first (uptime): the timing is judged only under load 12; then run the cargo proof below on the quiet machine", "pass": "load averages: [0-9.]+ [0-9.]+ [0-9.]+"},
+    {"kind": "cargo", "run": "--release -p engine --test engine_source_excerpts a_search_over_ten_thousand_stored_excerpts_is_measured -- --nocapture", "pass": "SEARCH 10000 stored excerpts, indexed: median [0-9.]+(ms|µs|us)", "fail": "FAILED|panicked|not judged: load", "timeout_s": 900},
+    {"kind": "cargo", "run": "--release -p engine --test engine_source_excerpts the_index_answers_as_the_plain_scan_does_on_a_200_excerpt_fixture", "pass": "test the_index_answers_as_the_plain_scan_does_on_a_200_excerpt_fixture \\.\\.\\. ok", "fail": "FAILED|panicked", "timeout_s": 900}
+  ],
+  "mutants": [
+    {"file": "core/crates/store/src/realcore.rs", "find": "params.push(Value::Integer(limit as i64));", "replace": "params.push(Value::Integer(1_000_000));", "proof": 1, "red": "a_search_over_ten_thousand_stored_excerpts_is_measured .*FAILED|assertion .* failed"},
+    {"file": "core/crates/store/src/realcore.rs", "find": "ORDER BY score DESC, c.source_key || char(31) || c.item_key || char(31) || CAST(c.chunk_no AS TEXT) ASC LIMIT", "replace": "ORDER BY c.id DESC LIMIT", "proof": 2, "red": "the_index_answers_as_the_plain_scan_does_on_a_200_excerpt_fixture .*FAILED|query .* limit"}
+  ],
+  "gap": "S, check: (1) the item names OPERATION_MS; the test bounds by contracts::constants::INTERACTION_COMMIT_MS (core/crates/contracts/src/constants.rs:9, 50, the owner's 'under 50 ms' ledger) at engine_source_excerpts.rs:283; OPERATION_MS appears only in docs/lanes/labels-r5.md and core/crates/engine/tests/engine_act_r6.rs, so read 'OPERATION_MS' as INTERACTION_COMMIT_MS or rename in the item. (2) The test prints 'not judged: load N' and passes when the load is 12 or more (:285-287), so a green on a busy machine does not prove the time: proof 1's fail regex catches the 'not judged' line and the lead reads load first (proof 0). (3) The word index is a full-text table (migration 0021, 'source_chunk_fts', query in core/crates/store/src/realcore.rs:1268-1290); the first mutant above breaks the 'hands over only the best rows' count; a mutant that makes the search fall back to the plain scan (the test comment's 'index-dropped') has no source switch: nothing to apply, so the 8-row assertion at :276 stands in for it.",
+  "owner": null,
+  "notes": "Test: core/crates/engine/tests/engine_source_excerpts.rs:262 (the 10,000 excerpts asserted at :264; measured median of five warm searches :266-274; printed 'SEARCH 10000 stored excerpts, indexed: median ...' at :276 and the plain scan at :280; rows read 8 vs 10,000 asserted :277-281; bound :283). Equality with the scan: :295 (200 excerpts, 10 queries x 4 limits). Implementation: core/crates/engine/src/replies_work/adapters/stored_excerpts.rs:76-90 (search), store realcore.rs:1268. Earlier measure in the item: 239 ms on f86ddb9a at load 12 to 14 (the scan), a figure for the old code."
+}

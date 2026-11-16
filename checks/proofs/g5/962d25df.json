@@ -1,0 +1,54 @@
+{
+  "item": "962d25df",
+  "full_id": "962d25df-54ab-4e9e-87f4-062a504d5982",
+  "title": "Stop a typed from freezing into a wrong sender pill",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theWordFromInASentenceMakesNoChip,theTypedColonFormStillMakesTheSenderChip,theLaunchedQueryIsTheWordsTheFieldShows,tabOnTheSubjectRowMakesTheChip",
+      "pass": "Test theLaunchedQueryIsTheWordsTheFieldShows\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL [^ ]*par-typed-words-make-no-pill|NOT JUDGED [^ ]*par-typed-words-make-no-pill",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "read the results file par-searchmac writes (_captures/results/par-searchmac/, or $WHOOSH_RESULTS_DIR, *.results.jsonl) and take the line of the case: it carries the expected [([], true, true)] x3 and the values read for 'email from consultant'",
+      "pass": "\"case\": \"par-typed-words-make-no-pill\", \"verdict\": \"PASS\""
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "[0-9]+ key bar checks, [0-9]+ mutants, 0 problems",
+      "fail": "NOT RED|[1-9][0-9]* problem",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchMac/SearchMacModel.swift",
+      "find": "var launchedQuery: SearchQuery { SearchQuery.typed(shownText) }",
+      "replace": "var launchedQuery: SearchQuery { SearchQuery.typed(\"from:c \" + shownText) }",
+      "proof": 0,
+      "red": "theLaunchedQueryIsTheWordsTheFieldShows\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchQuery.swift",
+      "find": "public static func typed(_ raw: String) -> SearchQuery { SearchQuery(raw, spokenFilters: false) }",
+      "replace": "public static func typed(_ raw: String) -> SearchQuery { SearchQuery(raw + \" from:c\", spokenFilters: false) }",
+      "proof": 1,
+      "red": "FAIL [^ ]*par-typed-words-make-no-pill"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Unit: Tests/Unit/SearchRankingTests.swift:212 (theWordFromInASentenceMakesNoChip: 'email from consultant' and 'email from c' make no chip, words stay words), :222 (the colon form still makes the chip, the positive control), :249 (theLaunchedQueryIsTheWordsTheFieldShows: the launched words equal the field's), :260. Code: Sources/Features/SearchMac/SearchQuery.swift:98-134 (only typed colon forms are pills; keywords from/before/has stay words until Tab), SearchMacModel.swift:128 (launchedQuery). Hidden case: checks/parity/par-searchmac.py:324 (name) and :487-496 (words_stay_words: 'email from consultant', 'from Linea Supply has attachment', 'price before June': no chip, the bar text and the core's search/last/query equal the typed text). par-searchmac prints no line for a passing case (main() :2486-2505), hence proof 2 (results file); the pass of proof 1 is shown by the case not appearing in the FAIL lines and the summary '0 failed, 0 not judged'. SPEC A142 (docs/SPEC.md:158)."
+}

@@ -1,0 +1,97 @@
+{
+  "item": "c7aa1a63",
+  "full_id": "c7aa1a63-5c7c-44dd-9b1e-206b7edfc95f",
+  "title": "Build mob-inboxphone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "swipeArchiveThenSnoozeRemovesExactlyThoseTwoRowsAndWritesTwoUndoEntries,undoReversesTheLastSwipeFirstAndBringsTheRowBackAtItsPlace,aRefusedSwipeLeavesTheRowAndNamesTheAccountInWords,theIphoneListShowsTheFixtureMailPinnedFirstWithAccountMarks,everyRowHasASwipeArchiveAndASwipeSnoozeAndTheUndoHasAButton",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/inboxphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "aSwipeArchivesTheRowThenASwipeSnoozesAnotherAndTheUndoButtonBringsTheSnoozedRowBack,aSwipeOnARowOfTheFailingAccountKeepsTheRowAndNamesTheAccountOnTheScreen,thePhonePrimaryCountEqualsTheMacsForTheSameFixture",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/inboxphone-check.py --selftest",
+      "pass": "(?s)(?=.*clean model: failed=\\[\\] unjudged=\\[\\]; labels without a mutant=\\[\\])(?=.*\\| J7\\.3/account-mark-label-per-row \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.3/archived-row-leaves \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.3/refusal-names-the-account \\| .* \\| RED on this case \\|)(?=.*\\| J7\\.3/undo-consumed-an-entry \\| .* \\| RED on this case \\|)(?=.*19 mutants, 0 not seen red; 0 clean failures, 0 clean not judged, 0 cases without a mutant)",
+      "fail": "NOT RED|\\b[1-9]\\d* not seen red|\\b[1-9]\\d* clean failures",
+      "timeout_s": 300
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/phone-shots.py \"<out folder>/shots\" --screens iphone-inbox   (the light and dark pictures at 402x874, read as pictures for clipped rows)",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "c[\"\\(row).swipe-snooze\"] = { state.act(.snooze, row: i, in: $0) }",
+      "replace": "c[\"\\(row).swipe-snoozed\"] = { state.act(.snooze, row: i, in: $0) }",
+      "proof": 0,
+      "red": "everyRowHasASwipeArchiveAndASwipeSnoozeAndTheUndoHasAButton.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"iphone-inbox.undo.button\": { m in state.undoLast(m) },",
+      "replace": "\"iphone-inbox.undo.buttonx\": { m in state.undoLast(m) },",
+      "proof": 0,
+      "red": "everyRowHasASwipeArchiveAndASwipeSnoozeAndTheUndoHasAButton.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"mark_label\": a.markLabel, \"mark_colour\": a.colour, \"mark_icon\": a.markIcon, \"mark_attention\"",
+      "replace": "\"mark_label\": a.markLabel, \"mark_colour\": \"#000000\", \"mark_icon\": a.markIcon, \"mark_attention\"",
+      "proof": 0,
+      "red": "theIphoneListShowsTheFixtureMailPinnedFirstWithAccountMarks.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "c[\"\\(row).swipe-archive\"] = { state.act(.archive, row: i, in: $0) }",
+      "replace": "c[\"\\(row).swipe-archive\"] = { state.act(.snooze, row: i, in: $0) }",
+      "proof": 2,
+      "red": "aSwipeArchivesTheRowThenASwipeSnoozesAnotherAndTheUndoButtonBringsTheSnoozedRowBack.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneState.swift",
+      "find": "failure = m.lastFailure.map { \"\\($0.accountName): \\($0.reasonWords)\" } ?? \"\\(action.title) was refused\"",
+      "replace": "failure = m.lastFailure.map { \"\\($0.reasonWords)\" } ?? \"\\(action.title) was refused\"",
+      "proof": 2,
+      "red": "aSwipeOnARowOfTheFailingAccountKeepsTheRowAndNamesTheAccountOnTheScreen.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"unread\": Int(t?.unread ?? 0), \"on\": id == m.tab]",
+      "replace": "\"unread\": Int(t?.unread ?? 0) + 1, \"on\": id == m.tab]",
+      "proof": 2,
+      "red": "thePhonePrimaryCountEqualsTheMacsForTheSameFixture.*failed|✘"
+    },
+    {
+      "file": "checks/inboxphone-check.py",
+      "find": "    s.expect(\"archived-row-leaves\", lambda: arch in ids(), False)",
+      "replace": "    s.expect(\"archived-row-leavesx\", lambda: arch in ids(), False)",
+      "proof": 3,
+      "red": "NO MUTANT|\\b[1-9]\\d* not seen red|clean model: failed=\\['J7\\.3|labels without a mutant=\\['J7\\.3"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: InboxPhoneFeature.swift:43-48 registers swipe-archive, swipe-snooze, swipe-leading, swipe-trailing per row; :21 swipe-settings; undo row :16-19 and click iphone-inbox.undo.button; PhoneTile.swift:34 account label. Driven cases in checks/inboxphone-check.py: archived-row-leaves :69, snoozed-row-leaves :70, undo-control-shows :75, two-undo-entries :76, unread-count-drops :74. The reader's finding named a test 'swipesArchiveAndSnoozeRemoveTheRowsShowUndoAndARefusalNamesTheAccount' from a capture folder; that name does not exist in Tests/Unit/InboxPhoneTests.swift at this commit, so it is not used. The unit proof covers the core invariants and registrations, not the screen. | gap-phone-a: the two mark mutants now name `\"mark_label\": a.markLabel` (PhoneAccount.markLabel, PhoneAccounts.swift, used by the probes and by PhoneTile's accessibilityLabel). Units in Tests/Unit/InboxPhoneTests.swift. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 4 (checks/phone-shots.py, written in round 2): the pass line says every picture was taken; that no row is clipped is read by the lead from <out folder>/shots/index.html (a picture, not a number)."
+}

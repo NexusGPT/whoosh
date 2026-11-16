@@ -1,0 +1,31 @@
+{
+  "surface": "iphone-inbox",
+  "window": {
+    "w": 402,
+    "h": 874
+  },
+  "aspect": "402:874",
+  "density": 3,
+  "safe_areas": {
+    "top": 62,
+    "right": 0,
+    "bottom": 34,
+    "left": 0
+  },
+  "notch": {
+    "type": "dynamic island",
+    "w": 126,
+    "h": 37,
+    "x": "centered",
+    "y": 11
+  },
+  "min": {
+    "w": 402,
+    "h": 874
+  },
+  "max": {
+    "w": 402,
+    "h": 874
+  },
+  "source": "iPhone 17 Pro per the owner (card 2026-11-07); points per Apple's published 6.3-inch Pro class size; safe areas and island re-measured on the simulator at the live-build step"
+}

@@ -1,0 +1,410 @@
+{
+  "item": "7b25ddc2",
+  "full_id": "7b25ddc2-f35a-416c-9870-bd0dea34b7be",
+  "title": "Wire the seven iPhone screens into the app",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/composerphone-check.py --selftest",
+      "pass": "[0-9]+ mutants, 0 not seen red",
+      "fail": "NOT RED|not seen red [1-9]|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/labelscontactsphone-check.py --selftest",
+      "pass": "selftest: [0-9]+ cases green on the model, each red on its mutant",
+      "fail": "NOT RED|not seen red [1-9]|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/palettephone-check.py --selftest",
+      "pass": "selftest: [0-9]+ cases green on the clean stand-in, [0-9]+ of [0-9]+ mutants seen red, 0 problems",
+      "fail": "NOT RED|not seen red [1-9]|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/searchphone-check.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|not seen red [1-9]|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsphone-check.py --selftest",
+      "pass": "selftest: every check seen red on its mutant",
+      "fail": "NOT RED|not seen red [1-9]|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/threadphone-check.py --selftest",
+      "pass": "[0-9]+ mutants, 0 not seen red",
+      "fail": "NOT RED|not seen red [1-9]|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/welcomephone-check.py --selftest",
+      "pass": "[0-9]+ mutants, 0 not seen red",
+      "fail": "NOT RED|not seen red [1-9]|[1-9][0-9]* clean failures",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "0 missing",
+      "fail": "missing [1-9]",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "git -C . log --oneline HEAD..lane/phone-root",
+      "pass": "^$",
+      "fail": "[0-9a-f]{7,} ",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/threadphone-check.py",
+      "pass": "(?m)^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "aTapOnAnInboxRowPushesItsThreadOverTheInbox,settingsOpensFromTheMailboxesScreenAsAPush,labelsAndContactsOpensFromTheMailboxesScreenAsAPush,theComposerOpensAsASheetOverWhateverIsOnScreenAndLeavesTheStackAlone,thePaletteOpensAsASheetOverWhateverIsOnScreenButNeverOverTheComposer,searchOpensInPlaceInTheInboxAndNothingIsPushedForIt,backFromAThreadReturnsToTheInboxWithTheInboxStillBelow,backClosesTheSheetFirstThenTheSearchThenOnePush,backFromAThreadOpenedOnASearchLandsOnTheSearchStillOpen,theSystemsOwnSwipeBackSetsTheStackAndKeepsTheOthers,aNotificationsTapOpensTheThreadOverTheInboxFromWhateverWasOnScreen,aMessageLinkNamesItsMailAndNothingElseDoes,aScreensOverlayWordBecomesItsRouteAndNilLeavesIt,anOverlayWordWithNoScreenHereAndANilOnTheInboxChangeNothing,theSameOverlayWordTwiceChangesNothingTheSecondTime,resetPutsTheStackBackOnTheInbox,theWelcomeShowsWhenNoAccountExistsAndLeavesWhenOneDoes,aTestCopyFollowsTheFlowAloneBecauseItsFixtureAlwaysHasAccounts,aPhoneThatFinishedTheWelcomeButLostEveryAccountShowsTheWelcomeAgainAtLaunch",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "unit",
+      "run": "aTapOnAnInboxRowPushesTheThreadTheListKeepsItsPlaceAndBackReturnsToIt,theBarsComposeControlOpensTheComposerAsASheetAndCancelClosesIt,theComposeControlAnswersOnlyWhereItIsDrawn,thePalettesOwnDoorOpensItsSheetAndItsCloseClosesIt,theSearchPillOpensTheSearchInPlaceAndItsCloseReturnsToTheInbox,thePalettesSearchCommandOpensTheSearchNotAnUnknownOverlay,settingsAndLabelsOpenFromMailboxesByTheirIdsAndGoBackToMailboxes,mailboxesRowsAnswerOnlyOnMailboxes,theInboxsMoreMenuSettingsPushesSettingsOverTheInboxAndBackReturnsToTheInbox,aThreadOpenedFromALabelsListPushesOverTheLabelsAndBackReturnsToThem,aNotificationsTapOpensTheMailsThreadOverTheInboxFromSettingsAndBackLandsOnTheInbox,aMessageLinkOpensTheSameThreadAndAnUnknownMailIsRefused,theSpeechModelVerbPostsItsWordForTheComposersMicrophoneAndRefusesAnyOther,theSyncVerbSetsAndClearsTheBrokenStateAndRefusesAnyOtherWord",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "unit",
+      "run": "aBrokenSyncAnswersTheCoresReasonOkAndAResetTakeItAway,theNoticeCarriesTheIdOfTheMailItIsAbout,aNoticeThatNamesNoMailOrAnEmptyIdOpensNothing,aTapOnTheNoticeOpensThatMailsThreadOverTheInbox,theLongPressActionsAndADismissOpenNothing,aNoticeForAMailThatIsGoneOrUnnamedOpensNothingAndSaysNo,theNotificationDelegateIsTheOneTheAppInstallsAndItAsksForNothing",
+      "pass": "passed",
+      "fail": "failed|recorded an issue",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/composerphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/labelscontactsphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/palettephone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/searchphone-check.py --live",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/settingsphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/welcomephone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "s.path.append(.thread(id))",
+      "replace": "s.path.append(.inbox)",
+      "proof": 10,
+      "red": "aTapOnAnInboxRowPushesItsThreadOverTheInbox\\(\\) failed|✘ Test aTapOnAnInboxRowPushesItsThreadOverTheInbox"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "if s.path.last != .settings { s.path.append(.settings) }",
+      "replace": "if s.path.last != .settings { s.path.append(.labelsContacts) }",
+      "proof": 10,
+      "red": "settingsOpensFromTheMailboxesScreenAsAPush\\(\\) failed|✘ Test settingsOpensFromTheMailboxesScreenAsAPush"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "if s.path.last != .labelsContacts { s.path.append(.labelsContacts) }",
+      "replace": "if s.path.last != .labelsContacts { s.path.append(.settings) }",
+      "proof": 10,
+      "red": "labelsAndContactsOpensFromTheMailboxesScreenAsAPush\\(\\) failed|✘ Test labelsAndContactsOpensFromTheMailboxesScreenAsAPush"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "s.sheet = .composer",
+      "replace": "s.sheet = .palette",
+      "proof": 10,
+      "red": "theComposerOpensAsASheetOverWhateverIsOnScreenAndLeavesTheStackAlone\\(\\) failed|✘ Test theComposerOpensAsASheetOverWhateverIsOnScreenAndLeavesTheStackAlone"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "if s.sheet != .composer { s.sheet = .palette }",
+      "replace": "if s.sheet != .composer { s.sheet = .composer }",
+      "proof": 10,
+      "red": "thePaletteOpensAsASheetOverWhateverIsOnScreenButNeverOverTheComposer\\(\\) failed|✘ Test thePaletteOpensAsASheetOverWhateverIsOnScreenButNeverOverTheComposer"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "s.searching = true",
+      "replace": "s.searching = false",
+      "proof": 10,
+      "red": "searchOpensInPlaceInTheInboxAndNothingIsPushedForIt\\(\\) failed|✘ Test searchOpensInPlaceInTheInboxAndNothingIsPushedForIt"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "else if !s.path.isEmpty { s.path.removeLast() }",
+      "replace": "else if !s.path.isEmpty { s.path = [] }",
+      "proof": 10,
+      "red": "backFromAThreadReturnsToTheInboxWithTheInboxStillBelow\\(\\) failed|✘ Test backFromAThreadReturnsToTheInboxWithTheInboxStillBelow"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "case .deepLinkThread(let id):",
+      "replace": "case .deepLinkThread(let id): _ = id; return",
+      "proof": 10,
+      "red": "aNotificationsTapOpensTheThreadOverTheInboxFromWhateverWasOnScreen\\(\\) failed|✘ Test aNotificationsTapOpensTheThreadOverTheInboxFromWhateverWasOnScreen"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "s.path = path",
+      "replace": "s.path = s.path",
+      "proof": 10,
+      "red": "theSystemsOwnSwipeBackSetsTheStackAndKeepsTheOthers\\(\\) failed|✘ Test theSystemsOwnSwipeBackSetsTheStackAndKeepsTheOthers"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "case settings: reduce(&s, .openSettings)",
+      "replace": "case settings: reduce(&s, .openLabelsContacts)",
+      "proof": 10,
+      "red": "aScreensOverlayWordBecomesItsRouteAndNilLeavesIt\\(\\) failed|✘ Test aScreensOverlayWordBecomesItsRouteAndNilLeavesIt"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "else if let top = s.path.last, top.overlayName != nil { s.path.removeLast() }",
+      "replace": "else if let top = s.path.last, top.overlayName != nil { _ = top }",
+      "proof": 10,
+      "red": "aScreensOverlayWordBecomesItsRouteAndNilLeavesIt\\(\\) failed|✘ Test aScreensOverlayWordBecomesItsRouteAndNilLeavesIt"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "return accounts == 0 || midArrival",
+      "replace": "return false",
+      "proof": 10,
+      "red": "theWelcomeShowsWhenNoAccountExistsAndLeavesWhenOneDoes\\(\\) failed|✘ Test theWelcomeShowsWhenNoAccountExistsAndLeavesWhenOneDoes"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "return accounts == 0 || midArrival",
+      "replace": "return true",
+      "proof": 10,
+      "red": "theWelcomeShowsWhenNoAccountExistsAndLeavesWhenOneDoes\\(\\) failed|✘ Test theWelcomeShowsWhenNoAccountExistsAndLeavesWhenOneDoes"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "if welcomeDone { return false }",
+      "replace": "if false { return false }",
+      "proof": 10,
+      "red": "theWelcomeShowsWhenNoAccountExistsAndLeavesWhenOneDoes\\(\\) failed|✘ Test theWelcomeShowsWhenNoAccountExistsAndLeavesWhenOneDoes"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "if testCopy { return true }",
+      "replace": "if testCopy { return false }",
+      "proof": 10,
+      "red": "aTestCopyFollowsTheFlowAloneBecauseItsFixtureAlwaysHasAccounts\\(\\) failed|✘ Test aTestCopyFollowsTheFlowAloneBecauseItsFixtureAlwaysHasAccounts"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "!testCopy && flagDone && accounts > 0",
+      "replace": "!testCopy && flagDone",
+      "proof": 10,
+      "red": "aPhoneThatFinishedTheWelcomeButLostEveryAccountShowsTheWelcomeAgainAtLaunch\\(\\) failed|✘ Test aPhoneThatFinishedTheWelcomeButLostEveryAccountShowsTheWelcomeAgainAtLaunch"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "s = PhoneNav()",
+      "replace": "_ = s",
+      "proof": 10,
+      "red": "resetPutsTheStackBackOnTheInbox\\(\\) failed|✘ Test resetPutsTheStackBackOnTheInbox"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "s.sheet = nil; s.searching = false; s.path = []",
+      "replace": "s.sheet = nil; s.searching = false; s.path = [.inbox]",
+      "proof": 10,
+      "red": "settingsOpensFromTheMailboxesScreenAsAPush\\(\\) failed|✘ Test settingsOpensFromTheMailboxesScreenAsAPush"
+    },
+    {
+      "file": "Sources/App/PhoneRouter.swift",
+      "find": "url.host == \"message\"",
+      "replace": "url.host == \"messages\"",
+      "proof": 10,
+      "red": "aMessageLinkNamesItsMailAndNothingElseDoes\\(\\) failed|✘ Test aMessageLinkNamesItsMailAndNothingElseDoes"
+    },
+    {
+      "file": "Sources/App/PhoneRouter.swift",
+      "find": "send(.overlayChanged(ThreadPhoneState.overlayId, focused: ThreadPhoneState.shared.target(app)))",
+      "replace": "_ = 0",
+      "proof": 11,
+      "red": "aTapOnAnInboxRowPushesTheThreadTheListKeepsItsPlaceAndBackReturnsToIt\\(\\) failed|✘ Test aTapOnAnInboxRowPushesTheThreadTheListKeepsItsPlaceAndBackReturnsToIt"
+    },
+    {
+      "file": "Sources/App/PhoneRouter.swift",
+      "find": "send(.deepLinkThread(messageId))",
+      "replace": "send(.openThread(messageId))",
+      "proof": 11,
+      "red": "aNotificationsTapOpensTheMailsThreadOverTheInboxFromSettingsAndBackLandsOnTheInbox\\(\\) failed|✘ Test aNotificationsTapOpensTheMailsThreadOverTheInboxFromSettingsAndBackLandsOnTheInbox"
+    },
+    {
+      "file": "Sources/App/PhoneRouter.swift",
+      "find": "if app.overlay == Self.searchWord { openSearch(); return }",
+      "replace": "if false { openSearch(); return }",
+      "proof": 11,
+      "red": "thePalettesSearchCommandOpensTheSearchNotAnUnknownOverlay\\(\\) failed|✘ Test thePalettesSearchCommandOpensTheSearchNotAnUnknownOverlay"
+    },
+    {
+      "file": "Sources/App/PhoneRouter.swift",
+      "find": "func openSearch() { SearchPhoneModel.shared.open(); send(.openSearch) }",
+      "replace": "func openSearch() { send(.openSearch) }",
+      "proof": 11,
+      "red": "theSearchPillOpensTheSearchInPlaceAndItsCloseReturnsToTheInbox\\(\\) failed|✘ Test theSearchPillOpensTheSearchInPlaceAndItsCloseReturnsToTheInbox"
+    },
+    {
+      "file": "Sources/App/PhoneRouter.swift",
+      "find": "if app.overlay != nav.overlayName { app.overlay = nav.overlayName }",
+      "replace": "_ = 0",
+      "proof": 11,
+      "red": "aThreadOpenedFromALabelsListPushesOverTheLabelsAndBackReturnsToThem\\(\\) failed|✘ Test aThreadOpenedFromALabelsListPushesOverTheLabelsAndBackReturnsToThem"
+    },
+    {
+      "file": "Sources/App/PhoneRoutes.swift",
+      "find": "case .thread?: s.path[s.path.count - 1] = .thread(id)",
+      "replace": "case .thread?, .labelsContacts?: s.path[s.path.count - 1] = .thread(id)",
+      "proof": 11,
+      "red": "aThreadOpenedFromALabelsListPushesOverTheLabelsAndBackReturnsToThem\\(\\) failed|✘ Test aThreadOpenedFromALabelsListPushesOverTheLabelsAndBackReturnsToThem"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"iphone-inbox.back\": { m in PhoneRouter.shared.showMailboxes(); m.surface",
+      "replace": "\"iphone-inbox.back\": { m in m.surface",
+      "proof": 11,
+      "red": "settingsAndLabelsOpenFromMailboxesByTheirIdsAndGoBackToMailboxes\\(\\) failed|✘ Test settingsAndLabelsOpenFromMailboxesByTheirIdsAndGoBackToMailboxes"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "PhoneRouter.shared.openSettings(); return true }",
+      "replace": "PhoneRouter.shared.openLabelsContacts(); return true }",
+      "proof": 11,
+      "red": "settingsAndLabelsOpenFromMailboxesByTheirIdsAndGoBackToMailboxes\\(\\) failed|✘ Test settingsAndLabelsOpenFromMailboxesByTheirIdsAndGoBackToMailboxes"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "PhoneRouter.shared.openLabelsContacts(); return true }",
+      "replace": "PhoneRouter.shared.openSettings(); return true }",
+      "proof": 11,
+      "red": "settingsAndLabelsOpenFromMailboxesByTheirIdsAndGoBackToMailboxes\\(\\) failed|✘ Test settingsAndLabelsOpenFromMailboxesByTheirIdsAndGoBackToMailboxes"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "PhoneRouter.shared.compose(); return true",
+      "replace": "PhoneRouter.shared.openSettings(); return true",
+      "proof": 11,
+      "red": "theBarsComposeControlOpensTheComposerAsASheetAndCancelClosesIt\\(\\) failed|✘ Test theBarsComposeControlOpensTheComposerAsASheetAndCancelClosesIt"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"iphone-inbox.compose\": { _ in guard PhoneRouter.shared.onInbox else { return false };",
+      "replace": "\"iphone-inbox.compose\": { _ in",
+      "proof": 11,
+      "red": "theComposeControlAnswersOnlyWhereItIsDrawn\\(\\) failed|✘ Test theComposeControlAnswersOnlyWhereItIsDrawn"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"iphone-mailboxes.settings\": { _ in guard PhoneRouter.shared.onMailboxes else { return false };",
+      "replace": "\"iphone-mailboxes.settings\": { _ in",
+      "proof": 11,
+      "red": "mailboxesRowsAnswerOnlyOnMailboxes\\(\\) failed|✘ Test mailboxesRowsAnswerOnlyOnMailboxes"
+    },
+    {
+      "file": "Sources/ControlSocket/FixtureVerbs.swift",
+      "find": "post(name: FixtureEvents.name(\"speech-model\")",
+      "replace": "post(name: FixtureEvents.name(\"speech\")",
+      "proof": 11,
+      "red": "theSpeechModelVerbPostsItsWordForTheComposersMicrophoneAndRefusesAnyOther\\(\\) failed|✘ Test theSpeechModelVerbPostsItsWordForTheComposersMicrophoneAndRefusesAnyOther"
+    },
+    {
+      "file": "Sources/ControlSocket/FixtureVerbs.swift",
+      "find": "syncBroken = a[1] == \"broken\"",
+      "replace": "syncBroken = a[1] == \"ok\"",
+      "proof": 11,
+      "red": "theSyncVerbSetsAndClearsTheBrokenStateAndRefusesAnyOtherWord\\(\\) failed|✘ Test theSyncVerbSetsAndClearsTheBrokenStateAndRefusesAnyOtherWord"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCore.swift",
+      "find": "case (\"settings_sync\", 2) where p[1] == \"error\": return syncBroken ? Self.syncBrokenReason : nil",
+      "replace": "case (\"settings_sync\", 2) where p[1] == \"error\": return nil",
+      "proof": 12,
+      "red": "aBrokenSyncAnswersTheCoresReasonOkAndAResetTakeItAway\\(\\) failed|✘ Test aBrokenSyncAnswersTheCoresReasonOkAndAResetTakeItAway"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureReset.swift",
+      "find": "        syncBroken = false\n",
+      "replace": "",
+      "proof": 12,
+      "red": "aBrokenSyncAnswersTheCoresReasonOkAndAResetTakeItAway\\(\\) failed|✘ Test aBrokenSyncAnswersTheCoresReasonOkAndAResetTakeItAway"
+    },
+    {
+      "file": "Sources/Features/PushClient/SystemPorts.swift",
+      "find": "        content.userInfo = NotificationTap.userInfo(messageId: notification.id)\n",
+      "replace": "",
+      "proof": 12,
+      "red": "theNoticeCarriesTheIdOfTheMailItIsAbout\\(\\) failed|✘ Test theNoticeCarriesTheIdOfTheMailItIsAbout"
+    },
+    {
+      "file": "Sources/Features/PushClient/SystemPorts.swift",
+      "find": "guard actionIdentifier == UNNotificationDefaultActionIdentifier, let id = messageId(from: userInfo) else { return false }",
+      "replace": "guard let id = messageId(from: userInfo) else { return false }",
+      "proof": 12,
+      "red": "theLongPressActionsAndADismissOpenNothing\\(\\) failed|✘ Test theLongPressActionsAndADismissOpenNothing"
+    },
+    {
+      "file": "apps/ios/App/WhooshPhoneApp.swift",
+      "find": "        UNUserNotificationCenter.current().delegate = NotificationTapDelegate.shared\n",
+      "replace": "",
+      "proof": 12,
+      "red": "theNotificationDelegateIsTheOneTheAppInstallsAndItAsksForNothing\\(\\) failed|✘ Test theNotificationDelegateIsTheOneTheAppInstallsAndItAsksForNothing"
+    }
+  ],
+  "gap": null,
+  "owner": "The palette has no control to open it: the inbox draws no command entry (PhoneChrome.swift \"...\" Menu holds Edit split tabs, Rules, Settings), so PalettePhone.open() is reached only by the socket's iphone-palette.open and the Search/Compose lines of other sheets. Adding a menu row is a look change: the owner decides it. Everything else of this item is proved by proofs 0 to 12 (the unit proofs and selftests) and 9 and 13 to 18 (the seven phone checks through the rig).",
+  "notes": "lane/phone-root has 0 commits outside HEAD (git log HEAD..lane/phone-root printed none). Check files: checks/composerphone-check.py, labelscontactsphone-check.py, palettephone-check.py, searchphone-check.py, settingsphone-check.py, threadphone-check.py, welcomephone-check.py (each takes --selftest). Last self-test lines on the base before this lane: _captures/lead/main81/selftests/checks_<name>-check.log (composerphone '31 mutants, 0 not seen red; 11 acts deleted, 0 not seen red; ...', palettephone 'selftest: 14 cases green on the clean stand-in, 14 of 14 mutants seen red, 0 problems', welcomephone '35 mutants, 0 not seen red; ...', threadphone '46 mutants, 0 not seen red; ...'). Proof 9 is listed as hidden for the form only; it is the check that needs the simulator, state outside for the lead's runner. | gap-phone-wire: proofs 10 (19 tests of the pure reducer, Tests/Unit/PhoneRoutesTests.swift) and 11 (14 tests on the router and the socket clicks, Tests/Unit/PhoneRoutesRouterTests.swift) are unit proofs the lead runs; no new sentence was added (the one new Mailboxes row, Labels, is an existing catalogue key), so proof 7 is unchanged. State stays gap for items 2 to 4 above; the simulator parts are outside. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Not covered by any proof here: a real tap on a real notification (the cold-start tap); the notification delegate is installed (apps/ios/App/WhooshPhoneApp.swift) and the router path is unit-proved by proof 12. That part needs a real iPhone."
+}

@@ -1,0 +1,33 @@
+From: Tessel Health <no-reply@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Your Tessel Health sign-in code
+Date: Mon, 02 Nov 2026 16:51:00 +0000
+Message-ID: <a0b543e051cbba84@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5548543076366201873=="
+
+--===============5548543076366201873==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+WW91ciBjb2RlIGlzIDM1MDM4OC4NCk9yIHNpZ24gaW4gd2l0aCBvbmUgY2xpY2s6IGh0dHBzOi8v
+YXV0aC5leGFtcGxlLm9yZy9tYWdpYy1saW5rLzE2ODYwYmMyM2RkZWYxMjI2NjA4NzY4Yg0K
+
+--===============5548543076366201873==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Tessel Health</titl=
+e><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-si=
+ze:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspac=
+ing=3D"0"><tr><td align=3D"center"><IMG SRC=3D"https://track.example.org/px/a=
+f57ff63.gif" ALT=3D"banner"><h2>Tessel Health</h2><p>Your code is <b>350388</=
+b>.</p><p>Or <a href=3D"https://auth.example.org/magic-link/16860bc23ddef1226=
+608768b">sign in with one click</a>.</p><p style=3D"font-size:11px;color:#888=
+">You receive this because of your account. <a href=3D"https://example.net/un=
+subscribe?u=3Daea036">Unsubscribe</a> | <a href=3D"https://example.net/privac=
+y">Privacy</a></p></td></tr></table></body></html>
+
+--===============5548543076366201873==--

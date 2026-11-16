@@ -1,0 +1,54 @@
+{
+  "item": "acc01b04",
+  "full_id": "acc01b04-4335-4a1f-b41c-eeecb19b37ab",
+  "title": "Stop the memory check passing on a 0 MB reading",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 perf/memory-mac.py --selftest",
+      "pass": "ok +a reading of 0 MB is not a pass +over=None",
+      "fail": "^BAD ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/memory-mac.py --selftest",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "^BAD ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/memory-mac.py --selftest",
+      "pass": "ok +a 0 MB reading from the table is NOT JUDGED, never ok",
+      "fail": "^BAD ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "read the machine load (uptime), it must be under PERF_LOAD_MAX 12; then sh scripts/launch-one.sh <bundle> -- --fixture-core sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 perf/memory-mac.py --bundle <bundle>' (perf/memory-mac.py:4-ish usage), whole output saved",
+      "pass": "memory-mac: resident MB, 30 accounts full history +[1-9][0-9]* \\(budget < 600\\) (ok|OVER)",
+      "fail": "resident MB, 30 accounts full history +0 |NOT JUDGED"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "perf/memory-mac.py",
+      "find": "if mb is not None and not (mb > 0 and mb == mb and mb != float(\"inf\")):",
+      "replace": "if False:",
+      "proof": 0,
+      "red": "^BAD +a reading of 0 MB is not a pass"
+    },
+    {
+      "file": "perf/memory-mac.py",
+      "find": "    if kb <= 0:\n        return None, \"pid %d read 0 MB resident, which is not a reading of a running app\" % pid\n",
+      "replace": "",
+      "proof": 2,
+      "red": "^BAD +a reading of 0 MB of the test copy is not measured"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Cause of the 0 (named in the code, perf/memory-mac.py:105-108, the docstring of rss_mb): on main83 the check matched processes on the --bundle path, found none (the test copy runs from $D/rig/), and read 0 MB, which passed under budget 600; now the copy is found by the pid launch-one.sh started (rig_target :95-102, env RIG_PID or rig.pid in the run folder), a pid not under $D/rig/ is not measured (:119-121), and a reading of 0 or less is 'not a reading of a running app' (:122-123). judge :127-133 turns 0, negative, NaN and infinity into 'not measured' (None) and the label 'resident MB, 30 accounts full history' prints 'not measured (reason)'; finish prints '<name>: <label> <value> (budget <limit>) ok|OVER|NOT JUDGED' (perf/memory-mac.py:64) and exits 1 on any OVER or nothing judged. Self-test cases: :136-160 (8 cases, the load wait, six stand-in process tables). The 'round step 28' that printed the owner's line is scripts/round.sh; the lead reads the same step's output on the next round at load under 12 for a plausible figure (proof 3). The held machine load: main83 was run at load 34 (_captures/tests/r83/perf-interaction-main83.log), above 12 gives NOT JUDGED by header() :44-57."
+}

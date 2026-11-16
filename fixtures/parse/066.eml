@@ -1,0 +1,38 @@
+From: Linea Supply <hello@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Confirm your account
+Date: Sun, 15 Nov 2026 03:34:00 +0000
+Message-ID: <a888894182ccb335@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============1387525512083774032=="
+
+--===============1387525512083774032==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Verify your email: https://auth.example.org/verify?token=3D52cf880a930d521d3e=
+a2f166&email=3Dassem%40example.org
+
+The link works once.
+
+--===============1387525512083774032==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5M
+aW5lYSBTdXBwbHk8L3RpdGxlPjxzdHlsZT5ib2R5e2ZvbnQtZmFtaWx5OkhlbHZldGljYSxBcmlh
+bCxzYW5zLXNlcmlmO2NvbG9yOiMyMjJ9LmNvZGV7Zm9udC1zaXplOjI4cHh9PC9zdHlsZT48L2hl
+YWQ+PGJvZHk+PHRhYmxlIHdpZHRoPSIxMDAlIiBjZWxscGFkZGluZz0iMCIgY2VsbHNwYWNpbmc9
+IjAiPjx0cj48dGQgYWxpZ249ImNlbnRlciI+PGgyPkxpbmVhIFN1cHBseTwvaDI+PHA+Q2xpY2sg
+dGhlIGJ1dHRvbiBiZWxvdyB0byBmaW5pc2guIFRoZSBsaW5rIHdvcmtzIG9uY2UuPC9wPjxwPjxh
+IGhyZWY9Imh0dHBzOi8vYXV0aC5leGFtcGxlLm9yZy92ZXJpZnk/dG9rZW49NTJjZjg4MGE5MzBk
+NTIxZDNlYTJmMTY2JmFtcDtlbWFpbD1hc3NlbSU0MGV4YW1wbGUub3JnIiBzdHlsZT0iYmFja2dy
+b3VuZDojMDZjO2NvbG9yOiNmZmYiPlZlcmlmeSB5b3VyIGVtYWlsPC9hPjwvcD48cCBzdHlsZT0i
+Zm9udC1zaXplOjExcHg7Y29sb3I6Izg4OCI+WW91IHJlY2VpdmUgdGhpcyBiZWNhdXNlIG9mIHlv
+dXIgYWNjb3VudC4gPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC91bnN1YnNjcmliZT91PTM5
+ZGZmMiI+VW5zdWJzY3JpYmU8L2E+IHwgPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC9wcml2
+YWN5Ij5Qcml2YWN5PC9hPjwvcD48L3RkPjwvdHI+PC90YWJsZT48L2JvZHk+PC9odG1sPg0K
+
+--===============1387525512083774032==--

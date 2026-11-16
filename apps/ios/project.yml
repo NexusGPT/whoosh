@@ -1,0 +1,45 @@
+# xcodegen spec for the iPhone shell. Builds for the simulator at this commit (no signing identity).
+name: Whoosh
+options:
+  bundleIdPrefix: io.nexus
+  deploymentTarget:
+    iOS: "18.0"
+packages:
+  Whoosh:
+    # absolute: the project is generated into the build tree (scripts/build-ios.sh exports WHOOSH_ROOT)
+    path: ${WHOOSH_ROOT}
+targets:
+  Whoosh:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: ../../docs/design/fixtures/mac-main-sample.json
+        buildPhase: resources
+    dependencies:
+      - package: Whoosh
+        product: WhooshUI
+    info:
+      path: ${WHOOSH_ROOT}/apps/ios/App/Info.plist
+      properties:
+        CFBundleDisplayName: Whoosh
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        NSMicrophoneUsageDescription: "Whoosh listens only while you hold the dictation key, to turn your voice into text on this device."
+        NSSpeechRecognitionUsageDescription: "Whoosh turns your dictation into text. With the on-device engine nothing leaves this device."
+        CFBundleLocalizations: [en, fr, nl, de, es, it, pt, pl, sv, da, nb, fi, ja, zh-Hans]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.nexus.whoosh
+        PRODUCT_NAME: Whoosh
+        INFOPLIST_FILE: ${WHOOSH_ROOT}/apps/ios/App/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: "6.0"
+        CODE_SIGNING_ALLOWED: NO
+        IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+schemes:
+  Whoosh:
+    build:
+      targets:
+        Whoosh: all

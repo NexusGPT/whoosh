@@ -1,0 +1,151 @@
+{
+ "note": "Shaped after the Gmail REST reference (users.history.list, users.messages.get format=raw). Written by hand with invented addresses; no real mailbox was read.",
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "history",
+   "query": [
+    [
+     "startHistoryId",
+     "50"
+    ]
+   ],
+   "status": 404,
+   "body": {
+    "error": {
+     "code": 404,
+     "message": "Requested entity was not found.",
+     "errors": [
+      {
+       "message": "Requested entity was not found.",
+       "domain": "global",
+       "reason": "notFound"
+      }
+     ],
+     "status": "NOT_FOUND"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "profile",
+   "query": [],
+   "status": 200,
+   "body": {
+    "emailAddress": "owner@example.test",
+    "messagesTotal": 3,
+    "threadsTotal": 3,
+    "historyId": "2000"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages",
+   "query": [],
+   "status": 200,
+   "body": {
+    "messages": [
+     {
+      "id": "m-a",
+      "threadId": "t-a"
+     },
+     {
+      "id": "m-b",
+      "threadId": "t-b"
+     }
+    ],
+    "nextPageToken": "list-page-2",
+    "resultSizeEstimate": 3
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages",
+   "query": [
+    [
+     "pageToken",
+     "list-page-2"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "messages": [
+     {
+      "id": "m-c",
+      "threadId": "t-c"
+     }
+    ],
+    "resultSizeEstimate": 3
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages/m-a",
+   "query": [
+    [
+     "format",
+     "raw"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "id": "m-a",
+    "threadId": "t-a",
+    "labelIds": [
+     "INBOX"
+    ],
+    "snippet": "Body a",
+    "historyId": "1500",
+    "internalDate": "1793000000000",
+    "sizeEstimate": 227,
+    "raw": "RnJvbTogRGFuYSBFeGFtcGxlIDxkYW5hQGV4YW1wbGUudGVzdD4NClRvOiBvd25lckBleGFtcGxlLnRlc3QNClN1YmplY3Q6IE9sZCBvbmUNCk1lc3NhZ2UtSUQ6IDxtLWFAbWFpbC5leGFtcGxlLnRlc3Q-DQpEYXRlOiBUdWUsIDMgTm92IDIwMjYgMDk6MDA6MDAgKzAwMDANCk1JTUUtVmVyc2lvbjogMS4wDQpDb250ZW50LVR5cGU6IHRleHQvcGxhaW47IGNoYXJzZXQ9dXRmLTgNCg0KQm9keSBhDQo"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages/m-b",
+   "query": [
+    [
+     "format",
+     "raw"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "id": "m-b",
+    "threadId": "t-b",
+    "labelIds": [
+     "INBOX",
+     "STARRED"
+    ],
+    "snippet": "Body b",
+    "historyId": "1600",
+    "internalDate": "1793100000000",
+    "sizeEstimate": 225,
+    "raw": "RnJvbTogRWxpIEV4YW1wbGUgPGVsaUBleGFtcGxlLnRlc3Q-DQpUbzogb3duZXJAZXhhbXBsZS50ZXN0DQpTdWJqZWN0OiBPbGQgdHdvDQpNZXNzYWdlLUlEOiA8bS1iQG1haWwuZXhhbXBsZS50ZXN0Pg0KRGF0ZTogVHVlLCAzIE5vdiAyMDI2IDA5OjAwOjAwICswMDAwDQpNSU1FLVZlcnNpb246IDEuMA0KQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PXV0Zi04DQoNCkJvZHkgYg0K"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "messages/m-c",
+   "query": [
+    [
+     "format",
+     "raw"
+    ]
+   ],
+   "status": 404,
+   "body": {
+    "error": {
+     "code": 404,
+     "message": "Requested entity was not found.",
+     "errors": [
+      {
+       "reason": "notFound"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

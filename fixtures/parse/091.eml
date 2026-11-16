@@ -1,0 +1,16 @@
+From: Marlow Travel <orders@example.org>
+To: Assem Example <assem@example.org>
+Subject: Your order has shipped
+Date: Tue, 03 Nov 2026 12:01:00 +0000
+Message-ID: <93970bc02b6f3d5c@accounts.example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Thanks for your order!
+
+Order #22735-48 is confirmed.
+Total: EUR 291.32
+Estimated delivery: 12 November 2026.
+
+Questions? Call 0406 35 52 21.

@@ -1,0 +1,11 @@
+# A French reply with its attribution line: hidden history after the answer.
+subject: RE: Réunion de lundi
+sender: Odile Faure
+fold_from: 1
+expect: 1 REPLY_HISTORY hide
+authored: Lundi me convient, je réserve la salle.
+--- text
+Lundi me convient, je réserve la salle.
+
+Le mar. 10 nov. 2026 à 14:02, Paul Girard <paul@example.fr> a écrit :
+> Est-ce que lundi te convient pour la réunion ?

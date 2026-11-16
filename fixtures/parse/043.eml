@@ -1,0 +1,31 @@
+From: Kestrel VPN <security@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Security code for your account
+Date: Thu, 12 Nov 2026 06:42:00 +0000
+Message-ID: <1bafaa00d6ef5ae1@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============9101844863779136810=="
+
+--===============9101844863779136810==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Your Kestrel VPN verification code is 220330. It expires in 10 minutes.
+
+--===============9101844863779136810==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Kestrel VPN</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><IMG SRC=3D"http://img.example.com/banner/43=
+e85434.jpg" ALT=3D"banner"><h2>Kestrel VPN</h2><div>Security code: <span styl=
+e=3D"font-family:monospace;font-size:24px">220330</span></div><p style=3D"fon=
+t-size:11px;color:#888">You receive this because of your account. <a href=3D"=
+https://example.net/unsubscribe?u=3D3cbe8b">Unsubscribe</a> | <a href=3D"http=
+s://example.net/privacy">Privacy</a></p></td></tr></table></body></html>
+
+--===============9101844863779136810==--

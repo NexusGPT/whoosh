@@ -1,0 +1,90 @@
+{
+  "item": "f3cafb91",
+  "full_id": "f3cafb91-505f-4d03-a430-f994fef47d58",
+  "title": "Build con-seams-s7",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/seams/device-parity.py",
+      "pass": "(?s)(?=.*PASS +oracle +all \\d+ labels green)(?=.*\\| phone-local-archive \\| .* \\| RED: )(?=.*\\| order-lost \\| .* \\| RED: )",
+      "fail": "STAYED GREEN|FAIL +oracle",
+      "timeout_s": 60
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP and MAC_APP as in the notes: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --with-mac --shared-server \"$MAC_APP\" \"$IPHONE_APP\" -- python3 checks/seams/device-parity.py",
+      "pass": "(?s)(?=.*PASS +archive-gone-on-mac)(?=.*PASS +reply-in-mac-thread)(?=.*PASS +accounts)",
+      "fail": "FAIL +(archive|reply|accounts)|NOT JUDGED|REFUSED|NO SOCKET|NO SHARED SERVER|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/seams/device-parity.py --selftest-shared",
+      "pass": "selftest-shared: 5 cases, 0 failed",
+      "fail": "^FAIL |[1-9][0-9]* failed",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/lib/sharedserver.py --selftest",
+      "pass": "selftest: 10 cases, 0 failed",
+      "fail": "^FAIL |[1-9][0-9]* failed",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --selftest",
+      "pass": "selftest: 22 cases, 0 failed",
+      "fail": "^FAIL |[1-9][0-9]* failed",
+      "timeout_s": 180
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore_mailfake.py --selftest",
+      "pass": "selftest: moved-away mode",
+      "fail": "Traceback|AssertionError",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/seams/device-parity.py",
+      "find": "\"phone-local-archive\": (\"archive not synced\", \"archive-gone-on-mac\", setk([\"gone-on-mac\"], False)),",
+      "replace": "\"phone-local-archive\": (\"archive not synced\", \"archive-gone-on-mac\", setk([\"gone-on-mac\"], True)),",
+      "proof": 0,
+      "red": "STAYED GREEN"
+    },
+    {
+      "file": "checks/seams/device-parity.py",
+      "find": "\"iphone\": [list(a) for a in exp[\"accounts\"]]}}",
+      "replace": "\"iphone\": [list(a) for a in exp[\"accounts\"]][::-1]}}",
+      "proof": 0,
+      "red": "FAIL +oracle"
+    },
+    {
+      "file": "journeys/lib/sharedserver.py",
+      "find": "phone.click(\"iphone-inbox.list.row.0.swipe-archive\")",
+      "replace": "phone.click(\"iphone-inbox.list.row.0.archive\")",
+      "proof": 1,
+      "red": "FAIL +archive-gone-on-mac"
+    },
+    {
+      "file": "checks/seams/seamlib.py",
+      "find": "\"iphone_accounts\": \"iphone-mailboxes.accounts\",",
+      "replace": "\"iphone_accounts\": \"iphone-inbox.accounts\",",
+      "proof": 1,
+      "red": "NOT JUDGED +accounts@iphone"
+    },
+    {
+      "file": "checks/seams/device-parity.py",
+      "find": "ph.rows(\"iphone_accounts\"), \"mark_colour\")",
+      "replace": "ph.rows(\"iphone_accounts\"), \"colour\")",
+      "proof": 1,
+      "red": "FAIL +accounts@iphone"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims: green = checks/seams/device-parity.py judged live on both rigs: archive on the iPhone is gone on the Mac (label archive-gone-on-mac), a reply sent on the iPhone shows in the Mac thread (reply-in-mac-thread), accounts equal in id, name, colour and order (accounts). Red on its mutant: the two MUTANTS at device-parity.py:70-73 (phone-local-archive, order-lost) are applied to a fixture-derived good observation by seamlib.run (seamlib.py:235-253): proof 0 prints `PASS oracle all N labels green` and `| mutant | ... | RED: <label>: <detail> |` per mutant, and the same run prints the live line `NOT JUDGED live-drive no socket` when no socket exists. That proves the JUDGE, not the app. Both mutants of this file break the judge: the first makes the 'archive not synced' mutant a no-op so it stays green (the seam's own `STAYED GREEN` text), the second makes the oracle itself unequal. The reader's log (seams-all-mutants.log line 135, 4 checks, 1 not judged, from main81) is not re-run here. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Not verified before the run: that the phone's list row 0 is the fixture's focused message (the check clicks row 0 for the reply and archive). | Round 4: state back to gap after the lead run (7 checks, 0 failed, 2 not judged). | Round 7 (iphone-rig): BUILT, not yet run on the simulator. Both copies run the REAL engine against ONE loopback IMAP and SMTP test server: scripts/iphone-rig.sh --with-mac --shared-server starts checks/realcore_mailfake.py (--serve --act --messages 6 --ports-file, 127.0.0.1 only, the server the real-core slices use), launches the Mac copy with --rig-hidden and the phone without --fixture-core, hands both WHOOSH_CORE_PLAIN_LOOPBACK=1 and WHOOSH_CORE_CHECK_SERVERS=<imap>:<smtp> (core/crates/engine/src/rust_core.rs:80-88,204) and exports WHOOSH_SHARED_SERVER=<imap>:<smtp> to the check; the server is stopped by its pid. checks/seams/device-parity.py and journeys/J7.py (J7.5) read that variable: with it they drive journeys/lib/sharedserver.py (add the one account on each copy through the mac-add-account ids, leave the phone's welcome, archive on the phone, reply on the phone in real time, read the Mac's list and thread) and print pass or fail; without it they print NOT JUDGED naming 'no shared server'. Proof 1 is the lead's run; proofs 2 to 4 are the selftests (the drive on two stand-in copies and one stand-in server with five broken copies, the glue in device-parity, the rig with a fake server and a fake launcher). Not decided by reading: that the phone's real engine opens in the simulator and takes the loopback ports, that mac-add-account.* answers on the phone, that the welcome flow ends on the phone once the account exists, and the sender name the Mac shows for the reply (the check reads the reply's words, not the name)."
+}

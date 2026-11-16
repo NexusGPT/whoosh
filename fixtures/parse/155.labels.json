@@ -1,0 +1,20 @@
+{
+ "id": "155",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "a083689e6683b16b378d@mail.example.net",
+  "summary": "Supplier call",
+  "organizer": "jonas.peeters@accounts.example.com",
+  "all_day": false,
+  "start_utc_ms": 1794825000000,
+  "start_local": null,
+  "tzid": null,
+  "location": "Room Alpha"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

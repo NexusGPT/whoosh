@@ -1,0 +1,32 @@
+{
+ "item": "8736d094",
+ "full_id": "8736d094-2814-47dd-b6ee-e6ae7dcc2c3a",
+ "title": "Thread open commits under INTERACTION_COMMIT_MS",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results WHOOSH_THEME=light python3 journeys/run.py J1 2>&1 ; cat \"$D/results\"/J1-*.results.jsonl'",
+   "pass": "\"step\": \"J1.6\", \"case\": \"one-interaction-budget-ms\", \"verdict\": \"PASS\"",
+   "fail": "\"step\": \"J1.6\", \"case\": \"one-interaction-budget-ms\", \"verdict\": \"(FAIL|NOT JUDGED)\"",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "python3 perf/interaction.py --selftest",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD ",
+   "timeout_s": 120
+  },
+  {
+   "kind": "lead",
+   "run": "quiet machine, an installed main bundle: sh scripts/launch-one.sh <bundle> -- --fixture-core sh -c 'WHOOSH_SOCKET_DIR=\"$D\" python3 perf/interaction.py --bundle <bundle> --dump' (perf/interaction.py:7-8); the 'open' rows of the dump are the Enter that opens a thread",
+   "pass": "(?s)commit ms over 100 actions\\s+worst [0-9.]+ \\(budget < 50\\) ok.*\\d+ checks, 0 failed, 0 not judged"
+  }
+ ],
+ "mutants": [],
+ "gap": null,
+ "owner": null,
+ "notes": "J1.6 is journeys/J1.py:331-339 (the proof-0 pass line is a PASS line of the harness's results jsonl, journeys/lib/harness.py:262). The check is load-sensitive: under_load() marks the case NOT JUDGED above PERF_LOAD_MAX (J1.py), so a NOT JUDGED line is as red as FAIL here. Saved commit runs are over budget (read only): _captures/perf-diag/main55/interaction-r1-try1-py.log:12. Proof 2 is the whole-run gate; its 'open' action share is the Enter. No app mutant: the check is mutant-tested through J1.py's declared mutant row (J1.py: '# J1.6/one-interaction-budget-ms' in the MUTANTS block) and the dry selftest of item c5eed461. | OLD GAP (before lane gap-states, 2026-11-12): M. Built by lane perf-archive (docs/lanes/perf-archive.md): the per-phase probe `measure mac-main.interaction.phases` (Sources/App/InteractionProbe.swift, enum Phase: arrival.queue, dispatch, TriageActions.targets, WhooshCore.run, AppModel.refresh.inbox, AppModel.refresh.counts, SearchMacModel.acted, InboxListState.say, ReaderThread.make, ReaderFocus.changed, ReaderSummaryStore.load, update) and `perf/interaction.py --dump` lines `interaction: dump phase <kind> <phase> n= median max` (perf/interaction.py phase_lines, self-tested). Still missing: (1) the lead's --dump run of the next build on a quiet machine, whose open rows name the phase that holds Enter's time; (2) the fix of that phase, chosen from those rows (the body view, MessageBody/MessageBodyView.swift and Sources/App/RootView.swift are not this lane's files); (3) the open commit under INTERACTION_COMMIT_MS in that run. | perf-archive round 7: main105 (_captures/lead/main105/perf/interaction.log, load 10.10) reads open commit n=33 median 21.4, p95 35.5, max 49.1 (budget 50): under the budget; the max is action 68, the first open of the run (update.queue 46.9). The fixes that brought it from 73.2 (main97): the open keeps the held body of the mail the resting reader showed (ReaderFocus.freshOpen), resetNavigation and ReaderLinks.reset write only changes (round 3), the starred and capsule writes (round 4). Left: only the lead's quiet run (proof 2) with the open commit under INTERACTION_COMMIT_MS; 49.1 is within 1 ms of the budget, so a loaded run can read over."
+}

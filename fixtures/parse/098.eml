@@ -1,0 +1,11 @@
+From: Lumen Bank <orders@example.net>
+To: Assem Example <assem@example.org>
+Subject: Your order has shipped
+Date: Sat, 14 Nov 2026 16:23:00 +0000
+Message-ID: <6fe13dfa4f8239b7@example.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+UmVzZXJ2YXRpb24gY29uZmlybWVkIGZvciAyIGd1ZXN0cyBvbiAxNCBOb3ZlbWJlciAyMDI2IGF0
+IDE5OjMwLg0KUmVmZXJlbmNlIDMxNTQ0MiAoa2VlcCBpdCBmb3IgdGhlIGZyb250IGRlc2spLg0K

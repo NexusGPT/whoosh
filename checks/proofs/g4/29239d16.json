@@ -1,0 +1,45 @@
+{
+  "item": "29239d16",
+  "full_id": "29239d16-39e1-48f8-993d-9b6f3f450549",
+  "title": "Run the model download tests in the app test runner",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theStateIsDownloadingTheMomentTheDownloadStartsBeforeTheFirstByteAndThreeByteCountsFollow,aSecondClickDuringTheDownloadStartsNothing,aMissingFileEndsFailedWithTheFileNamedAndRetryWorks,aRigCopyReachesNothingWithoutALoopbackAddressAndWritesOnlyInItsRunFolder,theEngineIsHandedTheModelAfterTheDownloadWithoutARelaunch,aTestProcessLooksForTheWeightsOnlyInItsOwnFolders,aDownloadCutHalfwayResumesFromItsPartFileAndAsksOnlyTheRest,aFileWhoseSha256DoesNotMatchTheSpecIsRefusedAndNotKept,theWeightsReadBackFromTheInstallFolderAtTheirPublishedSizes,downloadShowsProgressFailsInWordsAndRetries",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "static",
+      "run": "grep -n -A3 'testTarget' Package.swift",
+      "pass": "path: \"Tests\"",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "grep -c '@Test' Tests/Unit/MeaningModelStoreTests.swift Tests/Unit/LayaModelStoreDownloadTests.swift",
+      "pass": "MeaningModelStoreTests\\.swift:9\\s+[\\s\\S]*LayaModelStoreDownloadTests\\.swift:1",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "sh scripts/swift-test-here.sh --filter MeaningModelStoreTests, then again with --filter LayaModelStoreDownload (a tree whose library matches; needs 8 GB free and load under 30); quote the last `Test run with N tests` line of each and name every failing test",
+      "pass": "each run ends `Test run with N tests ... passed` (N 9 for MeaningModelStoreTests, 1 for LayaModelStoreDownload) and lists no failing test; a failing test is copied by name"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Embedding/MeaningModelStore.swift",
+      "find": "guard begin() else { return state }",
+      "replace": "_ = begin()",
+      "proof": 0,
+      "red": "aSecondClickDuringTheDownloadStartsNothing"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Package.swift:53-56 declares the test target WhooshTests with path \"Tests\", which holds Tests/Unit/MeaningModelStoreTests.swift and LayaModelStoreDownloadTests.swift. MeaningModelStoreTests has nine @Test functions (lines 50, 69, 80, 93, 109, 130, 145, 170, 184); LayaModelStoreDownloadTests is one @Suite with one @Test (lines 8-9: downloadShowsProgressFailsInWordsAndRetries). The reader's older log (unit-final.log, 232 tests, 45 issues) ran no MeaningModelStore suite; whether the suite is compiled into the target now is what proof 3 shows. `Test run with N tests` is printed by swift test; scripts/swift-test-here.sh prints the last such line itself (its header). The proof 3 N values are an expectation of the lead's reading, not a machine check."
+}

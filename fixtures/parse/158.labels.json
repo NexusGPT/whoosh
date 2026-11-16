@@ -1,0 +1,20 @@
+{
+ "id": "158",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "CANCEL",
+  "uid": "8a598640224071948a15@example.net",
+  "summary": "Product sync",
+  "organizer": "ada.lindqvist@mail.example.net",
+  "all_day": false,
+  "start_utc_ms": 1795161600000,
+  "start_local": null,
+  "tzid": null,
+  "location": "https://meet.example.net/6453a7"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

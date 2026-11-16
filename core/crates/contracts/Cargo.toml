@@ -1,0 +1,18 @@
+[package]
+name = "contracts"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The shared data model of Whoosh: one type per docs/DATA-MAP.md record, the command API, the streams, the error vocabulary, the foreign traits. Schema first; Swift types are generated from it by UniFFI."
+
+[lib]
+crate-type = ["lib"]
+
+[dependencies]
+uniffi = { workspace = true }
+# the shared SyncAdapter port is async (the engine drives adapters concurrently); MIT/Apache-2.0
+async-trait = "0.1"
+
+[dev-dependencies]
+# tests only: the state JSON the encoders write must parse and carry exactly the keys the contract names (MIT OR Apache-2.0)
+serde_json = "1"

@@ -1,0 +1,11 @@
+From: Quill Docs <no-reply@example.com>
+To: Assem Example <assem@example.org>
+Subject: Confirm your login
+Date: Sat, 07 Nov 2026 13:10:00 +0000
+Message-ID: <73d612ee0223e392@example.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+WW91ciBvbmUtdGltZSBwYXNzY29kZSAoT1RQKTogVjRTV0U3DQpJdCBjYW4gYmUgdXNlZCBvbmNl
+IGFuZCBleHBpcmVzIHNob3J0bHkuDQo=

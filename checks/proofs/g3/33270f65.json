@@ -1,0 +1,120 @@
+{
+  "item": "33270f65",
+  "full_id": "33270f65-4bb6-43e4-b3b9-f667d5ae3d6e",
+  "title": "Serve the account mark on every surface",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/seams/account-mark.py",
+      "pass": "\\| (list-provider|search-generic|notch-colour|search-dead) \\|.*RED",
+      "fail": "STAYED GREEN|FAIL +oracle",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/seams/account-mark.py",
+      "pass": "(?s)PASS +icon@sidebar-ring.*PASS +icon@search-result.*PASS +icon@notch.*PASS +colour@sidebar-ring.*PASS +colour@search-result.*PASS +colour@notch",
+      "fail": "FAIL +(icon|colour)@",
+      "timeout_s": 300
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_account_mark -- --nocapture",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-accountmark",
+      "pass": "(?s)(?=.*PASS +accountmark/colour@list-row)(?=.*PASS +accountmark/colour@reader-meta)(?=.*PASS +accountmark/colour@search-result)(?=.*PASS +accountmark/icon@search-result)(?=.*PASS +accountmark/icon@notch)(?=.*PASS +accountmark/colour@notch)(?=.*\\n\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "FAIL +accountmark/",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice accountmark: model all judged cases pass \\(the notch NOT JUDGED\\), 6 broken surfaces each red on its own case, a surface not read NOT JUDGED, two accounts red",
+      "fail": "SURVIVED|WRONG|FAILS",
+      "timeout_s": 300
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_account_cmds -- --nocapture",
+      "pass": "test result: ok\\. 11 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP as above and MAC_APP=<built Mac Whoosh.app>: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh --with-mac \"$MAC_APP\" \"$IPHONE_APP\" -- python3 checks/seams/account-mark.py",
+      "pass": "(?s)PASS +icon@iphone-row.*PASS +colour@iphone-row",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 1200
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Notch/NotchRows.swift",
+      "find": "\"account_icon\": mark.iconValue, \"account_colour\": mark.colour,",
+      "replace": "\"account_icon\": \"envelope\", \"account_colour\": \"#007AFF\",",
+      "proof": 1,
+      "red": "FAIL +(icon|colour)@notch"
+    },
+    {
+      "file": "Sources/Features/Sidebar/SidebarFeature.swift",
+      "find": "\"icon\": mark.iconValue, \"colour\": mark.colour,",
+      "replace": "\"icon\": \"envelope\", \"colour\": \"#007AFF\",",
+      "proof": 1,
+      "red": "FAIL +(icon|colour)@sidebar-ring"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchMacRows.swift",
+      "find": "row[\"account_icon\"] = mark.iconValue",
+      "replace": "row[\"account_icon\"] = \"envelope\"",
+      "proof": 1,
+      "red": "FAIL +icon@search-result"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "for a in &mut out { a.health = failures.get(&a.id).cloned(); }",
+      "replace": "for a in &mut out { a.health = failures.get(&a.id).cloned(); a.colour = \"#007AFF\".into(); }",
+      "proof": 2,
+      "red": "every_account_serves_its_own_colour_and_a_stable_icon.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "for a in &mut out { a.health = failures.get(&a.id).cloned(); }",
+      "replace": "for a in &mut out { a.health = failures.get(&a.id).cloned(); a.icon_id = Some(\"envelope\".into()); }",
+      "proof": 2,
+      "red": "every_account_serves_its_own_colour_and_a_stable_icon.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "for a in &mut out { a.health = failures.get(&a.id).cloned(); }",
+      "replace": "for a in &mut out { a.health = failures.get(&a.id).cloned(); a.id.push('x'); }",
+      "proof": 2,
+      "red": "every_message_belongs_to_an_account_the_list_serves.*FAILED|panicked"
+    },
+    {
+      "file": "checks/realcore-check.py",
+      "find": "ok = bool(got) and bool(ref) and (str(got).upper() == str(ref).upper() if field == \"colour\" else got == ref)",
+      "replace": "ok = True",
+      "proof": 4,
+      "red": "selftest slice accountmark: .*SURVIVE"
+    },
+    {
+      "file": "core/crates/store/src/realcore.rs",
+      "find": "if n > 0 { ctx.tx.execute(\"DELETE FROM account_icon_file WHERE account_id = ?1\", params![id])?; }",
+      "replace": "if n > 0 { let _ = &id; }",
+      "proof": 5,
+      "red": "icon_library_and_upload_read_back_and_the_limits_refuse.*FAILED|panicked"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The mutants replace the served fields with a generic icon and the system blue: the seam then reads a value different from the fixture account's icon_id and colour (expected values come from fixtures: account-mark.py:30-37 expected()). Proof 0 is the judge's own mutant table (no app): '| list-provider | ... | RED: icon@list-row: ... |'. Its live part reads NOT JUDGED without a socket, so exit is 1: judge by the lines. gap-engine-state (outside): what only a device can end is the iPhone row surface (needs the iPhone simulator rig and WHOOSH_IPHONE_SOCKET_DIR: this Mac lacks the iOS 26.5 runtime, account-mark.py:56-60 reads NOT JUDGED) and, on the real core, the notch (an arrival; the real-core slice delivers none, so `icon@notch` and `colour@notch` print NOT JUDGED in `--slice-accountmark`). Everything else is built: the fixture seam's own run (proofs 0 and 1, the lead's first run, red then green by its mutant table) and the real-core cell `checks/realcore-check.py --slice-accountmark` (drive_accountmark, judge_accountmark, main_slice_accountmark) with the engine test core/crates/engine/tests/engine_account_mark.rs (the accounts the surfaces draw from). For the owner of checks/seams/**: the docstring of checks/seams/account-mark.py lines 3-6 still says the sidebar ring, reader header and search result serve no icon field yet; they do now (SidebarFeature.swift:42, ReaderHeaderProbe.swift:15, SearchMacRows.swift:83): update it, nothing else is needed for the run. real-accounts (2026-11-12): the real core now serves SetAccountIcon (library glyph or upload), SetAccountColour and the state paths account_icon/<id> and account/<id>/colour (core/crates/engine/src/account_cmds.rs, store functions in core/crates/store/src/realcore.rs); proof 5 is core/crates/engine/tests/engine_account_cmds.rs (icon_library_and_upload_read_back_and_the_limits_refuse, colour_is_checked_stored_upper_case_and_survives_a_restart, a_new_account_has_the_first_free_palette_colour_and_no_invented_icon). The default mark of a NEW real account stays colour = first free palette colour, icon = none (SPEC C-J4.12 'provider default' is the app's drawing of none, AccountMark.swift providerDefault; the test engine's added accounts also have none; engine_account_mark.rs forbids an invented one). A hidden real-engine case can now pick an icon through the door mac-settings-accounts.icon-library.<glyph> (after mac-settings-accounts.<id>.icon) and read account_icon/<id> and the list row's account_icon. State unchanged (the iPhone part stays outside). | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 6 is the iPhone row (icon@iphone-row, colour@iphone-row) on the fixture core through both rigs. Stays as measured limits: `icon@notch` and `colour@notch` print NOT JUDGED in the real-core slice (the real core delivers no arrival); not a simulator matter."
+}

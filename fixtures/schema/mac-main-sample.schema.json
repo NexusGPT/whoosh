@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Whoosh design fixture (the fields FixtureCore decodes)",
+  "type": "object",
+  "required": ["accounts", "tabs", "mailboxes", "messages"],
+  "properties": {
+    "accounts": {"type": "array", "items": {"type": "object", "required": ["id", "address", "name", "provider", "colour"],
+      "properties": {"id": {"type": "string"}, "address": {"type": "string"}, "name": {"type": "string"}, "provider": {"type": "string"},
+                     "colour": {"type": "string"}, "unread": {"type": "integer"}, "group": {"type": "string"}, "paused": {"type": "boolean"}, "icon_id": {"type": "string"},
+                     "backfill": {"description": "share of history synced, 0..1 (a number; the checker has no number type)", "minimum": 0, "maximum": 1}}}},
+    "labels": {"type": "array", "description": "nodes {name, unread (own count, optional), children[]; delta 9, all optional: colour \"#RRGGBB\", description (the label's meaning), pinned (a tab), account (the one account id it belongs to; absent = every mailbox), rules {match any|all, conditions[{kind, words|domain|account_id}]}}"},
+    "contacts": {"type": "array", "description": "people whose addresses are all known up front (delta 8): the search dropdown shows every address of a person", "items": {"type": "object", "required": ["name", "addresses"], "properties": {"name": {"type": "string"}, "addresses": {"type": "array", "items": {"type": "string"}}}}},
+    "smart_folders": {"type": "array", "items": {"type": "object", "required": ["name", "rule"], "properties": {"name": {"type": "string"}, "rule": {"type": "string"}}}},
+    "tabs": {"type": "array", "items": {"type": "object", "required": ["id", "name", "unread", "waiting"],
+      "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "unread": {"type": "integer"}, "waiting": {"type": "integer"}}}},
+    "mailboxes": {"type": "array", "items": {"type": "object", "required": ["name"], "properties": {"name": {"type": "string"}, "count": {"type": "integer"}}}},
+    "messages": {"type": "array", "items": {"type": "object", "required": ["id", "sender", "from", "account", "subject", "preview", "time", "unread", "pinned"],
+      "properties": {"id": {"type": "string"}, "sender": {"type": "string"}, "from": {"type": "string"}, "account": {"type": "string"},
+                     "subject": {"type": "string"}, "preview": {"type": "string"}, "time": {"type": "string"}, "unread": {"type": "boolean"},
+                     "pinned": {"type": "boolean"}, "attachments": {"type": "array", "items": {"type": "string"}}, "thread_count": {"type": "integer"},
+                     "trackers_blocked": {"type": "integer"}, "tab": {"type": "string"},
+                     "to": {"type": "array", "items": {"type": "string"}, "description": "delta 9: the original recipients, for Reply all; absent = the owner only"}, "cc": {"type": "array", "items": {"type": "string"}},
+                     "body": {"type": "array", "items": {"type": "string"}}, "quoted": {"type": "array", "items": {"type": "string"}},
+                     "list_unsubscribe": {"type": "array", "items": {"type": "string"}}, "list_unsubscribe_one_click": {"type": "boolean"},
+                     "decided_by": {"type": "string", "description": "who placed the message in its tab, in words; absent = default placement (delta 6)"},
+                     "login_code": {"type": "string", "description": "the sign-in code the message carries, if any (delta 6)"}}}},
+    "open_thread": {"type": "object", "required": ["id", "subject", "account", "participants"],
+      "properties": {"messages": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string", "description": "the message id the core serves for this thread message (delta 6); the last one is a row of messages[]"}}}}}},
+    "focused_message": {"type": "string"}
+  }
+}

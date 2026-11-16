@@ -1,0 +1,69 @@
+{
+  "item": "4eb57021",
+  "full_id": "4eb57021-4eb5-4d1f-97b0-2675c9251025",
+  "title": "Write the AI replies journeys",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "grep -c \"^| J10\\.[0-9]*\" docs/JOURNEYS.md",
+      "pass": "^10$",
+      "fail": "^[0-9]$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"^| reply-\" docs/DATA-MAP.md",
+      "pass": "^1[0-9]$|^[1-9][0-9]$",
+      "fail": "^[0-9]$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"SIGN-OFF (J10)\" docs/JOURNEYS.md",
+      "pass": "^[1-9]",
+      "fail": "^0$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J10.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red or missing",
+      "fail": "NO MUTANT|STRAY|NOT IN THE CATALOGUE",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"taken in this order\" docs/JOURNEYS.md",
+      "pass": "^[1-9]",
+      "fail": "^0$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"If two excerpts disagree\" docs/JOURNEYS.md",
+      "pass": "^[1-9]",
+      "fail": "^0$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "docs/JOURNEYS.md",
+      "find": "The sources a reply reads are taken in this order:",
+      "replace": "The sources a reply reads are read in this order:",
+      "proof": 4,
+      "red": "^0$"
+    },
+    {
+      "file": "docs/JOURNEYS.md",
+      "find": "and the line \"If two excerpts disagree\"",
+      "replace": "and the line \"If two excerpts differ\"",
+      "proof": 5,
+      "red": "^0$"
+    }
+  ],
+  "gap": null,
+  "owner": "(1) Read J10.1 to J10.10 (docs/JOURNEYS.md, the J10 table) and the CHANGED rows under them, and say 'Signed' or what to change: proof 2 stays red until the owner's SIGN-OFF (J10) line exists. (2) Say whether the order of the sources (this account's folders, then the other accounts' when 'all accounts', then folders of this Mac, then calendars) is shown to the person or fixed by the app: J10.2 now says it is fixed and not drawn as a control, 'owner to confirm'. What happens when two sources disagree is the clash rule of J10.6 (Keep both, dated; Keep the newest; Keep the oldest; default Keep both, dated: core/crates/contracts/src/reply_ai.rs:130-131, core/crates/reply-retrieval/src/usecases/clash.rs:1-6), written into J10.6 by gap-docs.",
+  "notes": "Existing and countable now: 10 journey rows J10.1-J10.10 (grep above), 10 reply-* data-map rows, the journey driver journeys/J10.py with its selftest. Proofs 0, 1 and 3 are met today; proof 2 is the owner's sign-off. gap-docs 2026-11-11: the conflict order is written inside the existing rows J10.2 (order of the sources, from core/crates/reply-sources/src/usecases/enabled_sources.rs:1-3, test mail_and_order.rs:61) and J10.6 (the clash rule), not as a new row J10.2b, because proof 0 counts the lines that start with '| J10.' and expects exactly 10. The data-map part: docs/DATA-MAP.md has 10 reply-* rows and already holds chunk (line 145) and body-crawl-place (line 146); no row was added, the reply-source row now states the order. FINDING for the lead: enabled_sources has no caller outside tests (grep -rn enabled_sources core Sources --include='*.rs' --include='*.swift', excluding /tests/ and reply-sources/src, prints 0 lines), so the order is defined and tested but nothing in the engine or the app reads it yet; the line in J10.2 describes the intended order. 'the build plan follows in plan mode' is still not a file: docs/plan.json holds no reply work-package; the lead decides."
+}

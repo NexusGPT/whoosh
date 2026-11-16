@@ -1,0 +1,71 @@
+{
+  "item": "637ae165",
+  "full_id": "637ae165-d07f-4093-b175-0d1495df018d",
+  "title": "Build the Lifted look in the quick reply",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-quickreply.py",
+      "pass": "(?s)\\A(?=.*par-quickreply/sending-card-is-lifted\\s+pass )(?=.*par-quickreply/sent-card-lands-flat\\s+pass )(?=.*par-quickreply/header-folds-while-counting\\s+pass )(?=.*par-quickreply/header-returns-after-landing\\s+pass )(?=.*par-quickreply/landing-light-ran\\s+pass )(?=.*par-quickreply/landing-never-holds-a-key\\s+pass )(?=.*par-quickreply/from-menu-opens-with-accounts\\s+pass )(?=.*par-quickreply/from-check-spans-three-accounts\\s+pass )",
+      "fail": "par-quickreply[a-z0-9-]*/[a-z0-9-]+\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-quickreply.py --selftest",
+      "pass": "(?s)\\d+ round-9 checks green on the model, \\d+ mutants, 0 not red or missing.*\\d+ AI reply checks green on the model, \\d+ mutants, 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/quickreply-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J1\\.7/",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "unit",
+      "run": "theQuickReplyFieldIsFromTheReceivingAddressWithItsSignature,theUndoSendWindowStaysInsideItsBounds,theUndoBarCountsFromTheDefaultWindow",
+      "pass": "Test run with 3 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/shots-quickreply --screens mac-quickreply",
+      "pass": "(?s)PASS mac-quickreply .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL mac-quickreply|NOT JUDGED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "open _captures/results/g6/shots-quickreply-thread/index.html (proof 6: the quick reply in its thread, `--states quickreply-in-thread`) and compare its pictures pics/state-quickreply-in-thread-<view>-<theme>-<w>x<h>.png, views after-r, idle, header-open, from-picker, sending, landing and sent, light and dark (28 pictures), each taken once the reader's scroll offset holds still (two equal reads); after-r is the thread as R leaves it, scrolled to its end with the reply in view (main79, par-reader r-scrolls-to-the-new-reply-card), and is compared with the board only for the reply slab; idle is the thread at rest, the reader taken to its top after R by the window's own scroll (`scroll top`, round 20: ⌘Up moved only the offset the app keeps), so the folded earlier messages and the summary card are in view as on board Idle; header-open and from-picker follow idle with no scroll asked by the state (where the reader stands is whatever the app does while the reply is written); sending, landing and sent show the reply card where the app scrolls it, at 1280x820 and 960x632, with board cards-s3 of docs/design/boards/thread-cards-r2 (shots idle, expanded, picker, sending, sent at 1280 and 960) and the sendwave Aurora landing (landing); each tile's line reads the header's words, the From address and the signature. Not the `--screens mac-quickreply` pictures of proof 4: that is a separate empty window (main107 judge). Two controls the board does not draw are later or planned owner features, not differences: the AI reply button with its ⌘J cap (A109, J10.9, 2026-11-10, after the board) and the emoji button (the parity feature `Emoji in quick replies`, docs/plan.json cap-par-quickreply); the send cap is ⌘↵ (A145) where the board shows ⌃↵; the signature is the account's served two-line signature (docs/lanes/quickreply.md Round 5). The window's foot strip of keys under the list and the reader is the shell's, by owner rule, not a difference: SPEC A78 'You have the shortcut at the bottom on superhuman' (08:58) and A106 '(we also should have at the bottom to have hold cmd to see all shortcuts)'; it shows the reply's keys while its field holds the keyboard (⌘J named \"Brouillon IA\", the same act as the reply's ✦ ⌘J button) and the reader's otherwise. Counts of the remaining differences per view, size and theme",
+      "pass": "0 differences at 1280x820 and 960x632, light and dark"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/shots-quickreply-thread --states quickreply-in-thread",
+      "pass": "(?s)(?=.*PASS quickreply-in-thread/idle light 1280x820)(?=.*PASS quickreply-in-thread/sent dark 960x632).*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL quickreply-in-thread|NOT JUDGED quickreply-in-thread",
+      "timeout_s": 1500
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/QuickReply/ThreadLift.swift",
+      "find": "let glass = lifted ? 1 : (landing == nil || reduceMotion ? fade : 1 - Self.easeIn(min(t / Double(C.LAND_GLASS_MS), 1)))",
+      "replace": "let glass = 1.0",
+      "proof": 0,
+      "red": "par-quickreply[a-z0-9-]*/sent-card-lands-flat\\s+fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. The reader's cited capture (_captures/quickreply/quickreply-check.out:1 'FAIL J1.7/sent-from-receiving-address: expected assem@northlight-example.de, got empty'; last line 'EXIT 1') is from checks/quickreply-check.py (J1.7, :45-48), an older check, with no commit named; proof 2 runs it again: if it is still red it is a different bug from the Lifted look (the quick reply field's `from` row empty), 'already there' for this item unless the lead's base run also shows it. The Lifted look: Sources/Features/QuickReply/ThreadLift.swift (the glass clears on the Aurora landing clock, LAND_AURORA_MS 480, LAND_GLASS_MS 360, docs/CONSTANTS.md:250-254), ThreadOutgoingCard.swift (the Aurora landing at :9-21,:45,:79), ThreadCardsModel/ThreadFootLayout/QuickReplyHeader*.swift. par-quickreply drives every state (drive_lift, checks/parity/par-quickreply.py:368; prints one 'name  pass|fail|unjudged  detail' per case through print_cases): sending-card-is-lifted (a waiting card casts a shadow, mutant line :880), sent-card-lands-flat (:885), header-folds-while-counting (:879), header-returns-after-landing (:886), landing-light-ran (:887, reads the perf row of kind landing: the frame budget is the landing row's), landing-never-holds-a-key (:884), from-menu-opens-with-accounts, from-check-spans-three-accounts (:820, the three receiving accounts), foot blocks (foot-own-blocks-share-left-edge / -right-edge), failed-card-* cases and the pop-out. 'Seen red on mutants': every case has a MUTANTS line in the file's block (:820-890); the self-test (proof 1, par-quickreply.py:1402-1422: 'N round-9 checks green on the model, M mutants, K not red or missing') covers the round-9 door checks and the AI reply checks; the round-5 lift cases (drive_lift) have MUTANTS lines in the file's block and are run live by proof 0; the app mutant above is the one-line version of 'a sent card keeps its glass'. 'The From picker with caps': the cap value itself is unit-tested in Tests/Unit/ReplySendCapTests.swift (item of the send-cap lane) and shown in the picker rows; this proof only checks the picker lists the accounts and checks the current one. 'Hidden rig': launch-one.sh with WHOOSH_RIG_HIDDEN=1. 'Shots at 1280 and 960, both themes, compared to the board': proof 4 takes the pictures (shots-sheet SCREENS has mac-quickreply with the fallback key R, checks/shots-sheet.py:40-46); the comparison is proof 5, kind lead, since no board file is in the repository."
+}

@@ -1,0 +1,84 @@
+{
+  "item": "d13dfaf5",
+  "full_id": "d13dfaf5-e04d-4d17-ab27-25c5722559c5",
+  "title": "Add the sender-domain filter to the search",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_sender_domain",
+      "pass": "test result: ok\\. 9 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --lib domain_filter_tests",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_smart_folder_cmds -- a_folder_with_a_domain_filter_lists_counts_and_agrees_with_itself",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "par-domain-suggestion-tab-pill-and-engine-query +pass",
+      "fail": "par-domain-suggestion-tab-pill-and-engine-query +(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "host == domain || host.strip_suffix(domain).is_some_and(|head| head.ends_with('.'))",
+      "replace": "host.ends_with(domain)",
+      "proof": 0,
+      "red": "a_the_domain_filter_keeps_its_senders_case_blind_and_drops_a_look_alike.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "host == domain || host.strip_suffix(domain).is_some_and(|head| head.ends_with('.'))",
+      "replace": "host.ends_with(domain)",
+      "proof": 1,
+      "red": "the_sender_is_at_the_domain_or_a_sub_domain_of_it_and_never_a_look_alike.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "if d.is_empty() { false } else { f.from_domain.push(d); true }",
+      "replace": "{ f.from_domain.push(d); true }",
+      "proof": 0,
+      "red": "d_an_empty_domain_is_no_filter.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "\"from\" if value.starts_with('@') => {",
+      "replace": "\"from\" if false => {",
+      "proof": 1,
+      "red": "the_at_form_is_a_domain_filter_and_the_plain_form_a_person.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "if !filters.from_domain.iter().all(|d| sender_is_at(d, &from_address)) { continue; }",
+      "replace": "if false { continue; }",
+      "proof": 2,
+      "red": "a_folder_with_a_domain_filter_lists_counts_and_agrees_with_itself.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Engine: core/crates/engine/tests/engine_sender_domain.rs (9 tests): :111 a_the_domain_filter_keeps_its_senders_case_blind_and_drops_a_look_alike, :128 b_without_the_at_from_is_still_the_person_filter, :138 c_..._combines_with_other_pills_and_with_words, :157 d_an_empty_domain_is_no_filter, :169 e_the_last_query_state_keeps_the_text_as_typed, :194-:250 f to i the read of sender domains (counts, prefix, cap 8, fresh and under 50 ms). Unit tests in the engine crate: core/crates/engine/src/search_cmd.rs:673, :684, :693 (module domain_filter_tests, 3 tests; run with --lib). Rule as built, which differs in wording from the finish line: the filter keeps a sender whose host IS the domain or a SUB-domain of it (search_cmd.rs:445-449 sender_is_at, the test engine's rule SearchEngine.senderIsAt), not every address that merely ends with the text, so a look-alike such as notlorvan-hotels.example is out (docs/lanes/domain.md). Saved smart folder: the folder's rule words go through the same parse_query (smart_folder_cmds.rs:54 calls search_cmd::exact_matches), proved by core/crates/engine/tests/engine_smart_folder_cmds.rs:166 a_folder_with_a_domain_filter_lists_counts_and_agrees_with_itself (from:@lorvan-hotels.example lists A, B and the sub-domain S, not the look-alike or the Sent copy; the editor's count is the same). Typing a domain offers 'From domain <domain>', Tab makes the pill, the engine is asked from:@<domain>: hidden case par-domain-suggestion-tab-pill-and-engine-query (checks/parity/par-searchmac.py:2501, run at :3123 on the fixture core, its model at :2663; the case's expected value is (['search','domain'], True, (['domain'], [domain], 'from:@'+domain), True)). 'From domain' in 14 languages: proof 4. The hidden check clicks it: the finish line's 'hidden check' is that case. Owner ban: Swift unit tests (Tests/Unit/SearchPartsTests.swift:288, :303) are not proofs here. Nothing was run by me."
+}

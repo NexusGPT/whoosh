@@ -1,0 +1,77 @@
+{
+  "item": "fcaed013",
+  "full_id": "fcaed013-97bb-49d8-bb75-a1d2574b63e5",
+  "title": "Make the Speech setting clear",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "grep -rn 'AIWords.speechTitle' Sources/Features | wc -l",
+      "pass": "^\\s*0\\s*$",
+      "fail": "^\\s*[1-9]",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^(FAIL|UNJUDGED) ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsaimac-check.py --selftest",
+      "pass": "^selftest: OK \\(0 mutants not red\\)",
+      "fail": "NOT RED|selftest: FAILED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-fcaed013\" --screens mac-settings-ai",
+      "pass": "^PASS mac-settings-ai (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "read the mac-settings-ai picture of `python3 checks/shots-sheet.py --screens mac-settings-ai` (since hid-ai round 18 the AI and agents pane, opened by its sidebar row and read back from `rows mac-settings-window.place`; main108's pictures under that name showed Decisions), light, the Dictation card",
+      "pass": "the word Speech is not drawn on the card (the title reads Dictation, the row Engine); one line under it reads 'Hold <key cap> in a draft and speak. Whoosh writes what you say.'; the engine is a pill (pop-up), not text"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.6/speech-card-is-titled-dictation-not-speech",
+      "fail": "^FAIL J5\\.6/speech-card-is-titled-dictation-not-speech",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsAIMac/SpeechGroup.swift",
+      "find": "static var title: String { AIWords.dictationTitle }",
+      "replace": "static var title: String { AIWords.speechTitle }",
+      "proof": 5,
+      "red": "^FAIL J5\\.6/speech-card-is-titled-dictation-not-speech"
+    },
+    {
+      "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+      "find": "speech = .ready; speechWords = nil; speechKind = provider ?? \"local\"",
+      "replace": "speech = .ready; speechWords = nil",
+      "proof": 1,
+      "red": "FAIL J5\\.6/speech-pill-switches-the-engine"
+    },
+    {
+      "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+      "find": "static let holdToDictateKey = \"Fn\"",
+      "replace": "static let holdToDictateKey = \"\"",
+      "proof": 1,
+      "red": "FAIL J5\\.6/speech-line-names-the-key"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner reads the Dictation card on the next build and says it is clear (acceptance: 'seen ... by the owner').",
+  "notes": "Code: Sources/Features/SettingsAIMac/SpeechGroup.swift:9 group title AIWords.dictationTitle (= 'Dictation', AIWords.swift:29), :11 row title speechToText ('Engine', AIWords.swift:30), :22-41 EnginePill (Menu, ax speech.engine), :61-67 DictationLine (key cap, ax speech.line). Check cases in checks/settingsaimac-check.py: :1791 c_speech_pill (speech-pill-switches-the-engine), :1801 c_speech_offers, :1810 c_speech_line (key 'Fn' expected), :1817 c_speech_link. The reader's note that the card says 'Ready on this Mac' twice: now the state line appears once under the pill (SpeechGroup.swift:39-43). Static proof 0 is a shell pipeline run from the repository root.  Mutant 3 empties the hold key the speech.line row serves (SettingsAIMacFeature.swift:25 reads s.dictationKey; AISettingsStore.swift:269 holds \"Fn\"). gap-settings-checks: SpeechGroup.title and .rowTitle are the one place the card and its row take their words from, and the row mac-settings-ai.speech serves them as title and row_title (SettingsAIMacFeature.swift); case J5.6/speech-card-is-titled-dictation-not-speech reads them (expected 'Dictation', 'Engine'). It reads the constant the view draws, not the pixels: the lead's picture proof stays."
+}

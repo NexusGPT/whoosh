@@ -1,0 +1,84 @@
+{
+  "item": "e2dd9288",
+  "full_id": "e2dd9288-0b27-4498-a8a9-385feba26963",
+  "title": "Build fn-dictation-ios",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theAudioFixtureIsARealRecording,everyUtteranceHasCleanedTextOrIsEmpty,dictationIsInTheFeatureRegistry",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/dictation-check.py --selftest",
+      "pass": "(?s)(?=.*\\| audio-file-gone-after-text \\| .* \\| RED on this case \\|)(?=.*\\| audio-file-gone-after-failure \\| .* \\| RED on this case \\|)(?=.*\\| cleaned-u1 \\| .* \\| RED on this case \\|)(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "NOT RED|baseline (fail|unjudged)",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/dictation-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL |NOT JUDGED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app: WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/dictationphone-check.py --live",
+      "pass": "5 checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|DIED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "theModelFileIsAbsentBeforeFirstUseAndPresentAfter,aFailedDownloadLeavesNeitherThePartNorTheModel,theAudioFileIsGoneOnceRemoved,theControllerLeavesNoAudioAfterTheText,theControllerLeavesNoAudioAfterAFailure",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/dictationphone-check.py --selftest",
+      "pass": "selftest: 12 cases, 0 failed",
+      "fail": "FAIL ",
+      "timeout_s": 120
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/dictation-check.py",
+      "find": "(True, False, 0, UTT[\"u1\"][\"cleaned\"])",
+      "replace": "(True, True, 0, UTT[\"u1\"][\"cleaned\"])",
+      "proof": 1,
+      "red": "baseline fail audio-file-gone-after-text|\\d+ checks, [1-9]\\d* failed"
+    },
+    {
+      "file": "Sources/Features/Dictation/Core/ModelStore.swift",
+      "find": "if isInstalled { return modelURL }",
+      "replace": "if false { return modelURL }",
+      "proof": 4,
+      "red": "theModelFileIsAbsentBeforeFirstUseAndPresentAfter.*failed"
+    },
+    {
+      "file": "Sources/Features/Dictation/Core/ModelStore.swift",
+      "find": "catch { try? FileManager.default.removeItem(at: part); throw error }",
+      "replace": "catch { throw error }",
+      "proof": 4,
+      "red": "aFailedDownloadLeavesNeitherThePartNorTheModel.*failed"
+    },
+    {
+      "file": "Sources/Features/Dictation/Core/AudioFileStore.swift",
+      "find": "(try? FileManager.default.removeItem(at: url)) != nil",
+      "replace": "false",
+      "proof": 4,
+      "red": "theAudioFileIsGoneOnceRemoved.*failed|theControllerLeavesNoAudioAfterTheText.*failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "OUTSIDE: the iOS 26.5 simulator runtime (not installed on this Mac); proof 3 is the lead's run on it. Left after this change: no check feeds the fixture audio through the iPhone app (checks/dictation-check.py drives the Mac composer); that check needs the simulator to be written and judged. Built here: Tests/Unit/DictationModelStoreTests.swift (proof 4): model file absent before first use and present after, a second ensure() does not download, a failed download leaves no .part and no model; AudioFileStore.remove; DictationController text path and failure path leave audio files 0 (FixtureRecorder, no microphone). The two controller tests have three removers each, so no single line of DictationController.swift turns them red; the shared floor AudioFileStore.remove does (third broken copy). Claims: text arrives: dictation-check.py cases cleaned-u1 :332, cleaned-u2 :343, text-in-quick-reply :354, text-in-search :365; audio deleted: :390 and :408 (Mac path, model stand-in); model file only after first use: no check case and no unit test. Proof 1 selftest also writes under _captures/dictation (dictation-check.py:557-558): the lead runs it on a scratch copy. Proof 2 drives the Mac app's hidden test copy, not the iPhone. The r83 summary line 28 cited by the reader shows the Mac check green at build 95f1c490; it is not re-run here. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes).  | Round 3 (iphone-rig): checks/dictationphone-check.py written (cases model-absent-before-first-use, model-present-after-first-use, text-arrives-from-the-fixture-audio, audio-file-gone-after-text, no-microphone-request; one broken copy each in --selftest, proof 5; --live is proof 3, the lead's rig run). Limit measured by reading: under the rig the speech model is a timer stand-in (PhoneSpeech.swift rigSteps/rigStepMs), so no model FILE exists in the test copy; the file rules are proof 4 (Tests/Unit/DictationModelStoreTests.swift). A real microphone and the real engine need a real iPhone and are not part of this item."
+}

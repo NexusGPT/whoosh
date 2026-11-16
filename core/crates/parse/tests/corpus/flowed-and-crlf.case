@@ -1,0 +1,11 @@
+# format=flowed is unfolded, CRLF becomes LF, a leading BOM is removed.
+fold_from: none
+authored: This sentence was sent as two soft-wrapped lines and reads as one.
+--- raw
+From: Quentin Leroy <quentin@example.fr>
+To: Rita Costa <rita@example.pt>
+Subject: Flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
+
+﻿This sentence was sent as two soft-wrapped lines 
+and reads as one.

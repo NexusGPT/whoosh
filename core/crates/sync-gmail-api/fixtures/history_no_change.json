@@ -1,0 +1,19 @@
+{
+ "note": "Shaped after the Gmail REST reference (users.history.list, users.messages.get format=raw). Written by hand with invented addresses; no real mailbox was read.",
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "history",
+   "query": [
+    [
+     "startHistoryId",
+     "1006"
+    ]
+   ],
+   "status": 200,
+   "body": {
+    "historyId": "1006"
+   }
+  }
+ ]
+}

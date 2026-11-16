@@ -1,0 +1,48 @@
+{
+  "item": "133dae9c",
+  "full_id": "133dae9c-870c-4494-bbd8-949ba75ded9c",
+  "title": "Build draft writing in the core",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_reply_work",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_replies_settings",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/arrival_pass.rs",
+      "find": "if f.from_owner { return Ok(()); }",
+      "replace": "if false { return Ok(()); }",
+      "proof": 0,
+      "red": "the_auto_use_runs_the_three_steps_on_each_arrival.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/request_change.rs",
+      "find": "&draft.text, change))?;",
+      "replace": "\"\", change))?;",
+      "proof": 0,
+      "red": "a_change_request_rewrites_the_draft_with_the_same_context.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/arrival_pass.rs",
+      "find": "let exit = if through(ai) { reply_exit_step(filter, facts) } else { ReplyStepResult::NotReached };",
+      "replace": "let exit = ReplyStepResult::NotReached;",
+      "proof": 0,
+      "red": "the_auto_use_runs_the_three_steps_on_each_arrival.*FAILED|panicked"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Arrival (entry filter, the AI decision, exit filter, then a stored draft): engine_reply_work.rs:272 the_auto_use_runs_the_three_steps_on_each_arrival_and_the_counts_read_its_rows (pass rows five_rows, counts 5/4/3/1/1, made_by auto, asks the model only about what the entry filter let through, never twice, never for the owner's own message, 'nothing is sent' = outbox_entry count 0 at :293); :321 the_messages_the_imap_sync_stores_go_through_the_auto_use_and_the_mail_is_a_source (real sync path); :359 the_auto_use_waits_while_the_background_is_paused. On demand with an instruction: :167 a_draft_on_demand_is_written_in_the_background_with_its_excerpts_and_instruction_and_replaces_the_live_one (returns under 50 ms, excerpt_ids of the folder note, prompt holds the instruction). A change request rewrites it: :198 a_change_request_rewrites_the_draft_with_the_same_context_and_counts_a_revision (revision 1). Nothing sent alone: :214 accept_hands_the_text_to_an_ordinary_composer_draft_and_discard_throws_the_draft_away (outbox_entry 0, :233) and the auto case. Implementation: core/crates/engine/src/replies_work/usecases/arrival_pass.rs, draft_on_demand.rs, request_change.rs. The earlier finding (PARTLY, J10.8 not judged) is about the FIXTURE core in the app (item ebde5eae), not the real core: the real core's arrival draft is proved here. Contract settings read/written: engine_replies_settings.rs:121-168. The cargo lead runs one compile at a time. The three mutants are the three behaviours (the owner's own message gets an auto draft; the change loses the current text; the exit filter is skipped so counts differ)."
+}

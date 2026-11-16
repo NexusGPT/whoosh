@@ -1,0 +1,18 @@
+{
+  "item": "26805fa0",
+  "full_id": "26805fa0-0b72-4edd-9657-47882ac9d6e0",
+  "title": "Serve Send later in the fixture core",
+  "state": "prove",
+  "proofs": [
+    {"kind": "unit", "run": "aDraftScheduledForTheFutureIsListedWaitingWithItsTime,aScheduleForAPastTimeIsRefusedWithTheEnginesWords,cancellingAScheduledSendTakesItOutOfTheListing,nothingIsSentBeforeTheScheduledTime", "pass": "Test aDraftScheduledForTheFutureIsListedWaitingWithItsTime\\(\\) passed", "fail": "recorded an issue|failed after", "timeout_s": 900},
+    {"kind": "hidden", "core": "fixture", "run": "python3 journeys/run.py J3", "pass": "(?m)^J3\\.8/listed-in-scheduled +pass ", "fail": "(?m)^J3\\.8/\\S+ +(fail|unjudged) |FAIL J3\\.8/|NOT JUDGED J3\\.8/", "timeout_s": 600},
+    {"kind": "lead", "run": "after the hidden J3 run, read the results file journeys write (_captures/results/J3/J3-<build>.results.jsonl, or $WHOOSH_RESULTS_DIR) and grep the lines whose step is J3.8", "pass": "\"case\": \"(composer-says-scheduled|outbox-entry-scheduled|listed-in-scheduled)\", \"verdict\": \"PASS\""}
+  ],
+  "mutants": [
+    {"file": "Sources/CoreBridge/FixtureCore.swift", "find": "if atMs <= now { throw CoreError.Invalid(field: \"at_ms\", reasonWords: \"pick a time in the future\") }", "replace": "if false { throw CoreError.Invalid(field: \"at_ms\", reasonWords: \"pick a time in the future\") }", "proof": 0, "red": "aScheduleForAPastTimeIsRefusedWithTheEnginesWords\\(\\) (recorded an issue|failed)"},
+    {"file": "Sources/CoreBridge/FixtureCore.swift", "find": "state: .scheduled(atMs: atMs), createdAtMs: now)", "replace": "state: .scheduled(atMs: atMs + 1), createdAtMs: now)", "proof": 0, "red": "aDraftScheduledForTheFutureIsListedWaitingWithItsTime\\(\\) (recorded an issue|failed)"}
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "gap-findings 2026-11-11: journeys/run.py now prints one line per case (print_cases, lane gap-themes round 2: `<label padded to 28> <pass|fail|unjudged padded to 8> <detail>`), so proof 1 reads `J3.8/listed-in-scheduled  pass`; its fail regex reads the lower-case fail and unjudged forms of the same line (and keeps the old words). Not covered by any unit test and left to the journey: the row's displayed time (J3.8/composer-says-scheduled, journeys/J3.py:400). Code: Sources/CoreBridge/FixtureCore.swift:786 (case .schedule), :818-838 scheduleLocked (refusal :834, state :835). The old refusal 'does not serve this command' no longer exists for schedule. Tests: Tests/Integration/SendLaterFixtureTests.swift:24,36,45,55. Journey: journeys/J3.py:388-402 (step J3.8, run on the fixture core). Standing rule: run is hidden (WHOOSH_RIG_HIDDEN=1 through scripts/launch-one.sh). Acceptance line is cut after 'its l' in the board; read as: the test that was red passes, its line quoted (the unit pass line of aDraftScheduledForTheFutureIsListedWaitingWithItsTime)."
+}

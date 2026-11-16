@@ -1,0 +1,8 @@
+# A plain reply in HTML with one coloured word: written.
+subject: Re: Deadline
+sender: Kai Wong
+layout: written
+fold_from: none
+authored: The deadline is firm: Friday at noon.
+--- html
+<div>The deadline is <span style="color:#c00000">firm</span>: Friday at noon.</div>

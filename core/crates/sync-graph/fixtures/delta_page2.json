@@ -1,0 +1,17 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(message)",
+  "@odata.deltaLink": "{BASE}/v1.0/me/mailFolders/inbox-id/messages/delta?$deltatoken=round1-example",
+  "value": [
+    {
+      "@odata.etag": "W/\"CQAAABYAAADtExample3\"",
+      "id": "AAMkExample003=",
+      "conversationId": "AAQkConvExampleB=",
+      "subject": "Lunch on Friday?",
+      "bodyPreview": "Noon at the usual place.",
+      "receivedDateTime": "2026-11-03T10:30:00Z",
+      "isRead": false,
+      "from": { "emailAddress": { "name": "", "address": "lee@example.net" } },
+      "toRecipients": [ { "emailAddress": { "address": "owner@example.net" } } ]
+    }
+  ]
+}

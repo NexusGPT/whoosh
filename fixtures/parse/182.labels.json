@@ -1,0 +1,15 @@
+{
+ "id": "182",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "-----Original Message-----",
+  "visible_contains": "Looks good, one small change in section 2. 0c1f",
+  "folded_contains": "Do you have the figures for the supplier quote? e30f"
+ },
+ "adversarial": false
+}

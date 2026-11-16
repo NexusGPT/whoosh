@@ -1,0 +1,33 @@
+[package]
+name = "autoconfig"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+description = "Mail provider autodetection for adding an account by IMAP: the five steps of the Mozilla Autoconfig flow in the owner's order (provider database, the domain's autoconfig files, DNS SRV per RFC 6186, Autodiscover, a guess with a TLS probe). Every network call is behind a port."
+
+[features]
+default = []
+# The real HTTPS transport over reqwest. Off by default: no test needs it and no test may reach the network.
+# Used once, by examples/ispdb_capture.rs, for the owner-allowed ISPDB lookup of gmail.com.
+live = ["dep:reqwest"]
+
+[dependencies]
+netguard = { path = "../netguard" }   # engine-act-r6 round 5: a rig copy reaches this Mac only (outbound_allowed before any lookup or dial)
+contracts = { workspace = true }
+serde_json = "1"
+# The probe's TLS, the same crates and the same set-up as sync-imap's transport (transport::connect is crate-private).
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-native-certs = "0.8"
+# rustls-no-provider (2026-11-09, real core slice 1): the default "rustls" feature pulls aws-lc-rs, whose C globals escape the
+# ffi pre-link (scripts/gen-swift.sh); ring is the one provider in this tree, installed in ReqwestHttp::new.
+reqwest = { version = "0.13", optional = true, default-features = false, features = ["blocking", "rustls-no-provider"] }
+# Pure-Rust XML reader, MIT OR Apache-2.0 (src/xml.rs wraps it).
+roxmltree = { version = "0.21.2", default-features = false, features = ["std"] }
+# Pure-Rust DNS resolver for the SRV step, MIT OR Apache-2.0 (src/adapters/dns_hickory.rs); tokio drives it on a private runtime.
+hickory-resolver = { version = "0.26.3", default-features = false, features = ["system-config", "tokio"] }
+tokio = { version = "1.54.1", default-features = false, features = ["rt", "net", "time"] }
+
+[[example]]
+name = "ispdb_capture"
+required-features = ["live"]

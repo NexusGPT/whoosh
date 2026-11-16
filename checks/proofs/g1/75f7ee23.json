@@ -1,0 +1,65 @@
+{
+ "item": "75f7ee23",
+ "full_id": "75f7ee23-4270-4774-a55c-32838734dd03",
+ "title": "Build ix-settingsaccountsmac",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J4 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J4-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+   "pass": "(?s)(?=.*STEP J4\\.8 PASS=\\d+\\n)",
+   "fail": "STEP J4\\.8 [^\\n]*(FAIL|NOT JUDGED)=|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/par-settingsaccountsmac.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL |NOT JUDGED|could not drive",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/settingsaccountsmac-check.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL |NOT JUDGED|could not drive",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/settingsaccountsmac-check.py --selftest",
+   "pass": "selftest: every check seen red on its mutant",
+   "fail": "NOT RED|[1-9]\\d* problem",
+   "timeout_s": 300
+  },
+  {
+   "kind": "unit",
+   "run": "signingInAgainClearsTheErrorOnTheBrokenAccountOnly",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/SettingsAccountsMac/AccountsSession.swift",
+   "find": "let ok = fixture.reauth(accountId: id)",
+   "replace": "let ok = false",
+   "proof": 0,
+   "red": "STEP J4\\.8 [^\\n]*FAIL="
+  },
+  {
+   "file": "Sources/Features/SettingsAccountsMac/AccountsSession.swift",
+   "find": "        run(.setNotificationSetting(setting: st))\n",
+   "replace": "",
+   "proof": 0,
+   "red": "STEP J4\\.8 [^\\n]*FAIL="
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Every clause of the acceptance is one case of journeys/J4.py step J4.8 (J4.py:464-472), run on the hidden fixture core: 'the fixture's broken account shows its error' = broken-named (:466, the failing list names the account whose id is FAILING_ACCOUNT; the error text itself is the row field `error`, SettingsAccountsMacFeature.swift:38, read by checks/settingsaccountsmac-check.py, not by J4.8: if the lead wants the words asserted, one case reading `.<id>` row's error is S); 'Sign in again with a stubbed success turns it healthy' = account-healthy (:470: after click `.<id>.sign-in-again`, core sync_state/<id>/healthy is True; the stub is the fixture core's reauth, AccountsSession.swift:241-246 `fixture.reauth`); 'notifications off for 2 accounts writes 2 notification_setting rows and the rows read no notifications' = two-muted (:471: the core's notification_setting/off holds exactly the two MUTED ids) and muted-rows-say-so (:472: both rows' note equals the catalogue's 'no notifications', AccountsSession.swift:235 'The row's one-line note'). Proof 0 requires the step pure PASS (printed 'STEP J4.8 PASS=n' from the harness's results jsonl). The step also holds the arrival by control (the clickable status line). Unit proof 4: Tests/Unit/SettingsAccountsMacTests.swift:18 signingInAgainClearsTheErrorOnTheBrokenAccountOnly (fixture core; the broken account only). Proofs 1-3: the lane's parity check (checks/parity/par-settingsaccountsmac.py), its functional check and the check's own mutant self-test (checks/settingsaccountsmac-check.py:200-228; saved: _captures/tests-j4/settingsaccountsmac-selftest.txt last line 'selftest: every check seen red on its mutant', read only). Neither check prints per-case pass lines (only failures and the totals), so they prove the set. The reader found no run; the three screenshots (_captures/settingsaccountsmac/{picker-refused-dark,healed-light,muted-light}-1280x820.png) are pictures, not runs. Mutants: sign-in-again no longer succeeds (AccountsSession.swift:243 `let ok = fixture.reauth(accountId: id)` -> false: J4.8 account-healthy red, mutant row J4.py:632) and the notification toggle no longer writes (AccountsSession.swift:129, row J4.py:633 'notification settings are not saved'); both need an app rebuild. The two Settings tests the reader named (SettingsGeneralMacTests, RootDelta7Tests) are not about this item."
+}

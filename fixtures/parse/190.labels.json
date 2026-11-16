@@ -1,0 +1,14 @@
+{
+ "id": "190",
+ "category": "quoted-html",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "html",
+  "visible_contains": "Looks good, one small change in section 2. 4ca0",
+  "folded_contains": "Please review the attached draft. 662a"
+ },
+ "adversarial": false
+}

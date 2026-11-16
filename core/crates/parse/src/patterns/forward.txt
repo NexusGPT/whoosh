@@ -1,0 +1,3 @@
+# Subject prefixes of a forwarded message, one regex per line, read case-insensitively against the subject.
+# A forward is recognised only by one of these AND a forward header in the body (a forward rule or an embedded header block).
+^\s*(re:\s*)*(fwd?|fw|tr|wg|rv|i|enc|doorst|pd|vs|vb|vl|пересл|fwd\[\d+\])\s*:

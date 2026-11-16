@@ -1,0 +1,131 @@
+{
+  "item": "781fa6dd",
+  "full_id": "781fa6dd-b795-4740-b0fa-23a0a57208c6",
+  "title": "Make Jev sort mail end to end (A125)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_jev_wire_r8",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p decision --test jev",
+      "pass": "test result: ok\\. 5 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_label_model_r5 -- the_consent_is_kept_read_and_refused_where_none_is_needed jev_with_key_and_consent_is_asked_with_exactly_the_ticked_fields_and_never_before_all_three",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "read the lane's Jev section of docs/lanes/ai-settings-core.md and core/crates/engine/src/decision_model.rs:99-113 (default_jev_transport, JevLoopback) against the acceptance sentence by sentence",
+      "pass": "the transport is the shared ProviderHttps (the same type the provider connections use, ai_settings.rs); the loopback fake sees exactly the ticked fields; no key, no consent, withdrawn consent: nothing sent; a rig core refuses the real address"
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_jev_rig_route",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore_aifake.py --selftest",
+      "pass": "selftest aifake: all pass",
+      "fail": "FAIL ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-aikey",
+      "pass": "(?s)PASS\\s+jev-test-on-the-real-engine-reads-connected .*PASS\\s+jev-bad-key-reads-refused-in-words .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL\\s|NOT JUDGED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice aikey: model all pass, 14 broken models each red on its own cases",
+      "fail": "FAILS|SURVIVED|WRONG",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "grep -c '\"state\": state, \"model\": \"jev-latest\", \"questions\": questions' Sources/CoreBridge/FixtureDecide.swift",
+      "pass": "^1$",
+      "fail": "^0$",
+      "timeout_s": 60
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/decision_model.rs",
+      "find": "    Arc::new(crate::ai_settings::ProviderHttps::new())",
+      "replace": "    Arc::new(JevLoopback { port: 9, inner: crate::ai_settings::ProviderHttps::new() })",
+      "proof": 0,
+      "red": "the_default_jev_wiring_is_the_real_https_and_a_rig_copy_refuses_it.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/decision_model.rs",
+      "find": "self.inner.send(&Request { url: format!(\"http://127.0.0.1:{}{path}\", self.port), ..request.clone() })",
+      "replace": "self.inner.send(&Request { url: format!(\"http://127.0.0.1:{}{path}\", self.port), headers: Vec::new(), ..request.clone() })",
+      "proof": 0,
+      "red": "through_the_real_transport_a_jev_request_carries_exactly_the_ticked_fields.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "    let jev = host_of(decision::adapters::jev::JEV_URL).eq_ignore_ascii_case(&host);",
+      "replace": "    let jev = false;",
+      "proof": 4,
+      "red": "with_the_rig_port_the_jev_test_reaches_the_loopback_listener_and_reads_connected.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "        netguard::outbound_allowed_url(&url).map_err(|e| words_of(&e))?;",
+      "replace": "        let _ = netguard::outbound_allowed_url(&url);",
+      "proof": 4,
+      "red": "with_no_rig_port_the_jev_test_is_refused_and_nothing_is_dialled.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "        format!(\"http://127.0.0.1:{port}{path}\")",
+      "replace": "        format!(\"http://127.0.0.1:{port}/\")",
+      "proof": 4,
+      "red": "with_the_rig_port_the_jev_test_reaches_the_loopback_listener_and_reads_connected.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "checks/realcore_aifake.py",
+      "find": "        if self.path == \"/v1/systemone\":\n            return self.jev_post(raw)",
+      "replace": "        if self.path == \"/v1/systemone-not-served\":\n            return self.jev_post(raw)",
+      "proof": 5,
+      "red": "FAIL  Jev"
+    },
+    {
+      "file": "checks/realcore-check.py",
+      "find": "any(p.get(\"accepted\") for p in jev),\n                    \"after Connect",
+      "replace": "True,\n                    \"after Connect",
+      "proof": 7,
+      "red": "SURVIVE"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureDecide.swift",
+      "find": "let fields: [String: Any] = [\"state\": state, \"model\": \"jev-latest\", \"questions\": questions]",
+      "replace": "let fields: [String: Any] = [\"state\": state, \"questions\": questions]",
+      "proof": 8,
+      "red": "^0$"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The reader's finding (no Jev transport on the shared connection) is wrong: core/crates/engine/src/decision_model.rs:99-101 `default_jev_transport` returns `crate::ai_settings::ProviderHttps::new()` (the shared provider connection), :103-113 JevLoopback (the test seam, the same real transport with Jev's address swapped for 127.0.0.1:<port>), :185 set in the core. Tests: core/crates/engine/tests/engine_jev_wire_r8.rs:131 through_the_real_transport_a_jev_request_carries_exactly_the_ticked_fields (a fake Jev server on loopback; withdraws consent and expects AiStep::Refused; picks Jev with a key), :168 the_default_jev_wiring_is_the_real_https_and_a_rig_copy_refuses_it; header lines 4-6 name the mutants W1-W3 (W1 and W2 are the two here, W3 drops the key header: the second mutant drops all headers, which includes it). core/crates/decision/tests/jev.rs:55 the_request_matches_the_fixture_and_the_answers_decide, :85 a_refused_key_returns_jevs_words_and_never_the_key, :99 no_mail_reaches_jev_before_consent, :108, :124 (5 tests). core/crates/engine/tests/engine_label_model_r5.rs:339 and :367 (no key, no consent, all three before any send). The case 'no key sends nothing' is in :367's `never before all three` and in decision/tests/jev.rs:99/:85. The jev.rs fixture is a recorded request, so its test count 5 is read from the file (five `fn` tests at lines 55, 85, 99, 108, 124)."
+}

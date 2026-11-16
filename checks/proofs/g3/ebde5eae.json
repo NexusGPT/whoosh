@@ -1,0 +1,60 @@
+{
+  "item": "ebde5eae",
+  "full_id": "ebde5eae-89e8-488e-9a36-9a8407532b23",
+  "title": "Drive journey J10 on a main build",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 journeys/run.py J10",
+      "pass": "J10 GREEN: 10 steps",
+      "fail": "J10 (RED|COULD-NOT-DRIVE)|NOT JUDGED J10|FAIL J10\\.",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J10.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red or missing",
+      "fail": "NO MUTANT|STRAY|NOT IN THE CATALOGUE",
+      "timeout_s": 120
+    },
+    {
+      "kind": "unit",
+      "run": "anArrivalWithTheAutoUseOnGetsALiveDraftAndNothingIsSent,anArrivalWithTheAutoUseOffGetsNoDraft,aMessageIsDraftedOnceAndTheDraftIsNeverSent",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "lead",
+      "run": "run proof 0 against the newest INSTALLED-class main bundle (the one install.sh put under ~/Applications, copied by launch-one.sh, hidden), and copy the whole output to ~/work/smart-email/whoosh/_captures/tests/<label>/J10-<label>.log",
+      "pass": "J10 GREEN: 10 steps, \\d+ checks, 0 failed, 0 not judged"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/CoreBridge/FixtureFiling.swift",
+      "find": "            writeArrivalDraftLocked(id)   // gap-replies: the automatic draft of an arrival (FixtureCoreArrivalDraft.swift); nothing is sent\n",
+      "replace": "",
+      "proof": 2,
+      "red": "anArrivalWithTheAutoUseOnGetsALiveDraftAndNothingIsSent"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCoreArrivalDraft.swift",
+      "find": "guard b.uses[.auto]?.enabled == true, let m = fxMessage(id), !gone(id) else { return }",
+      "replace": "guard let m = fxMessage(id), !gone(id) else { return }",
+      "proof": 2,
+      "red": "anArrivalWithTheAutoUseOffGetsNoDraft"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCoreArrivalDraft.swift",
+      "find": "        guard !b.drafts.contains(where: { $0.messageId == id }) else { return }               // never twice for one message\n",
+      "replace": "",
+      "proof": 2,
+      "red": "aMessageIsDraftedOnceAndTheDraftIsNeverSent"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Built: Sources/CoreBridge/FixtureCoreArrivalDraft.swift writeArrivalDraftLocked (the three contract steps replyEntryStep/replyAiStep/replyExitStep, then a live draft made_by auto, state proposed, instruction None, served at reply/draft/<thread>, events ReplyDraftReady and ReplyDraftChanged; no outbox entry) called by one line in FixtureFiling.swift deliverArrival (after fileOnArrivalLocked). The journey text (journeys/J10.py docstring, GAP_ARRIVAL, the stand-in names) says what is built; selftest 63 checks, 63 mutants, 0 not red or missing. Why it read COULD-NOT-DRIVE: the fixture core's deliverArrival filed labels and ran no reply pass. Unknown until the lead runs proof 0: whether the arrival msg-j10-question carries a label in the filter's scope (the fixture's label rules at arrival) so that the entry step passes; if J10.8 still reads not judged, read the arrival's labels from the fixture deliver line. The lead runs proof 0 on the newest main bundle and keeps the log (proof 3)."
+}

@@ -1,0 +1,71 @@
+{
+ "item": "993dc85f",
+ "full_id": "993dc85f-7b1b-4067-a950-27022e37b069",
+ "title": "Build fn-tests-j4",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J4 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J4-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+   "pass": "(?s)(?=.*STEP J4\\.1 PASS=\\d+\\n)(?=.*STEP J4\\.2 PASS=\\d+\\n)(?=.*STEP J4\\.3 PASS=\\d+\\n)(?=.*STEP J4\\.4 PASS=\\d+\\n)(?=.*STEP J4\\.5 PASS=\\d+\\n)(?=.*STEP J4\\.6 PASS=\\d+\\n)(?=.*STEP J4\\.7 PASS=\\d+\\n)(?=.*STEP J4\\.8 PASS=\\d+\\n)(?=.*STEP J4\\.10 [^\\n]*NOT JUDGED=\\d+)(?=.*STEP J4\\.11 [^\\n]*NOT JUDGED=\\d+)",
+   "fail": "STEP J4\\.\\d+ [^\\n]*FAIL=|J4 RED|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "python3 journeys/J4.py --selftest",
+   "pass": "selftest: \\d+ checks, \\d+ mutants( red)?, .*0 not red or missing",
+   "fail": "NOT RED|STRAY|NO MUTANT|NOT IN THE CATALOGUE|[1-9]\\d* not red or missing",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_THEME=dark WHOOSH_RESULTS_DIR=$D/results-dark python3 journeys/run.py J4 2>&1 ; python3 journeys/lib/summary.py \"$D/results-dark\" J4'",
+   "pass": "(?s)(?=.*STEP J4\\.1 PASS=\\d+\\n)(?=.*STEP J4\\.2 PASS=\\d+\\n)(?=.*STEP J4\\.3 PASS=\\d+\\n)(?=.*STEP J4\\.4 PASS=\\d+\\n)(?=.*STEP J4\\.5 PASS=\\d+\\n)(?=.*STEP J4\\.6 PASS=\\d+\\n)(?=.*STEP J4\\.7 PASS=\\d+\\n)(?=.*STEP J4\\.8 PASS=\\d+\\n)(?=.*STEP J4\\.10 [^\\n]*NOT JUDGED=\\d+)(?=.*STEP J4\\.11 [^\\n]*NOT JUDGED=\\d+)(?=.*THEME J4\\.1 theme-applied PASS got=dark)",
+   "fail": "STEP J4\\.\\d+ [^\\n]*FAIL=|J4 RED|could not drive|THEME J4\\.1 theme-applied (FAIL|NOT JUDGED)",
+   "timeout_s": 900
+  },
+  {
+   "kind": "static",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results-themes-dry python3 journeys/run.py --dry --themes light,dark J4 2>&1 | grep -E \"^\\[(light|dark)\\] J4 \"'",
+   "pass": "(?s)\\[light\\] J4 [A-Z-]+: .*\\[dark\\] J4 [A-Z-]+: ",
+   "fail": "\\[light\\] J4 [^\\n]*\\n\\[light\\] J4 |Traceback|takes light or dark",
+   "timeout_s": 300
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeModel.swift",
+   "find": "let made = parts.filter { add($0, secret: nil) }.count",
+   "replace": "let made = parts.prefix(1).filter { add($0, secret: nil) }.count",
+   "proof": 0,
+   "red": "STEP J4\\.6 [^\\n]*FAIL="
+  },
+  {
+   "file": "journeys/lib/theme.py",
+   "find": "s.raw(\"fixture\", \"theme\", want)",
+   "replace": "s.raw(\"fixture\", \"theme\", \"light\")",
+   "proof": 2,
+   "red": "THEME J4\\.1 theme-applied FAIL got=light"
+  },
+  {
+   "file": "journeys/run.py",
+   "find": "\"[%s] \" % theme if theme else \"\", r[\"id\"].split(\" (\")[0]",
+   "replace": "\"[%s] \" % \"light\" if theme else \"\", r[\"id\"].split(\" (\")[0]",
+   "proof": 3,
+   "red": "\\[light\\] J4 [^\\n]*\\n\\[light\\] J4 "
+  },
+  {
+   "file": "journeys/lib/theme.py",
+   "find": "s.expect(\"theme-applied\", lambda: s.ctl.uistate()[\"theme\"], want)",
+   "replace": "s.expect(\"theme-applied\", lambda: want, want)",
+   "proof": 1,
+   "red": "NOT RED \\(pass\\)"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Proof 0 prints one 'STEP J4.n <verdict>=count' line per step (results jsonl, harness.py:248-270); required: J4.1-J4.8 pure PASS and J4.10, J4.11 with NOT JUDGED (the iPhone half is not driven without the simulator socket: outside this Mac's setup, the iOS simulator rig is slice-j7-iphone). J4.12 (account icon and colour, J4.py:499-516) is not in the acceptance; its result is printed but not constrained here, it belongs to item 5b704a2d. Proof 1: journeys/J4.py:1136-1146 selftest (J4.py:804-899 run_selftest, a stand-in app: prints 'selftest: N checks, M mutants red, K not run (not judged on the ideal), R declared rows, 0 not red or missing'). Mutant: J4.6/thirty-rows ('rows are capped below 30', J4.py:617) = WelcomeModel.swift:64-69 addPasted taking only the first address (needs an app rebuild). Red history (read only): _captures/tests-j4/j4-red-run.txt:4 and j4-r2-red-run.txt:4. The saved swift-test-run.txt ('18 tests in 0 suites failed ... 37 issues') is the lane's Swift tests at scaffold and is not re-claimed here. Theme (lane gap-themes): journeys/J4.py:331 calls `_theme.apply(s)` (journeys/lib/theme.py:20-24: `fixture theme <WHOOSH_THEME, default light>`, then the case `J4.1/theme-applied` reads uistate theme), TITLE says the theme (J4.py:68), MUTANTS row J4.py:521. Proof 2 runs the journey with WHOOSH_THEME=dark and prints, from journeys/lib/summary.py, the line 'THEME J4.1 theme-applied PASS got=dark'; the light pass is proof 0 (the default theme). Proof 3: `journeys/run.py --dry --themes light,dark J4` prints one line per theme ('[light] J4 ...', '[dark] J4 ...'; no app is launched, so the verdict word there is COULD-NOT-DRIVE and is not read). On a real run `--themes` writes each pass under <results folder>/<theme>/ and both passes drive one app (a fixture core cannot be reset): the lead launches once per theme, as proofs 0 and 2 do. A light run cannot show that the app applies a theme (a build that ignores the verb stays light): only the dark proof can. The acceptance's second point (J4.9 may print PASS where the acceptance says could-not-drive) is a reading note for the lead, not missing code: proof 0 allows no FAIL on J4.9, and the lead notes which word it prints."
+}

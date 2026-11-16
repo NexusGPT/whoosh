@@ -1,0 +1,6 @@
+{
+  "value": [
+    { "id": "inbox-id", "displayName": "Inbox", "parentFolderId": "root-id", "childFolderCount": 1 },
+    { "id": "sent-id", "displayName": "Sent Items", "parentFolderId": "root-id", "childFolderCount": 0 }
+  ]
+}

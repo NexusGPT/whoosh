@@ -1,0 +1,31 @@
+{
+ "item": "58982d18",
+ "full_id": "58982d18-875b-4a5e-ac10-ee9b24fbf649",
+ "title": "Draw the missing-model states of every AI surface (A127)",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "git ls-tree -r --name-only HEAD docs/design/boards/ai-setup-r1",
+   "pass": "docs/design/boards/ai-setup-r1/notes\\.md",
+   "fail": "^$",
+   "timeout_s": 30
+  },
+  {
+   "kind": "static",
+   "run": "grep -n 'A127' docs/SPEC.md",
+   "pass": "picked: W1 amber dot and one line",
+   "fail": "^$",
+   "timeout_s": 30
+  },
+  {
+   "kind": "lead",
+   "run": "open the committed board docs/design/boards/ai-setup-r1 and tick, in the lead's own words, one drawing for each of the three states (decision model not downloaded, no decision model chosen, no LLM connected) on each of the five surfaces (label inspector, Decisions, AI and agents, Replies, list and reader AI controls)",
+   "pass": "11 of 15 cells drawn (docs/design/boards/ai-setup-r1/notes.md table: 1a 1b 1c 8a 8b 8c 8d 8e 8f 8g; 8e covers two cells); 4 cells do not apply (Replies, list and reader never use the decision model); pick W1 recorded at docs/SPEC.md A127"
+  }
+ ],
+ "mutants": [],
+ "gap": "",
+ "owner": "The owner has already picked W1 (SPEC.md:145, 'W1 better'); what remains is the owner's look at the three missing states on every surface once the board is committed ('the lead has drawn, and the owner has seen').",
+ "notes": "The item is a design act, not code, so it has no one-line break (mutants empty). Sources: docs/SPEC.md:145 (A127 row), Sources/Features/AISetup/MissingSetupMark.swift:3 ('Design W1 (ai-setup-r1): Amber dot and one line'), Sources/Features/SettingsAIMac/ModelSetupRow.swift:13, Sources/Features/FirstStart/FirstStartAI.swift. The sparse checkout of this worktree excludes docs/design/boards, but proof 0 reads the git tree (git ls-tree), which is complete: it shows the board is absent from the commit, not just from the checkout (read: git -C <worktree> ls-tree -r --name-only HEAD | grep -i ai-setup returned nothing). Lead 2026-11-11: the board is committed with notes.md; design 8 (drawn after the pick, no new choice) adds seven drawings; pictures read by the lead: _captures/lead/ai-setup-r1/w1all-dark-250.png and w1all-dark-4960.png."
+}

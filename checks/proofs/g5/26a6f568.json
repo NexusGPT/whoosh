@@ -1,0 +1,113 @@
+{
+  "item": "26a6f568",
+  "full_id": "26a6f568-541e-4519-9b1b-29232b54b04d",
+  "title": "Rank by meaning when the model arrives after the search",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_model_late",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_forms",
+      "pass": "test result: ok\\. 7 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theEngineHearsTheModelIsComingBeforeItIsHandedOver,theEngineHearsTheModelIsComingBeforeItIsToldThereIsNone",
+      "pass": "Test theEngineHearsTheModelIsComingBeforeItIsToldThereIsNone\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/a-search-typed-at-once-after-a-start-ends-ranked-never-with-the-missing-model-sentence",
+      "fail": "FAIL +search/a-search-typed-at-once-after-a-start-ends-ranked-never-with-the-missing-model-sentence|NOT JUDGED +search/a-search-typed-at-once-after-a-start-ends-ranked-never-with-the-missing-model-sentence",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/a-copy-with-no-model-keeps-no-model-and-says-so-in-words",
+      "fail": "FAIL +search/a-copy-with-no-model-keeps-no-model-and-says-so-in-words|NOT JUDGED +search/a-copy-with-no-model-keeps-no-model-and-says-so-in-words",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice search: .*26 mutant models each red on its own case",
+      "fail": "WRONG|FAILS|SURVIVE",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "aTestCopyReadsTheHandOverDelayFromItsEnvironment,theOwnersAppNeverReadsTheHandOverDelay,theHandOverDelayIsAbsentEmptyBadOrNegativeMeansNoneAndIsCapped,aDelayedHandOverWaitsAndThenHandsOverAndNoDelayHandsOverAtOnce",
+      "pass": "passed",
+      "fail": "failed|recorded an issue",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "(?m)selftest slice search: hand-over delay: the late case is judged because the copy is started with WHOOSH_RIG_EMBED_HANDOVER_DELAY_MS=3000.* yes$",
+      "fail": "WRONG|FAILS|SURVIVED|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "let coming = embedder.is_none() && crate::bodies::crawl::model_coming();",
+      "replace": "let coming = false;",
+      "proof": 0,
+      "red": "a_search_before_the_model_is_handed_over_ends_ranked_when_it_comes .*FAILED|panicked"
+    },
+    {
+      "file": "Sources/Features/BackgroundWork/BackgroundWork.swift",
+      "find": "        engine.expectEmbedder()\n",
+      "replace": "",
+      "proof": 2,
+      "red": "theEngineHearsTheModelIsComingBeforeItIsHandedOver\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "let coming = embedder.is_none() && crate::bodies::crawl::model_coming();",
+      "replace": "let coming = false;",
+      "proof": 3,
+      "red": "FAIL +search/a-search-typed-at-once-after-a-start-ends-ranked-never-with-the-missing-model-sentence"
+    },
+    {
+      "file": "Sources/Features/BackgroundWork/BackgroundWork.swift",
+      "find": "guard CorePlace.isRig(env: env, bundleId: bundleId, arguments: arguments),\n              let text = env[\"WHOOSH_RIG_EMBED_HANDOVER_DELAY_MS\"], let ms = Int(text), ms > 0 else { return 0 }",
+      "replace": "guard let text = env[\"WHOOSH_RIG_EMBED_HANDOVER_DELAY_MS\"], let ms = Int(text), ms > 0 else { return 0 }",
+      "proof": 6,
+      "red": "theOwnersAppNeverReadsTheHandOverDelay\\(\\) failed|✘ Test theOwnersAppNeverReadsTheHandOverDelay"
+    },
+    {
+      "file": "Sources/Features/BackgroundWork/BackgroundWork.swift",
+      "find": "return min(ms, rigDelayMaxMs)",
+      "replace": "return ms",
+      "proof": 6,
+      "red": "theHandOverDelayIsAbsentEmptyBadOrNegativeMeansNoneAndIsCapped\\(\\) failed|✘ Test theHandOverDelayIsAbsentEmptyBadOrNegativeMeansNoneAndIsCapped"
+    },
+    {
+      "file": "Sources/Features/BackgroundWork/BackgroundWork.swift",
+      "find": "if waitMs > 0 { Thread.sleep(forTimeInterval: Double(waitMs) / 1000) }",
+      "replace": "if waitMs > 0 { _ = waitMs }",
+      "proof": 6,
+      "red": "aDelayedHandOverWaitsAndThenHandsOverAndNoDelayHandsOverAtOnce\\(\\) failed|✘ Test aDelayedHandOverWaitsAndThenHandsOverAndNoDelayHandsOverAtOnce"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Design: docs/lanes/model-late.md (expect_background_embedder core/crates/engine/src/crawl.rs:131, model_coming :123, search_cmd.rs:164-203 re-rank on arrival, one waiter per core, indexer.rs:169-180). Swift: Sources/Features/BackgroundWork/BackgroundWork.swift:107 (engine.expectEmbedder() first in start()), BackgroundEngineLive.swift:19. The second mutant removes that line (it needs a newline in find, as written). The head commit 1f4219fe says its fix to engine_model_late a_search_before_the_shell_says_no_model_ends_no_model_with_the_sentence (a 120 s wait because a core with no crawl kicked was never registered) was 'Not compiled yet': proof 0 is the first run of that file at the head, a red there is an open finding for the engine owner, not for this item's wording. | gap-search-cases: proof 3 needs the lead's model folder in WHOOSH_EMBED_WEIGHTS, proof 4 must run with it unset (the slice reads the variable); each prints its own line, PASS, FAIL or NOT JUDGED. The selftest (proof 5) holds mutants late-ends-no-model, late-sentence-between, late-stuck-on-words and, on the no-model copy, nomodel-no-sentence, nomodel-other-sentence, nomodel-stuck-on-words. (tail-realcore, 2026-11-12) the gap is closed: checks/realcore-check.py `main_slice_search` adds WHOOSH_RIG_EMBED_HANDOVER_DELAY_MS=3000 (LATE_HANDOVER_DELAY_MS) to the copy's LAUNCH_ENV when a model folder is given, and the relaunch keeps it (launch-one saves LAUNCH_ENV in relaunch.env), so the restarted copy hands the model over 3 s after its start; `late_search` records `typed_s`, how long the typing took. `judge_late` now judges the window: first stage `words` then `ranked` is a pass; with the delay asked, a search typed within 2 s whose first stage is not `words` is a FAIL (the build ignores the delay, or the engine ranked before the hand-over); a search typed later than 2 s is NOT JUDGED with its measured time. A copy given no model gets no delay (nothing is handed over there). The selftest holds a new broken model `late-window-missed` (26 mutant models now) and the too-late run (NOT JUDGED). Proofs 3 and 4 are unchanged. The first copy of the run also carries the delay, so its first search waits 3 s longer for the model."
+}

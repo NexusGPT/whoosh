@@ -1,0 +1,118 @@
+{
+  "item": "b1d38560",
+  "full_id": "b1d38560-38f2-4438-be01-e9e279721a57",
+  "title": "Show the top of the Quels messages page",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "\\d+ checks, \\d+ failed, \\d+ not judged",
+      "fail": "FAIL [^\\n]*(default-size-940x680|min-size-700x480|at-940x680)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "filter-page-top-and-first-card-are-whole-at-940x680-and-700x480 +pass",
+      "fail": "FAIL [^\\n]*filter-page-top-and-first-card-are-whole",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "look at the hidden render of Settings > Réponses > Brouillon automatique > Quels messages written by `python3 checks/shots-sheet.py --states replies-filter-page-scroll`: state-replies-filter-page-scroll-<top|middle|end>-<light|dark>-<940x680|700x480>.png (and 1280x820; the middle view, since hid-ai round 21, is one page down: rows passing under the toolbar) in _captures/results/gap-shots/replies-filter-page-scroll/pics (top: `scroll top`; end: `scroll end`, the line names the scroll reply), not the replies-panes pictures (1280x820 and 700x480, top only); then the owner looks on their own screen",
+      "pass": "toolbar whole at both sizes; the first card whole at 940x680; at 700x480 the first card's head (title, line, count, switch) and its top edge whole under the toolbar, the page scrolling from its top with nothing cut at the top edge (the card lists every label, so it is taller than the smallest window by design); the page scrolls to its end"
+    },
+    {
+      "kind": "unit",
+      "run": "theEndRuleStopsAtTheLastOffset,scrollEndMovesToTheBottomAndSaysEnd,aNonFlippedDocumentScrollsFromItsTopToo,aPageThatFitsIsNotScrollable,theLargestScrollViewThatHasMoreToShowIsTheOneMoved,theVerbRefusesAWordThatIsNoCommandAndAWindowThatIsNotOpen",
+      "pass": "(?s)(?=.*Test theEndRuleStopsAtTheLastOffset\\(\\) passed)(?=.*Test scrollEndMovesToTheBottomAndSaysEnd\\(\\) passed)(?=.*Test aNonFlippedDocumentScrollsFromItsTopToo\\(\\) passed)(?=.*Test aPageThatFitsIsNotScrollable\\(\\) passed)(?=.*Test theLargestScrollViewThatHasMoreToShowIsTheOneMoved\\(\\) passed)(?=.*Test theVerbRefusesAWordThatIsNoCommandAndAWindowThatIsNotOpen\\(\\) passed)",
+      "fail": "✘|failed|recorded an issue",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+      "fail": "selftest FAIL|[1-9]\\d* not red",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state replies-filter-page-scroll \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/gap-shots/replies-filter-page-scroll --states replies-filter-page-scroll",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b18 checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "open the 12 pictures state-replies-filter-page-scroll-<top|end>-<light|dark>-<1280x820|940x680|700x480>.png of _captures/results/gap-shots/replies-filter-page-scroll/index.html; the page's caption line names the scroll reply (at, offset, max)",
+      "pass": "top: toolbar title whole; at 940x680 the first card whole; at 700x480 the first card's head and top edge whole under the toolbar (the card runs on below the foot by design, it lists every label); end: the last card's bottom is inside the window; the caption says at end (or that the page fits)"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsRepliesMac/FilterPage.swift",
+      "find": ".padding(.top, WhooshSpacing.s8)",
+      "replace": ".padding(.top, -400)",
+      "proof": 2,
+      "red": "FAIL [^\\n]*filter-page-top-and-first-card-are-whole"
+    },
+    {
+      "file": "Sources/ControlSocket/WindowVerbs.swift",
+      "find": "        case \"end\": return far",
+      "replace": "        case \"end\": return 0",
+      "proof": 4,
+      "red": "Test theEndRuleStopsAtTheLastOffset\\(\\) failed|✘ Test theEndRuleStopsAtTheLastOffset"
+    },
+    {
+      "file": "Sources/ControlSocket/WindowVerbs.swift",
+      "find": "        let y = flipped ? to : far - to",
+      "replace": "        let y = to",
+      "proof": 4,
+      "red": "Test aNonFlippedDocumentScrollsFromItsTopToo\\(\\) failed|✘ Test aNonFlippedDocumentScrollsFromItsTopToo"
+    },
+    {
+      "file": "Sources/ControlSocket/WindowVerbs.swift",
+      "find": "        let movable = all.filter { over($0) > slack }",
+      "replace": "        let movable = all.filter { over($0) > -1000 }",
+      "proof": 4,
+      "red": "Test aPageThatFitsIsNotScrollable\\(\\) failed|✘ Test aPageThatFitsIsNotScrollable"
+    },
+    {
+      "file": "Sources/ControlSocket/WindowVerbs.swift",
+      "find": "guard (1...2).contains(a.count), ScrollVerb.commands.contains(a[0]),",
+      "replace": "guard (1...2).contains(a.count),",
+      "proof": 4,
+      "red": "Test theVerbRefusesAWordThatIsNoCommandAndAWindowThatIsNotOpen\\(\\) failed|✘ Test theVerbRefusesAWordThatIsNoCommand"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "    if r.get(\"scrollable\") is True and not (r.get(\"at\") in at if isinstance(at, tuple) else r.get(\"at\") == at):",
+      "replace": "    if False:",
+      "proof": 5,
+      "red": "selftest FAIL: states mutant scroll-short is red"
+    }
+  ],
+  "gap": "Not run on a build: that the id mac-settings-replies.filter.entry answers `measure` (read from FilterPage.swift:14, never run); and that the `scroll` verb finds the Settings window's detail column as its largest overflowing NSScrollView (written from the AppKit view tree, never run: the unit test drives a real NSScrollView, not the SwiftUI ScrollView). The lead's hidden run of proof 7 shows both.",
+  "owner": "Open Settings, Replies, Auto draft, Which messages on your Mac at the default size and at the smallest size, and say whether the top of the page and the first card are whole.",
+  "notes": "The earlier fix is commit 701c629a (the detail column starts below the title bar band). | gap-shots (2026-11-11): the socket now serves `scroll top|end|page-down|page-up [window:<id>]` (Sources/ControlSocket/WindowVerbs.swift, enum ScrollVerb; docs/CONTROL-SOCKET.md 'Deltas, gap-shots'; Tests/Unit/ScrollVerbTests.swift, six tests, proof 4). checks/shots-sheet.py STATES 'replies-filter-page-scroll' reaches the page by `click mac-settings-replies.page.filter`, sends `scroll top` then `scroll end window:<id>` and takes one picture of each, light and dark, at 1280x820, 940x680 and 700x480 (3 sizes x 2 views x 2 themes = 12 files). The scroll reply must say at=end unless the page fits (then the caption says so). | hid-ai round 17 (main107 judge, _captures/lead/main107/judges/b1d38560.md clause 4): at 700x480 the Entry filter card cannot be whole in the window. Its Labels row lists EVERY label as a tick (FilterPage.swift LabelScopeRow, owner round 7 \"be able to select existing labels potentially or all labels\"; board docs/design/boards/ai-replies-r7/designs.js:73, the Étiquettes row of ticks inline, drawn with five ticks on a 940 pt window, kit.js:46). With the test engine's 20 labels plus All, the picture state-replies-filter-page-scroll-top-light-700x480.png shows the card's top at about 142 pt and 17 of the 21 ticks in 11 rows of about 30 pt down to the window's foot at 480 pt, so the Labels row alone is taller than the room under the toolbar; the padding above the card is not the cause. The bar for 700x480 now names what the design allows: the head and top edge whole, the page scrolling from its top. Finding for par-settingswindow (not hid-ai's file): its case filter-page-top-and-first-card-are-whole-at-940x680-and-700x480 measures the card's TOP only (par-settingswindow.py:831-834), so its name claims more than it judges."
+}

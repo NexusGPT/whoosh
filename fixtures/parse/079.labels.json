@@ -1,0 +1,12 @@
+{
+ "id": "079",
+ "category": "code-and-link",
+ "code": "231252",
+ "links": [
+  "https://auth.example.com/confirm-email/eca88f795a1e9be4abc1b722"
+ ],
+ "invite": null,
+ "tracker_count": 1,
+ "quoted": null,
+ "adversarial": false
+}

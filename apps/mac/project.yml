@@ -1,0 +1,57 @@
+# xcodegen spec for the Mac shell. `xcodegen generate --spec apps/mac/project.yml` writes
+# apps/mac/Whoosh.xcodeproj; scripts/build-mac.sh runs it before every build.
+name: Whoosh
+options:
+  bundleIdPrefix: io.nexus
+  deploymentTarget:
+    macOS: "15.0"
+packages:
+  Whoosh:
+    # absolute: the project is generated into the build tree (scripts/build-mac.sh exports WHOOSH_ROOT)
+    path: ${WHOOSH_ROOT}
+targets:
+  Whoosh:
+    type: application
+    platform: macOS
+    sources:
+      - path: App
+      - path: App/AppIcon.icon
+        buildPhase: resources
+      - path: ../../docs/design/fixtures/mac-main-sample.json
+        buildPhase: resources
+    dependencies:
+      - package: Whoosh
+        product: WhooshUI
+    # The Focus-status entitlement (apps/mac/App/Whoosh.entitlements) is a restricted one: Xcode refuses an ad hoc
+    # build that carries it ("requires a provisioning profile", seen on build shell-r7-1). It is NOT wired here;
+    # a team-signed release passes it with CODE_SIGN_ENTITLEMENTS=apps/mac/App/Whoosh.entitlements.
+    info:
+      path: ${WHOOSH_ROOT}/apps/mac/App/Info.plist
+      properties:
+        CFBundleDisplayName: Whoosh
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSApplicationCategoryType: public.app-category.productivity
+        NSHumanReadableCopyright: "MIT License"
+        NSCalendarsFullAccessUsageDescription: "Whoosh reads your calendars on this Mac only to know when you are free when it drafts a reply. It never changes an event and nothing leaves this Mac."
+        NSMicrophoneUsageDescription: "Whoosh listens only while you hold the dictation key, to turn your voice into text on this device."
+        NSSpeechRecognitionUsageDescription: "Whoosh turns your dictation into text. With the on-device engine nothing leaves this device."
+        NSFocusStatusUsageDescription: "Whoosh reads whether a Focus is on, only to keep its notch and notifications quiet while you focus. The state never leaves this device."
+        CFBundleLocalizations: [en, fr, nl, de, es, it, pt, pl, sv, da, nb, fi, ja, zh-Hans]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.nexus.whoosh
+        PRODUCT_NAME: Whoosh
+        INFOPLIST_FILE: ${WHOOSH_ROOT}/apps/mac/App/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: "6.0"
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: ""
+        ENABLE_HARDENED_RUNTIME: NO
+        MACOSX_DEPLOYMENT_TARGET: "15.0"
+schemes:
+  Whoosh:
+    build:
+      targets:
+        Whoosh: all

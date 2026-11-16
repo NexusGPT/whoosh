@@ -1,0 +1,12 @@
+From: Orchard Pay <orders@example.org>
+To: Assem Example <assem@example.org>
+Subject: Your order has shipped
+Date: Mon, 09 Nov 2026 00:43:00 +0000
+Message-ID: <ffa70bb18acdb02f@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+WW91ciBvcmRlciA5MDc1OC04MiBoYXMgc2hpcHBlZC4NClRyYWNraW5nIG51bWJlcjogMVozMjRB
+OEFBOThDMzVENw0KUG9zdGFsIGNvZGU6IDk5NzUgQnJ1c3NlbHMNClByb2R1Y3QgY29kZSAyMDct
+NjM5IHggMg0K

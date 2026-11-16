@@ -1,0 +1,34 @@
+From: Orchard Pay <billing@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1476
+Date: Sat, 14 Nov 2026 14:27:00 +0000
+Message-ID: <056c2faa501ae372@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============2188350855523871065=="
+
+--===============2188350855523871065==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Invoice 2026-1476 for EUR 1,250.00 is due on 30 November 2026.
+
+--===============2188350855523871065==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5P
+cmNoYXJkIFBheTwvdGl0bGU+PHN0eWxlPmJvZHl7Zm9udC1mYW1pbHk6SGVsdmV0aWNhLEFyaWFs
+LHNhbnMtc2VyaWY7Y29sb3I6IzIyMn0uY29kZXtmb250LXNpemU6MjhweH08L3N0eWxlPjwvaGVh
+ZD48Ym9keT48dGFibGUgd2lkdGg9IjEwMCUiIGNlbGxwYWRkaW5nPSIwIiBjZWxsc3BhY2luZz0i
+MCI+PHRyPjx0ZCBhbGlnbj0iY2VudGVyIj48aDI+T3JjaGFyZCBQYXk8L2gyPjxwPkludm9pY2Ug
+PGI+MjAyNi0xNDc2PC9iPiBmb3IgRVVSIDI1OTYuODUgaXMgZHVlIG9uIDMwIE5vdmVtYmVyIDIw
+MjYuPC9wPjxwPlZBVCAyMSUuIElCQU4gQkU2OCA1MzkwIDA3NTQgNzAzNC4gUGF5bWVudCByZWZl
+cmVuY2UgNjk2LzE5NzUvNzEyNzkuPC9wPjxwIHN0eWxlPSJmb250LXNpemU6MTFweDtjb2xvcjoj
+ODg4Ij5Zb3UgcmVjZWl2ZSB0aGlzIGJlY2F1c2Ugb2YgeW91ciBhY2NvdW50LiA8YSBocmVmPSJo
+dHRwczovL2V4YW1wbGUubmV0L3Vuc3Vic2NyaWJlP3U9YTgyZjgzIj5VbnN1YnNjcmliZTwvYT4g
+fCA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0L3ByaXZhY3kiPlByaXZhY3k8L2E+PC9wPjwv
+dGQ+PC90cj48L3RhYmxlPjwvYm9keT48L2h0bWw+DQo=
+
+--===============2188350855523871065==--

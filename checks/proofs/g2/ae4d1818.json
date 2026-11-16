@@ -1,0 +1,69 @@
+{
+  "item": "ae4d1818",
+  "full_id": "ae4d1818-f734-44ce-a284-df6b868413c8",
+  "title": "Build mob-settingsphone",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theSyncRowNamesTheMacWithARecentTimeAndOffersRetryOnlyWhenBroken,oneNotificationRowPerAccountInFixtureOrder,theNotificationSettingContractCarriesAnAccountAndAFlag",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsphone-check.py --selftest",
+      "pass": "(?s)(?=.*base model: \\d+ checks, 0 failed, 0 not judged)(?=.*\\| sync-names-the-mac \\| no-mac-name \\| .* \\| red on sync-names-the-mac \\|)(?=.*\\| sync-time-recent \\| stale-time \\| .* \\| red on sync-time-recent \\|)(?=.*\\| sync-ok-has-no-retry \\| retry-in-sync \\| .* \\| red on sync-ok-has-no-retry \\|)(?=.*\\| sync-failure-says-why \\| no-why \\| .* \\| red on sync-failure-says-why \\|)(?=.*\\| sync-failure-offers-retry \\| no-retry-failing \\| .* \\| red on sync-failure-offers-retry \\|)(?=.*\\| retry-moves-the-state \\| retry-inert \\| .* \\| red on retry-moves-the-state \\|)(?=.*constant by name: .*\\(ok\\).*\\(ok\\))(?=.*selftest: every check seen red on its mutant)",
+      "fail": "NOT RED|BASE FAIL|problem\\(s\\)|WRONG",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "aHealthySyncReadsInSyncWithTheMacWithARecentTimeAndNoRetry,aFailingSyncShowsItsReasonAndOffersRetry",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/settingsphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/settingsphone-check.py",
+      "find": "return 0 <= age < SYNC_RECENT_S, True",
+      "replace": "return 0 <= age < 0, True",
+      "proof": 1,
+      "red": "BASE FAIL sync-time-recent|\\d+ problem\\(s\\)"
+    },
+    {
+      "file": "checks/settingsphone-check.py",
+      "find": "return r.one(\"iphone-settings.sync\")[\"retry\"], False",
+      "replace": "return r.one(\"iphone-settings.sync\")[\"retry\"], True",
+      "proof": 1,
+      "red": "BASE FAIL sync-ok-has-no-retry|\\d+ problem\\(s\\)"
+    },
+    {
+      "file": "Sources/Features/SettingsPhone/SettingsPhoneSync.swift",
+      "find": "case .inSync: return SettingsPhoneWords.inSync(r.device)",
+      "replace": "case .inSync: return SettingsPhoneWords.noMac",
+      "proof": 2,
+      "red": "aHealthySyncReadsInSyncWithTheMacWithARecentTimeAndNoRetry.*failed"
+    },
+    {
+      "file": "Sources/Features/SettingsPhone/SettingsPhoneSync.swift",
+      "find": "var retry: Bool { phase == .failing }",
+      "replace": "var retry: Bool { phase == .inSync }",
+      "proof": 2,
+      "red": "aHealthySyncReadsInSyncWithTheMacWithARecentTimeAndNoRetry.*failed|aFailingSyncShowsItsReasonAndOffersRetry.*failed"
+    }
+  ],
+  "gap": null,
+  "owner": "Pick SYNC_RECENT_S (seconds within which a last-sync time still counts as recent). Proposed row for docs/CONSTANTS.md (the lead adds it and the generated constant): | SYNC_RECENT_S | 300 | the seconds within which the last successful sync still reads as recent on the Sync row; depends on the sync interval (it must be above it) and on nothing else | . Until the row exists the check and the unit test use the private figure 300, marked FALLBACK.",
+  "notes": "Claims: (a) Sync reads 'In sync with <Mac name>': SettingsPhoneWords.swift:36 `In sync with %@`; unit SettingsPhoneTests.swift:35-44; check sync-names-the-mac settingsphone-check.py:192-196. (b) a time inside SYNC_RECENT_S: case sync-time-recent :199-203 (private 300), unit :41. (c) a forced failure shows why and Retry: SettingsPhoneSync.swift:15 `var retry: Bool { phase == .failing }`, SettingsPhoneSyncPage.swift:43 `iphone-settings.sync.retry`; cases sync-failure-says-why :212, sync-failure-offers-retry :220, retry-moves-the-state :228. The mutant on line 37 turns the clean stand-in red because `0 <= age < 0` is false: it proves the check judges the number it holds. Selftest table format: settingsphone-check.py:514-521. Added in this change: checks/settingsphone-check.py read_sync_recent() reads SYNC_RECENT_S by name through lib.fixture.const and falls back to the marked private 300 when the ledger has no row; the selftest proves both paths on temporary ledger copies (a row = 45 is read, no row gives the fallback) and prints which one is in use; Tests/Unit/SettingsPhoneTests.swift names the figure syncRecentS (FALLBACK, to become Double(WhooshConstants.SYNC_RECENT_S)) and has two new tests that force the healthy branch ('In sync with Mac', no Retry, a recent age, and a time past the limit is not recent) and the failing branch (reason shown, Retry offered) without the fixture. Still outside: the forced failure through `fixture sync broken` on the simulator (iOS 26.5 runtime, proof 3). Proof indices: 0 unit, 1 selftest, 2 new unit, 3 lead. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 3 is the forced failure through `fixture sync broken` on the rig phone. What keeps this item with the owner: SYNC_RECENT_S (row proposed in the owner field)."
+}

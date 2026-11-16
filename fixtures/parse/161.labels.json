@@ -1,0 +1,20 @@
+{
+ "id": "161",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REPLY",
+  "uid": "0c5da8ae763f65ca352c@example.com",
+  "summary": "Product sync",
+  "organizer": "tomas.verbeke@example.org",
+  "all_day": false,
+  "start_utc_ms": 1794218400000,
+  "start_local": null,
+  "tzid": null,
+  "location": null
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

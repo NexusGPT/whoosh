@@ -1,0 +1,63 @@
+{
+  "item": "ac6bc210",
+  "full_id": "ac6bc210-9468-4f53-99c1-49427415a759",
+  "title": "Fill the VIPs unread figure in the engine",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p store --test vips_unread",
+      "pass": "test result: ok\\. 5 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p store --test read_budget",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 3000
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-vip",
+      "pass": "(?m)^PASS +vip-count-follows-the-mark",
+      "fail": "(?m)^(FAIL|NOT JUDGED) +vip-count-follows-the-mark",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice vip: broken copy the count never moves: red on vip-count-follows-the-mark",
+      "fail": "WRONG|FAILS|Traceback",
+      "timeout_s": 1800
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/store/src/counts.rs",
+      "find": "tally.insert(VIPS_KEY.to_string(), (vips_unread(conn, None)?, 0));",
+      "replace": "tally.insert(VIPS_KEY.to_string(), (0, 0));",
+      "proof": 0,
+      "red": "FAILED"
+    },
+    {
+      "file": "core/crates/store/src/counts.rs",
+      "find": "mailboxes.insert(\"vips\".to_string(), tally.get(VIPS_KEY).map(|f| f.0).unwrap_or(0).max(0) as u32);",
+      "replace": "mailboxes.insert(\"vips\".to_string(), 0);",
+      "proof": 0,
+      "red": "FAILED"
+    },
+    {
+      "file": "core/crates/store/src/writer.rs",
+      "find": "counts::add(&mut after, counts::VIPS_KEY, counts::vips_contribution(&tx, id)?, 0, 1);",
+      "replace": "counts::add(&mut after, counts::VIPS_KEY, 0, 0, 1);",
+      "proof": 0,
+      "red": "FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: core/crates/store/src/counts.rs (VIPS_KEY :18, the tally built from scratch :58, the mailboxes figure :158), core/crates/store/src/writer.rs (the figure follows each write, :52 and :120). Tests: core/crates/store/tests/vips_unread.rs (5 tests: a VIP address, a VIP domain, the figure goes down on a read, up when a sender is added, read mail and mail outside the inbox ignored); core/crates/store/tests/read_budget.rs (one million messages: the Primary and VIPs first page inside the budget, counts() equal to a recount after a write; a timing test, run on a quiet machine). The real engine's sidebar row: checks/realcore-check.py --slice-vip, case vip-count-follows-the-mark (line 4428). Proof file written 15 Nov by the lead: the item was built with the VIP mark (docs/lanes/vip-mark.md) and had no file."
+}

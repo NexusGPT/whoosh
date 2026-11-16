@@ -1,0 +1,33 @@
+From: Quill Docs <no-reply@example.net>
+To: Assem Example <assem@example.org>
+Subject: Your Quill Docs sign-in code
+Date: Sun, 08 Nov 2026 17:40:00 +0000
+Message-ID: <82996ed2955f19be@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0244577242386263652=="
+
+--===============0244577242386263652==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Your code is 650023.
+Or sign in with one click: https://auth.example.org/confirm-email/6000116dd9a95d991710eec6
+
+--===============0244577242386263652==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Quill Docs</title><=
+style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size:=
+28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacing=
+=3D"0"><tr><td align=3D"center"><img alt=3D"x" src=3Dhttp://cdn.example.net/o=
+pen/55669b9a.jpg><h2>Quill Docs</h2><p>Your code is <b>650023</b>.</p><p>Or <=
+a href=3D"https://auth.example.org/confirm-email/6000116dd9a95d991710eec6">si=
+gn in with one click</a>.</p><p style=3D"font-size:11px;color:#888">You recei=
+ve this because of your account. <a href=3D"https://example.net/unsubscribe?u=
+=3D8af0e0">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Privacy<=
+/a></p></td></tr></table></body></html>
+
+--===============0244577242386263652==--

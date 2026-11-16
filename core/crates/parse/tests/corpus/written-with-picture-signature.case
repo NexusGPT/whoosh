@@ -1,0 +1,17 @@
+# A short mail a person wrote (six paragraphs of plain sentences) whose signature block is a small layout table: a 100 px picture, three 24 px icons,
+# four 16 px marks. Pictures after the last words and declared small are not a design signal: written (owner 2026-11-13, "some emails not super well displayed").
+subject: Notes from the visit
+sender: Robin Vale
+layout: written
+fold_from: 1
+authored: Thanks for showing us around the workshop on Tuesday.
+authored: The team liked the new layout of the bench area.
+authored: Could you send the revised plan when it is ready?
+authored: We would like to book the next visit before the end of the month.
+authored: Please tell Sam that the samples arrived safely.
+authored: Speak soon.
+--- html
+<div><p>Thanks for showing us around the workshop on Tuesday.</p><p>The team liked the new layout of the bench area.</p><p>Could you send the revised plan when it is ready?</p><p>We would like to book the next visit before the end of the month.</p><p>Please tell Sam that the samples arrived safely.</p><p>Speak soon.</p><p>--</p>
+<table><tr><td><img src="https://img.example.invalid/sig/portrait.png" width="100" height="100"></td><td><b>Robin Vale</b><br>Workshop host<br>
+<img src="https://img.example.invalid/sig/a.png" width="24" height="24"> <img src="https://img.example.invalid/sig/b.png" width="24" height="24"> <img src="https://img.example.invalid/sig/c.png" width="24" height="24">
+<img src="https://img.example.invalid/sig/d.png" width="16" height="16"> <img src="https://img.example.invalid/sig/e.png" width="16" height="16"> <img src="https://img.example.invalid/sig/f.png" width="16" height="16"> <img src="https://img.example.invalid/sig/g.png" width="16" height="16"></td></tr></table></div>

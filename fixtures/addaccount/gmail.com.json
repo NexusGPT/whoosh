@@ -1,0 +1,69 @@
+{
+ "domain": "gmail.com",
+ "address": "assem.fixture@gmail.com",
+ "password": "fixture-password",
+ "source": "ispdb",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "imap.gmail.com",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.gmail.com",
+  "smtpPort": 465,
+  "smtpSecurity": "ssl",
+  "username": "assem.fixture@gmail.com",
+  "authMethod": "oauth2"
+ },
+ "coming_soon": "Sign in with Google: coming soon",
+ "app_password_route": true,
+ "steps_link_prefix": "https://",
+ "app_password_steps_min": 1,
+ "validates": true,
+ "ops": [
+  "IMAP LOGIN",
+  "IMAP LIST",
+  "SMTP EHLO",
+  "SMTP AUTH"
+ ],
+ "folders": [
+  {
+   "name": "INBOX",
+   "attrs": []
+  },
+  {
+   "name": "Sent Mail",
+   "attrs": [
+    "\\Sent"
+   ]
+  },
+  {
+   "name": "Drafts",
+   "attrs": [
+    "\\Drafts"
+   ]
+  },
+  {
+   "name": "Trash",
+   "attrs": [
+    "\\Trash"
+   ]
+  },
+  {
+   "name": "Spam",
+   "attrs": [
+    "\\Junk"
+   ]
+  }
+ ],
+ "folder_map": {
+  "sent": "Sent Mail",
+  "drafts": "Drafts",
+  "trash": "Trash",
+  "junk": "Spam"
+ }
+}

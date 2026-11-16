@@ -1,0 +1,43 @@
+{
+  "item": "d82faa74",
+  "full_id": "d82faa74-22f4-43b3-a650-da1adca150a6",
+  "title": "Decide the 21 composer and key cases of main79",
+  "state": "gap",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "git -C . log --oneline HEAD..lane/compose-r79",
+      "pass": "^$",
+      "fail": "[0-9a-f]{7,} ",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "(send-and-done-button-sends-and-archives|cmd-z-in-the-body-undoes-the-typed-text|send-carries-the-files-to-the-outbox-entry|send-after-the-undo-goes-again|deleted-file-reads-gone-on-its-tile|send-with-a-gone-file-is-refused-with-its-sentence|send-goes-once-the-gone-file-is-removed|forward-opens-with-the-originals-files-as-tiles|forward-file-removed-leaves-the-other|forward-send-carries-the-remaining-file|forward-the-core-refuses-says-its-sentence) +pass",
+      "fail": "(send-and-done-button-sends-and-archives|cmd-z-in-the-body-undoes-the-typed-text|send-carries-the-files-to-the-outbox-entry|send-after-the-undo-goes-again|deleted-file-reads-gone-on-its-tile|send-with-a-gone-file-is-refused-with-its-sentence|send-goes-once-the-gone-file-is-removed|forward-opens-with-the-originals-files-as-tiles|forward-file-removed-leaves-the-other|forward-send-carries-the-remaining-file|forward-the-core-refuses-says-its-sentence) +fail +reply shape: IndexError",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-keys.py",
+      "pass": "(shift-cmd-i-move-contacts-to-bcc|cmd-enter-send|shift-cmd-enter-send-and-done|shift-cmd-z-instant-send|cmd-slash-popout-draft-search|cmd-z-undoes-typed-text-in-the-composer|return-in-a-settings-field-does-not-reply|a-text-view-in-a-non-key-window-keeps-its-keys) +pass",
+      "fail": "(shift-cmd-i-move-contacts-to-bcc|cmd-enter-send|shift-cmd-z-instant-send) +fail +reply shape: IndexError",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shortcuts-check.py",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J1\\.6/(cmd-z-undoes-typed-text-in-the-composer|return-in-a-settings-field-stays-in-the-field)",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [],
+  "gap": "Left: two of the 21 cases are still red on the last recorded run (_captures/lead/main97/proofs-hidden/again-005.log, par-composermac: 217 checks, 2 failed): par-composermac-r7/cmd-z-in-the-body-undoes-the-typed-text (got route keyEquivalent, undo manager, handled True, can_undo False; composer line 'unread (IndexError...') and par-composermac-r7/forward-the-core-refuses-says-its-sentence (expected 'The server refused to forward this message.', got ''); cause not named, fix to build. The other composer cases of the 21 no longer fail there. The finding about checks/shortcuts-check.py is applied (main() calls print_cases, :528). Proof 0 (`git -C . log --oneline HEAD..lane/compose-r79` empty) holds.",
+  "owner": null,
+  "notes": "Check files: checks/parity/par-composermac.py (print_cases at :1391, cases at :905, :1082, :1123-1146, forward refusal :1151-1160), checks/parity/par-keys.py (print_cases :1570), checks/shortcuts-check.py:409. Commit 3963771f already made the composer file and forward cases and par-keys/shortcuts print their values. Dossier of the 21: _captures/tests/r79/dossier-reds79-compose.md. Proof 0 uses 'git -C .', run from the repo root, which the runner must do; it is not an app check. | OLD GAP (before lane gap-states, 2026-11-12): Proof 0 holds at this commit: `git log --oneline HEAD..lane/compose-r79` lists 0 commits. The 11 par-composermac cases of the 21 need the lead's run of proof 1 on the build; cause classes read from the main83 log (_captures/tests/r83/par-composermac-main83.log lines 177-187) and not run here: send-and-done-button-sends-and-archives (check data: the list the case reads held no row, 'list ids now []', yet the core archived the message: the case judges before the list is read, a check ordering cause, S5-like); cmd-z-in-the-body-undoes-the-typed-text (S1: the body row was gone, surface mac-main; the case now prints the surface and the header flags); send-carries-the-files-to-the-outbox-entry, send-after-the-undo-goes-again, send-goes-once-the-gone-file-is-removed (all 'Add a recipient and some text first.': the reply composer was not open, a new message opened by the file door: shared cause, the typed text went to the list); deleted-file-reads-gone-on-its-tile and send-with-a-gone-file-is-refused-with-its-sentence (S5, sample file); forward-opens-with-the-originals-files-as-tiles, forward-file-removed-leaves-the-other, forward-send-carries-the-remaining-file, forward-the-core-refuses-says-its-sentence (S2: 'msg-02 is not in the list', the earlier send-and-done archived it). Decisions need the lead's run: this lane cannot run a journey. The 8 par-keys cases and 2 shortcuts-check cases are KEY checks: a finding for their owner (checks/shortcuts-check.py main() :409-420 prints no line per passing case: call print_cases(r) from journeys/lib/harness.py; not this lane's file)."
+}

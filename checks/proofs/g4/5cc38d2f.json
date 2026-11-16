@@ -1,0 +1,104 @@
+{
+  "item": "5cc38d2f",
+  "full_id": "5cc38d2f-16ed-4c1a-89bd-52998fc24750",
+  "title": "Serve the 11 state paths the real engine lacks",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test state_parity",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity-paths.py",
+      "pass": "^\\d+ paths, 0 unknown or unserved, 0 untyped$",
+      "fail": "^FAIL ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 -c \"import json; d=json.load(open('docs/STATE-PATHS.json')); g=[(r.get('path') or r.get('pattern')) for r in d['paths'] if r.get('gap')]; print('gap rows', len(g), g)\"",
+      "pass": "^gap rows 0 \\[\\]$",
+      "fail": "^gap rows [1-9]",
+      "timeout_s": 30
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test state_extra -- --nocapture",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/message_state.rs",
+      "find": "[\"message\", id, \"starred\"] => store.message_marks(id).ok().flatten().map(|m| m.starred.to_string()),",
+      "replace": "[\"message\", id, \"starred\"] => None,",
+      "proof": 0,
+      "red": "message/<message>/starred|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/message_state.rs",
+      "find": "[\"message\", id, \"snoozed\"] => store.message_marks(id).ok().flatten().map(|m| m.snoozed_until_ms.is_some().to_string()),",
+      "replace": "[\"message\", id, \"snoozed\"] => None,",
+      "proof": 0,
+      "red": "message/<message>/snoozed|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/recent_search.rs",
+      "find": "(path == \"search/recent\")",
+      "replace": "(path == \"search/recentx\")",
+      "proof": 0,
+      "red": "search/recent|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": ".or_else(|| crate::notes_cmds::state(&self.store, &path, &|| self.contacts().len()))",
+      "replace": ".or_else(|| None::<String>)",
+      "proof": 0,
+      "red": "mcp_server/on|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/state_extra.rs",
+      "find": "[\"mcp_grant\", app] if !app.is_empty() => Some(\"false\".to_string()),",
+      "replace": "[\"mcp_grant\", app] if !app.is_empty() => None,",
+      "proof": 0,
+      "red": "mcp_grant/claude-desktop|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/state_extra.rs",
+      "find": ".map(|t| json_text(&t.name)),",
+      "replace": ".map(|t| json_text(&t.id)),",
+      "proof": 3,
+      "red": "thread 'a_split_tab_name_is_the_name_inbox_tabs_lists' (\\(\\d+\\) )?panicked"
+    },
+    {
+      "file": "core/crates/engine/src/state_extra.rs",
+      "find": "[\"split_tab\", tab, \"name\"] => inbox_tabs(store.labels_full().ok()?)",
+      "replace": "[\"split_tab\", tab, \"name\"] => inbox_tabs(vec![])",
+      "proof": 3,
+      "red": "thread 'a_split_tab_name_is_the_name_inbox_tabs_lists' (\\(\\d+\\) )?panicked|a_split_tab_name_is_the_name_inbox_tabs_lists \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/state_extra.rs",
+      "find": "[\"mcp_grant\", app] if !app.is_empty() => Some(\"false\".to_string()),",
+      "replace": "[\"mcp_grant\", app] if !app.is_empty() => Some(\"true\".to_string()),",
+      "proof": 3,
+      "red": "thread 'mcp_grant_says_no_app_holds_a_grant_while_no_mcp_server_runs' (\\(\\d+\\) )?panicked"
+    },
+    {
+      "file": "core/crates/engine/src/state_extra.rs",
+      "find": "        _ => None,\n",
+      "replace": "        [\"smart_folder\", folder, \"count\"] if !folder.is_empty() => Some(\"0\".to_string()),\n        _ => None,\n",
+      "proof": 3,
+      "red": "thread 'a_smart_folder_that_is_not_saved_has_no_count_row' (\\(\\d+\\) )?panicked"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Rows: python3 over docs/STATE-PATHS.json at 0aa1558e: 58 rows, gap rows = mcp_grant/<app> (265), smart_folder/<folder>/count (667), split_tab/<tab>/name (712). The rig-side count of the 11: archived, snoozed, starred (3), snooze return_ms and return_local_time (2), search/recent, smart_folder count, draft body, split_tab name, mcp_grant, mcp_server/on = 11 (the item text counts 'snooze return' as one or two paths, the arithmetic fits with two). Arms: core/crates/engine/src/rust_core.rs:705-730 state() chain (message_state, recent_search, draft_files, `mcp_server/on` => false because the real app runs no MCP server). The guard test: core/crates/engine/tests/state_parity.rs:61 (answers each non-gap row with its JSON kind; each `gap` row must stay unanswered, `gap_paths_seen >= declared_gaps`), so a row moved out of gap while its arm is missing is red. Mutant red text: the finding line names the path; its exact words are not read here, the pattern also accepts `test result: FAILED`. gap-engine-state (2026-11-11): the three gap rows are served by the real core (core/crates/engine/src/state_extra.rs, called from rust_core.rs state() after `mcp_server/on`: `mcp_grant/<app>` -> false, `split_tab/<tab>/name` -> the name from the `inbox/tabs` list, `smart_folder/<folder>/count` -> 0; fix-statepaths removed that arm: smart_folder_cmds.rs answers a saved folder, an unknown folder answers nothing and the row says `empty_by_design`) and typed in docs/STATE-PATHS.json (rows at the old lines 265, 697, 742 lost `gap`, gained a `note`); the readers are NOT deleted (Sources/** is not this lane's). Run before the lead's build: `python3 checks/parity-paths.py` printed `57 paths, 0 unknown or unserved, 0 untyped`. Unverified until the lead's cargo run: that the split_tab mutants go red (the first rows' tab names are the contract's view names, which must differ from the view ids). Caveat on `smart_folder/<folder>/count`: the fixture answers nothing for an id it does not hold; the real core holds no folder, so it answers 0 for any id (docs/lanes/gap-engine-state.md)."
+}

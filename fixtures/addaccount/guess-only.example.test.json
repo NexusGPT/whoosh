@@ -1,0 +1,74 @@
+{
+ "domain": "guess-only.example.test",
+ "address": "assem.fixture@guess-only.example.test",
+ "password": "fixture-password",
+ "source": "guess",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "miss"
+  },
+  {
+   "id": "autoconfig",
+   "outcome": "miss"
+  },
+  {
+   "id": "srv",
+   "outcome": "miss"
+  },
+  {
+   "id": "autodiscover",
+   "outcome": "miss"
+  },
+  {
+   "id": "guess",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "imap.guess-only.example.test",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.guess-only.example.test",
+  "smtpPort": 587,
+  "smtpSecurity": "starttls",
+  "username": "assem.fixture@guess-only.example.test",
+  "authMethod": "password"
+ },
+ "validates": true,
+ "ops": [
+  "IMAP LOGIN",
+  "IMAP LIST",
+  "SMTP EHLO",
+  "SMTP AUTH"
+ ],
+ "folders": [
+  {
+   "name": "INBOX",
+   "attrs": []
+  },
+  {
+   "name": "Sent",
+   "attrs": []
+  },
+  {
+   "name": "Drafts",
+   "attrs": []
+  },
+  {
+   "name": "Trash",
+   "attrs": []
+  },
+  {
+   "name": "Junk",
+   "attrs": []
+  }
+ ],
+ "folder_map": {
+  "sent": "Sent",
+  "drafts": "Drafts",
+  "trash": "Trash",
+  "junk": "Junk"
+ },
+ "note": "no SPECIAL-USE attributes: the name heuristic maps them"
+}

@@ -1,0 +1,76 @@
+{
+ "item": "348b2ea0",
+ "full_id": "348b2ea0-703b-4810-a0a2-fec3fdc04afd",
+ "title": "Build fn-signin-chatgpt",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "lead",
+   "run": "swift test --package-path _captures/signin/proof (the proof package of commit 6f2d77a0: Package.swift compiles Sources/Features/SignIn/Engine alone through a symlink and runs its 9 tests (the ChatGPT one is signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed) against loopback stub servers; it is in the commit's tree, `git ls-tree -r HEAD _captures/signin/proof`, but not in the sparse worktree, so run it in a full checkout or after `git checkout HEAD -- _captures/signin/proof`)",
+   "pass": "Test run with 9 tests in \\d+ suites passed"
+  },
+  {
+   "kind": "unit",
+   "run": "aRigRefusesEveryPresetRoute,aRigRefusesTheRealMicrosoftSignInBeforeAnySheetOrRequest,aRigKeepsALoopbackAuthority",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/settingsaimac-check.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL |NOT JUDGED",
+   "timeout_s": 600
+  },
+  {
+   "kind": "unit",
+   "run": "signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed,aSuccessfulChatGPTSignInShowsTheSettingsRowAsConnected,aRefusedChatGPTSignInLeavesTheSettingsRowNotConnected",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/settingsaimac-check.py",
+   "pass": "PASS J5\\.1/chatgpt-shows-connected:",
+   "fail": "FAIL J5\\.1/chatgpt-shows-connected|UNJUDGED J5\\.1/chatgpt-shows-connected",
+   "timeout_s": 600
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/SignIn/Engine/SignInService.swift",
+   "find": "let kind: VaultKind = provider == .chatgpt ? .providerCredential : .accountCredential",
+   "replace": "let kind: VaultKind = .accountCredential",
+   "proof": 3,
+   "red": "signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed.*failed"
+  },
+  {
+   "file": "Sources/Features/SignIn/SignInController.swift",
+   "find": "chatgptConnected = true; phase = .done(.chatgpt) }",
+   "replace": "phase = .done(.chatgpt) }",
+   "proof": 3,
+   "red": "aSuccessfulChatGPTSignInShowsTheSettingsRowAsConnected.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/ProvidersView.swift",
+   "find": "controller.chatgptConnected ? AIWords.connected : AIWords.notConnected",
+   "replace": "AIWords.notConnected",
+   "proof": 3,
+   "red": "aSuccessfulChatGPTSignInShowsTheSettingsRowAsConnected.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.provider.chatgpt\": { _ in [[\"state\": ChatGPTState.words(),",
+   "replace": "\"mac-settings-ai.provider.chatgpt\": { _ in [[\"state\": AIWords.notConnected,",
+   "proof": 4,
+   "red": "FAIL J5\\.1/chatgpt-shows-connected"
+  }
+ ],
+ "gap": "",
+ "owner": null,
+ "notes": "Row-line change of lane tail-settings: SettingsAIMacFeature.swift:34 (proofs 3's unit tests read ChatGPTState, not the socket row; no hidden proof covers the line until (b)). Proof 0: the side package test signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed (SignInEngineTests.swift:115) stores through SignInService.signIn (Sources/Features/SignIn/Engine/SignInService.swift:40-52: kind .providerCredential for ChatGPT) against a loopback stub (StubServer.swift) and checks SignInWords.chatgptNote text; the other 8 tests of that package are in item 2908dc78. The package, not Tests/Unit, is where the stub tests live (git show 6f2d77a0 --stat). Proof 1: Tests/Unit/RigNetSignInTests.swift:27-61 (a test copy refuses every route before any sheet or request, loopback authority kept; line 35 aRigRefusesEveryPresetRoute loops OAuthPresets.chatgpt too, line 36-38); these prove nothing leaves this Mac, not that the token lands. Proof 2 is red until (2) is done: its case does not exist yet, the existing run only shows the settings screen. Saved captures (read only): _captures/signin/CAPTURES.md rows mutant-consent and mutant-google red; row ui-shots MISSING. PORTED (lane gap-signin): signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed (Tests/Unit/SignInStubTests.swift:223), aSuccessfulChatGPTSignInShowsTheSettingsRowAsConnected (Tests/Unit/SignInStubTests.swift:250), aRefusedChatGPTSignInLeavesTheSettingsRowNotConnected (Tests/Unit/SignInStubTests.swift:265). Settings words: Sources/Features/SettingsAIMac/ProvidersView.swift enum ChatGPTState. Only the state words changed (chip text); tone and layout are as before. | OLD GAP (before lane gap-states, 2026-11-12): S, one app door and one check case. DONE (lane tail-settings): (a) the socket row `mac-settings-ai.provider.chatgpt` now serves the controller's state, `\"state\": ChatGPTState.words()` (Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift:34, the one line the earlier gap named; the row of ProvidersView.swift:42 and the socket row read the same words). STILL MISSING: (b) the hidden case `PASS chatgpt-shows-connected` in checks/settingsaimac-check.py cannot be built at this version, measured: `grep -rn 'beginChatGPTSignIn\\|signInWithChatGPT' Sources` finds callers only inside Sources/Features/SignIn/SignInController.swift (the ChatGPT row, ProvidersView.swift:42-47, is a chip with no button), no fixture verb in Sources/ControlSocket/FixtureVerbs.swift or FixtureEvents.swift names ChatGPT, and a test copy refuses the ChatGPT route before any sheet or request (SignInController.swift:103), so no socket action can make the row read connected, and the stand-in of the self-test could not tell the fixed line from the literal either. Needed first (a file this lane does not own): a rig-only fixture verb, for example `fixture chatgpt connected|not-connected`, that runs `SignInController.shared.signInWithChatGPT()` against a loopback stub authority (or sets `chatgptConnected`, now `private(set)`); then the case reads `rows mac-settings-ai.provider.chatgpt` state 'connected' after it and 'not connected' after the reset, prints `PASS J5.1/chatgpt-shows-connected`, and its broken copy is SettingsAIMacFeature.swift:34 `ChatGPTState.words()` -> `AIWords.notConnected` (that find occurs once). (c) the token lands in the interim KeychainVault, not core-secrets (unchanged: accept the interim or add a CoreBridge command, M). Round 9 (hid-ai): (b) built. `fixture chatgpt approve|refuse <loopback base>` (Sources/ControlSocket/FixtureEvents.swift `served`, Sources/Features/SettingsAIMac/AIFixture.swift observer, Sources/Features/SignIn/SignInController.swift `rigChatGPT`: a test copy only; the same SignInService route against `<base>/oauth/authorize` and `<base>/oauth/token`, the sheet RigChatGPTSheet answers the redirect at once, the token goes to MemoryVault, never the Keychain; `fixture reset` puts the row back to not connected, AISettingsStore.resetFromFixture -> resetChatGPTForFixture). Hidden case J5.1/chatgpt-shows-connected (checks/settingsaimac-check.py c_chatgpt_connected): the row starts not connected, says connected after the sign-in the loopback stub answered (its /oauth/token asked once), not connected after a reset; its broken copy is the mutant above (SettingsAIMacFeature.swift:34 ChatGPTState.words() -> AIWords.notConnected) and the check's own self-test mutant chatgpt-row-never-connected. (c) accepted as is: the owner's copy keeps the ChatGPT token in the KeychainVault of the sign-in lane (the store the sign-in routes share); moving it to core-secrets is a CoreBridge command no item asks for. Proof 2 (the whole check clean) stays red while items 3af2f536 and 4f131cf1 are; this item's own hidden proof is proof 4 (its case's PASS line)."
+}

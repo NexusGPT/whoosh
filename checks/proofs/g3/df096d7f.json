@@ -1,0 +1,50 @@
+{
+  "item": "df096d7f",
+  "full_id": "df096d7f-3e52-4fc4-b624-fc28d594b654",
+  "title": "Cmd-digit chords work on AZERTY in the Settings window too",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "cmd-digit-by-key-code-switches-the-panes-on-azerty +pass",
+      "fail": "FAIL [^\\n]*(cmd-digit-by-key-code-switches-the-panes-on-azerty|cmd-1-to-cmd-0-switch-the-panes)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-settingswindow.py --selftest",
+      "pass": "ok +clean tree: the panes' digit keys are read by key code in the window's own monitor",
+      "fail": "FAIL +clean tree: the panes' digit keys|FAIL +mutant: (the-monitor-reads-the-typed-character|a-hidden-button-binds-each-pane-by-character|no-monitor-on-the-window)",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "cmd-1-to-cmd-0-switch-the-panes +pass",
+      "fail": "FAIL [^\\n]*cmd-1-to-cmd-0-switch-the-panes",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsWindow/SettingsWindowView.swift",
+      "find": "let chord = ChordKit.chord(e)",
+      "replace": "let chord = \"⌘\" + (e.charactersIgnoringModifiers ?? \"\")",
+      "proof": 1,
+      "red": "FAIL +clean tree: the panes' digit keys are read by key code"
+    },
+    {
+      "file": "Sources/Features/SettingsWindow/SettingsWindowView.swift",
+      "find": "guard let self, let w = self.window, e.window === w else { return e }",
+      "replace": "guard let self, let w = self.window, e.window != nil else { return e }",
+      "proof": 1,
+      "red": "FAIL +clean tree: the panes' digit keys are read by key code"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Live case: par-settingswindow cmd-digit-by-key-code-switches-the-panes-on-azerty (checks/parity/par-settingswindow.py:532-543): sends key code 18,19,20,21,23,22,26,28,25,29 with mods cmd and layout azerty through the socket key-code verb and reads the pane selected. The name also appears in the opening mutant TABLE of the log, so that line is not a pass line: the proof is the total plus no 'FAIL <case>' line. Latest run (r83): 107 checks, 1 failed, the one failure is escape-goes-to-the-open-pane-first-then-the-window (not this item), so the hidden proof's pass regex matches the total and its fail regex names only the two digit cases. The real-event monitor (SettingsDigitKeys, SettingsWindowView.swift:195-218) cannot be driven on a hidden rig (par-settingswindow.py:534); the static --selftest (:1100-1116, run at :1257-1260) holds its source: 'ok  clean tree: ...' and three 'ok  mutant: ... goes red' lines. Mutants 1 and 2 are the file edits the selftest's own mutants copy, applied for real. gap-settings-checks: main() of checks/parity/par-settingswindow.py now calls print_cases(r) before the total line, so every case prints '<case> pass|fail|unjudged <detail>'."
+}

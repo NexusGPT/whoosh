@@ -1,0 +1,98 @@
+{
+  "item": "4f131cf1",
+  "full_id": "4f131cf1-1ef2-4fe4-809a-9edc78d220f2",
+  "title": "Build the download door of the meaning model",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theStateIsDownloadingTheMomentTheDownloadStartsBeforeTheFirstByteAndThreeByteCountsFollow,aSecondClickDuringTheDownloadStartsNothing,aMissingFileEndsFailedWithTheFileNamedAndRetryWorks,aRigCopyReachesNothingWithoutALoopbackAddressAndWritesOnlyInItsRunFolder,theEngineIsHandedTheModelAfterTheDownloadWithoutARelaunch,aTestProcessLooksForTheWeightsOnlyInItsOwnFolders",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_model_late",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_replies_settings -- a_folder_with_three_messages_reads_syncing_until_they_are_indexed_then_up_to_date an_empty_folder_whose_first_sync_ended_is_up_to_date_and_stays_so",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "read the mac-settings-ai picture (the search model row: Download, then the figures and bar, then Ready) and, after the model is ready, `rows mac-settings-replies.sources` at two reads some seconds apart",
+      "pass": "the search model row changes at the click and ends Ready; the folder tiles' progress rises above 0 percent after the model is handed to the engine"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.9/meaning-downloads-with-moving-figures-then-is-ready",
+      "fail": "^(FAIL|UNJUDGED) J5\\.9/meaning-downloads-with-moving-figures-then-is-ready",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsreplies-check.py --selftest",
+      "pass": "\\| progress-stuck-after-handover \\| sources-progress-reaches-up-to-date-after-the-model-is-handed-over \\| RED: sources-progress-reaches-up-to-date-after-the-model-is-handed-over \\|",
+      "fail": "NOT RED|selftest: FAILED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/settingsreplies-check.py --handover-launch {bundle}",
+      "pass": "^PASS sources-progress-reaches-up-to-date-after-the-model-is-handed-over$",
+      "fail": "^(FAIL|UNJUDGED) sources-progress-reaches-up-to-date-after-the-model-is-handed-over",
+      "timeout_s": 300,
+      "launch": "none by the lead: the check launches the copy itself (scripts/launch-one.sh, the REAL engine, hidden) with its own local mail server (checks/realcore_mailfake.py, 127.0.0.1, 12 messages in INBOX), WHOOSH_CORE_PLAIN_LOOPBACK=1, WHOOSH_CORE_CHECK_SERVERS=<its ports> and WHOOSH_RIG_EMBED_HANDOVER_DELAY_MS=60000; the lead gives only the model folder in the check's environment: WHOOSH_EMBED_WEIGHTS=$S/weights-real. Inside, the case adds the local account through the sheet and switches its INBOX on before its first read; a NOT JUDGED line says which precondition is missing (no account, no folder switched on, every folder already up to date, no model, no hold). On the test engine the case prints `ok ... excluded, real engine only: ...`."
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Embedding/MeaningModelStore.swift",
+      "find": "guard begin() else { return state }",
+      "replace": "_ = begin()",
+      "proof": 0,
+      "red": "aSecondClickDuringTheDownloadStartsNothing"
+    },
+    {
+      "file": "Sources/Features/Embedding/MeaningModelStore.swift",
+      "find": "set(s); onReady(); return s",
+      "replace": "set(s); return s",
+      "proof": 0,
+      "red": "theEngineIsHandedTheModelAfterTheDownloadWithoutARelaunch"
+    },
+    {
+      "file": "Sources/Features/SettingsRepliesMac/RepliesEvents.swift",
+      "find": "guard case .replySourceProgress = event else { return }",
+      "replace": "return",
+      "proof": 7,
+      "red": "^FAIL sources-progress-reaches-up-to-date-after-the-model-is-handed-over"
+    },
+    {
+      "file": "Sources/Features/BackgroundWork/BackgroundWork.swift",
+      "find": "            engine.setEmbedder(embedder)\n        } else if",
+      "replace": "            _ = embedder\n        } else if",
+      "proof": 7,
+      "red": "^FAIL sources-progress-reaches-up-to-date-after-the-model-is-handed-over"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/Features/Embedding/MeaningModelStore.swift:9 (onReady hands the model to the engine: BackgroundWork.recheckModel, :12), :57-59 download() (a second call during a download starts nothing: guard begin()), :78 (ready: set(s); onReady()), :83 (failed state 'Tap Retry.'), :88 (Download or Retry button); Sources/Features/SettingsAIMac/MeaningSetupRow.swift:34. Tests/Unit/MeaningModelStoreTests.swift has SIX tests at lines 46, 65, 76, 89, 105, 126 (the item says five; the sixth, aTestProcessLooksForTheWeightsOnlyInItsOwnFolders, is newer); all six are in proof 0. App cases (checks/settingsaimac-check.py): :2221 meaning-missing-has-one-download-button, :2229 meaning-failed-says-why-and-offers-retry, :2239 meaning-downloads-with-moving-figures-then-is-ready, :2265 both-model-rows-are-the-one-picked-drawing. Core: core/crates/engine/tests/engine_model_late.rs (:164, :193, :217) and engine_replies_settings.rs:746, :768. Units run through scripts/swift-test-here.sh (needs a built xcframework). The engine_model_late pass count is `\\d+` because only three of its tests were read. | OLD GAP (before lane gap-states, 2026-11-12): Two pieces left, neither in a file this lane owns (checked at lane tail-settings, 2026-11-12). (1) The hidden run of proof 1 needs the lead's launch, not code: the case J5.9/meaning-downloads-with-moving-figures-then-is-ready of checks/settingsaimac-check.py is judged only on a copy launched with WHOOSH_RIG_EMBED_PORT=<free port> in the launcher's environment (scripts/launch-one.sh turns it into WHOOSH_RIG_EMBED_BASE=http://127.0.0.1:<port>/, the stub Stub('laya') listens on that port; without it the case stays NOT JUDGED with the row's own words, naming WHOOSH_RIG_EMBED_BASE and the stub's request counts; self-test: 'search model on a copy that ignores the staged address: UNJUDGED' and 'search model case says what it read, names the row's own words and the stub's request counts: OK'). (2) No app-level case reads `rows mac-settings-replies.sources` field progress at two times after the model is handed over: it belongs in checks/settingsreplies-check.py (not owned by the builders so far; its CASES list uses `case(label, *doors)`, `core(ctl, 'reply/sources')` and `core_folder(ctl, account, i)` as the gone-tile cases do, :255-300): after the search model download of checks/settingsaimac-check.py has run on the same copy, read `core_folder(ctl, acc, i)[1]['progress']['state']` twice some seconds apart and require that a folder that read 'syncing' before the hand-over reads 'up_to_date' after it (the cargo proofs 3 judge the same in the core: engine_replies_settings a_folder_with_three_messages_reads_syncing_until_they_are_indexed_then_up_to_date). The exact text is in docs/lanes/tail-settings.md, finding F2. | hid-ai round 16: proof 1's one not-judged case on main105 again-004 was J5.7/laya-download-started-in-the-inspector-shows-in-the-pane (the only case of the table with no PASS or FAIL line); by the lead's ruling it now prints `ok <case> excluded, real engine only: ...` on the test engine and is not counted (settingsaimac-check.py class Excluded, c_laya_shared). Proof 1 passes once J5.9/meaning-download-survives-a-relaunch does (resume, c0b331932, first in main107)."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "173",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "Le lun. 2 nov. 2026 à 10:14, Noor Haddad <noor.haddad@accounts.example.com> a écrit :",
+  "visible_contains": "Looks good, one small change in section 2. c500",
+  "folded_contains": "Please review the attached draft. bd50"
+ },
+ "adversarial": false
+}

@@ -1,0 +1,978 @@
+{
+ "about": "The state paths the SHELL reads and the JSON kind each answers (docs/lanes/realcore-firstrun.testplan.md P1, P3). Generated rows come from `python3 checks/parity-paths.py --write`; the hand-typed fields are kept. NOTATION: a path is `<name>` where an id goes (`label/<label>/chains/<placement>`); `instances` lists the values, else the test takes them from the real core (label, provider, agent, message, thread); any other placeholder needs `instances`. The checker also reads `*` as a wildcard and a concrete id (`ai_provider/jev/state`) as covered by a typed `<provider>` row, so a read is never reported twice. KIND is a JSON kind (`object`, `array`, `string`, `bool`, `number`, `null`, joined by `|`) or `absent` (the core never answers). UNTYPED: a row whose `kind` is null is a path the shell reads and nobody typed. It is a FINDING, not a default: `--write` adds such rows so the gap is visible the moment a read is created; `parity-paths.py` ends `N untyped` and exits 1 on N > 0; state_parity.rs prints `UNTYPED <path>: add its kind` and fails in words (never a panic). To type one, read what the real core answers (engine rust_core.rs `state`) and write the kind; where the real core does not serve it, write `gap`; where it answers only sometimes, `empty_by_design` with the reason. `empty_by_design` may answer nothing, and says why. `gap` is a path the fixture serves and the real core does not: the test requires it to stay unanswered and prints it, so a path that becomes served is moved out of the gaps. `rig_only` (a reason) is a path only a rig core serves (tests, never the owner's copy): state_parity skips it on its new-installation core and prints it; the fixture is not required to serve it.",
+ "version": 1,
+ "not_covered": [
+  "inbox and message paths (message/<id>/starred, archived, snoozed, muted), draft/<id>/*, outbox/<id>/*, mcp_*, split_tab/*, smart_folder/*, search/recent, notch, relay and system ports, import/<run>/*, thread/<id>/reminder: other panes, for the generated file"
+ ],
+ "paths": [
+  {
+   "path": "agent_config/<agent>/allowed",
+   "kind": "array",
+   "read_by": [],
+   "note": "served by both cores",
+   "readers": []
+  },
+  {
+   "path": "ai_provider/<provider>/connected",
+   "kind": "bool",
+   "read_by": [],
+   "instances": {
+    "provider": [
+     "anthropic",
+     "openai",
+     "gemini",
+     "openrouter",
+     "local"
+    ]
+   },
+   "note": "served by both cores (engine_ai_settings.rs)",
+   "readers": []
+  },
+  {
+   "path": "ai_provider/<provider>/key",
+   "kind": "absent",
+   "read_by": [],
+   "instances": {
+    "provider": [
+     "anthropic",
+     "openai",
+     "gemini",
+     "openrouter",
+     "local"
+    ]
+   },
+   "note": "a key is never read back: no core answers this path",
+   "readers": []
+  },
+  {
+   "path": "ai_provider/<provider>/models",
+   "kind": "array",
+   "read_by": [],
+   "instances": {
+    "provider": [
+     "anthropic",
+     "openai",
+     "gemini",
+     "openrouter",
+     "local"
+    ]
+   },
+   "note": "the provider's list from the accepted key's check",
+   "readers": []
+  },
+  {
+   "path": "ai_provider/<provider>/refusal",
+   "kind": "string",
+   "read_by": [
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "instances": {
+    "provider": [
+     "anthropic",
+     "openai",
+     "gemini",
+     "openrouter",
+     "local"
+    ]
+   },
+   "empty_by_design": "only after a refused key (the provider's own words)",
+   "readers": [
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "ai_provider/<provider>/state",
+   "kind": "string",
+   "read_by": [
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "instances": {
+    "provider": [
+     "anthropic",
+     "openai",
+     "gemini",
+     "openrouter",
+     "local"
+    ]
+   },
+   "readers": [
+    "Sources/Features/AISetup/AISetupStatus.swift",
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "attachment/auto-fetch/transfer",
+   "kind": "object",
+   "read_by": [],
+   "readers": [],
+   "note": "attach-fetch (SPEC A152, core/crates/engine/src/attachment_auto.rs): the counts of the background fetch of text attachments, {queued:number, fetched:number, failed:number, skipped:number, bytes_on_disk:number, capped:bool}; fetched/failed/skipped count since this core started, queued is the queue now, bytes_on_disk the ledger's total of the automatic files; no pane reads it, the hidden check does; served through attachment_download::state (the path is not a file id: `auto-fetch` is never an attachment id)"
+  },
+  {
+   "path": "background/pause",
+   "kind": "string|null",
+   "note": "the engine's own background pause (fix-realcore round 13, rust_core.rs: Bodies::pause_state): null while the crawl runs, else the reason: held, battery, heat or owner_active. The test engine serves nothing (the row falls back to the conditions the app sent)",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/BackgroundWork/BackgroundState.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "decision_preview/words",
+   "kind": "text",
+   "readers": [
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores; kind `text` = the plain words as they are, not a JSON string, \"\" when none (AISettingsStore.swift reads it raw) (real core: engine/src/decision_preview.rs `state`: the sentence of the last preview run, empty when it needs none; test engine: FixtureCore.swift `settings.previewWords`)"
+  },
+  {
+   "path": "decision_teaching/<page>/corrections",
+   "kind": "number",
+   "instances": {
+    "page": [
+     "which-tab",
+     "needs-reply",
+     "sign-in-codes",
+     "vips",
+     "notify-me",
+     "labels"
+    ]
+   },
+   "readers": [],
+   "served_by_fixture": true,
+   "note": "the owner's corrections on the page in the last day: owner-decided label_assignment rows on the page's built-in labels (which-tab: primary, updates, promotions, social; needs-reply: needs-reply); 0 on a page with no record (real core: engine/src/decision_teaching.rs `state` (fix-teachcore, hid-ai F5); test engine: FixtureCore.swift `state`, FixtureTeaching in FixtureDecide.swift)"
+  },
+  {
+   "path": "decision_teaching/<page>/shared",
+   "kind": "string",
+   "instances": {
+    "page": [
+     "which-tab",
+     "needs-reply",
+     "sign-in-codes",
+     "vips",
+     "notify-me",
+     "labels"
+    ]
+   },
+   "readers": [
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "what every one of those corrections shares: the sender address, else its domain, else `list:<the list's first List-Unsubscribe address>`; \"\" when none (real core: engine/src/decision_teaching.rs `state` (fix-teachcore, hid-ai F5); test engine: FixtureCore.swift `state`, FixtureTeaching in FixtureDecide.swift)"
+  },
+  {
+   "path": "decision_teaching/examples",
+   "kind": "number",
+   "readers": [
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "every owner-decided row on the labels a model answers for (Which tab, Needs my reply), any age: what Laya may be refitted on (real core: engine/src/decision_teaching.rs `state` (fix-teachcore, hid-ai F5); test engine: FixtureCore.swift `state`, FixtureTeaching in FixtureDecide.swift)"
+  },
+  {
+   "path": "decision_teaching/refits",
+   "kind": "number",
+   "readers": [],
+   "served_by_fixture": true,
+   "note": "the RefitDecisionModel asks that passed the gates, since this core opened the store (no refit is run: decision_teaching.rs header) (real core: engine/src/decision_teaching.rs `state` (fix-teachcore, hid-ai F5); test engine: FixtureCore.swift `state`, FixtureTeaching in FixtureDecide.swift)"
+  },
+  {
+   "path": "draft/<draft>/attachments",
+   "kind": "object",
+   "instances": {
+    "draft": [
+     "no-such-draft"
+    ]
+   },
+   "empty_by_design": "a draft has files only after files were added to it; the answer for an unknown draft may be empty",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/ComposerMac/ComposerModel+Files.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "both cores answer the contract's outgoing_attachments_json: {total_bytes, attachments}"
+  },
+  {
+   "path": "draft/<draft>/body",
+   "kind": "string",
+   "instances": {
+    "draft": [
+     "no-such-draft"
+    ]
+   },
+   "read_by": [],
+   "readers": [
+    "Sources/Features/QuickReply/DraftSource.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/draft_files.rs, from the draft row)",
+   "empty_by_design": "a saved draft only: an unknown draft (the instance no-such-draft) answers nothing in both cores"
+  },
+  {
+   "path": "import/sources",
+   "kind": "array",
+   "read_by": [
+    "Sources/Features/WelcomeMac/ImportState.swift"
+   ],
+   "empty_by_design": "the import's sources exist only after an ImportScan",
+   "readers": []
+  },
+  {
+   "path": "inbox/tabs",
+   "kind": "array",
+   "read_by": [
+    "Sources/Features/InboxList/PinnedTabs.swift"
+   ],
+   "readers": [
+    "Sources/Features/InboxList/PinnedTabs.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "label/<label>/chains/<placement>",
+   "kind": "array",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift",
+    "Sources/Features/LabelsContactsMac/LabelFlowWrites.swift"
+   ],
+   "instances": {
+    "placement": [
+     "entry",
+     "exit"
+    ]
+   },
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelFlowWrites.swift",
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "label/<label>/flow/ai_refusal",
+   "kind": "object|null",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift"
+   ],
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift",
+    "Sources/Features/LabelsContactsPhone/LabelPhoneRead.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "label/<label>/flow/ai_set_aside",
+   "kind": "number",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelFlowModel.swift"
+   ],
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelFlowModel.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "lane fix-aisort round 11: the picked mails the label AI's judge refused for themselves (content, language, size, no label of the list), set aside so they are not asked again; served by the real core only (core/crates/engine/src/label_flow.rs); the card's count is a finding for hid-labels (docs/lanes/fix-aisort.md Round 11)"
+  },
+  {
+   "path": "label/<label>/flow/counts",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift"
+   ],
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelFlowModel.swift",
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift",
+    "Sources/Features/LabelsContactsPhone/LabelPhoneRead.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "label/<label>/rerun/<k>",
+   "kind": "number",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel+Writes.swift"
+   ],
+   "instances": {
+    "k": [
+     "filed",
+     "refiled",
+     "unfiled",
+     "beyond",
+     "candidates",
+     "total",
+     "done"
+    ]
+   },
+   "note": "served by the real core since labels-r5 round 7 (counts of the last re-run; 0 before any)",
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel+Writes.swift",
+    "Sources/Features/LabelsContactsMac/LabelProof.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "label/<label>/rerun/model_pending",
+   "kind": "bool",
+   "read_by": [],
+   "note": "served by the real core after a re-run (labels-r5)",
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel+Writes.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "label/<label>/rerun/state",
+   "kind": "string",
+   "read_by": [],
+   "note": "served by the real core (engine rust_core.rs rerun_state): \"running\", \"done\" or \"idle\"",
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel+Writes.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "label/<label>/rules",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift"
+   ],
+   "empty_by_design": "a label with no rule set of its own (a built-in or an AI-only label) answers nothing",
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "mcp_grant/<app>",
+   "kind": "bool",
+   "instances": {
+    "app": [
+     "claude-desktop"
+    ]
+   },
+   "note": "served by both cores (real core: engine/src/state_extra.rs, `false`: no MCP server runs in the real app and mcp_grants() holds no grant; the fixture answers nothing for an app it does not list)",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/McpNotesMac/McpSession.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "mcp_server/on",
+   "kind": "bool",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/McpNotesMac/McpSession.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: false, no MCP server runs in the real app: crate mcp is not in its graph; the lane that links one serves its state)"
+  },
+  {
+   "path": "message/<message>/archived",
+   "kind": "bool",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/InboxList/TriageKeys.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/message_state.rs, from message.archived: the mark E sets, and the sync sets for a message of an Archive-role folder)"
+  },
+  {
+   "path": "message/<message>/filing",
+   "kind": "object",
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelFlowSocket.swift",
+    "Sources/Features/LabelsContactsMac/LabelInspectorFoot.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/label_flow.rs filing_json: the card that filed the message and what the AI could do)"
+  },
+  {
+   "path": "message/<message>/flow_rejection",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelWhy.swift"
+   ],
+   "empty_by_design": "only a message the AI sorted into a label whose exit filter then rejected it has one",
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelWhy.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "message/<message>/label/<label>/decided_by",
+   "kind": "string",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel+Writes.swift"
+   ],
+   "empty_by_design": "answers only for a label the message is filed under",
+   "readers": [
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel+Writes.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "message/<message>/muted",
+   "kind": "bool",
+   "readers": [
+    "Sources/Features/InboxList/TriageKeys.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/mute.rs, from the thread's mute row)"
+  },
+  {
+   "path": "message/<message>/snoozed",
+   "kind": "bool",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/InboxList/ListProbe.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/message_state.rs, from the snooze row; the same fact is on snoozed_messages())"
+  },
+  {
+   "path": "message/<message>/starred",
+   "kind": "bool",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/InboxList/ListFilter.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/message_state.rs, from message.starred)"
+  },
+  {
+   "path": "message/<message>/unsubscribed",
+   "kind": "bool",
+   "readers": [
+    "Sources/Features/Reader/ReaderListActions.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/unsubscribe.rs, true once the list was left)"
+  },
+  {
+   "path": "message/<message>/unsubscribed_at",
+   "kind": "number",
+   "readers": [
+    "Sources/Features/Reader/ReaderListActions.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "real core: engine/src/unsubscribe.rs, the time the list was left, in ms",
+   "empty_by_design": "only a message whose list was left has a date"
+  },
+  {
+   "path": "message/<message>/why/<label>",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/LabelsContactsMac/LabelWhy.swift",
+    "Sources/Features/InboxList/WhyTags.swift"
+   ],
+   "empty_by_design": "a message no label flow decided has no why record",
+   "readers": [
+    "Sources/Features/InboxList/WhyTags.swift",
+    "Sources/Features/LabelsContactsMac/LabelInspectorModel+Writes.swift",
+    "Sources/Features/LabelsContactsMac/LabelWhy.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "notch_setting/buttons",
+   "kind": "array|string",
+   "note": "served by both cores (real core: engine/src/settings_cmds.rs `state`, asked before state_extra; fixture: FixtureCore.swift `notch_setting`): the notch buttons as a list of words, or the word \"none\" when the list is empty; read at NotchSettings.swift:44-47 (list or the word none)",
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": true
+  },
+  {
+   "path": "notch_setting/follow_focus",
+   "kind": "bool",
+   "note": "served by both cores (real core: engine/src/settings_cmds.rs `state`, asked before state_extra; fixture: FixtureCore.swift `notch_setting`): whether the notch follows the focused screen; read at NotchSettings.swift:50",
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": true
+  },
+  {
+   "path": "notch_setting/hidden_in_screen_share",
+   "kind": "bool",
+   "note": "served by both cores (real core: engine/src/settings_cmds.rs `state`, asked before state_extra; fixture: FixtureCore.swift `notch_setting`): whether the notch hides while the screen is shared; read at NotchSettings.swift:51",
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": true
+  },
+  {
+   "path": "notch_setting/show",
+   "kind": "string",
+   "note": "served by both cores (real core: engine/src/settings_cmds.rs `state`, asked before state_extra; fixture: FixtureCore.swift `notch_setting`) as the word \"latest\" or \"unread\" (what the notch list holds), NOT a bool: the bool answer is notch_setting/enabled. Read at NotchSettings.swift:49 as the word (fixed in docs/lanes/fix-notchshow.md; notch_setting/enabled is read at :48)",
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": true
+  },
+  {
+   "path": "notification_setting/<account>/enabled",
+   "kind": "bool",
+   "note": "served by both cores (real core: engine/src/settings_cmds.rs `state`, the account's row, true for an account with none saved; fixture: FixtureCore.swift `notification_setting`); the instance is each account the core holds",
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": true
+  },
+  {
+   "path": "outbox/<id>/send_state",
+   "kind": "object|null",
+   "instances": {
+    "id": [
+     "no-such-entry"
+    ]
+   },
+   "empty_by_design": "null for an unknown entry; the test engine serves none, so its cards never show a retry",
+   "note": "the real core's send state of one outgoing entry (fix-realcore round 15, engine/src/outbox_tick.rs `send_state`): state, attempts, next_try_ms, stage, words, sent_at_ms; the thread's outgoing card reads next_try_ms to say when the engine tries again",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/QuickReply/ThreadCardsModel.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "outbox/<outbox>/attachments",
+   "kind": "object",
+   "instances": {
+    "outbox": [
+     "no-such-entry"
+    ]
+   },
+   "empty_by_design": "a queued message carries files only when its draft had some; the answer for an unknown entry may be empty",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/ComposerMac/ComposerModel+Files.swift"
+   ],
+   "served_by_fixture": false,
+   "note": "what the composer reads before it takes a send back, to put the files on the draft again; both cores answer outgoing_attachments_json"
+  },
+  {
+   "path": "provider_credential/<provider>/stored",
+   "kind": "bool",
+   "read_by": [],
+   "instances": {
+    "provider": [
+     "anthropic",
+     "openai",
+     "gemini",
+     "openrouter"
+    ]
+   },
+   "note": "served by both cores",
+   "readers": [
+    "Sources/Features/AISetup/AISetupStatus.swift",
+    "Sources/Features/SettingsAIMac/AISettingsStore.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "provider_request/count",
+   "kind": "number",
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": true,
+   "note": "fix-aicore (hid-ai F2): the requests asked of a model provider off this Mac since launch (a key check, a question to Jev, a hosted Writer's call), a run count in memory. Real core: ai_settings.rs `OFF_DEVICE_REQUESTS`, counted in `ProviderHttps::send`; test engine: FixtureProviderRequests (FixtureDecide.swift). Read by the hidden check J5.4/search-sends-nothing-off-device, no pane; engine_provider_request_count.rs tests it"
+  },
+  {
+   "path": "reply/calendars/enabled",
+   "kind": "array",
+   "read_by": [],
+   "note": "read by the shell's calendar feed through the contract (docs/lanes/replies-contract.md Delta 21 item 2); the Swift feed reads reply/sources today",
+   "readers": []
+  },
+  {
+   "path": "reply/calendars/events",
+   "kind": "array",
+   "read_by": [
+    "Sources/Features/SettingsCalendarsMac/CoreReplyCalendarFeed.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsCalendarsMac/CoreReplyCalendarFeed.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/counts",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/draft/<thread>",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/QuickReply/QuickReplyAIState.swift"
+   ],
+   "empty_by_design": "a thread has a live draft only after a draft was made (auto-draft is off on a new installation)",
+   "readers": [
+    "Sources/Features/QuickReply/QuickReplyAIState.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/filter",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/notes",
+   "kind": "array",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/on_demand",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift",
+    "Sources/Features/QuickReply/QuickReplyAIState.swift"
+   ],
+   "readers": [
+    "Sources/Features/QuickReply/QuickReplyAIState.swift",
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/progress",
+   "kind": "array",
+   "read_by": [],
+   "note": "the Sources pane's figures (docs/lanes/replies-contract.md Delta 21 item 3)",
+   "readers": []
+  },
+  {
+   "path": "reply/prompt/current",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/prompt/preview",
+   "kind": "string",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesEditorSaves.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/prompt/variables",
+   "kind": "array",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/prompt/versions",
+   "kind": "array",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/retrieval",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/sources",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift",
+    "Sources/Features/SettingsCalendarsMac/CoreReplyCalendarFeed.swift",
+    "Sources/Features/WelcomeMac/RepliesStepModel.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsCalendarsMac/CoreReplyCalendarFeed.swift",
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift",
+    "Sources/Features/WelcomeMac/RepliesStepModel.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/try/<run>",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesWrites.swift"
+   ],
+   "instances": {
+    "run": [
+     "run-0"
+    ]
+   },
+   "empty_by_design": "a run id exists only after TryReply, and the report is the reply work's (ReplyWork); no run was made",
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesWrites.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/use/<use>",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "instances": {
+    "use": [
+     "auto",
+     "on_demand"
+    ]
+   },
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "reply/voice",
+   "kind": "object",
+   "read_by": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "readers": [
+    "Sources/Features/SettingsRepliesMac/RepliesStore.swift"
+   ],
+   "served_by_fixture": false
+  },
+  {
+   "path": "rig/refused-outbound",
+   "kind": "object",
+   "read_by": [],
+   "readers": [],
+   "rig_only": "served by a RIG core only (lane engine-act-r6, rust_core.rs `state`, constant netguard::REFUSED_STATE_PATH): {\"count\":n,\"last_host\":\"h\"|null}, the outbound attempts the rig copy refused; the owner's copy and the fixture answer nothing, and neither is required to",
+   "note": "no pane reads it; engine_rig_guard.rs (engine-act-r6) tests it on a rig core"
+  },
+  {
+   "path": "search/last/hit/<n>/lift",
+   "kind": "number|null",
+   "instances": {
+    "n": [
+     "0"
+    ]
+   },
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": false,
+   "empty_by_design": "only after a search ran and while the last list has a hit n: the hit's lift (lane rank, SPEC A150: its closeness minus the search's mean closeness, over the deviation with its floor), two decimals; null when the mail has no vector or the list is the first send (no vector read yet); served for word matches too",
+   "note": "lane rank: no pane reads it; the lead's hidden checks measure the related gate with it (engine_search_related.rs tests it)"
+  },
+  {
+   "path": "search/last/reason",
+   "kind": "string|null",
+   "readers": [
+    "Sources/Features/SearchMac/SearchMacModel.swift"
+   ],
+   "served_by_fixture": false,
+   "empty_by_design": "only after a search ran; null unless the stage is no_model, model_failed or failed (then the words shown above the rows)"
+  },
+  {
+   "path": "search/last/related",
+   "kind": "number",
+   "read_by": [],
+   "readers": [],
+   "served_by_fixture": false,
+   "empty_by_design": "only after a search ran: how many hits of the last list are `Related` (lane rank, SPEC A150); 0 on the first send, between 0 and RELATED_MAX on the second",
+   "note": "lane rank: no pane reads it; the lead's hidden checks read it (engine_search_related.rs tests it)"
+  },
+  {
+   "path": "search/last/stage",
+   "kind": "string",
+   "readers": [
+    "Sources/Features/SearchMac/SearchMacModel.swift",
+    "Sources/Features/SearchPhone/SearchPhoneSearch.swift"
+   ],
+   "served_by_fixture": false,
+   "empty_by_design": "only after a search ran: the stage of the last answer (words, ranked, no_model, model_failed, filtered, failed)"
+  },
+  {
+   "path": "search/recent",
+   "kind": "array",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/SearchMac/SearchMacModel.swift",
+    "Sources/Features/SearchPhone/SearchPhoneActs.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/recent_search.rs, from search_history, written by RecordSearch)"
+  },
+  {
+   "path": "smart_folder/<folder>/count",
+   "kind": "number",
+   "instances": {
+    "folder": [
+     "no-such-folder"
+    ]
+   },
+   "note": "served by both cores (real core: engine/src/smart_folder_cmds.rs `state`: the folder's count from the same reading as its list)",
+   "empty_by_design": "a saved folder only: an unknown folder (the instance no-such-folder) answers nothing in both cores, and a new installation holds no folder",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/SearchMac/SearchMacSave.swift",
+    "Sources/Features/Sidebar/SidebarData.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "snooze/<message>/return_local_time",
+   "kind": "string",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/InboxList/ListProbe.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/message_state.rs, \"HH:mm\" in this Mac's time)",
+   "empty_by_design": "only while the message is snoozed; a message that is not snoozed answers nothing in both cores"
+  },
+  {
+   "path": "snooze/<message>/return_ms",
+   "kind": "number",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/InboxList/ListProbe.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "served by both cores (real core: engine/src/message_state.rs)",
+   "empty_by_design": "only while the message is snoozed; a message that is not snoozed answers nothing in both cores"
+  },
+  {
+   "path": "speech_engine/chosen/state",
+   "kind": "string",
+   "read_by": [],
+   "empty_by_design": "absent before the owner's first choice of a speech engine",
+   "readers": []
+  },
+  {
+   "path": "split_tab/<tab>/name",
+   "kind": "string",
+   "instances": {
+    "tab": [
+     "primary"
+    ]
+   },
+   "note": "served by both cores (real core: engine/src/state_extra.rs, the name of the tab in the same list `inbox/tabs` answers; an id outside the strip answers nothing)",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/PaletteMac/PaletteMacCatalog.swift"
+   ],
+   "served_by_fixture": true
+  },
+  {
+   "path": "thread/<thread>/summary",
+   "kind": "string|null",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/Reader/ReaderSummary.swift"
+   ],
+   "served_by_fixture": true,
+   "note": "fix-aicore A: the reader's thread summary (`mac-main.reader.summary`), made by the owner's writing model in the background on the first read and when a newer message joined the thread, kept in thread.summary_text (migration 0030); null while none is kept or no writing model is set. Real core: engine thread_summary.rs; the read never calls a model. ReaderSummary.swift and the test engine do not read or serve it yet (findings in docs/lanes/fix-aicore.md); engine_thread_summary.rs tests it"
+  },
+  {
+   "path": "view/<view>/name",
+   "kind": "string",
+   "instances": {
+    "view": [
+     "primary",
+     "all"
+    ]
+   },
+   "empty_by_design": "a view id the core does not know answers nothing",
+   "read_by": [],
+   "readers": [
+    "Sources/Features/InboxList/PinnedTabs.swift"
+   ],
+   "served_by_fixture": true
+  }
+ ],
+ "reads": [
+  {
+   "call": "labels",
+   "kind": "array",
+   "min": 4
+  },
+  {
+   "call": "ai_providers",
+   "kind": "array",
+   "min": 5
+  },
+  {
+   "call": "agent_configs",
+   "kind": "array",
+   "min": 2
+  },
+  {
+   "call": "speech_engine",
+   "kind": "object"
+  },
+  {
+   "call": "decision_model",
+   "kind": "null",
+   "empty_by_design": "no decision model is chosen on a new installation"
+  },
+  {
+   "call": "accounts",
+   "kind": "array",
+   "min": 2
+  },
+  {
+   "call": "sync_states",
+   "kind": "array",
+   "min": 2
+  }
+ ],
+ "async_commands": [
+  {
+   "command": "SaveProviderKey",
+   "answers": "at once, then the check lands on the state path",
+   "state_paths": [
+    "ai_provider/<provider>/state",
+    "ai_provider/<provider>/refusal",
+    "ai_provider/<provider>/models"
+   ]
+  }
+ ],
+ "pending_async_commands": [
+  {
+   "command": "DownloadAttachment",
+   "waits_for": "contracts delta 23 (not on this branch: no such command in core/crates/contracts/src/command.rs)"
+  }
+ ]
+}

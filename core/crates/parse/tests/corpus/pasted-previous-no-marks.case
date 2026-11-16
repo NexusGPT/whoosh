@@ -1,0 +1,14 @@
+# A previous message pasted under the answer with no marks at all: only the thread can tell. Collapsed, never hidden.
+subject: Re: Parking passes
+sender: Gina Rossi
+earlier: parking-passes-1.txt
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY collapse
+authored: I picked up the passes this morning, they are in the top drawer.
+history: The new parking passes are ready at the front desk from Monday.
+--- text
+I picked up the passes this morning, they are in the top drawer.
+
+The new parking passes are ready at the front desk from Monday.
+Please collect yours before the end of the month, the old ones stop working on the first.

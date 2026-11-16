@@ -1,0 +1,183 @@
+{
+  "note": "Expected values for journey J10 (AI replies), data only. Each value names its source in `sources`; none is read from a built screen. Fictional people and domains. The arrival is read by `fixture deliver <name> <this file>`.",
+  "arrivals": {
+    "needs-reply": {
+      "id": "msg-j10-question",
+      "thread": "msg-j10-question",
+      "account": "acc-01",
+      "sender": "Marta Vogel",
+      "from": "marta@vogel-example.de",
+      "subject": "Can you confirm the delivery date?",
+      "body": "Hi Assem, can you confirm that the delivery still lands on Thursday? I need to tell the warehouse today."
+    }
+  },
+  "first_start": {
+    "choices_default": [
+      [
+        "draft",
+        "on-demand",
+        [
+          "on-demand",
+          "auto"
+        ]
+      ],
+      [
+        "search",
+        "sent-inbox",
+        [
+          "sent-inbox",
+          "inbox",
+          "sent"
+        ]
+      ],
+      [
+        "voice",
+        "100",
+        [
+          "100",
+          "300",
+          "1000"
+        ]
+      ]
+    ],
+    "pick": {
+      "draft": "on-demand",
+      "search": "inbox",
+      "voice": "300"
+    },
+    "auto_enabled_before": true,
+    "sample_before": 100,
+    "auto_enabled_after": false,
+    "sample_after": 300,
+    "writes_first": "SetReplyUseEnabled",
+    "writes_last": "RunVoiceAnalysis",
+    "folder_roles": {
+      "inbox": [
+        "inbox"
+      ],
+      "sent": [
+        "sent",
+        "sent items",
+        "sent mail",
+        "envoyés"
+      ]
+    },
+    "folders_after_inbox_only": {
+      "inbox": [
+        true
+      ],
+      "sent": [
+        false
+      ]
+    }
+  },
+  "counts": {
+    "received": 128,
+    "after_entry": 31,
+    "after_ai": 12,
+    "after_exit": 9,
+    "drafts": 9,
+    "line_count": 3
+  },
+  "sources": {
+    "first_account": "acc-01",
+    "accounts": [
+      [
+        4,
+        6
+      ],
+      [
+        2,
+        5
+      ]
+    ],
+    "first_account_enabled_messages": 18096,
+    "local_folders": [
+      "~/Documents/Contrats",
+      "~/Documents/Propositions"
+    ],
+    "added_folder": "~/Documents/Notes",
+    "enabled_total": 9,
+    "syncing_folder": {
+      "name": "Clients",
+      "percent": 62
+    },
+    "tick_folder": "Clients/Oranta",
+    "calendars": [
+      [
+        "cal-work",
+        "Travail",
+        true
+      ],
+      [
+        "cal-personal",
+        "Personnel",
+        false
+      ]
+    ],
+    "calendar_to_switch": "cal-personal"
+  },
+  "voice": {
+    "sample_before": 100,
+    "sample_pick": 200,
+    "typed": "x"
+  },
+  "auto": {
+    "enabled_before": true,
+    "tone": "voice",
+    "sources_line_digit": "9"
+  },
+  "filter": {
+    "cards": [
+      true,
+      true,
+      true
+    ],
+    "scope_all_in_sample": false,
+    "labels_ticked_in_sample": 2,
+    "fact": [
+      "unanswered",
+      "yes"
+    ],
+    "typed": "x",
+    "exit_card_off": false
+  },
+  "retrieval": {
+    "keep_default": 6
+  },
+  "prompt": {
+    "variables": 7,
+    "notes": 2,
+    "versions_current": 3,
+    "typed": "q"
+  },
+  "reply": {
+    "seeded_thread": "msg-16",
+    "arrival_made_by": "auto",
+    "arrival_state": "proposed",
+    "instruction": "accepte, propose jeudi",
+    "change": "plus court",
+    "owner_words": " Merci.",
+    "draft_made_by_asked": "on_demand",
+    "taken_over_state": "edited"
+  },
+  "sources_of_values": {
+    "first_start.choices_default": "checks/parity/par-welcomemac.py:278 (the step's three choices and their defaults)",
+    "first_start.pick": "the draft choice keeps its default (on-demand), the other two rows take a non-default option, so every write is observable against the launch state below",
+    "first_start.writes_*": "checks/parity/par-welcomemac.py:289-297 (Continue sends SetReplyUseEnabled, one SetReplySourceEnabled per Inbox/Sent folder, then RunVoiceAnalysis)",
+    "first_start.folder_roles": "checks/parity/par-welcomemac.py:261 ROLE_NAMES",
+    "counts": "docs/lanes/replies-contract.md row 'AUTO three lines' (31 sur 128, 128 recus, 9 brouillons); 12 = 128-97-19, the board's figure as written in Sources/CoreBridge/FixtureReplies.swift:8 and checks/settingsreplies-check.py:722",
+    "sources.accounts": "docs/lanes/replies-contract.md row 'SRC account card' (4 dossiers sur 6; 18 096 messages) and open choice 8 (derived count 9 = 4+2 folders, 2 folders of this Mac, 1 calendar)",
+    "sources.local_folders": "replies-contract.md open choice 8 (2 folders of this Mac); names from the board via Sources/CoreBridge/FixtureReplies.swift:73",
+    "sources.added_folder": "checks/settingsreplies-check.py:27 FOLDER",
+    "sources.syncing_folder": "replies-contract.md row 'SRC account card' (ring Clients, 62 %)",
+    "sources.calendars": "checks/settingscalendars-check.py:49 CALS and settingscalendars-check.py:320 (Travail on, Personnel off)",
+    "voice": "replies-contract.md row VOIX (100 derniers; Derniere analyse sur 100 messages)",
+    "retrieval.keep_default": "replies-contract.md row RECH (Garder: les 6 meilleurs)",
+    "prompt": "replies-contract.md rows PROMPT (7 variables, 2 notes, Version 3)",
+    "reply": "docs/lanes/reply-thread.md control table (draft made_by auto or on_demand; typing makes the draft edited; Return in the instruction field; change field keeps the draft id, revision +1); instruction text from checks/parity/par-quickreply.py:660",
+    "first_start.auto_enabled_before": "the fixture core's launch state is the board sample: Sources/CoreBridge/FixtureReplies.swift:12-14 (auto and on-demand uses enabled) and checks/settingsreplies-check.py:1037 (the stand-in's reset, same state); Continue with 'when I ask' writes the switch off: checks/parity/par-welcomemac.py:307-311",
+    "auto": "enabled_before: the same launch state (switch on); tone and Sources line from replies-contract.md rows AUTO/DEM line Ton and 'AUTO line Sources N activees' (9, open choice 8)",
+    "filter": "Sources/CoreBridge/FixtureReplies.swift:39-47 (the sample filter: two labels ticked, the three cards on) and replies-contract.md open choice 2 for the card defaults; the fact is any of the eight of settingsreplies-check.py:29 FACTS"
+  }
+}

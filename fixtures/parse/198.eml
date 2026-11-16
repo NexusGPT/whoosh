@@ -1,0 +1,26 @@
+From: Postbox Example <digest@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Weekly digest
+Date: Fri, 13 Nov 2026 10:28:00 +0000
+Message-ID: <9649da3aea170565@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5505872581154360987=="
+
+--===============5505872581154360987==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Hello, safe text. after
+
+--===============5505872581154360987==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><head><title>x</title></head><body><p>Hello, safe text 9331</p><p style=
+=3D"background:url(https://track.example.net/bg.png)" onmouseover=3D"x()">hov=
+er</p><table background=3D"https://track.example.net/t.gif"><tr><td>x</td></t=
+r></table><p>after</p></body></html>
+
+--===============5505872581154360987==--

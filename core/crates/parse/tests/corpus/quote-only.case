@@ -1,0 +1,10 @@
+# Nothing but quoted history under an attribution: nothing would be visible, so the whole text is ONE visible UNKNOWN plus a warning.
+subject: Re: Lunch
+sender: Jan Kowalski
+fold_from: none
+expect: 0 UNKNOWN show
+warning: nothing would have been visible
+authored: Shall we have lunch at the canteen on Thursday?
+--- text
+On Wed, 11 Nov 2026 at 10:00, Kasia Nowak <kasia@example.pl> wrote:
+> Shall we have lunch at the canteen on Thursday?

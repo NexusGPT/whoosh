@@ -1,0 +1,17 @@
+{
+  "item": "9c20fe98",
+  "full_id": "9c20fe98-4730-480c-bcfd-9b591b0aa872",
+  "title": "Let a check star a message in the test app",
+  "state": "prove",
+  "proofs": [
+    {"kind": "static", "run": "python3 checks/parity/par-labelscontactsmac.py --selftest", "pass": "[0-9]+ checks, 0 failed, 0 not judged|0 problems", "fail": "NOT RED|NO MUTANT|RED on the model", "timeout_s": 900},
+    {"kind": "hidden", "core": "fixture", "run": "python3 checks/parity/par-labelscontactsmac.py", "pass": "fact-only-row-carries-the-fact-tag +pass +starred msg-", "fail": "fact-only-row-carries-the-fact-tag +(fail|unjudged)", "timeout_s": 1200},
+    {"kind": "static", "run": "grep -n 'fixture star <message id> on|off' docs/CONTROL-SOCKET.md", "pass": "fixture star <message id> on\\|off", "fail": "^$", "timeout_s": 30}
+  ],
+  "mutants": [
+    {"file": "Sources/CoreBridge/FixtureAgents.swift", "find": "if on { starred.insert(id) } else { starred.remove(id) }", "replace": "if on { } else { starred.remove(id) }", "proof": 1, "red": "fact-only-row-carries-the-fact-tag +unjudged +no starred message in this corpus"}
+  ],
+  "gap": "S, test. 'Nothing on the owner's copy' has no check: the verb is fixture-core only (the real core refuses it, par-labelscontactsmac.py:232-237 relies on that) but no unit test shows a real-core door refuses 'fixture star'. A unit test in Tests/Unit/FixtureCoreFaultsTests.swift style that stars an id then resets (reset clears the set, FixtureAgents.swift:211 comment) and one that a non-fixture host does not serve FixtureVerbs would close it (S). Whether the verb's reply and the fact tag read are judged on a built app is proof 1.",
+  "owner": null,
+  "notes": "Verb: Sources/ControlSocket/FixtureVerbs.swift:213-217 (case (\"star\", 3)), Sources/CoreBridge/FixtureAgents.swift:213-219 (fixtureStar, set 'starred' shared with the Star command, FixtureCore.swift:617), docs/CONTROL-SOCKET.md:255. Case: checks/parity/par-labelscontactsmac.py:229-253 (i_fact_tag), registered :647 as fact-only-row-carries-the-fact-tag with mutant name fact-tag-empty. The check prints one line per case ('name  pass  detail', _captures/tests/r79/par-labelscontactsmac-main79.log:5-12 shows the shape). Last run on record was UNJUDGED ('no starred message in this corpus', r79 log:23) before the check staged a star itself (i_fact_tag stages it since)."
+}

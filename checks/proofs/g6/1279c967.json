@@ -1,0 +1,83 @@
+{
+  "item": "1279c967",
+  "full_id": "1279c967-9f5d-44c1-bf83-b48c28344e2f",
+  "title": "Fetch text attachments in the background",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_attach_fetch",
+      "pass": "test result: ok\\. 8 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -n -E '(imap_host|smtp_host|host): \"' core/crates/engine/tests/engine_attach_fetch.rs",
+      "pass": "host: \"127\\.0\\.0\\.1\"",
+      "fail": "host: \"(?!127\\.0\\.0\\.1\")",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/bodies.rs",
+      "find": "crate::draft_files::download::auto::after_bodies(self, &self.store, &self.runtime, &kept_ids);",
+      "replace": "",
+      "proof": 0,
+      "red": "a_mail_with_a_pdf_and_a_text_file_gets_both_fetched_and_cut_with_no_command.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/attachment_auto.rs",
+      "find": "matches!(AttachmentKind::detect(mime, name), AttachmentKind::Pdf | AttachmentKind::PlainText)",
+      "replace": "true",
+      "proof": 0,
+      "red": "a_picture_is_not_fetched.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/attachment_auto.rs",
+      "find": "if on_disk || !within_size(size)",
+      "replace": "if !within_size(size)",
+      "proof": 0,
+      "red": "a_file_already_on_disk_is_not_fetched_again.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/attachment_auto.rs",
+      "find": "crate::log::log_line(log, &format!(\"attachment {id}: not fetched automatically: {why}\"));",
+      "replace": "",
+      "proof": 0,
+      "red": "a_failing_fetch_leaves_one_log_line_and_the_queue_goes_on.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/attachment_auto.rs",
+      "find": "|| again || !seen",
+      "replace": "|| !seen",
+      "proof": 0,
+      "red": "a_failing_fetch_leaves_one_log_line_and_the_queue_goes_on.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/attachment_auto.rs",
+      "find": "ORDER BY m.received_at_ms DESC, a.id",
+      "replace": "ORDER BY m.received_at_ms ASC, a.id",
+      "proof": 0,
+      "red": "the_backfill_fetches_stored_mail_newest_first.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/attachment_auto.rs",
+      "find": "for _ in 0..ATTACH_AUTO_FETCH_PER_STEP {",
+      "replace": "for _ in 0..100 {",
+      "proof": 0,
+      "red": "the_queue_yields_after_the_per_step_bound.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/attachment_auto.rs",
+      "find": "if used + f.size_bytes > ATTACH_AUTO_KEEP_TOTAL_MAX_BYTES",
+      "replace": "if false",
+      "proof": 0,
+      "red": "at_the_total_cap_nothing_more_is_fetched_and_one_line_says_so.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "core/crates/engine/tests/engine_attach_fetch.rs, 8 tests over the scripted IMAP server of body-r2 on 127.0.0.1 (header line 2; the account's hosts are 127.0.0.1 at :43 and the adapter's at :63 with Security::PlainLoopbackOnly; proof 1 greps every host line of the file): :144 a_mail_with_a_pdf_and_a_text_file_gets_both_fetched_and_cut_with_no_command (PDF and plain text fetched after the mail is stored, no click, their text read and cut into chunk rows), :163 a_picture_is_not_fetched, :181 a_file_over_the_size_limit_is_not_fetched (10 MiB + 1; the limit is attachment_auto.rs:121 within_size, ATTACH_AUTO_FETCH_MAX_BYTES), :199 a_file_already_on_disk_is_not_fetched_again, :232 a_failing_fetch_leaves_one_log_line_and_the_queue_goes_on, :266 the_backfill_fetches_stored_mail_newest_first, :287 the_queue_yields_after_the_per_step_bound (bounded per step, ATTACH_AUTO_FETCH_PER_STEP), :304 at_the_total_cap_nothing_more_is_fetched_and_one_line_says_so. The broken copies are those in each test's doc comment (and docs/lanes/attach-fetch.md 'Broken copy per test'); every find was checked to occur once. NOT given: the size-limit copy (test :181), because the doc comment says it needs two edits (within_size and the SQL bound at attachment_auto.rs:239); a single-line copy of either leaves the other bound in force and the test green. Caution for the lead: docs/lanes/attach-fetch.md 'What could not be settled' says engine_attachments.rs and engine_body_r3.rs go red with this lane on unless run with WHOOSH_ATTACH_AUTO_FETCH=off; that is outside this finish line. Nothing was run by me."
+}

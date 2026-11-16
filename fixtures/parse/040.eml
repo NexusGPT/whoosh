@@ -1,0 +1,21 @@
+From: Kestrel VPN <security@example.com>
+To: Assem Example <assem@example.org>
+Subject: Your one-time code
+Date: Thu, 05 Nov 2026 12:16:00 +0000
+Message-ID: <07764072e5d35309@mail.example.net>
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Kestrel VPN</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img src=3D"https://pixel.example.net/o/e70d=
+018b.jpg" width=3D"1" height=3D"1" alt=3D""><h2>Kestrel VPN</h2><p>Use this c=
+ode to sign in:</p><table><tr><td style=3D"font-size:30px">555AYP</td></tr></=
+table><p>Do not share it.</p><p style=3D"font-size:11px;color:#888">You recei=
+ve this because of your account. <a href=3D"https://example.net/unsubscribe?u=
+=3D2fda55">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Privacy<=
+/a></p><img src=3D"//pixel.example.net/o/95eadda0.jpg" width=3D"1" height=3D"=
+1"><img src=3D"http://img.example.com/px/5d1dcc60.jpg" width=3D"1" height=3D"=
+1" alt=3D""></td></tr></table></body></html>

@@ -1,0 +1,12 @@
+{
+ "id": "077",
+ "category": "link-text",
+ "code": null,
+ "links": [
+  "https://auth.example.org/login/callback?code=c2304ac9e46fec46ee874239"
+ ],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

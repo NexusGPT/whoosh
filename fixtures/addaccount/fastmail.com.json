@@ -1,0 +1,65 @@
+{
+ "domain": "fastmail.com",
+ "address": "assem.fixture@fastmail.com",
+ "password": "fixture-password",
+ "source": "ispdb",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "imap.fastmail.com",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.fastmail.com",
+  "smtpPort": 465,
+  "smtpSecurity": "ssl",
+  "username": "assem.fixture@fastmail.com",
+  "authMethod": "password"
+ },
+ "validates": true,
+ "ops": [
+  "IMAP LOGIN",
+  "IMAP LIST",
+  "SMTP EHLO",
+  "SMTP AUTH"
+ ],
+ "folders": [
+  {
+   "name": "INBOX",
+   "attrs": []
+  },
+  {
+   "name": "Sent",
+   "attrs": [
+    "\\Sent"
+   ]
+  },
+  {
+   "name": "Drafts",
+   "attrs": [
+    "\\Drafts"
+   ]
+  },
+  {
+   "name": "Trash",
+   "attrs": [
+    "\\Trash"
+   ]
+  },
+  {
+   "name": "Spam",
+   "attrs": [
+    "\\Junk"
+   ]
+  }
+ ],
+ "folder_map": {
+  "sent": "Sent",
+  "drafts": "Drafts",
+  "trash": "Trash",
+  "junk": "Spam"
+ }
+}

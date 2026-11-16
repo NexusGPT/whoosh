@@ -1,0 +1,56 @@
+{
+  "item": "c7c52ea4",
+  "full_id": "c7c52ea4-f1f7-468c-bac6-d52d637987de",
+  "title": "Show a label's filed mails after a relaunch",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_builtin_tab_filing -- --test-threads=1",
+      "pass": "test result: ok\\. 5 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-labeltab",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL ",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice labeltab: model all pass, 8 defects each red on its own cases",
+      "fail": "NOT RED|FAILS|SURVIVE(?!S)|\\[exit [1-9]",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/store/src/label_meta.rs",
+      "find": "        self.builtin_tab_put(label_id, message_id, word, rule.as_deref(), probability, now_ms)?;",
+      "replace": "",
+      "proof": 0,
+      "red": "thread 'a_mail_just_filed_is_on_the_tab_with_no_reopen_between' (\\(\\d+\\) )?panicked"
+    },
+    {
+      "file": "core/crates/store/src/label_meta.rs",
+      "find": "            ctx.backfill_builtin_tabs()?;   // round 13: the filings an earlier build made under a built-in label reach its tab",
+      "replace": "",
+      "proof": 0,
+      "red": "an_earlier_builds_filings_reach_the_tab_when_the_core_opens.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/store/src/labels.rs",
+      "find": "            self.builtin_tab_drop(label_id, id)?;",
+      "replace": "",
+      "proof": 0,
+      "red": "taking_the_mail_off_the_label_takes_it_off_the_tab.*FAILED|panicked"
+    }
+  ],
+  "gap": "",
+  "owner": null,
+  "notes": "Owner 2026-11-12 23:44 'when quitting, it doesn't seem to keep the mails' (main106: the Needs Reply tab read All done while label_assignment held 25 mails). Store fix by lane hid-labels round 13 (docs/lanes/hid-labels.md): builtin_tab_put at filing (core/crates/store/src/label_meta.rs:469), backfill_builtin_tabs at every core open (label_meta.rs:977), builtin_tab_drop at unfiling (core/crates/store/src/labels.rs:294); proof 0 is its engine test file core/crates/engine/tests/engine_builtin_tab_filing.rs (4 tests: filed_mail_is_on_the_tab_and_stays_after_a_reopen :92, the_strip_counts_what_the_tab_lists :107, an_earlier_builds_filings_reach_the_tab_when_the_core_opens :116, taking_the_mail_off_the_label_takes_it_off_the_tab :135) with its mutants H1-H3 from its header. Proof 1 is the built app on the real engine (lane fix-realcore round 10): checks/realcore-check.py main_slice_labeltab :6372, judge_labeltab :6330, selftest_labeltab :6454; the rig's scripted Apple judge (WHOOSH_RIG_APPLE_JUDGE=stand-in) files the three question mails under needs-reply; the tab (sidebar click), the strip (inbox/tabs waiting) and the label (label_assignment) agree after filing, after a Save of the description (at once and later), after a relaunch (at once, after the sync), and after a relaunch with the owner's main106 state (WHOOSH_CORE_CHECK_DROP_TABS=3, core/crates/engine/src/check_tabs.rs, rig only: the tab rows dropped before the open's backfill); then shift-Y takes one off the tab and the count. Proof 2: its self-test, with the defects no tab row at filing (H1's effect) and no backfill at open (H2's effect)."
+}

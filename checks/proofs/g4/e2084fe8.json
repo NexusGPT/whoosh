@@ -1,0 +1,63 @@
+{
+  "item": "e2084fe8",
+  "full_id": "e2084fe8-2f78-4021-9db7-e0d2c9273817",
+  "title": "Rebuild the prompt editor to edit in place (A124)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsreplies-check.py --selftest",
+      "pass": "^selftest: OK \\(0 mutants not red\\)$",
+      "fail": "NOT RED|selftest: FAILED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-e2084fe8\" --screens mac-settings-replies",
+      "pass": "^PASS mac-settings-replies (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "read the mac-settings-replies picture (the Prompt page, light) and the `rows mac-settings-replies.editors` read after the cases",
+      "pass": "the prompt text is in a card, the variables show as pills, no 'double click to edit' hint, no edit mode switch"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "PASS a124-prompt-editor:real-mouse-click",
+      "fail": "(FAIL|NOT JUDGED|UNJUDGED) a124-prompt-editor:real-mouse-click",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsRepliesMac/RepliesTextView.swift",
+      "find": "if k == \"z\", flags == .command { owner?.undoStep(); return true }",
+      "replace": "if k == \"z\", flags == .command { return true }",
+      "proof": 0,
+      "red": "(FAIL|UNJUDGED) .*undo-takes-pill-back|^\\d+ checks, [1-9]"
+    },
+    {
+      "file": "Sources/Features/SettingsRepliesMac/RepliesTextView.swift",
+      "find": "if !had { downsBeforeFocus += 1 }",
+      "replace": "if !had { downsBeforeFocus += 2 }",
+      "proof": 0,
+      "red": "FAIL a124-prompt-editor:real-mouse-click"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/Features/SettingsRepliesMac/RepliesTextEditor.swift:121 RepliesTextArea, RepliesTextView.swift:25-26 (cmd-Z), RepliesEditorCoordinator.swift:156-165 (undo steps), :123-151 (the @ list and pill insert), RepliesEditorDoors.swift:32 (the .at seam). Cases of checks/settingsreplies-check.py: A124 cases at :796 one-click-focuses, :802 letter-after-one-click, :812 typing-beside-pill, :830 at-opens-menu-escape-closes, :843 undo-takes-pill-back, :862 cmd-s-saves-a-version, :875 one-click-every-long-text, :888 real-mouse-click. Typing goes through the rig's real key path (`keyevent`, :463-467 refuses a key that reached no text focus). The check prints the total line (:1554) and failures to stderr, so the aggregate is the pass line. The mutant's red depends on the case undo-takes-pill-back reading the undo through the real view; its stderr line has the form `FAIL <step>/<case>: ...` (exact label prefix unread), hence the alternative in the red pattern. gap-settings-checks: the app now serves the seam mac-settings-replies.editor.<key>.mouse-click (RepliesEditorDoors.mouseClick: the editor is released, a leftMouseDown goes through the window's sendEvent with its leftMouseUp queued first) and the editors-row field mouse_downs_to_focus (RepliesTextView.mouseDown counts the downs the view needed to become first responder). Compiled and run by nobody yet: the lead's build is the first. The other cases' mutants exist on the stand-in only (A124_MUTANTS), as before."
+}

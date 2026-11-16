@@ -1,0 +1,21 @@
+[package]
+name = "sync-graph"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Microsoft Graph mail sync: per-folder delta rounds, change-notification subscriptions, and the per-mailbox limits read from docs/CONSTANTS.md."
+build = "build.rs"
+
+[dependencies]
+contracts = { workspace = true }
+netguard = { path = "../netguard" }   # rig-net-rust: a rig copy reaches this Mac only (the guard at the constructor, every dial and every redirect)
+# Open-source start: reqwest (MIT OR Apache-2.0) over the Graph REST shapes, serde for the JSON.
+# native-tls = the Apple Security framework on Mac and iPhone: system trust store, no C crypto build.
+reqwest = { version = "0.13", default-features = false, features = ["json", "native-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["sync", "time"] }
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "sync", "time"] }

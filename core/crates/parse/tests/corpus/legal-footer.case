@@ -1,0 +1,11 @@
+# A legal footer under the sender's text: DISCLAIMER, folded.
+subject: Contract draft
+sender: Ines Duarte
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 DISCLAIMER collapse
+authored: Please find my comments on clauses 4 and 7 in the margin of the draft.
+--- text
+Please find my comments on clauses 4 and 7 in the margin of the draft.
+
+This email and any attachments are confidential and intended solely for the addressee. If you are not the intended recipient, please delete it and notify the sender.

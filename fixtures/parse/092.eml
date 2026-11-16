@@ -1,0 +1,16 @@
+From: Harbor Pay <orders@example.org>
+To: Assem Example <assem@example.org>
+Subject: Order confirmation
+Date: Tue, 10 Nov 2026 00:41:00 +0000
+Message-ID: <7ab14c54dab5d2df@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Thanks for your order!
+
+Order #15722-71 is confirmed.
+Total: EUR 77.49
+Estimated delivery: 12 November 2026.
+
+Questions? Call 0483 87 43 42.

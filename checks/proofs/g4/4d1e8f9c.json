@@ -1,0 +1,70 @@
+{
+  "item": "4d1e8f9c",
+  "full_id": "4d1e8f9c-4b69-4f2b-a625-e9ebc92770da",
+  "title": "Fix the Re-run preview that contradicts the foot (A125)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_preview_r8",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p decision --test preview",
+      "pass": "test result: ok\\. 4 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/labelscontactsmac-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^FAIL ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-4d1e8f9c\" --screens mac-labels-contacts",
+      "pass": "^PASS mac-labels-contacts (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/shots-4d1e8f9c --states label-ai-no-model-preview,label-ai-new-install-no-model,label-ai-needs-apple,label-ai-under-trust",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "read, from _captures/results/shots-4d1e8f9c/pics/, state-label-ai-no-model-preview-preview-and-foot-light-1280x820.png (the Re-run line and the foot), then state-label-ai-new-install-no-model-ai-card-*, state-label-ai-needs-apple-ai-card-*, state-label-ai-under-trust-ai-card-* (light and dark, 1280x820 and 960x632)",
+      "pass": "the Re-run preview counts 0 joins by the AI and says in one line 'The AI cannot sort yet: no model on this Mac.' and the foot shows the same 0 (the real engine's own sentence is flow_ctx.rs:255, cargo engine_preview_r8); the other states show the AI card's sentence of each code: ai_no_model 'No model is set for sorting mail: choose one in Settings, Decisions.' with Open Decisions, ai_needs_apple 'Sorting mail into labels needs Apple Intelligence: turn it on in System Settings, then Apple Intelligence and Siri.' with Open System Settings, ai_under_trust 'The AI judged 42 mails and was sure of none: its best was 58 %, and it files from 80 %.' with Open Decisions. ai_failed is not served by the test engine: no picture"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/flow_ctx.rs",
+      "find": "(0, if ai_ok { ai.iter()",
+      "replace": "(0, if true { ai.iter()",
+      "proof": 0,
+      "red": "with_no_model_the_preview_counts_nothing_by_the_ai_and_says_why.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/flow_ctx.rs",
+      "find": "{ \"The AI cannot sort yet: no model on this Mac.\".to_string() }",
+      "replace": "{ String::new() }",
+      "proof": 0,
+      "red": "with_no_model_the_preview_counts_nothing_by_the_ai_and_says_why.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The reader's 'no hit' came from searching Tests/ (Swift); the case is a Rust test: core/crates/engine/tests/engine_preview_r8.rs:82 with_no_model_the_preview_counts_nothing_by_the_ai_and_says_why (asserts by_rule 0, by_ai 0, the exact line, candidates 0, beyond 0, the foot's flow/counts JSON equal, Re-run changes nothing and model_pending true; then a scripted model: by_ai 38, ai_words null) and :105 (Jev with key and consent). One computation: core/crates/engine/src/flow_ctx.rs:258-288 (ai_cannot_words, rerun_preview; header of engine_preview_r8.rs: 'One computation (`flow_ctx::candidate_parts`) feeds all three'). Swift reads it: Sources/Features/LabelsContactsMac/LabelProof.swift:55-66 EnginePreview (aiWords), LabelProofRow.swift:99. The app-side check par-labelscontactsmac.py has the stand-in answer at :2086-2091 (ai_words the same sentence); the hidden proof reads the labels screen on the fixture core; its aggregate line comes from the wrapper checks/labelscontactsmac-check.py:142 (`N checks, N failed, N not judged`). decision tests preview.rs: four tests at lines 29, 48, 63, 74. The pass count of 4 and 2 is read from the files."
+}

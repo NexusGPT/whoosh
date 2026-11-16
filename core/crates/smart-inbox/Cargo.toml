@@ -1,0 +1,13 @@
+[package]
+name = "smart-inbox"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh smart inbox: split tabs placed by one ordered list per outcome (rules and the model in the same list), waiting and per-account counts."
+
+[dependencies]
+contracts = { workspace = true }
+store = { path = "../store" }
+# The same SQLite pair the store uses (MIT; bundled SQLite is public domain). A read-only connection for facts and counts.
+rusqlite = { version = "0.41", features = ["bundled"] }
+serde_json = "1"

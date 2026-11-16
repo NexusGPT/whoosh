@@ -1,0 +1,28 @@
+From: Lumen Bank <digest@example.org>
+To: Assem Example <assem@example.org>
+Subject: Weekly digest
+Date: Thu, 05 Nov 2026 23:41:00 +0000
+Message-ID: <c2c178b42259b1bf@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============5499352407880716766=="
+
+--===============5499352407880716766==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+SGVsbG8sIHNhZmUgdGV4dC4gYWZ0ZXINCg==
+
+--===============5499352407880716766==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PGh0bWw+PGhlYWQ+PHRpdGxlPng8L3RpdGxlPjwvaGVhZD48Ym9keT48cD5IZWxsbywgc2FmZSB0
+ZXh0IGU5OGY8L3A+PHNjcmlwdD5mZXRjaCgiaHR0cHM6Ly9ldmlsLmV4YW1wbGUubmV0L3g/Yz0i
+K2RvY3VtZW50LmNvb2tpZSk8L3NjcmlwdD48aW1nIGFsdD0ieCIgc3JjPWh0dHBzOi8vcGl4ZWwu
+ZXhhbXBsZS5uZXQvbG9nby82YjVmN2IyZS5naWY+PGltZyBzcmM9J2h0dHA6Ly9jZG4uZXhhbXBs
+ZS5uZXQvby9kMTQ2MDFmZC5naWYnIGFsdD0nbG9nbycgd2lkdGg9JzEyMCc+PHA+YWZ0ZXI8L3A+
+PC9ib2R5PjwvaHRtbD4NCg==
+
+--===============5499352407880716766==--

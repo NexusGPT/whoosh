@@ -1,0 +1,84 @@
+{
+  "item": "ee20d7cc",
+  "full_id": "ee20d7cc-d82f-44ab-a9d9-9b13511f8cdf",
+  "title": "Store the AI model setting in the real core",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_ai_settings",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_replies_settings the_working_commands_refuse_in_words_while_no_model_is_set",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_ai_draft -- --nocapture",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-aikey",
+      "pass": "(?s)PASS\\s+before-the-key-the-draft-is-refused-in-words .*PASS\\s+the-key-is-saved-and-the-provider-reads-connected .*PASS\\s+a-saved-key-gets-a-draft-written-by-the-provider .*PASS\\s+the-provider-answered-a-completion-for-the-saved-key .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL\\s|NOT JUDGED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice aikey: model all pass, 9 broken models each red on its own cases.*the seam probe finds the seam and misses it when absent",
+      "fail": "WRONG|FAILS|SURVIVED|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "provider_state_is_usable(provider_state(store, provider.slug))",
+      "replace": "true",
+      "proof": 0,
+      "red": "a_job_uses_a_key_only_in_a_usable_state.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "let key = if provider.needs_key {",
+      "replace": "let key = if false {",
+      "proof": 2,
+      "red": "a_saved_key_gets_a_draft_written_by_the_provider.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "provider_state_is_usable(provider_state(store, provider.slug))",
+      "replace": "true",
+      "proof": 2,
+      "red": "a_key_that_is_still_being_checked_gets_no_draft.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "let key = if provider.needs_key {",
+      "replace": "let key = if false {",
+      "proof": 3,
+      "red": "FAIL\\s+a-saved-key-gets-a-draft-written-by-the-provider"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "provider_state_is_usable(provider_state(store, provider.slug))",
+      "replace": "true",
+      "proof": 3,
+      "red": "FAIL\\s+before-the-key-the-draft-is-refused-in-words|FAIL\\s+a-saved-key-gets-a-draft-written-by-the-provider"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The mutant makes model_for accept a key in any state (ai_settings.rs:504); its red line is the existing usable-state test. The Keychain half is the secrets crate (core/crates/secrets/tests/keychain.rs, memory.rs); the rig keeps the key in a memory keychain (engine_ai_settings.rs header). 'the draft engine and the label AI read it': ai_settings::model_for(&store, &keyring, AiJob::Draft) is what both call (engine_ai_settings.rs:299, :418). gap-engine-state: engine_ai_draft.rs prints `PASS key-saved-then-draft-written-by-the-provider (N completion request(s))` and `PASS draft-refused-while-the-key-is-checked-then-allowed` (-- --nocapture). Not compiled in this lane (no cargo run allowed): the lead's first run decides; the draft text assertion assumes the draft engine stores the trimmed provider text (write_draft.rs:110). (tail-realcore, 2026-11-12) the installed-shape half is built: checks/realcore-check.py `--slice-aikey` (drive_aikey, judge_aikey, main_slice_aikey) starts checks/realcore_aifake.py on 127.0.0.1, launches the hidden copy with WHOOSH_CORE_CHECK_PROVIDERS=<its port> (rig.rs routes the key providers' hosts there) and reads the build's executables for that literal first: a build without it prints NOT JUDGED and launches nothing (a pasted key would reach the real provider). The app part: add the local account (one mail), open the thread and the quick reply (Enter, R), press ⌘J with no key (the field must say `failed` in words, no draft), open Settings by `mac-palette.result.ai-settings`, click `mac-settings-ai.provider.anthropic.key`, type the fake's made-up key (never printed), click `.connect`, read the card (`connected`, models listed, `core state provider_credential/anthropic/stored` true), go back, press ⌘J again and read `reply/draft/<thread>` (the text the fake answered: `A reply from <model>.`) and the reply field. The fake provider's own record must show an accepted completion. The doors are the ones checks/firstrun-check.py (T-13) and checks/parity/par-quickreply.py already drive; none was run on this build, so a NOT JUDGED or FAIL on a door is the first finding to read (the Writer model is not picked: the engine test needed none). The broken copies are the two edits above (the `--mutant` flag of the other slices does not exist here: no engine name hooks them). Written and self-tested, not run on a bundle."
+}

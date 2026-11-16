@@ -1,0 +1,158 @@
+{
+ "id": "Valen-Team/Valen-Decision-1.5-2B",
+ "modelId": "Valen-Team/Valen-Decision-1.5-2B",
+ "sha": "1b890606578ba0f40bb70ed46891ab65f778e76d",
+ "gated": false,
+ "private": false,
+ "disabled": false,
+ "tags": [
+  "transformers",
+  "safetensors",
+  "valen_qwen",
+  "feature-extraction",
+  "valen",
+  "image-text-to-text",
+  "decision-making",
+  "decision-model",
+  "image-text-to-typed-output",
+  "structured-output",
+  "shared-state",
+  "qwen3.5",
+  "custom-code",
+  "conversational",
+  "custom_code",
+  "base_model:Qwen/Qwen3.5-2B",
+  "base_model:finetune:Qwen/Qwen3.5-2B",
+  "license:apache-2.0",
+  "region:us"
+ ],
+ "pipeline_tag": "image-text-to-text",
+ "library_name": "transformers",
+ "siblings": [
+  {
+   "rfilename": ".gitattributes",
+   "blobId": "b5cf5b350fd34ed2d766c9aa2f3a4fa8478581cd",
+   "size": 1629
+  },
+  {
+   "rfilename": "LICENSE",
+   "blobId": "f938136e3adacfd92be087f6e113b5d6d97f678f",
+   "size": 11544
+  },
+  {
+   "rfilename": "README.md",
+   "blobId": "3eda8669a59e23ba8d99ce602afc005b9ac3f2d0",
+   "size": 11069
+  },
+  {
+   "rfilename": "assets/bench_chart.png",
+   "blobId": "576c91b617d76ad17bb30c76048df5c5da5cc75e",
+   "size": 451326,
+   "lfs": {
+    "sha256": "585dafdfbd2bd0d60afb4970d0edba6fcbc1ad7b6b9f8bfbb3df32d1d55500e6",
+    "size": 451326,
+    "pointerSize": 131
+   }
+  },
+  {
+   "rfilename": "batching.py",
+   "blobId": "6bd343e1d7a8479c6bbc45d73b987b1d1d2d5c28",
+   "size": 2953
+  },
+  {
+   "rfilename": "block_attention.py",
+   "blobId": "1b39f785dea722cea7d4e1d73bb56fc848f49bf0",
+   "size": 9512
+  },
+  {
+   "rfilename": "chat_template.jinja",
+   "blobId": "0ef09f214eaa6d9bca297988afc1454b5827b2c7",
+   "size": 7755
+  },
+  {
+   "rfilename": "compiler.py",
+   "blobId": "49d6aea35d9ac09cb3061ab64ecffc8d01b1d8c5",
+   "size": 16608
+  },
+  {
+   "rfilename": "config.json",
+   "blobId": "a92cdc50deb645479798afee51db8fb9faad844c",
+   "size": 3486
+  },
+  {
+   "rfilename": "configuration_valen.py",
+   "blobId": "65250c06ce4b2519446900ecf29a1983f4fba91a",
+   "size": 1954
+  },
+  {
+   "rfilename": "data_types.py",
+   "blobId": "ce1d6a8d6ee0f46600b13865ea941dcd7d803de0",
+   "size": 258
+  },
+  {
+   "rfilename": "decisions.py",
+   "blobId": "342eb3a568672e8652fb1b1f3f96f22fb1741e30",
+   "size": 8585
+  },
+  {
+   "rfilename": "grounding.py",
+   "blobId": "80e2bbb6f11830642400cedaf83ec82e7e6fadc0",
+   "size": 7040
+  },
+  {
+   "rfilename": "heads.py",
+   "blobId": "47627b2dc79bfafeea627683628f949f80ab7692",
+   "size": 6605
+  },
+  {
+   "rfilename": "model.safetensors",
+   "blobId": "66d72e00fdbd6051a5377469187449409ec5d4bd",
+   "size": 4453940348,
+   "lfs": {
+    "sha256": "1c9c1112aa0c417b081b0fa757c78be77e487b97de50adb4c83eecfbe03c35da",
+    "size": 4453940348,
+    "pointerSize": 135
+   }
+  },
+  {
+   "rfilename": "modeling_valen.py",
+   "blobId": "8637c5f3e44d140540e867a0a0b475671a011dfe",
+   "size": 5719
+  },
+  {
+   "rfilename": "processor_config.json",
+   "blobId": "33818c7f9e991ad735fd240209f4fa73e6c28c50",
+   "size": 1191
+  },
+  {
+   "rfilename": "responses.py",
+   "blobId": "78f8642d2b69eb778ddee53211d1824b04632b49",
+   "size": 1750
+  },
+  {
+   "rfilename": "runtime_model.py",
+   "blobId": "3f6d95d611774ab3f7e8c91fddde77009290c1c4",
+   "size": 6606
+  },
+  {
+   "rfilename": "schema.py",
+   "blobId": "fb909a59b0f82bcb2a07743da8852201305bd0a5",
+   "size": 6104
+  },
+  {
+   "rfilename": "tokenizer.json",
+   "blobId": "5520bfd2dd834ce386c1312c410fa71af56db5ad",
+   "size": 19989325,
+   "lfs": {
+    "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "size": 19989325,
+    "pointerSize": 133
+   }
+  },
+  {
+   "rfilename": "tokenizer_config.json",
+   "blobId": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060",
+   "size": 1164
+  }
+ ]
+}

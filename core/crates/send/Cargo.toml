@@ -1,0 +1,22 @@
+[package]
+name = "send"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+netguard = { path = "../netguard" }   # engine-act-r6 round 5: a rig copy reaches this Mac only (outbound_allowed before any lookup or dial)
+contracts = { workspace = true }
+# lettre (MIT, checked in its Cargo.toml: license = "MIT"), SMTP transport and message builder.
+# rustls with the ring provider for TLS (the research names rustls); no native-tls.
+lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "hostname", "rustls-tls"] }
+# delta 22: the files of a message, base64 (as the dev test already used); mail-parser (Apache-2.0 OR MIT, as the parse crate) reads a fetched message to take one file out of it.
+base64 = "0.22"
+mail-parser = "1.0.1"
+# fix-realcore round 7: file names go in their composed form (NFC); parse holds the one normaliser of the workspace (parse/src/nfc.rs)
+parse = { path = "../parse" }
+
+[dev-dependencies]
+base64 = "0.22"
+# fix-realcore round 15: the staged SMTP fake (tests/staged/mod.rs) resets a connection (SO_LINGER 0); MIT OR Apache-2.0, already in the lock file (lettre's)
+socket2 = "0.6"

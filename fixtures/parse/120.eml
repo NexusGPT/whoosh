@@ -1,0 +1,38 @@
+From: Brightfield <news@example.org>
+To: Assem Example <assem@example.org>
+Subject: Product updates
+Date: Wed, 11 Nov 2026 20:29:00 +0000
+Message-ID: <2c18129f1cca7a40@example.org>
+List-Unsubscribe: <https://example.net/unsubscribe?u=6cf51f>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============4255502610261339710=="
+
+--===============4255502610261339710==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+November news. Read more at https://example.net/blog/abc123
+
+--===============4255502610261339710==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Brightfield</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img src=3D"//img.example.com/o/db6e31ec.gif=
+" width=3D"1" height=3D"1"><h2>Brightfield</h2><h3>November news</h3><p>Join =
+5000 readers. In 2026 we shipped 12 releases. Ten percent off until 30 Novemb=
+er.</p><p>Book a call: +32 5 818 44 66</p><p><a href=3D'https://example.net/b=
+log/0f94c6'>Read more</a></p><p style=3D"font-size:11px;color:#888">You recei=
+ve this because of your account. <a href=3D"https://example.net/unsubscribe?u=
+=3D63060b">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Privacy<=
+/a></p><img src=3D"https://cdn.example.net/logo/81e2a3f9.gif" width=3D"1" hei=
+ght=3D"1" alt=3D""><img src=3D"https://track.example.org/o/27461b03.png" widt=
+h=3D"1" height=3D"1" alt=3D""><img width=3D"1" height=3D"1" style=3D"display:=
+none" src=3D"http://img.example.com/open/1771ee32.jpg" srcset=3D"http://img.e=
+xample.com/open/1771ee32.jpg 2x"></td></tr></table></body></html>
+
+--===============4255502610261339710==--

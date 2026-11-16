@@ -1,0 +1,27 @@
+From: Luc Martens <luc.martens@example.net>
+To: Assem Example <assem@example.org>
+Subject: Re: Planning
+Date: Sun, 15 Nov 2026 09:43:00 +0000
+Message-ID: <b62ff3e097c9109e@mail.example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============8783397226131800870=="
+
+--===============8783397226131800870==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Looks good, one small change in section 2. 4ca0
+
+> Please review the attached draft. 662a
+
+--===============8783397226131800870==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PGh0bWw+PGJvZHk+PHA+TG9va3MgZ29vZCwgb25lIHNtYWxsIGNoYW5nZSBpbiBzZWN0aW9uIDIu
+IDRjYTA8L3A+PGhyPjxibG9ja3F1b3RlIHR5cGU9J2NpdGUnPjxwPlBsZWFzZSByZXZpZXcgdGhl
+IGF0dGFjaGVkIGRyYWZ0LiA2NjJhPC9wPjwvYmxvY2txdW90ZT48L2JvZHk+PC9odG1sPg0K
+
+--===============8783397226131800870==--

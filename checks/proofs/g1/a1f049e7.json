@@ -1,0 +1,53 @@
+{
+ "item": "a1f049e7",
+ "full_id": "a1f049e7-ec57-41f8-b309-a8f90ed4cb28",
+ "title": "Build fn-ondeviceai",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "unit",
+   "run": "aMacWithoutAppleIntelligenceReportsUnavailableInWords,everyAppleReasonHasItsOwnSentence,withNoBackendAtAllTheSentenceSaysNoModelIsSetUp,anUnavailableEngineNeverFallsBackToAnotherAnswerer,aPromptOverTheLimitIsRefusedBeforeTheCallWithTheSentenceNamingTheLimit,theLimitCountsTheAnswerAsWellAsThePrompt,anOverLimitPromptOnAnUnavailableMacSaysUnavailableNotTooLong",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/ondeviceai-check.py --static",
+   "pass": "PASS ",
+   "fail": "FAIL ",
+   "timeout_s": 120
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/ondeviceai-check.py --selftest",
+   "pass": "pristine sources: \\d+ checks, red \\[\\]\\n(?s:.*)\\d+ mutants, 0 failed",
+   "fail": "FAIL ",
+   "timeout_s": 300
+  },
+  {
+   "kind": "lead",
+   "run": "on a Mac with Apple Intelligence on, with the installed build, in Settings > AI > On-device: read the status line of the Apple row; then send the one-line prompt 'x' repeated beyond ON_DEVICE_CONTEXT_TOKENS x 2.5 characters through the writer (any 'rewrite' action on a pasted 12,000-character text) and read the refusal sentence",
+   "pass": "the refusal names the limit 4096 and the Apple row never shows 'ready' on a Mac that has it off; no spinner shows"
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/OnDeviceAI/Core/TextBackend.swift",
+   "find": "guard need <= contextTokens else {",
+   "replace": "guard need <= contextTokens * 100 else {",
+   "proof": 0,
+   "red": "aPromptOverTheLimitIsRefusedBeforeTheCallWithTheSentenceNamingTheLimit.*failed"
+  },
+  {
+   "file": "Sources/Features/OnDeviceAI/Core/TextBackend.swift",
+   "find": "throw LocalModelError.unavailable(availability().words)",
+   "replace": "throw LocalModelError.promptTooLong(estimatedTokens: 0, limit: 0)",
+   "proof": 0,
+   "red": "aMacWithoutAppleIntelligenceReportsUnavailableInWords.*failed|anOverLimitPromptOnAnUnavailableMacSaysUnavailableNotTooLong.*failed"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Both claims have unit tests in Tests/Unit/OnDeviceAITests.swift: 'unavailable devices report unavailable in words' = :45-59 aMacWithoutAppleIntelligenceReportsUnavailableInWords (loops over every AppleReason: engine.availability() is .unavailable carrying reason.words, respond() throws LocalModelError.unavailable) plus :39 everyAppleReasonHasItsOwnSentence (no two reasons share a sentence) and :61 withNoBackendAtAllTheSentenceSaysNoModelIsSetUp, :68 anUnavailableEngineNeverFallsBackToAnotherAnswerer; 'a prompt over the context limit is refused before the call' = :95-106 aPromptOverTheLimitIsRefusedBeforeTheCallWithTheSentenceNamingTheLimit (a CountingBackend; asserts promptTooLong(limit == OnDeviceLimits.contextTokens), the sentence contains the number, and `backend.calls == 0`: 'the model was called'), :108 theLimitCountsTheAnswerAsWellAsThePrompt, :121 anOverLimitPromptOnAnUnavailableMacSaysUnavailableNotTooLong. Code: Sources/Features/OnDeviceAI/Core/TextBackend.swift:33-42 (respond: backend ready? else unavailable words; then need = estimatedTokens + maxTokens; need <= contextTokens else promptTooLong; only then backend.respond). The reader's 'BUILT, NOT PROVED' is right on one point: no saved run passes this test file (the only saved unit run, _captures/lead/main81-swift/integrate2/unit-full.log:8713, ends '461 tests ... 13 issues'); the lead's proof 0 is that run for these 7 names. Proofs 1-2: checks/ondeviceai-check.py:336-340 (--static prints 'PASS|FAIL <name> <detail>' per claim, from the Swift sources: the row states, the limit, the idle unload) and :360-378 (--selftest: pristine sources must be green, then one broken copy per state must go red; prints 'N mutants, F failed'; no app is launched). The claim is proved at the engine layer with a counting stand-in backend, which is where the refusal lives (the refusal comes before any backend is chosen, Apple's or MLX); it does not run Apple's own model: proof 3 is the lead's on a Mac with Apple Intelligence (this Mac may not have it; an owner without it cannot judge the refusal, but the unavailable half is judged by the unit test for every reason). Saved real run of the other backend (read only): _captures/ondeviceai/real-run-qwen25-05b.txt."
+}

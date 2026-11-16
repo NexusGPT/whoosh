@@ -1,0 +1,40 @@
+{
+  "item": "1aabc311",
+  "full_id": "1aabc311-16a0-4772-86e8-56374f016eaa",
+  "title": "Mark the passage inside the reader",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "par-reader-marks-the-passage-of-the-selected-result +pass",
+      "fail": "par-reader-marks-the-passage-of-the-selected-result +(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ reader-passage checks?, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/search-s1 --states search-related-from-attachment",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "open state-search-related-from-attachment-*.png (light and dark, 1280x820 and 960x632) of _captures/results/g6/search-s1/ beside the reader frames RD_M0 (a text passage in the newest mail) and RD_R1 (an earlier mail opened, the passage marked) of docs/design/boards/search-r3-parts/designs.js (that board is not in this copy: git ls-files finds no file under it, so the lead reads it from the main checkout)",
+      "pass": "the reader opens at the mail that holds the passage and the passage carries the drawing's mark (the accent at 26 percent behind the words, radius 3); an attachment passage brings the file's tile into view with the focused ring"
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "Owner ban: no unit proof and no new Swift test. The finish line's 'unit test red on a broken copy' is proved by the hidden case plus its own broken models: checks/parity/par-searchmac.py:2329 reader_marks_passage (case par-reader-marks-the-passage-of-the-selected-result, PASSAGE_CASE :2287, step J2.4 at :3132): a text result, an attachment result and a result whose passage is in an EARLIER mail of the conversation are each selected, and the reader's row mac-main.reader.passage must say marked, name the mail that holds the passage (not the row's mail), the source and the ring; then the search closes and nothing is marked. PASSAGE_EXPECT :2339. The selftest (proof 1) runs it on a model (green) and on 4 broken models (PASSAGE_MUTANTS :2393: marks-nothing, hands-the-row-mail, no-ring, mark-stays-after-close; each must be red) and prints '1 reader-passage check, 4 mutants, 0 problems' (:2416). The Swift unit tests that exist and are NOT proofs here: Tests/Unit/ReaderPassageTests.swift:64 theSelectedTextResultHandsTheReaderItsMailItsPassageAndItsLetters, :89 anEarlierMailResultHandsTheEarlierMailsIdAndTheReaderFindsItInTheThread, :159 nothingIsMarkedAfterTheSearchClosesOrWhenAnInboxMailIsOpen, :176 theEarlierMailThatHoldsThePassageOpensAndTheOthersKeepTheirState. The hidden picture: the shots-sheet state search-related-from-attachment (checks/shots-sheet.py:571-573, 'a related mail that comes from an attachment is selected; the reader opens at its passage', item d1ffe36c); on a rig without the model weights that state is NOT JUDGED (the proof's pass pattern refuses it). The drawing's reader is on the board named in the lead proof; its absence from this copy is a finding, not something I could read. Known limit from docs/lanes/reader-passage.md: the earlier mail's mark is a square-cornered background (SwiftUI AttributedString has no radius); the web page's mark has the drawing's radius. No broken copy of Swift source is given, because the red for Swift source is the selftest's model mutants, not a cargo run. Nothing was run by me."
+}

@@ -1,0 +1,20 @@
+{
+ "id": "165",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "60b4f6b86fa7ebf41ad2@example.com",
+  "summary": "Board prep",
+  "organizer": "pia.kowalski@example.com",
+  "all_day": false,
+  "start_utc_ms": 1795260600000,
+  "start_local": null,
+  "tzid": null,
+  "location": "Rue Example 12, Brussels"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

@@ -1,0 +1,108 @@
+{
+  "item": "0b7a2893",
+  "full_id": "0b7a2893-ec48-4a83-b58e-c35b044fa1a5",
+  "title": "Correct the eight faulty mail view check cases",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "git -C . log --oneline HEAD..lane/checks-r79-mail",
+      "pass": "^$",
+      "fail": "[0-9a-f]{7,} ",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/messagebody-check.py --selftest",
+      "pass": "[0-9]+ mutants, 0 not seen red, 0 clean failures, 0 clean not judged",
+      "fail": "NOT RED|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-reader.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxlist.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NOT SEEN RED|[1-9][0-9]* failed",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "[0-9]+ key bar checks, [0-9]+ mutants, 0 problems",
+      "fail": "NOT RED|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-reader.py",
+      "pass": "(r-scrolls-to-the-new-reply-card|20-moves-keep-every-turn-under-the-frame-budget) +(pass|fail) ",
+      "fail": "NOT JUDGED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/messagebody-check.py",
+      "pass": "(?s)\\A(?=.*?\\nJ1\\.6b/pictures-line-says-what-was-blocked +(pass|fail) )(?=.*?\\nJ1\\.6b/load-once-shows-its-key-cap +(pass|fail) )(?=.*?\\nJ1\\.6b/load-once-click-loads-the-pictures-of-this-viewing +(pass|fail) )(?=.*?\\nJ1\\.6d/dots-open-everything-the-engine-folded +(pass|fail) )(?=.*?\\nJ1\\.6d/the-switch-changes-the-document +(pass|fail) )(?=.*?\\nJ1\\.6/text-above-does-not-move +(pass|fail) )",
+      "fail": "NOT JUDGED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-attachments.py",
+      "pass": "(?s)\\A(?=.*?\\npar-attachments-absent-leaves-nothing/save-all-starts-no-second-fetch +(pass|fail) )(?=.*?\\npar-attachments-absent-size/size-is-english-in-an-english-app +(pass|fail) )",
+      "fail": "NOT JUDGED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "reset-clears-the-unsubscribe-date +pass",
+      "fail": "reset-clears-the-unsubscribe-date +(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "(?s)(?=.*par-door-save-name-escape-closes-the-field +pass)(?=.*par-door-dropdown-tab-adds-the-chip +pass)(?=.*par-door-dropdown-hover-tints-the-row +pass)(?=.*par-door-bar-click-takes-the-keys +pass)",
+      "fail": "FAIL [^\\n]*par-door-(save-name-escape-closes-the-field|dropdown-tab-adds-the-chip|dropdown-hover-tints-the-row|bar-click-takes-the-keys)|NOT JUDGED [^\\n]*par-door-(save-name-escape-closes-the-field|dropdown-tab-adds-the-chip|dropdown-hover-tints-the-row|bar-click-takes-the-keys)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "after proofs 5 to 7, read the results files _captures/results/par-reader/, par-inboxlist/, par-searchmac/, par-attachments/ and messagebody-check/ (or $WHOOSH_RESULTS_DIR) and take each of the 14 cases by its case name",
+      "pass": "\"case\": \"(r-scrolls-to-the-new-reply-card|reset-clears-the-unsubscribe-date|par-door-bar-click-takes-the-keys|save-all-starts-no-second-fetch)\", \"verdict\": \"(PASS|FAIL)\""
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-door-open-opens-the-search +(pass|fail)",
+      "fail": "NOT JUDGED [^\\n]*par-door-open-opens-the-search",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchMac/SearchMacActs.swift",
+      "find": "if naming { naming = false; text = savedQuery; fieldSays = \"\"; return true }",
+      "replace": "if naming { naming = false; text = \"\"; fieldSays = \"\"; active = false; return true }",
+      "proof": 9,
+      "red": "par-door-save-name-escape-closes-the-field +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Lane check: 'git log --oneline HEAD..lane/checks-r79-mail' printed 0 lines when this file was written. Dossier lines: _captures/tests/r79/dossier-reds79-mail.md. Pass regexes of the self-tests follow the last lines in _captures/lead/main81/selftests/*.log and are unverified at this commit (the check output shape may differ). Lane gap-mailview-checks: pass regexes of proofs 1 (messagebody selftest) and 2 (par-reader selftest) were checked against the saved selftest logs of this lane (74 mutants, 0 not seen red, 0 clean failures, 0 clean not judged; 88 checks, 0 failed, 0 not judged). Proofs 6 and 7 need a build and print the line of each case, pass or fail. The dossier's case scroll-starts-at-the-top is now named scroll/r-scrolls-to-the-new-reply-card in par-reader.py:320 (the expectation changed with the correction), so proofs 5 and 10 name the new case. Proof 3's pass line was wrong (par-inboxlist --selftest prints no mutant count line; it ends with `6 checks, 0 failed, 0 not judged`, saved run of this lane); proof 4's line `2 key bar checks, 2 mutants, 0 problems` was confirmed in the saved par-searchmac --selftest run. | gap-search-cases: checks/parity/par-searchmac.py main prints one line per judged case (print_cases(r)); the three doors after the save-name case (tab, hover, bar) start with ensure_open(c) (the bar's own state says active; if not, the search door `mac-search.open`), so each judges its own control and the trace still names the state the case began with; the save-name case itself is judged on its own expectation (the name field closes, the words stay, the search stays open: SearchMacActs.swift:44 closes the name field only), so a build whose Escape closes the whole search shows that case FAIL and the three doors green: the self-test mutant cancel-closes-search proves both. The dossier's claim that Escape closes the search by design is not what SearchMacActs.swift:44 says. Proof 11 is the line of a door that ran before the four."
+}

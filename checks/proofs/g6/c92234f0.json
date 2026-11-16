@@ -1,0 +1,67 @@
+{
+  "item": "c92234f0",
+  "full_id": "c92234f0-b306-425a-a117-9ab58988e96e",
+  "title": "List people from all mail in the engine",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_people",
+      "pass": "test result: ok\\. 5 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_people_build -- --nocapture",
+      "pass": "(?s)four reads during the build took .*test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_people_speed -- --nocapture",
+      "pass": "(?s)people read, prefix cold: .*people read, contact cold: .*people read, contacts cold: .*people read, contacts warm: .*people reads, slowest of the six: \\d+ ms.*test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "red on the old commit: in a private worktree of c83fce8c (an ancestor of 0aa1558e) copy core/crates/engine/tests/engine_people.rs from this commit and run `cargo test -p engine --test engine_people`; each of the 5 tests must fail there (a compile error because contacts() or the people state paths do not exist is a red of kind 'does not build', say which)",
+      "pass": "test result: FAILED|error(\\[E\\d+\\])?:"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/people.rs",
+      "find": "p.to_count += 1;",
+      "replace": "p.to_count += 0;",
+      "proof": 0,
+      "red": "b_a_person_only_seen_as_a_recipient_of_sent_mail_is_listed_with_to_count \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/people.rs",
+      "find": "p.from_count += 1;",
+      "replace": "p.from_count += 2;",
+      "proof": 0,
+      "red": "d_the_counts_move_when_a_mail_arrives \\.\\.\\. FAILED|a_contacts_is_not_empty_once_mail_is_stored \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/people.rs",
+      "find": "let by_owner = own.contains(&from) || sent.contains(&(account.clone(), folder));",
+      "replace": "let by_owner = own.contains(&from);",
+      "proof": 0,
+      "red": "b2_a_mail_in_the_sent_folder_from_an_alias_counts_its_recipients \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/people.rs",
+      "find": "Self::ranked(b.people.values().filter(|p| p.starts_with(&folded)))",
+      "replace": "({ std::thread::sleep(std::time::Duration::from_millis(60)); Self::ranked(b.people.values().filter(|p| p.starts_with(&folded))) })",
+      "proof": 2,
+      "red": "the_people_reads_answer_under_50_ms_on_2000_or_more_mails \\.\\.\\. FAILED|the prefix read \\((cold|warm)\\) took \\d+ ms"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) contacts() gives every address of mail received and sent with from and to counts: core/crates/engine/src/people.rs:243-263 (build loop: by_owner mails count to_count per recipient, others from_count) and core/crates/engine/src/rust_core.rs:629-630 (contacts, contact); judged by core/crates/engine/tests/engine_people.rs:64 a_contacts_is_not_empty_once_mail_is_stored (counts per account, own address excluded), :77 b_a_person_only_seen_as_a_recipient_of_sent_mail_is_listed_with_to_count, :89 b2_a_mail_in_the_sent_folder_from_an_alias_counts_its_recipients (a Sent mail from an alias still counts its recipient), :114 d_the_counts_move_when_a_mail_arrives. (2) a read by first letters: engine_people.rs:100 c_the_prefix_read_matches_a_first_name_a_last_name_and_an_address_accents_folded (people.rs:133-134 starts_with, :305 prefix read). (3) from the local store: people.rs:216 search_text::source::open_reader is the word-index reader for evidence, the people build reads the message table (module note people.rs:1-17). (4) a read during the build answers at once: core/crates/engine/tests/engine_people_build.rs:29 a_read_while_the_list_is_being_built_answers_at_once (prints 'four reads during the build took ...' at :51, needs --nocapture). (5) 'tests that fail on c83fce8c pass in the lead's cargo run': c83fce8c is an ancestor of this commit (git merge-base --is-ancestor checked); the red-first run on it is proof 2, kind lead, not run by anyone yet. A prior green: _captures/lead/main84-verify/cargo-ledger-search.log:707 'test result: ok. 4 passed' (engine_people). (6) seen red: three mutants from the build loop, find strings occur once in people.rs (lines 252, 258, 246); only b_ and d_ are sure to be the judging tests, the red regex also accepts the other test that reads the counts. (7) gap-engine-tests: proof 2 is new, core/crates/engine/tests/engine_people_speed.rs (5,000 received mails from 1,500 senders plus 500 Sent mails of 2 recipients; the three reads, cold and warm, each asserted under 50 ms, one printed line per read 'people read, <name>: N people from M mails in X ms'). Written, not run (nobody runs cargo in this lane): the lead's run decides; if contacts() over the 1,500 people is over 50 ms that is a finding for people.rs (cap or page it), never a reason to move the budget. The red-on-old-commit proof is now index 3 (it was 2)."
+}

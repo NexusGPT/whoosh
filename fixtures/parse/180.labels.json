@@ -1,0 +1,15 @@
+{
+ "id": "180",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "________________________________",
+  "visible_contains": "Looks good, one small change in section 2. f62c",
+  "folded_contains": "Here are the three options we discussed. c887"
+ },
+ "adversarial": false
+}

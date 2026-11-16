@@ -1,0 +1,6 @@
+# A style block of 10,000 rules: over the selector cap, nothing is inlined and a field (and a warning) says so; the text shows.
+fold_from: none
+warning: more selectors than the cap
+authored: A short note under a very large style block.
+--- html
+<style>@@REPEAT 10000@@.c{color:red} @@END@@</style><p class="c">A short note under a very large style block.</p>

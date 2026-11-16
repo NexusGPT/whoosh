@@ -1,0 +1,918 @@
+{
+ "source": "Superhuman Mail Keyboard Shortcuts, v8, Mac Edition (https://superhuman.com/shortcuts), read 2026-11-08",
+ "compared_to": "Sources/Features/Shortcuts/KeyPreset.swift Presets.superhuman + Presets.fixed, commit 3fcf2bd",
+ "entries": [
+  {
+   "section": "Actions",
+   "action": "Superhuman Command",
+   "chord": "⌘K",
+   "whoosh": "same",
+   "note": "⌘K search: type an action or a search (owner's one-search design)",
+   "group": "key"
+  },
+  {
+   "section": "Actions",
+   "action": "Search",
+   "chord": "/",
+   "whoosh": "same",
+   "note": "/ also opens the search",
+   "group": "key"
+  },
+  {
+   "section": "Actions",
+   "action": "Undo",
+   "chord": "Z",
+   "whoosh": "same",
+   "note": "Z undo",
+   "group": "key"
+  },
+  {
+   "section": "Actions",
+   "action": "Ask AI",
+   "chord": "?",
+   "whoosh": "differs",
+   "note": "⇧? opens the key list",
+   "group": "key"
+  },
+  {
+   "section": "Actions",
+   "action": "Select Conversation",
+   "chord": "X",
+   "whoosh": "missing",
+   "note": "",
+   "group": "selection"
+  },
+  {
+   "section": "Actions",
+   "action": "Add to Selection",
+   "chord": "⇧J / ⇧K",
+   "whoosh": "missing",
+   "note": "",
+   "group": "selection"
+  },
+  {
+   "section": "Actions",
+   "action": "Clear Selection",
+   "chord": "esc",
+   "whoosh": "missing",
+   "note": "Esc is back only",
+   "group": "selection"
+  },
+  {
+   "section": "Actions",
+   "action": "Select All From Here",
+   "chord": "⌘A",
+   "whoosh": "differs",
+   "note": "⌘A selects all (J5.6)",
+   "group": "selection"
+  },
+  {
+   "section": "Actions",
+   "action": "Select All",
+   "chord": "⌘⇧A",
+   "whoosh": "missing",
+   "note": "",
+   "group": "selection"
+  },
+  {
+   "section": "Conversations",
+   "action": "Mark Done (Archive)",
+   "chord": "E",
+   "whoosh": "same",
+   "note": "E archive",
+   "group": "key"
+  },
+  {
+   "section": "Conversations",
+   "action": "Mark Not Done",
+   "chord": "⇧E",
+   "whoosh": "same",
+   "note": "⇧E brings the archived thread on screen back to the inbox (core unarchive); the list's command, the reader passes it on",
+   "group": "key"
+  },
+  {
+   "section": "Conversations",
+   "action": "Remind Me (Snooze)",
+   "chord": "H",
+   "whoosh": "same",
+   "note": "H snooze",
+   "group": "key"
+  },
+  {
+   "section": "Conversations",
+   "action": "Star",
+   "chord": "S",
+   "whoosh": "same",
+   "note": "S star",
+   "group": "key"
+  },
+  {
+   "section": "Conversations",
+   "action": "Mark Read or Unread",
+   "chord": "U",
+   "whoosh": "same",
+   "note": "U unread",
+   "group": "key"
+  },
+  {
+   "section": "Conversations",
+   "action": "Trash",
+   "chord": "#",
+   "whoosh": "same",
+   "note": "⇧# delete",
+   "group": "key"
+  },
+  {
+   "section": "Conversations",
+   "action": "Mark Spam",
+   "chord": "!",
+   "whoosh": "same",
+   "note": "⇧! junk",
+   "group": "key"
+  },
+  {
+   "section": "Conversations",
+   "action": "Mute",
+   "chord": "⇧M",
+   "whoosh": "missing",
+   "note": "",
+   "group": "mute"
+  },
+  {
+   "section": "Conversations",
+   "action": "Unsubscribe",
+   "chord": "⌘U",
+   "whoosh": "missing",
+   "note": "",
+   "group": "unsubscribe"
+  },
+  {
+   "section": "Messages",
+   "action": "Compose",
+   "chord": "C",
+   "whoosh": "same",
+   "note": "C compose",
+   "group": "key"
+  },
+  {
+   "section": "Messages",
+   "action": "Reply All",
+   "chord": "enter",
+   "whoosh": "differs",
+   "note": "A reply all; Enter opens only",
+   "group": "key"
+  },
+  {
+   "section": "Messages",
+   "action": "Reply",
+   "chord": "R",
+   "whoosh": "same",
+   "note": "R reply",
+   "group": "key"
+  },
+  {
+   "section": "Messages",
+   "action": "Forward",
+   "chord": "F",
+   "whoosh": "same",
+   "note": "F forward",
+   "group": "key"
+  },
+  {
+   "section": "Messages",
+   "action": "Open Links & Attachments",
+   "chord": "⌘O",
+   "whoosh": "same",
+   "note": "the marked message's first link opens in the browser, its attachments go to Quick Look (reader round 5, driven round 9)",
+   "group": "reader"
+  },
+  {
+   "section": "Messages",
+   "action": "Cycle through Links & Dates",
+   "chord": "tab",
+   "whoosh": "same",
+   "note": "Tab rings the next link or date while a thread is open, ⇧Tab the one before; with the list showing, Tab is next split",
+   "group": "reader"
+  },
+  {
+   "section": "Messages",
+   "action": "Expand Message",
+   "chord": "O",
+   "whoosh": "same",
+   "note": "O shows the marked earlier message whole, again folds it",
+   "group": "reader"
+  },
+  {
+   "section": "Messages",
+   "action": "Expand All Messages",
+   "chord": "⇧O",
+   "whoosh": "same",
+   "note": "⇧O shows every earlier message whole, again folds them",
+   "group": "reader"
+  },
+  {
+   "section": "Labels",
+   "action": "Add or Remove Label",
+   "chord": "L",
+   "whoosh": "same",
+   "note": "L label",
+   "group": "key"
+  },
+  {
+   "section": "Labels",
+   "action": "Remove Label",
+   "chord": "Y",
+   "whoosh": "missing",
+   "note": "",
+   "group": "labels"
+  },
+  {
+   "section": "Labels",
+   "action": "Remove Label, Next",
+   "chord": "[",
+   "whoosh": "missing",
+   "note": "",
+   "group": "labels"
+  },
+  {
+   "section": "Labels",
+   "action": "Remove Label, Previous",
+   "chord": "]",
+   "whoosh": "missing",
+   "note": "",
+   "group": "labels"
+  },
+  {
+   "section": "Labels",
+   "action": "Remove All Labels",
+   "chord": "⇧Y",
+   "whoosh": "missing",
+   "note": "",
+   "group": "labels"
+  },
+  {
+   "section": "Labels",
+   "action": "Move",
+   "chord": "V",
+   "whoosh": "differs",
+   "note": "M move",
+   "group": "key"
+  },
+  {
+   "section": "Filters",
+   "action": "Unread",
+   "chord": "⇧U",
+   "whoosh": "missing",
+   "note": "",
+   "group": "filters"
+  },
+  {
+   "section": "Filters",
+   "action": "Starred",
+   "chord": "⇧S",
+   "whoosh": "missing",
+   "note": "",
+   "group": "filters"
+  },
+  {
+   "section": "Filters",
+   "action": "Important",
+   "chord": "⇧I",
+   "whoosh": "missing",
+   "note": "",
+   "group": "filters"
+  },
+  {
+   "section": "Filters",
+   "action": "No Reply",
+   "chord": "⇧R",
+   "whoosh": "missing",
+   "note": "",
+   "group": "filters"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Inbox / Important",
+   "chord": "G then I",
+   "whoosh": "missing",
+   "note": "",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Other",
+   "chord": "G then O",
+   "whoosh": "missing",
+   "note": "no Important/Other split",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Starred",
+   "chord": "G then S",
+   "whoosh": "missing",
+   "note": "no Starred mailbox yet",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Drafts",
+   "chord": "G then D",
+   "whoosh": "missing",
+   "note": "",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Sent Mail",
+   "chord": "G then T",
+   "whoosh": "missing",
+   "note": "",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Done",
+   "chord": "G then E",
+   "whoosh": "missing",
+   "note": "Archive",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Reminders",
+   "chord": "G then H",
+   "whoosh": "missing",
+   "note": "Snoozed",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Muted",
+   "chord": "G then M",
+   "whoosh": "missing",
+   "note": "no Muted view yet",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Snippets",
+   "chord": "G then ;",
+   "whoosh": "missing",
+   "note": "snippets exist (composer panel); key missing",
+   "group": "snippets"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Spam",
+   "chord": "G then !",
+   "whoosh": "missing",
+   "note": "Junk",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Trash",
+   "chord": "G then #",
+   "whoosh": "missing",
+   "note": "",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to All Mail",
+   "chord": "G then A",
+   "whoosh": "missing",
+   "note": "no All mail view yet",
+   "group": "goto"
+  },
+  {
+   "section": "Folders",
+   "action": "Go to Label",
+   "chord": "G then L",
+   "whoosh": "missing",
+   "note": "",
+   "group": "goto"
+  },
+  {
+   "section": "Calendar",
+   "action": "Open Day",
+   "chord": "0",
+   "whoosh": "missing",
+   "note": "no calendar",
+   "group": "calendar"
+  },
+  {
+   "section": "Calendar",
+   "action": "Open Week",
+   "chord": "0 then 0",
+   "whoosh": "missing",
+   "note": "no calendar",
+   "group": "calendar"
+  },
+  {
+   "section": "Calendar",
+   "action": "Today",
+   "chord": "T",
+   "whoosh": "missing",
+   "note": "no calendar",
+   "group": "calendar"
+  },
+  {
+   "section": "Calendar",
+   "action": "Previous Day / Week",
+   "chord": "P / -",
+   "whoosh": "missing",
+   "note": "no calendar",
+   "group": "calendar"
+  },
+  {
+   "section": "Calendar",
+   "action": "Next Day / Week",
+   "chord": "N / =",
+   "whoosh": "missing",
+   "note": "no calendar",
+   "group": "calendar"
+  },
+  {
+   "section": "Calendar",
+   "action": "Create Event",
+   "chord": "B",
+   "whoosh": "missing",
+   "note": "no calendar",
+   "group": "calendar"
+  },
+  {
+   "section": "Format",
+   "action": "Bold",
+   "chord": "⌘B",
+   "whoosh": "unverified",
+   "note": "may come from the native text view; not driven",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Italics",
+   "chord": "⌘I",
+   "whoosh": "unverified",
+   "note": "may come from the native text view; not driven",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Underline",
+   "chord": "⌘U",
+   "whoosh": "unverified",
+   "note": "may come from the native text view; not driven",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Hyperlink",
+   "chord": "⌘K",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Color",
+   "chord": "⌘O",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Strikethrough",
+   "chord": "⌘⇧X",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Numbers",
+   "chord": "⌘⇧7",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Bullets",
+   "chord": "⌘⇧8",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Quote",
+   "chord": "⌘⇧9",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Indent List",
+   "chord": "tab",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Outdent List",
+   "chord": "⇧tab",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Increase Indent",
+   "chord": "⌘]",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Format",
+   "action": "Decrease Indent",
+   "chord": "⌘[",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "To",
+   "chord": "⌘⇧O",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Cc",
+   "chord": "⌘⇧C",
+   "whoosh": "same",
+   "note": "⌘⇧C",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Bcc",
+   "chord": "⌘⇧B",
+   "whoosh": "same",
+   "note": "⌘⇧B",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "From",
+   "chord": "⌘⇧F",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Edit Subject",
+   "chord": "⌘⇧S",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Edit Message",
+   "chord": "⌘⇧M",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Attach",
+   "chord": "⌘⇧A",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Discard Draft",
+   "chord": "⌘⇧,",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Move Contacts to Bcc",
+   "chord": "⌘⇧I",
+   "whoosh": "missing",
+   "note": "no handler in the composer or rich text",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Remind Me",
+   "chord": "⌘⇧H",
+   "whoosh": "missing",
+   "note": "no reminder-if-no-reply yet",
+   "group": "remind"
+  },
+  {
+   "section": "Compose",
+   "action": "Send Later",
+   "chord": "⌘⇧L",
+   "whoosh": "same",
+   "note": "⌘⇧L",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Use Snippet inline",
+   "chord": ";",
+   "whoosh": "missing",
+   "note": "snippets exist (composer panel); key missing",
+   "group": "snippets"
+  },
+  {
+   "section": "Compose",
+   "action": "Use Snippet",
+   "chord": "⌘;",
+   "whoosh": "same",
+   "note": "⌘; opens the snippets panel",
+   "group": "snippets"
+  },
+  {
+   "section": "Compose",
+   "action": "Insert Emoji",
+   "chord": ":smile",
+   "whoosh": "unverified",
+   "note": "may come from the native text view; not driven",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Send",
+   "chord": "⌘enter",
+   "whoosh": "same",
+   "note": "⌘Enter send",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Send & Mark Done",
+   "chord": "⌘⇧enter",
+   "whoosh": "same",
+   "note": "⌘⇧Enter",
+   "group": "composer"
+  },
+  {
+   "section": "Compose",
+   "action": "Instant Send",
+   "chord": "⌘⇧Z",
+   "whoosh": "same",
+   "note": "⌘⇧Z",
+   "group": "composer"
+  },
+  {
+   "section": "Navigation",
+   "action": "Superhuman Focus",
+   "chord": "→ ← ↑ ↓",
+   "whoosh": "missing",
+   "note": "arrows move focus between panes",
+   "group": "navigation"
+  },
+  {
+   "section": "Navigation",
+   "action": "Next Split",
+   "chord": "tab",
+   "whoosh": "same",
+   "note": "Tab next split",
+   "group": "key"
+  },
+  {
+   "section": "Navigation",
+   "action": "Previous Split",
+   "chord": "⇧tab",
+   "whoosh": "same",
+   "note": "Shift+Tab previous split",
+   "group": "key"
+  },
+  {
+   "section": "Navigation",
+   "action": "Open Conversation",
+   "chord": "enter",
+   "whoosh": "same",
+   "note": "Enter open",
+   "group": "key"
+  },
+  {
+   "section": "Navigation",
+   "action": "Next / Previous Conversation",
+   "chord": "J / K",
+   "whoosh": "same",
+   "note": "J next, K previous",
+   "group": "key"
+  },
+  {
+   "section": "Navigation",
+   "action": "Next / Previous Message",
+   "chord": "N / P",
+   "whoosh": "same",
+   "note": "N the next message of the open thread, P the one before; ⇧P pins",
+   "group": "reader"
+  },
+  {
+   "section": "Navigation",
+   "action": "Scroll Down",
+   "chord": "space",
+   "whoosh": "same",
+   "note": "space scrolls the open thread one page; at the bottom it passes on",
+   "group": "reader"
+  },
+  {
+   "section": "Navigation",
+   "action": "Scroll Up",
+   "chord": "⇧space",
+   "whoosh": "same",
+   "note": "⇧space scrolls back one page; at the top it passes on",
+   "group": "reader"
+  },
+  {
+   "section": "Navigation",
+   "action": "Jump to Top / Bottom",
+   "chord": "⌘↑ / ⌘↓",
+   "whoosh": "same",
+   "note": "⌘↑ jumps to the top of the open thread, ⌘↓ to the bottom",
+   "group": "reader"
+  },
+  {
+   "section": "Navigation",
+   "action": "New Window",
+   "chord": "⌘N",
+   "whoosh": "missing",
+   "note": "",
+   "group": "windows"
+  },
+  {
+   "section": "Navigation",
+   "action": "New Tab",
+   "chord": "⌘T",
+   "whoosh": "missing",
+   "note": "no tabs feature",
+   "group": "tabs"
+  },
+  {
+   "section": "Navigation",
+   "action": "Next Tab",
+   "chord": "⌘⇧]",
+   "whoosh": "missing",
+   "note": "no tabs feature",
+   "group": "tabs"
+  },
+  {
+   "section": "Navigation",
+   "action": "Previous Tab",
+   "chord": "⌘⇧[",
+   "whoosh": "missing",
+   "note": "no tabs feature",
+   "group": "tabs"
+  },
+  {
+   "section": "Navigation",
+   "action": "Switch Tabs",
+   "chord": "⌘1-9",
+   "whoosh": "missing",
+   "note": "no tabs feature",
+   "group": "tabs"
+  },
+  {
+   "section": "Navigation",
+   "action": "Close Tab",
+   "chord": "⌘W",
+   "whoosh": "missing",
+   "note": "no tabs feature",
+   "group": "tabs"
+  },
+  {
+   "section": "Navigation",
+   "action": "Switch Accounts",
+   "chord": "ctrl 1-9",
+   "whoosh": "differs",
+   "note": "⌘J opens the accounts menu",
+   "group": "key"
+  },
+  {
+   "section": "Navigation",
+   "action": "Increase Font Size",
+   "chord": "⌘=",
+   "whoosh": "missing",
+   "note": "",
+   "group": "navigation"
+  },
+  {
+   "section": "Navigation",
+   "action": "Decrease Font Size",
+   "chord": "⌘-",
+   "whoosh": "missing",
+   "note": "",
+   "group": "navigation"
+  },
+  {
+   "section": "Navigation",
+   "action": "Reset Font Size",
+   "chord": "⌘0",
+   "whoosh": "missing",
+   "note": "",
+   "group": "navigation"
+  },
+  {
+   "section": "Navigation",
+   "action": "Copy Page Link",
+   "chord": "ctrl /",
+   "whoosh": "missing",
+   "note": "",
+   "group": "navigation"
+  },
+  {
+   "section": "Navigation",
+   "action": "Back",
+   "chord": "esc",
+   "whoosh": "same",
+   "note": "Esc back",
+   "group": "key"
+  },
+  {
+   "section": "Pop Out Compose",
+   "action": "Pop Draft In or Out",
+   "chord": "⌘⇧P",
+   "whoosh": "same",
+   "note": "",
+   "group": "popout"
+  },
+  {
+   "section": "Pop Out Compose",
+   "action": "Pop Out Reply",
+   "chord": "⇧R",
+   "whoosh": "same",
+   "note": "",
+   "group": "popout"
+  },
+  {
+   "section": "Pop Out Compose",
+   "action": "Pop Out Reply-all",
+   "chord": "⇧enter",
+   "whoosh": "same",
+   "note": "",
+   "group": "popout"
+  },
+  {
+   "section": "Pop Out Compose",
+   "action": "Pop Out New Message",
+   "chord": "⇧C",
+   "whoosh": "same",
+   "note": "",
+   "group": "popout"
+  },
+  {
+   "section": "Pop Out Compose",
+   "action": "Pop Out Forward",
+   "chord": "⇧F",
+   "whoosh": "same",
+   "note": "",
+   "group": "popout"
+  },
+  {
+   "section": "Pop Out Compose",
+   "action": "Pop Out a Draft & Search",
+   "chord": "⌘/",
+   "whoosh": "same",
+   "note": "",
+   "group": "popout"
+  },
+  {
+   "section": "Pop Out Compose",
+   "action": "Switch to or from a Draft",
+   "chord": "⌘D",
+   "whoosh": "same",
+   "note": "",
+   "group": "popout"
+  },
+  {
+   "section": "Reading",
+   "action": "Expand / collapse message header",
+   "chord": "⇧H",
+   "whoosh": "same (reader round 6)",
+   "note": "missing from the v8 page as read on 2026-11-08; added from the owner's four Superhuman screenshots of 2026-11-08 22:00 (tooltip 'Expand Message Header shift H' / 'Collapse Message Header shift H')",
+   "group": "key"
+  }
+ ]
+}

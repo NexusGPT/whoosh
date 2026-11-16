@@ -1,0 +1,54 @@
+{
+  "item": "91c076f3",
+  "full_id": "91c076f3-997d-4d20-b15a-57cf23920b68",
+  "title": "The bottom bar says hold Cmd to see all shortcuts",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-macshell.py",
+      "pass": "(?s)J0\\.17/foot-list-set +pass.*J0\\.17/foot-reader-set +pass.*J0\\.17/foot-hold-item-last +pass.*J0\\.17/foot-composer-set +pass",
+      "fail": "J0\\.17/foot-[a-z-]+ +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 -c \"import json; d=json.load(open('Sources/Resources/Localizable.xcstrings'))['strings']['Hold for all shortcuts']['localizations']; print('hold-words languages', len(d))\"",
+      "pass": "hold-words languages 14",
+      "fail": "hold-words languages (0|[1-9]|1[0-3])$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "lead",
+      "run": "run `python3 checks/parity/par-macshell.py` (J0.17 copies its shots into the check's results folder, no KEEP_RUN_DIR) and read _captures/results/par-macshell/pics/r9-foot-list-1280-light.png, r9-foot-list-1280-dark.png, r9-foot-reader-1280-light.png, r9-foot-reader-1280-dark.png, r9-foot-composer-1280-light.png, r9-foot-composer-1280-dark.png (or $WHOOSH_RESULTS_DIR/pics/)",
+      "pass": "the last item reads the catalogue's 'Hold for all shortcuts' with the Cmd cap in each state and theme"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/MacShell/MacFootHints.swift",
+      "find": "if MacShellGeometry.mutant == \"no-hold-hint\" { return keys }",
+      "replace": "if true { return keys }",
+      "proof": 0,
+      "red": "J0\\.17/foot-hold-item-last +fail"
+    },
+    {
+      "file": "Sources/Features/MacShell/MacFootHints.swift",
+      "find": "static let hold = Hint(command: \"hold-cmd\", key: \"⌘\", words: \"Hold for all shortcuts\")",
+      "replace": "static let hold = Hint(command: \"hold-cmd\", key: \"\", words: \"Hold for all shortcuts\")",
+      "proof": 0,
+      "red": "J0\\.17/foot-list-set +fail"
+    }
+  ],
+  "gap": null,
+  "owner": "Default taken from the lead: the build's words 'Hold for all shortcuts' stay (the finish line's 'Cmd hold: all shortcuts' differs). Say if the literal words are wanted; then look at the six shots.",
+  "notes": "Judged today: J0.17 foot-list-set, foot-reader-set (both include the hold item as last: want(LIST_SET + [HOLD]), par-macshell.py:345,351), foot-hold-item-last (:353), foot-composer-set (:356, hold-cmd last). The Cmd glyph cap is key '⌘' of Hint hold (MacFootHints.swift:45). 14 languages: the static one-liner counts the localizations of the key (checked: 14 when this file was written). par-macshell is journey style (FAIL lines and the total only). Light and dark shots of the three states are taken by par-macshell J0.17 (checks/parity/par-macshell.py, s.shot r9-foot-*-1280-light|dark); the case reads the catalogue's sentence through word('Hold for all shortcuts', 'en') (par-macshell.py HOLD)."
+}

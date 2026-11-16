@@ -1,0 +1,171 @@
+{
+  "item": "f4e1fbe8",
+  "full_id": "f4e1fbe8-b0a4-435c-ace6-322b5495afb7",
+  "title": "Every message body is downloaded and stored in the background",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_sync_full_r1 --test engine_body_r1",
+      "pass": "(?s)test result: ok\\. 6 passed; 0 failed.*test result: ok\\. 17 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_crawl_wire -- --nocapture",
+      "pass": "(?s)PASS every-body-of-every-folder-is-stored: 90 of 90.*PASS inbox-first-newest-first.*PASS fetches-come-in-batches.*PASS one-connection.*test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_rig_hooks",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-crawl",
+      "pass": "(?s)PASS\\s+every-body-of-every-folder-is-stored .*PASS\\s+inbox-first-newest-first .*PASS\\s+fetches-come-in-batches .*PASS\\s+one-connection .*PASS\\s+bodies-survive-a-relaunch ",
+      "fail": "FAIL\\s",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-crawl --mutant",
+      "pass": "mutant crawl-never-runs: KILLED by [^\\n]*every-body-of-every-folder-is-stored",
+      "fail": "SURVIVED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-crawl --paused",
+      "pass": "(?s)PASS\\s+paused-crawl-fetches-no-body-of-another-folder .*PASS\\s+paused-crawl-leaves-bodies-unstored ",
+      "fail": "FAIL\\s|NOT JUDGED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice crawl: model all pass.*[0-9]+ broken models each red on its own cases.*held crawl judged",
+      "fail": "WRONG|FAILS|SURVIVE(?!S)|NOT KILLED|Traceback|\\[exit [1-9]",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 perf/footprint.py crawl {bundle}",
+      "pass": "(?s)PASS crawl-download-memory-peak: peak \\d+ MB.*\\d+ checks, 0 failed",
+      "fail": "OVER |Traceback|footprint crawl: the run stopped",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/footprint.py --selftest",
+      "pass": "(?s)ok   crawl: one sample's spike over the budget is OVER.*ok   crawl: BROKEN COPY: a summary that takes the median hides that spike.*\\d+ checks, 0 failed",
+      "fail": "BAD |Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "if self.crawl.loaded.swap(true, Ordering::SeqCst) { return; }",
+      "replace": "if self.crawl.loaded.swap(true, Ordering::SeqCst) || true { return; }",
+      "proof": 0,
+      "red": "a_the_crawl_stores_every_body_inbox_first_newest_first_and_resumes_after_a_stop \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "u64::from(p) < ATTACHMENT_INDEX_BATTERY_MIN",
+      "replace": "u64::from(p) > ATTACHMENT_INDEX_BATTERY_MIN",
+      "proof": 0,
+      "red": "d_battery_and_heat_hold_the_crawl_and_release_it \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "b.len() >= BODY_PREFETCH_BATCH as usize",
+      "replace": "b.len() >= 2 * BODY_PREFETCH_BATCH as usize",
+      "proof": 0,
+      "red": "d_after_a_fetch_the_newest_bodies_arrive_unasked \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "if let Some(b) = me.upgrade() { b.note_owner_activity(); }",
+      "replace": "if let Some(b) = me.upgrade() { b.hold_crawl_and_wait(Duration::from_secs(1)); }",
+      "proof": 0,
+      "red": "b_a_view_or_an_act_answers_under_50_ms_while_the_crawl_runs_on_a_300_ms_server \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/realcore.rs",
+      "find": "WHERE account_id = ?1 AND folder = ?2 AND remote_id IS NOT NULL AND received_at_ms <= ?3",
+      "replace": "WHERE account_id || '' = ?1 AND folder = ?2 AND remote_id IS NOT NULL AND received_at_ms <= ?3",
+      "proof": 0,
+      "red": "f_the_crawl_page_walks_the_folder_index \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "b.len() >= BODY_PREFETCH_BATCH as usize",
+      "replace": "b.len() >= 2 * BODY_PREFETCH_BATCH as usize",
+      "proof": 1,
+      "red": "the_crawl_over_the_wire_stores_every_body_inbox_first_in_batches_on_one_connection \\.\\.\\. FAILED|a body fetch asked for \\d+ UIDs"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "folders.sort_by_key(|f| (!f.eq_ignore_ascii_case(\"INBOX\"), f.clone()));",
+      "replace": "folders.sort_by_key(|f| (f.eq_ignore_ascii_case(\"INBOX\"), f.clone()));",
+      "proof": 1,
+      "red": "thread 'the_crawl_over_the_wire_stores_every_body_inbox_first_in_batches_on_one_connection' (\\(\\d+\\) )?panicked|the_crawl_over_the_wire_stores_every_body_inbox_first_in_batches_on_one_connection \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "Ok(n) if n <= 100 => { c.battery_percent = Some(n); c.charging = false; any = true; }",
+      "replace": "Ok(n) if n <= 100 => { c.battery_percent = None; c.charging = false; any = true; }",
+      "proof": 2,
+      "red": "Some\\(Battery\\)|the_rig_hooks_set_the_conditions.*FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "if mutant == Mutant::CrawlNeverRuns { core.deps.bodies.hold_crawl(true); }",
+      "replace": "if false { core.deps.bodies.hold_crawl(true); }",
+      "proof": 2,
+      "red": "the mutant holds the crawl|the_rig_hooks_set_the_conditions.*FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "b.len() >= BODY_PREFETCH_BATCH as usize",
+      "replace": "b.len() >= 2 * BODY_PREFETCH_BATCH as usize",
+      "proof": 3,
+      "red": "FAIL\\s+fetches-come-in-batches"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "if self.crawl.loaded.swap(true, Ordering::SeqCst) { return; }",
+      "replace": "if self.crawl.loaded.swap(true, Ordering::SeqCst) || true { return; }",
+      "proof": 3,
+      "red": "FAIL\\s+every-body-of-every-folder-is-stored"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "u64::from(p) < ATTACHMENT_INDEX_BATTERY_MIN",
+      "replace": "u64::from(p) > ATTACHMENT_INDEX_BATTERY_MIN",
+      "proof": 5,
+      "red": "FAIL\\s+paused-crawl-leaves-bodies-unstored|FAIL\\s+paused-crawl-fetches-no-body-of-another-folder"
+    },
+    {
+      "file": "perf/footprint.py",
+      "find": "def crawl_judge(samples, finished, weights, load_end=None, peak=max):",
+      "replace": "def crawl_judge(samples, finished, weights, load_end=None, peak=__import__('statistics').median):",
+      "proof": 8,
+      "red": "BAD  crawl: one sample's spike over the budget is OVER"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges that exist. (1) every body of every folder, INBOX first, newest first, each UID once, resume after a stop: core/crates/engine/tests/engine_sync_full_r1.rs:166 a_the_crawl_stores_every_body_inbox_first_newest_first_and_resumes_after_a_stop (asserts INBOX 16..25 first, batches of at most 10 newest first, no UID twice, resume reads fewer rows). The source is an in-process FakeSource (engine_sync_full_r1.rs, `production`), so this is not a socket-level proof of 'one connection'; the crawl code is core/crates/engine/src/crawl.rs (module consts at :20-30; the hold at :29 CRAWL_RECHECK_MS). (2) in batches: same test (BODY_PREFETCH_BATCH), and core/crates/engine/tests/engine_body_r1.rs:203 d_the_prefetch_stores_the_newest_bodies_in_batches_and_repairs_raw_previews and :232 d_after_a_fetch_the_newest_bodies_arrive_unasked. (3) paused on battery or thermal pressure: engine_sync_full_r1.rs:315 d_battery_and_heat_hold_the_crawl_and_release_it (the crawl makes no server call under the floor or under serious heat), and :500 k_the_pause_is_readable_by_its_reason. The reader asked whether the body download uses the crawl hold at crawl.rs:29: the hold is read by the crawl loop itself (crawl.rs, `BackgroundPause` at :53 and the recheck constant at :29), so the crawl, which is the every-folder download, is the part that pauses; the older newest-bodies prefetch of engine_body_r1 (bodies.rs:3) is not paused by battery (unverified: not traced). (4) kept in whoosh.sqlite: engine_sync_full_r1.rs:166 reads the stored body back through core.store().body_parts and the relaunch half re-reads it; engine_body_r1.rs:149 e_a_downloaded_body_is_served_after_a_relaunch_without_the_network. (5) the view and acts stay under 50 ms while the crawl runs on a 300 ms server: :223 b_a_view_or_an_act_answers_under_50_ms_while_the_crawl_runs_on_a_300_ms_server (median over 5 calls, printed; NOT JUDGED above load 12, in which case the run still prints but is not a pass: the lead must run it on a quiet machine and read the lines, hence --nocapture). (6) seen red: the five mutants are the lane's own (docs/lanes/sync-full-r1.md lines 73-84; _captures/sync-full-r1/run_mutants.py lines 12-85 hold the same one-line edits with the same anchors; each anchor was checked to occur once in this commit). The last full cargo run of that lane was at e6045419 (docs/lanes/sync-full-r1.md:164), not at this commit. Earlier body-r1 evidence: _captures/body-r1/green-engine_body_r1.log (not read in full by this proof writer). (gap-engine-tests, 2026-11-11) proof 1 is new: core/crates/engine/tests/engine_crawl_wire.rs. It states two limits of its own: 'one-connection' is asserted as at most 2 sessions open at once on the fake (the sync's IDLE session plus one), the number the gap text asked for; the assertion is the first thing to read if the real count is higher (the test prints the measured number in its PASS line). Written, not run. (tail-realcore, 2026-11-12) `--slice-crawl` (checks/realcore-check.py: drive_crawl, judge_crawl, main_slice_crawl) serves INBOX 25, Archive 15, Sent 10 (realcore_mailfake.CRAWL_PLAN, load_crawl_mail) from a server that now records every whole-message fetch with its connection and folder (`Mail.body_fetches`) and the most sessions open at once (`Mail.max_sessions`). The engine's own figures are read from `core state reply/progress` (messages, bodies, indexed per account and folder). Like engine_crawl_wire.rs it asserts the highest uid of each INBOX fetch falls call by call and at most 2 sessions open at once: if the real run reads higher, those two assertions are the first thing to read. `--paused` is its own run (the plain run is its control): the hook is read only if the shell does not send other conditions after launch (BackgroundEngineLive sends the Mac's real reading at start); the case prints the shell's own `mac-main.background` row beside its verdict. The plain run prints two NOT JUDGED cases (meaning, indexed count) unless WHOOSH_EMBED_WEIGHTS names the lead's model folder; proof 3's pass line therefore asks for the five crawl cases only. Written and self-tested, not run on a bundle. (perf-archive round 5, 2026-11-12) piece (3) is built: perf/footprint.py `crawl` (outer_crawl, inside_crawl, crawl_judge, crawl_summary, crawl_phase) launches the rig copy on the REAL engine through scripts/launch-one.sh against the loopback server of --slice-crawl (realcore_mailfake.start, load_crawl_mail; the account is added by checks/realcore-check.py mv_add_account, read through importlib, never copied), samples the physical footprint and CPU seconds every 0.5 s with the engine's reply/progress, and prints per phase (download, then index with a model folder) `PASS|OVER|NOT JUDGED crawl-<phase>-memory-peak` against RSS_IDLE_MAX_MB + EMBED_INDEX_CEILING_MB and `crawl-<phase>-cpu-average` against CRAWL_CPU_MAX_PCT (NOT JUDGED until the ledger holds that row; also above PERF_LOAD_MAX at the end). Proof 7 is the lead's run (give WHOOSH_EMBED_WEIGHTS for the index phase; without it the index rows read NOT JUDGED and only the download is judged); proof 8 its selftest (11 crawl cases, one a broken copy that takes the median and hides a peak); the mutant on proof 8 replaces max by the median in crawl_judge. The plan is 100 small messages: a reading of the crawl's machinery, not of a large mailbox. Proposed ledger row (docs/lanes/perf-archive.md Round 5): CRAWL_CPU_MAX_PCT, the download phase's average CPU from proof 7's first quiet run; the lead sets it."
+}

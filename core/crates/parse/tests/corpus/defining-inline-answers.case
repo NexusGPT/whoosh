@@ -1,0 +1,15 @@
+# The first defining case: questions quoted with answers after each. Both questions are context the answers need: INLINE_QUOTE, visible.
+subject: Re: Venue for the workshop
+sender: Bruno Lemaire
+fold_from: none
+expect: 0 INLINE_QUOTE show
+expect: 1 NEW_CONTENT show
+expect: 2 INLINE_QUOTE show
+expect: 3 NEW_CONTENT show
+authored: Yes, the small room on the second floor is free that week.
+authored: Around twenty, if the two interns join us.
+--- text
+> Is the small room free in the week of the 14th?
+Yes, the small room on the second floor is free that week.
+> How many people should we plan for?
+Around twenty, if the two interns join us.

@@ -1,0 +1,67 @@
+{
+ "domain": "icloud.com",
+ "address": "assem.fixture@icloud.com",
+ "password": "fixture-password",
+ "source": "ispdb",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "imap.mail.me.com",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.mail.me.com",
+  "smtpPort": 587,
+  "smtpSecurity": "starttls",
+  "username": "assem.fixture",
+  "authMethod": "password"
+ },
+ "app_password_steps_min": 1,
+ "steps_link_prefix": "https://",
+ "validates": true,
+ "ops": [
+  "IMAP LOGIN",
+  "IMAP LIST",
+  "SMTP EHLO",
+  "SMTP AUTH"
+ ],
+ "folders": [
+  {
+   "name": "INBOX",
+   "attrs": []
+  },
+  {
+   "name": "Sent Messages",
+   "attrs": [
+    "\\Sent"
+   ]
+  },
+  {
+   "name": "Drafts",
+   "attrs": [
+    "\\Drafts"
+   ]
+  },
+  {
+   "name": "Deleted Messages",
+   "attrs": [
+    "\\Trash"
+   ]
+  },
+  {
+   "name": "Junk",
+   "attrs": [
+    "\\Junk"
+   ]
+  }
+ ],
+ "folder_map": {
+  "sent": "Sent Messages",
+  "drafts": "Drafts",
+  "trash": "Deleted Messages",
+  "junk": "Junk"
+ }
+}

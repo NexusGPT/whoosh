@@ -1,0 +1,35 @@
+From: Brightfield <billing@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1364
+Date: Fri, 06 Nov 2026 22:48:00 +0000
+Message-ID: <fa89d5b7bb0d90c3@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============4780094334493933451=="
+
+--===============4780094334493933451==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Invoice 2026-1364 for EUR 1,250.00 is due on 30 November 2026.
+
+--===============4780094334493933451==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5C
+cmlnaHRmaWVsZDwvdGl0bGU+PHN0eWxlPmJvZHl7Zm9udC1mYW1pbHk6SGVsdmV0aWNhLEFyaWFs
+LHNhbnMtc2VyaWY7Y29sb3I6IzIyMn0uY29kZXtmb250LXNpemU6MjhweH08L3N0eWxlPjwvaGVh
+ZD48Ym9keT48dGFibGUgd2lkdGg9IjEwMCUiIGNlbGxwYWRkaW5nPSIwIiBjZWxsc3BhY2luZz0i
+MCI+PHRyPjx0ZCBhbGlnbj0iY2VudGVyIj48aW1nIHNyYz0iLy9waXhlbC5leGFtcGxlLm5ldC9w
+eC8wM2Y1NDg0My5naWYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxoMj5CcmlnaHRmaWVsZDwvaDI+
+PHA+SW52b2ljZSA8Yj4yMDI2LTEzNjQ8L2I+IGZvciBFVVIgNTMzMy43MiBpcyBkdWUgb24gMzAg
+Tm92ZW1iZXIgMjAyNi48L3A+PHA+VkFUIDIxJS4gSUJBTiBCRTY4IDUzOTAgMDc1NCA3MDM0LiBQ
+YXltZW50IHJlZmVyZW5jZSAxMDcvNzI4NC80NDkwMC48L3A+PHAgc3R5bGU9ImZvbnQtc2l6ZTox
+MXB4O2NvbG9yOiM4ODgiPllvdSByZWNlaXZlIHRoaXMgYmVjYXVzZSBvZiB5b3VyIGFjY291bnQu
+IDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvdW5zdWJzY3JpYmU/dT1iM2M5YmUiPlVuc3Vi
+c2NyaWJlPC9hPiB8IDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvcHJpdmFjeSI+UHJpdmFj
+eTwvYT48L3A+PC90ZD48L3RyPjwvdGFibGU+PC9ib2R5PjwvaHRtbD4NCg==
+
+--===============4780094334493933451==--

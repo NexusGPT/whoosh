@@ -1,0 +1,53 @@
+{
+  "item": "e9e4adcd",
+  "full_id": "e9e4adcd-8b5b-4026-a98c-ab3ad915b483",
+  "title": "Decode HTML entities in message text",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p parse --test body_r2_entities",
+      "pass": "test result: ok\\. 6 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p parse --lib the_five_entities_of_the_owners_mail",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_body_r2 a_stored_row_with_references_is_repaired_at_start_and_only_once",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "lead",
+      "run": "on a private copy of the owner's database, read as counts only: the number of stored messages whose text or preview still holds the characters '&nbsp;' (the sqlite3 shell on the copy, never the live file), before and after the installed build has started once",
+      "pass": "9 before, 0 after (the 9 of 58 rows of the owner's report)"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/parse/src/entities.rs",
+      "find": "Some((text, used)) => { out.push_str(&text); rest = &after[used..]; }",
+      "replace": "Some((_text, used)) => { rest = &after[used..]; }",
+      "proof": 0,
+      "red": "case_1_a_non_breaking_space.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/parse/src/entities.rs",
+      "find": "if decoded == s { decoded } else { decoded.replace('\\u{a0}', \" \") }",
+      "replace": "decoded",
+      "proof": 0,
+      "red": "FAILED|panicked"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Stored text and previews hold no HTML entity: parse tests core/crates/parse/tests/body_r2_entities.rs: :19 case_1_a_non_breaking_space_in_html_is_a_normal_space_in_the_text_and_the_preview (the owner's 'Bonjour&nbsp;Assem'), :28 case_2_a_text_plain_part_with_entities_is_decoded, :36 case_3_a_reference_is_decoded_once, :46 case_4_numeric_and_typographic_references_become_their_characters, :54 case_5_a_multipart_mail_has_no_reference_left_in_either_part, :64 a_preview_holds_no_reference (6 tests). 'A parse test with five entities': core/crates/parse/src/entities.rs:78 the_five_entities_of_the_owners_mail (in-crate test: nbsp, amp, eacute, #233, #x2019 per the file head :1). Stored rows repaired without a new download: engine_body_r2.rs:64 a_stored_row_with_references_is_repaired_at_start_and_only_once (seeds 5 rows with references, starts the core, reads them repaired with no server, a marker file body-text-repaired keeps it once; repair code core/crates/engine/src/bodies.rs:140). The 9 rows on the owner's database can only be shown by the lead's count proof (kind lead, never read by me). Mutant 1: the decoder drops the character the reference stands for; mutant 2: a plain-text non-breaking space is no longer made a normal space (its red line is the generic cargo failure, since the cases it breaks were not read one by one). The five-entity unit test body was not read beyond its name (entities.rs:78)."
+}

@@ -1,0 +1,14 @@
+From: Northwind Cloud <hello@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Confirm your account
+Date: Wed, 11 Nov 2026 14:50:00 +0000
+Message-ID: <924e20be0d0e9866@accounts.example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+SGVsbG8sDQoNClNpZ24gaW4gdG8gTm9ydGh3aW5kIENsb3VkIGJ5IG9wZW5pbmcgdGhpcyBsaW5r
+Og0KDQpodHRwczovL2F1dGguZXhhbXBsZS5vcmcvbWFnaWMtbGluay8xYTk5MWJmMjg1MDI4MTFh
+NWFkZDVjYmQNCg0KSWYgeW91IGRpZCBub3QgYXNrIGZvciBpdCwgaWdub3JlIHRoaXMgZW1haWwu
+DQoNClRvIHN0b3AgdGhlc2UgZW1haWxzIHZpc2l0IGh0dHBzOi8vZXhhbXBsZS5uZXQvdW5zdWJz
+Y3JpYmU/dT04MTgwZDUNCg==

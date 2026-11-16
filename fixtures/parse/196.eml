@@ -1,0 +1,25 @@
+From: Brightfield <digest@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Weekly digest
+Date: Sat, 14 Nov 2026 05:25:00 +0000
+Message-ID: <ac40f876e7293b4f@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============3219952183588867506=="
+
+--===============3219952183588867506==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello, safe text. after
+
+--===============3219952183588867506==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><head><title>x</title></head><body><p>Hello, safe text f36b</p><iframe =
+src=3D"https://evil.example.net/frame"></iframe><object data=3D"https://evil.=
+example.net/o.swf"></object><p>after</p></body></html>
+
+--===============3219952183588867506==--

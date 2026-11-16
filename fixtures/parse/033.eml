@@ -1,0 +1,36 @@
+From: Quill Docs <security@example.org>
+To: Assem Example <assem@example.org>
+Subject: Sign in to Quill Docs
+Date: Fri, 06 Nov 2026 13:15:00 +0000
+Message-ID: <f9862aed450b87cd@mail.example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============6748845467634687579=="
+
+--===============6748845467634687579==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Your Quill Docs verification code is 713868. It expires in 10 minutes.
+
+--===============6748845467634687579==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5R
+dWlsbCBEb2NzPC90aXRsZT48c3R5bGU+Ym9keXtmb250LWZhbWlseTpIZWx2ZXRpY2EsQXJpYWws
+c2Fucy1zZXJpZjtjb2xvcjojMjIyfS5jb2Rle2ZvbnQtc2l6ZToyOHB4fTwvc3R5bGU+PC9oZWFk
+Pjxib2R5Pjx0YWJsZSB3aWR0aD0iMTAwJSIgY2VsbHBhZGRpbmc9IjAiIGNlbGxzcGFjaW5nPSIw
+Ij48dHI+PHRkIGFsaWduPSJjZW50ZXIiPjxpbWcgc3JjPSJodHRwOi8vaW1nLmV4YW1wbGUuY29t
+L28vOTMwZWU4ZmUuanBnIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBhbHQ9IiI+PGgyPlF1aWxsIERv
+Y3M8L2gyPjxkaXY+U2VjdXJpdHkgY29kZTogPHNwYW4gc3R5bGU9ImZvbnQtZmFtaWx5Om1vbm9z
+cGFjZTtmb250LXNpemU6MjRweCI+NzEzODY4PC9zcGFuPjwvZGl2PjxwIHN0eWxlPSJmb250LXNp
+emU6MTFweDtjb2xvcjojODg4Ij5Zb3UgcmVjZWl2ZSB0aGlzIGJlY2F1c2Ugb2YgeW91ciBhY2Nv
+dW50LiA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0L3Vuc3Vic2NyaWJlP3U9MmI5NzAyIj5V
+bnN1YnNjcmliZTwvYT4gfCA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0L3ByaXZhY3kiPlBy
+aXZhY3k8L2E+PC9wPjxpbWcgc3JjPSIvL2Nkbi5leGFtcGxlLm5ldC9vcGVuL2NmOTRhYzUzLmpw
+ZyIgd2lkdGg9IjEiIGhlaWdodD0iMSI+PC90ZD48L3RyPjwvdGFibGU+PC9ib2R5PjwvaHRtbD4N
+Cg==
+
+--===============6748845467634687579==--

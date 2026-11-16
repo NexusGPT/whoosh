@@ -1,0 +1,56 @@
+{
+ "about": "Test data for J4.1-J4.5 (tests-j4 round 2). Words quote docs/JOURNEYS.md J4 and docs/PRD.md 'Add account by IMAP'; progress words are test-author text for the addaccount lane to adopt or rename. No real host is contacted.",
+ "detection_order": [
+  "ispdb",
+  "autoconfig",
+  "srv",
+  "autodiscover",
+  "guess"
+ ],
+ "progress_words": {
+  "ispdb": "Asking the Thunderbird provider list…",
+  "autoconfig": "Looking for the provider's own settings file…",
+  "srv": "Looking up the mail server in DNS…",
+  "autodiscover": "Asking Microsoft Autodiscover…",
+  "guess": "Trying imap., mail. and smtp. names on the usual ports…"
+ },
+ "validation_lines": [
+  "Checking the mail server…",
+  "Checking sending…"
+ ],
+ "validation_ops_password": [
+  "IMAP LOGIN",
+  "IMAP LIST",
+  "SMTP EHLO",
+  "SMTP AUTH"
+ ],
+ "first_screen_fields": [
+  "address",
+  "password"
+ ],
+ "summary_fields": [
+  "imapHost",
+  "imapPort",
+  "imapSecurity",
+  "smtpHost",
+  "smtpPort",
+  "smtpSecurity",
+  "username",
+  "authMethod"
+ ],
+ "manual_label": "Manual setup",
+ "modes": {
+  "detected": "detected",
+  "manual": "manual"
+ },
+ "row_progress": [
+  "connecting",
+  "fetching the inbox"
+ ],
+ "guess_ports": {
+  "imap": 993,
+  "smtp_ssl": 465,
+  "smtp_starttls": 587,
+  "source": "PRD owner words, step (5)"
+ }
+}

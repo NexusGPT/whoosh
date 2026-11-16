@@ -1,0 +1,84 @@
+{
+  "item": "367f26ff",
+  "full_id": "367f26ff-7684-4955-a389-f25b20d48db1",
+  "title": "Show why each result matched on the search list",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "aTypedWordInsideALongerWordInTheSubjectIsBold,aSenderNameMatchIsBoldInTheSenderAndTheSubjectStaysPlain,aTextOnlyMatchShowsThePassageAroundTheLettersNotTheFirstLine,aPassageStartsJustBeforeTheLettersSoANarrowRowStillShowsThem,accentsAndCaseDoNotHideAMatch,severalTypedWordsAreEachBoldWhereTheyOccur,aRowFoundByMeaningAloneHasNoBoldAndKeepsItsOwnRow,anAddressOnlyMatchShowsThePassageWhenItHoldsTheLettersAndTheAddressWhenItDoesNot,aMatchThatTheEngineNamesInANewWayStillShowsItsEvidence,theRowsTheChecksReadServeTheEvidenceOfEveryMatchingRow,theCountLineSaysTheMatchesAndNothingAboutTheOtherMails,oneMatchReadsOneMatchAndNoMatchReadsNoMatchWhileTheOtherMailsStayListed,theFixtureEngineGivesAPassageAroundATextMatch,theCountLineHasTheTwoNumbers,inTheWordsStageTheOtherMailsWaitUnderALineAndTheRankedAnswerSwapsThemInKeepingTheSelection,whenNoMeaningOrderExistsTheOtherMailsAreListedByDateUnderThatLine,pillsAndNoWordsAnswerOnceAllExactWithNoDivider",
+      "pass": "Test run with 17 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --coverage",
+      "pass": "coverage: GREEN",
+      "fail": "coverage: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J2\\.\\d/par-(every-match-shows-its-evidence|count-line-says-matches-and-close-in-meaning)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "lead",
+      "run": "grep -h -E '\"case\": \"par-(every-match-shows-its-evidence|count-line-says-matches-and-close-in-meaning)\", \"verdict\": \"PASS\"' _captures/results/g6/par-searchmac-g6.results.jsonl",
+      "pass": "(?s)par-every-match-shows-its-evidence.*par-count-line-says-matches-and-close-in-meaning|par-count-line-says-matches-and-close-in-meaning.*par-every-match-shows-its-evidence",
+      "fail": "No such file",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchMac/SearchEvidence.swift",
+      "find": "let r = text.range(of: w, options: [.caseInsensitive, .diacriticInsensitive], range: from..<text.endIndex)",
+      "replace": "let r = text.range(of: w, options: [.caseInsensitive], range: from..<text.endIndex)",
+      "proof": 0,
+      "red": "accentsAndCaseDoNotHideAMatch\\(\\) failed|✘ Test accentsAndCaseDoNotHideAMatch"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchEvidence.swift",
+      "find": "if !inName.isEmpty { return MatchEvidence(place: .sender, marks: inName) }",
+      "replace": "if false { return MatchEvidence(place: .sender, marks: inName) }",
+      "proof": 0,
+      "red": "aSenderNameMatchIsBoldInTheSenderAndTheSubjectStaysPlain\\(\\) failed|✘ Test aSenderNameMatchIsBold"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchEvidence.swift",
+      "find": "let lo = flat.index(first.lowerBound, offsetBy: -before, limitedBy: flat.startIndex) ?? flat.startIndex",
+      "replace": "let lo = flat.startIndex",
+      "proof": 0,
+      "red": "aPassageStartsJustBeforeTheLettersSoANarrowRowStillShowsThem\\(\\) failed|✘ Test aPassageStartsJustBefore"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchMacModel.swift",
+      "find": "static func countLine(_ n: Int) -> String { n == 0 ? Words.text(\"No match\") : matched(n) }",
+      "replace": "static func countLine(_ n: Int) -> String { matched(n) }",
+      "proof": 0,
+      "red": "oneMatchReadsOneMatchAndNoMatchReadsNoMatchWhileTheOtherMailsStayListed\\(\\) failed|✘ Test oneMatchReadsOneMatch"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchHits.swift",
+      "find": "if part == .match {",
+      "replace": "if true {",
+      "proof": 0,
+      "red": "aRowFoundByMeaningAloneHasNoBoldAndKeepsItsOwnRow\\(\\) failed|✘ Test aRowFoundByMeaningAlone"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) a matching row shows the typed letters in bold in its subject or sender, or one line of its text around them in place of the preview: Tests/Unit/SearchEvidenceTests.swift:26 aTypedWordInsideALongerWordInTheSubjectIsBold, :36 aSenderNameMatchIsBoldInTheSenderAndTheSubjectStaysPlain, :46 aTextOnlyMatchShowsThePassageAroundTheLettersNotTheFirstLine, :58 aPassageStartsJustBeforeTheLettersSoANarrowRowStillShowsThem, :68 accentsAndCaseDoNotHideAMatch, :79 severalTypedWordsAreEachBoldWhereTheyOccur, :88 aRowFoundByMeaningAloneHasNoBoldAndKeepsItsOwnRow, :97 anAddressOnlyMatch..., :111 aMatchThatTheEngineNamesInANewWayStillShowsItsEvidence, :129 theRowsTheChecksReadServeTheEvidenceOfEveryMatchingRow, :176 theFixtureEngineGivesAPassageAroundATextMatch; code Sources/Features/SearchMac/SearchEvidence.swift (:39 fold, :47 ranges, :71 passage, :89-95 evidence order subject, sender name, address, text). (2) the count line says the number of matching mails only: SearchEvidenceTests.swift:158 theCountLineSaysTheMatchesAndNothingAboutTheOtherMails, :166 oneMatchReadsOneMatchAndNoMatchReadsNoMatch...; Tests/Unit/SearchSuggestTests.swift:210 theCountLineHasTheTwoNumbers (changed to expect '2 matches' with no second part); code Sources/Features/SearchMac/SearchMacModel.swift:342 countLine. (3) the other mails follow under one divider with no count: SearchSuggestTests.swift:300 inTheWordsStageTheOtherMailsWaitUnderALine..., :325 whenNoMeaningOrderExists..., :341 pillsAndNoWordsAnswerOnceAllExactWithNoDivider. (4) 14 languages: Sources/Resources/Localizable.xcstrings holds the key 'No match' (line 73624) and '1 match' (line 11614); proofs 1 and 2 (checks/i18n-check.py --catalogue prints 'catalogue: GREEN' at :275 and checks every key in all 14 languages; --coverage is the code-to-catalogue direction); the lane's own run was green (docs/lanes/match-evidence.md 'Language checks'). (5) unit tests green: proof 0 is the first run (the lane says nothing was compiled; the unit list names 17 tests: 13 new, 1 changed theCountLineHasTheTwoNumbers, 3 divider tests). Swift Testing summary shape: '✔ Test run with N tests in M suites passed' (unit-run3.log shape cited in item d8153a57). (6) seen red: five broken copies chosen from the comments in SearchEvidenceTests.swift lines 27, 37, 47, 59, 69, 89, 159, 167; find strings occur once at 0aa1558e; the unit mutants need the Swift test build (the lead's one compile at a time). The remaining comments (SearchEvidenceTests.swift:80, :98, :112, :130, :159, :177) are broken copies without a one-line find here; the five above cover the bold, the sender, the passage, the no-match line and the meaning-only row. Check state at this commit: checks/parity/par-searchmac.py already expects the A149 header (COUNT_CASE at :295, header check at :453-460 asserts `count` 'No match'/'1 match'/'N matches', `matches`, `close`, and no `close_line`; the old header survives only as the self-test mutant `close-line-kept`, :948-950), so the stale-check warning in docs/lanes/match-evidence.md no longer applies. Open question for the owner (docs/lanes/match-evidence.md): the S1 page was not available to that lane, so the passage line under the subject and the address shown on the passage line are the builder's reading of A149, not the page's."
+}

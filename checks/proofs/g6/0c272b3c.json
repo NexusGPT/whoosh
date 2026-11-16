@@ -1,0 +1,99 @@
+{
+  "item": "0c272b3c",
+  "full_id": "0c272b3c-9371-4671-abfb-a77f13108655",
+  "title": "Every stored message is indexed for words and embedded for meaning",
+  "state": "gap",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --no-fail-fast --test engine_sync_full_r1 --test engine_bg_model_r2 --test indexer_reopen",
+      "pass": "(?s)test result: ok\\. \\d+ passed; 0 failed.*test result: ok\\. \\d+ passed; 0 failed.*test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "unit",
+      "run": "theModelLoadsOnFirstUseAndNotBefore,theModelUnloadsAfterTheIdleTimeFromTheLedgerAndLoadsAgainOnTheNextUse,aUseKeepsTheModelFromBeingTakenForIdle,unloadingClearsTheMemoryHook",
+      "pass": "Test run with 4 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "theEmbedderUnloadsItsModelAfterTheLedgerIdleTimeAndNotBefore,theEmbedderTakesItsIdleTimeFromTheLedgerConstantByDefault,theRealEmbedderUnloadsItsOwnModelAtTheLedgerIdleTime",
+      "pass": "Test theEmbedderTakesItsIdleTimeFromTheLedgerConstantByDefault\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-crawl",
+      "pass": "(?s)PASS\\s+crawled-mail-found-by-a-word .*PASS\\s+crawled-mail-found-by-meaning .*PASS\\s+index-progress-reaches-every-message .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL\\s|NOT JUDGED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-crawl --mutant=index-never-writes",
+      "pass": "mutant index-never-writes: KILLED by [^\\n]*crawled-mail-found-by-a-word",
+      "fail": "SURVIVED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice crawl: model all pass.*every case covered by a broken model yes",
+      "fail": "WRONG|FAILS|SURVIVED|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "have.into_iter().filter(|(id, _, marked)| !*marked && !vector.contains_message(chunk_vector_key(*id))).map(|(id, t, _)| (id, t)).collect()\n            };\n            if !todo.is_empty() { self.embed_pieces(&b.message_id,",
+      "replace": "have.into_iter().filter(|(_id, _, marked)| !*marked).map(|(id, t, _)| (id, t)).collect()\n            };\n            if !todo.is_empty() { self.embed_pieces(&b.message_id,",
+      "proof": 0,
+      "red": "c_the_indexer_indexes_each_stored_body_once_and_finds_a_crawled_message_by_a_word_and_by_meaning \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "if dir.exists() && !marker.exists() {",
+      "replace": "if false && dir.exists() && !marker.exists() {",
+      "proof": 0,
+      "red": "thread 'l2_a_message_row_index_that_already_carries_the_piece_marker_is_still_rebuilt' (\\(\\d+\\) )?panicked|l2_a_message_row_index_that_already_carries_the_piece_marker_is_still_rebuilt \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "let current = have.len() == texts.len() && have.iter().zip(&texts).all(|((_, t, _), n)| t == n);\n            // once: of a body cut",
+      "replace": "let current = !have.is_empty();\n            // once: of a body cut",
+      "proof": 0,
+      "red": "p_a_body_rewritten_after_indexing_is_cut_again_from_its_new_text \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/crawl.rs",
+      "find": "u64::from(p) < ATTACHMENT_INDEX_BATTERY_MIN",
+      "replace": "u64::from(p) > ATTACHMENT_INDEX_BATTERY_MIN",
+      "proof": 0,
+      "red": "d_battery_and_heat_hold_the_crawl_and_release_it \\.\\.\\. FAILED"
+    },
+    {
+      "file": "Sources/Features/Embedding/GemmaEmbedder.swift",
+      "find": "idleUnloadSeconds: Int = WhooshConstants.EMBED_IDLE_UNLOAD_S,",
+      "replace": "idleUnloadSeconds: Int = 3600,",
+      "proof": 2,
+      "red": "theEmbedderTakesItsIdleTimeFromTheLedgerConstantByDefault\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "core/crates/engine/src/indexer.rs",
+      "find": "let Some(embedder) = lock(&self.embedder).clone() else { return Ok(()) };",
+      "replace": "let Some(embedder) = lock(&self.embedder).clone().filter(|_| false) else { return Ok(()) };",
+      "proof": 3,
+      "red": "FAIL\\s+crawled-mail-found-by-meaning|FAIL\\s+index-progress-reaches-every-message"
+    }
+  ],
+  "gap": "Left: proof 3 is red on the last recorded run (_captures/lead/main97/proofs-hidden/again-022.log, the --slice-crawl run with --mutant, same cases): FAIL index-progress-reaches-every-message ('indexed 86 of 86 stored bodies of 100 messages after 150.0s'; Archive [messages, bodies, indexed] [65, 51, 51]); the cause is the crawl, not the index: only 85 to 86 of 100 bodies are stored and 14 Archive UIDs are never fetched whole (the FAIL of every-body-of-every-folder-is-stored in the same log), the same as item f4e1fbe8; fix in core/crates/engine/src/crawl.rs, cause not yet named. Built since the first gap: the three Swift tests exist in Tests/Unit/EmbeddingTests.swift (:238, :271, :281) and are proof 2; mutant 2 breaks the default at GemmaEmbedder.swift:40. Piece (2) is item 7a30058b's.",
+  "owner": null,
+  "notes": "Claims and judges that exist. (1) the real core wires search-text and search-vector to stored messages: core/crates/engine/src/indexer.rs:1-10 (module note), :23-25 (search_text::TextIndex and search_vector chunking), :139 Indexer::start, :152 enqueue (every stored body joins both indexes, each once); judged by core/crates/engine/tests/engine_sync_full_r1.rs:267 c_ (each stored body embedded once, found by a word 'invoice' and by meaning 'bill', chunk row marked embedded, a second hand-over of the model embeds nothing again), :342 e_progress_reads_stored_of_total_and_indexed_of_stored_per_account_and_folder, :525 l_a_meaning_index_filed_under_message_rows_is_rebuilt_from_the_chunks, :599 n_settle_index_never_answers_idle_between_taking_a_job_and_running_it, :619 p_a_body_rewritten_after_indexing_is_cut_again_from_its_new_text; core/crates/engine/tests/indexer_reopen.rs:59 a_core_reopened_on_one_folder_settles_its_indexer_every_time. (2) new and crawled bodies indexed in the background at low priority: indexer.rs:95-104 background_priority (QOS_CLASS_BACKGROUND), :1-6 (EMBED_BATCH mails per step, a rest after each step INDEX_DUTY_PCT); paused with the crawl: engine_sync_full_r1.rs:315 d_ ; engine_bg_model_r2.rs:201 o_a_paused_indexer_does_not_embed_and_resumes_when_released. (3) the model is loaded per batch (only while there is work): core/crates/engine/tests/engine_bg_model_r2.rs:176 n_the_model_handed_over_at_launch_is_not_called_until_the_indexer_has_a_body_and_then_embeds_five_with_no_search (zero calls with nothing to embed, exactly five after five bodies), :226 p_without_the_model_a_folder_says_so_and_word_search_still_answers; indexer.rs:395 step returns at once when no model was handed over. (4) unloaded after EMBED_IDLE_UNLOAD_S: the holder is Sources/Features/Embedding/IdleHolder.swift:5-60 (loads on first get, unloads by unloadIfIdle at :74, no timer while nothing is loaded); unit proof 1 judges the same IdleHolder through ModelResidency (an equal class, not the embedder's own instance: that is gap piece 1). docs/CONSTANTS.md:175 EMBED_IDLE_UNLOAD_S = 300; :170 RSS_MODEL_MAX_MB 2200; :174 CPU_IDLE_MAX_PCT 1.0. The reader's finding that no capture shows the unload stands: `grep -rl EMBED_IDLE_UNLOAD_S _captures` gave 10 files, none opened; this proof writer did not open them either, so none is cited. (5) seen red: the four mutants are the lane's (docs/lanes/sync-full-r1.md:73-84; anchors from _captures/sync-full-r1/run_mutants.py), each anchor occurs once in this commit's file. Last cargo evidence for those tests: docs/lanes/sync-full-r1.md:164 (e6045419), not this commit. (7) gap-engine-tests, 2026-11-11: the indexer was changed (docs/lanes/pieces.md: step cuts by body_pieces and calls file_pieces, the same filter and the same `current` line now stand twice, in step and in file_pieces), so the find of mutant 0 and of mutant 2 occurred twice. Both now carry the lines after them (mutant 0: the filter of step's body chunks plus the `if !todo.is_empty() { self.embed_pieces(&b.message_id,` line; mutant 2: the `current` line plus step's `// once: of a body cut` comment), and each occurs once (checked by a script over this file, saved in the notes). Mutants 1 and 3 still occur once. The red regexes are unchanged. (tail-realcore, 2026-11-12) piece (3) is the same slice as item f4e1fbe8's, `--slice-crawl`: a word that is in one Archive body only (zeppelin) must be found as a word hit on that mail, a query sharing no word with any mail must rank the harbour Archive mail first in the meaning group, and `reply/progress` must show indexed >= bodies = 50. The two model cases need WHOOSH_EMBED_WEIGHTS=<the lead's model folder> in the check's environment and are NOT JUDGED without it (proof 2 asks for 0 not judged, so it is run with the folder). Broken copies: the indexer line above, `indexer.rs` step(): the embedder is always read as absent, so no vector is ever written (the meaning and indexed cases red, run with the folder; the replacement keeps the binding so the file compiles) and the rig mutant `index-never-writes` (`--slice-crawl --mutant=index-never-writes`: the word case red, no folder needed). Written and self-tested, not run on a bundle. | OLD GAP (before lane gap-states, 2026-11-12): one piece is left: (1) kind test, size S: the embedder's own idle unload has no test: Swift only. Add to Tests/Unit/EmbeddingTests.swift `theEmbedderUnloadsItsModelAfterTheLedgerIdleTimeAndNotBefore` (IdleHolder<Int>(idleSeconds: WhooshConstants.EMBED_IDLE_UNLOAD_S, now: fake clock, autoSweep: false), built as GemmaEmbedder.init does at GemmaEmbedder.swift:39) and a second test that GemmaEmbedder's default is the ledger constant (GemmaEmbedder.swift:31); broken copy GemmaEmbedder.swift:31 `idleUnloadSeconds: Int = WhooshConstants.EMBED_IDLE_UNLOAD_S` -> `idleUnloadSeconds: Int = 3600`. Piece (2) is the footprint gate's (item 7a30058b), unchanged. Piece (3) is built (tail-realcore): the hidden `--slice-crawl` cases crawled-mail-found-by-a-word, crawled-mail-found-by-meaning and index-progress-reaches-every-message."
+}

@@ -1,0 +1,11 @@
+[package]
+name = "mcp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh local MCP server: JSON-RPC 2.0 over stdio for outside AI apps on this Mac. Per-app grants, an approval prompt before any result leaves, a search tool and a draft tool (never send)."
+
+[dependencies]
+contracts = { workspace = true }
+# JSON values and text (MIT OR Apache-2.0). No MCP crate is vendored offline, so the small JSON-RPC 2.0 framing is written here.
+serde_json = "1"

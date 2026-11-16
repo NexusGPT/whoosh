@@ -1,0 +1,105 @@
+{
+  "item": "3f602bb2",
+  "full_id": "3f602bb2-45cb-42c9-bcd2-b318dffe6a43",
+  "title": "The AI sorting can read the rest of the thread, capped to the model limit",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p decision --no-fail-fast --test thread_r5 --test flow",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){2}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p contracts --no-fail-fast --test replies_d20 --test delta17",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){2}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "(?s)flow-ai-reads\\s+pass .*flow-ai-thread-saved\\s+pass ",
+      "fail": "flow-ai-(reads|thread-saved)\\s+(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "STILL GREEN",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"^| DECISION_THREAD_CHARS | 2000 |\" docs/CONSTANTS.md",
+      "pass": "^1$",
+      "fail": "^0$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/decision/src/thread_context.rs",
+      "find": "ledger_number(\"DECISION_THREAD_CHARS\").map(|v| v as usize).unwrap_or_else(decision_body_chars)",
+      "replace": "usize::MAX",
+      "proof": 0,
+      "red": "jevs_request_carries_the_thread_cut_to_its_declared_size \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/decision/src/adapters/local.rs",
+      "find": "while estimate_tokens(&prompt) > w && (thread_chars > 0 || !text.is_empty()) {",
+      "replace": "while false && (thread_chars > 0 || !text.is_empty()) {",
+      "proof": 0,
+      "red": "the_local_prompt_carries_the_thread_inside_the_window_and_never_at_the_bodys_cost \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/decision/src/decide.rs",
+      "find": "if rest_of_thread && !f.thread_before.is_empty() {",
+      "replace": "if !f.thread_before.is_empty() {",
+      "proof": 0,
+      "red": "the_thread_is_off_by_default \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/decision/src/flow.rs",
+      "find": "labels.iter().any(|l| l.ai_enabled && l.rest_of_thread)",
+      "replace": "labels.iter().any(|l| l.rest_of_thread)",
+      "proof": 0,
+      "red": "a_label_whose_ai_card_is_off_sends_no_thread \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/decision/src/decide.rs",
+      "find": "if is_labels && (labels_reads != default_ai_reads() || labels_thread) {",
+      "replace": "if is_labels && (labels_reads != default_ai_reads()) {",
+      "proof": 0,
+      "red": "a_label_ticking_the_thread_sends_it_in_its_own_call \\.\\.\\. FAILED"
+    },
+    {
+      "file": "docs/CONSTANTS.md",
+      "find": "| DECISION_THREAD_CHARS | 2000 | characters of earlier messages",
+      "replace": "| DECISION_THREAD_CHARZ | 2000 | characters of earlier messages",
+      "proof": 5,
+      "red": "^0$"
+    },
+    {
+      "file": "docs/CONSTANTS.md",
+      "find": "| DECISION_THREAD_CHARS | 2000 | characters of earlier messages",
+      "replace": "| DECISION_THREAD_CHARZ | 2000 | characters of earlier messages",
+      "proof": 0,
+      "red": "the_thread_cap_is_the_ledgers_row \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": "None in files this lane may edit. Piece (1) DONE by fix-core: the ledger row DECISION_THREAD_CHARS (2000) in docs/CONSTANTS.md (proof 5 counts it, mutant 5). Piece (2) DONE by tail-small (2026-11-11): core/crates/decision/tests/thread_r5.rs `the_thread_cap_is_the_ledgers_row` (reads ledger_number(\"DECISION_THREAD_CHARS\") and asserts jev_budget_chars() equals it; proof 0 now runs 10 tests in that binary); its broken copy is mutant 6 (the row renamed DECISION_THREAD_CHARZ, red on the expect). Not compiled or run here: the lead's run of proof 0 and mutant 6 settles it. The 14-language count of the chip 'Reste du fil' is settled by proof 4.",
+  "owner": null,
+  "notes": "Claims and judges that exist. (1) chip 'Reste du fil', off by default: Sources/Features/LabelsContactsMac/LabelFlowAi.swift:32 (ReadTick 'Rest of the thread', id rest_of_thread), LabelFlowDraft.swift:72; contracts core/crates/contracts/src/label_flow.rs:45,51 (default_ai_reads rest_of_thread false); tests core/crates/contracts/tests/replies_d20.rs:116-122 and delta17.rs:232-234; check cases flow-ai-reads (par-labelscontactsmac.py:1043 f_reads, mutants at :1193) and flow-ai-thread-saved (:1194, f_thread_saved), both in the case list, printed as 'name  pass|fail|unjudged  detail' by report() (par-labelscontactsmac.py:2968). (2) the contract's AI inputs carry it: replies_d20.rs:501-502 (the flow json holds rest_of_thread). (3) the decision text takes the earlier messages newest first cut to a cap: core/crates/decision/src/thread_context.rs:66-80 fit (walks `parts.iter().rev()`: newest kept first, never fails), :22 THREAD_HEAD 'earlier messages of this thread, newest first:'; decide.rs:76-80 state_with_thread; flow.rs:326-327 offered_rest_of_thread; engine core/crates/engine/src/flow_ctx.rs:59-63 (`n.ai_enabled && n.rest_of_thread`); judged by core/crates/decision/tests/thread_r5.rs:54 the_cut_keeps_the_newest_messages_and_drops_the_oldest_first, :68 the_cut_never_fails, :87 the_rendering_reads_newest_first_with_a_date_and_who, :117 jevs_request_carries_the_thread_cut_to_its_declared_size, :149 the_local_prompt_carries_the_thread_inside_the_window_and_never_at_the_bodys_cost, :217 the_thread_is_off_by_default, :229 a_label_ticking_the_thread_sends_it_in_its_own_call, :245 a_label_whose_ai_card_is_off_sends_no_thread, :258 the_thread_text_the_engines_read_is_the_cut_one. The reader's finding that the cap is missing is right for the ledger row only (gap). (4) 'cargo tests; par-labelscontactsmac case seen red': proof 0/1 and proofs 2/3 (the self-test table prints 'red' per mutant). The lane's own mutants T1 to T6 are in the header of thread_r5.rs:8-15; T1 (`parts.iter().rev()` -> `parts.iter()`) has two matches of its find string in thread_context.rs (lines 70 and 98) so it is not usable as an exact find and is left out; the five mutants above are T2 to T6 re-written as exact one-line finds, each occurring once at 0aa1558e. Last evidence in _captures/labels-r5/mutants.out (not opened by this proof writer)."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "185",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "> Can you confirm the schedule for next week? f563",
+  "visible_contains": "I will send the figures tomorrow morning. 60ef",
+  "folded_contains": "Can you confirm the schedule for next week? f563"
+ },
+ "adversarial": false
+}

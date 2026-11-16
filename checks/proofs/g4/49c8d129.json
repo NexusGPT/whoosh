@@ -1,0 +1,25 @@
+{
+  "item": "49c8d129",
+  "full_id": "49c8d129-ec1c-4343-aa35-60ed31f04145",
+  "title": "Run Laya with its real weights on fixture mail (A125)",
+  "state": "outside",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "ls docs/lanes/laya-real-weights.passline.md",
+      "pass": "^docs/lanes/laya-real-weights\\.passline\\.md$",
+      "fail": "No such file|cannot access",
+      "timeout_s": 30
+    },
+    {
+      "kind": "lead",
+      "run": "python3 checks/laya-real-check.py \"<bundle>\" --models \"<the lead's copy of the five Laya files>\"   (the check serves the folder on 127.0.0.1 only, its own pid, stopped at the end; starts the hidden copy through scripts/launch-one.sh with WHOOSH_RIG_HIDDEN=1 and WHOOSH_RIG_LAYA_BASE; the 16 messages of docs/design/fixtures/mac-main-sample.json from the loopback IMAP fake; Settings, Decisions, Laya, Download, ready; the description of docs/lanes/laya-real-weights.passline.md typed into Needs Reply, Save, Re-run; it refuses to run when the pass-line file has no commit or differs from it, and prints the commit and the pass-line file's commit date first)",
+      "pass": "^TOTAL laya: .*; \\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|NOT JUDGED) |^REFUSED|Traceback| [1-9]\\d* failed| [1-9]\\d* not judged"
+    }
+  ],
+  "mutants": [],
+  "gap": "Round 14 of fix-aisort wrote the pass-line file (docs/lanes/laya-real-weights.passline.md, its own commit, before any run) and the check checks/laya-real-check.py (`--selftest` launches nothing). What is left is the lead's run with the real weights: proof 1.",
+  "owner": null,
+  "notes": "state outside: it needs the real Laya weights, a download from the network that this Mac's hidden test copy may never do (netguard and ModelsFolder.rigSafe refuse a non-loopback host: ModelsFolder.swift:22-36), so the lead fetches them outside the rig, as a person. Code: Sources/Features/OnDeviceAI/Core/ModelsFolder.swift:18-24 rigLayaBase, :31 rigSafe; LayaOnDevice.swift:9 (loads on the first question), :33; core side: core/crates/engine/tests/engine_label_model_r5.rs:203 (scripted Laya, decided_by Laya), checks/settingsaimac-check.py:1913-2150 (J5.7 Laya cases against a 150000-byte stub: LAYA_SIZE line 24). Unit tests that already pass without real weights: Tests/Unit/LayaModelStoreDownloadTests.swift:9, Tests/Unit/LayaDownloadScenario.swift. The proof has no mutant: a real-weights measurement has no one-line break. Round 14 (fix-aisort): the seconds per message is LAYA_SECONDS_PER_MESSAGE_MAX 1 (docs/CONSTANTS.md, proposed from main111's mean per-question time: that log holds no per-question time); the memory bars are RSS_MODEL_MAX_MB and LAYA_GROWTH_MAX_MB. main111's laya-sanity run gave the Needs Reply question p 0.318 to 0.398 on its obvious yes mails, under MODEL_TRUST_LABEL 0.8, so a red 'must land' is the expected outcome of proof 1 with that checkpoint."
+}

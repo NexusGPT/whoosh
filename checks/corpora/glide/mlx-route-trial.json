@@ -1,0 +1,332 @@
+{
+ "note": "The app's route tried in Python on MLX (run-mlx-two-way.py) against reference.json; made-up mail. Per question: the worst difference between the two runs' probabilities.",
+ "runs": {
+  "two-way, published 16-bit weights": {
+   "worst_difference": 0.039,
+   "questions": [
+    {
+     "case": "reply-wanted",
+     "id": "q1",
+     "tokens": 132,
+     "worst_difference": 0.0004,
+     "same_top_option": true,
+     "seconds": 0.735
+    },
+    {
+     "case": "newsletter",
+     "id": "q1",
+     "tokens": 147,
+     "worst_difference": 0.0006,
+     "same_top_option": true,
+     "seconds": 0.052
+    },
+    {
+     "case": "newsletter",
+     "id": "q2",
+     "tokens": 147,
+     "worst_difference": 0.0164,
+     "same_top_option": true,
+     "seconds": 0.05
+    },
+    {
+     "case": "four-way",
+     "id": "kind",
+     "tokens": 157,
+     "worst_difference": 0.0001,
+     "same_top_option": true,
+     "seconds": 0.059
+    },
+    {
+     "case": "urgency",
+     "id": "u",
+     "tokens": 128,
+     "worst_difference": 0.0021,
+     "same_top_option": true,
+     "seconds": 0.154
+    },
+    {
+     "case": "long-thread",
+     "id": "q1",
+     "tokens": 171,
+     "worst_difference": 0.039,
+     "same_top_option": true,
+     "seconds": 0.107
+    },
+    {
+     "case": "long-thread",
+     "id": "kind",
+     "tokens": 192,
+     "worst_difference": 0.0076,
+     "same_top_option": true,
+     "seconds": 0.093
+    },
+    {
+     "case": "twelve-way",
+     "id": "topic",
+     "tokens": 151,
+     "worst_difference": 0.0002,
+     "same_top_option": true,
+     "seconds": 0.065
+    },
+    {
+     "case": "edges-whitespace",
+     "id": "r",
+     "tokens": 116,
+     "worst_difference": 0.0069,
+     "same_top_option": true,
+     "seconds": 0.043
+    },
+    {
+     "case": "five-levels",
+     "id": "u",
+     "tokens": 141,
+     "worst_difference": 0.0092,
+     "same_top_option": true,
+     "seconds": 0.057
+    },
+    {
+     "case": "five-levels",
+     "id": "q",
+     "tokens": 106,
+     "worst_difference": 0.0054,
+     "same_top_option": true,
+     "seconds": 0.034
+    },
+    {
+     "case": "text-ends-on-the-key",
+     "id": "q",
+     "tokens": 85,
+     "worst_difference": 0.0004,
+     "same_top_option": true,
+     "seconds": 0.03
+    },
+    {
+     "case": "field-of-several-lines",
+     "id": "q",
+     "tokens": 93,
+     "worst_difference": 0.0034,
+     "same_top_option": true,
+     "seconds": 0.032
+    }
+   ]
+  },
+  "one-way mask (control)": {
+   "worst_difference": 0.5407,
+   "questions": [
+    {
+     "case": "reply-wanted",
+     "id": "q1",
+     "tokens": 132,
+     "worst_difference": 0.0175,
+     "same_top_option": true,
+     "seconds": 0.072
+    },
+    {
+     "case": "newsletter",
+     "id": "q1",
+     "tokens": 147,
+     "worst_difference": 0.0028,
+     "same_top_option": true,
+     "seconds": 0.046
+    },
+    {
+     "case": "newsletter",
+     "id": "q2",
+     "tokens": 147,
+     "worst_difference": 0.1202,
+     "same_top_option": true,
+     "seconds": 0.045
+    },
+    {
+     "case": "four-way",
+     "id": "kind",
+     "tokens": 157,
+     "worst_difference": 0.0002,
+     "same_top_option": true,
+     "seconds": 0.044
+    },
+    {
+     "case": "urgency",
+     "id": "u",
+     "tokens": 128,
+     "worst_difference": 0.1429,
+     "same_top_option": true,
+     "seconds": 0.033
+    },
+    {
+     "case": "long-thread",
+     "id": "q1",
+     "tokens": 171,
+     "worst_difference": 0.0837,
+     "same_top_option": true,
+     "seconds": 0.047
+    },
+    {
+     "case": "long-thread",
+     "id": "kind",
+     "tokens": 192,
+     "worst_difference": 0.33,
+     "same_top_option": true,
+     "seconds": 0.063
+    },
+    {
+     "case": "twelve-way",
+     "id": "topic",
+     "tokens": 151,
+     "worst_difference": 0.0112,
+     "same_top_option": true,
+     "seconds": 0.115
+    },
+    {
+     "case": "edges-whitespace",
+     "id": "r",
+     "tokens": 116,
+     "worst_difference": 0.0017,
+     "same_top_option": true,
+     "seconds": 0.089
+    },
+    {
+     "case": "five-levels",
+     "id": "u",
+     "tokens": 141,
+     "worst_difference": 0.2706,
+     "same_top_option": false,
+     "seconds": 0.123
+    },
+    {
+     "case": "five-levels",
+     "id": "q",
+     "tokens": 106,
+     "worst_difference": 0.129,
+     "same_top_option": true,
+     "seconds": 0.118
+    },
+    {
+     "case": "text-ends-on-the-key",
+     "id": "q",
+     "tokens": 85,
+     "worst_difference": 0.0223,
+     "same_top_option": true,
+     "seconds": 0.07
+    },
+    {
+     "case": "field-of-several-lines",
+     "id": "q",
+     "tokens": 93,
+     "worst_difference": 0.5407,
+     "same_top_option": false,
+     "seconds": 0.031
+    }
+   ]
+  },
+  "two-way, 32-bit weights": {
+   "worst_difference": 0.003,
+   "questions": [
+    {
+     "case": "reply-wanted",
+     "id": "q1",
+     "tokens": 132,
+     "worst_difference": 0.0,
+     "same_top_option": true,
+     "seconds": 0.165
+    },
+    {
+     "case": "newsletter",
+     "id": "q1",
+     "tokens": 147,
+     "worst_difference": 0.0,
+     "same_top_option": true,
+     "seconds": 0.21
+    },
+    {
+     "case": "newsletter",
+     "id": "q2",
+     "tokens": 147,
+     "worst_difference": 0.0006,
+     "same_top_option": true,
+     "seconds": 0.062
+    },
+    {
+     "case": "four-way",
+     "id": "kind",
+     "tokens": 157,
+     "worst_difference": 0.0,
+     "same_top_option": true,
+     "seconds": 0.225
+    },
+    {
+     "case": "urgency",
+     "id": "u",
+     "tokens": 128,
+     "worst_difference": 0.0004,
+     "same_top_option": true,
+     "seconds": 0.229
+    },
+    {
+     "case": "long-thread",
+     "id": "q1",
+     "tokens": 171,
+     "worst_difference": 0.0019,
+     "same_top_option": true,
+     "seconds": 0.106
+    },
+    {
+     "case": "long-thread",
+     "id": "kind",
+     "tokens": 192,
+     "worst_difference": 0.0025,
+     "same_top_option": true,
+     "seconds": 0.135
+    },
+    {
+     "case": "twelve-way",
+     "id": "topic",
+     "tokens": 151,
+     "worst_difference": 0.0,
+     "same_top_option": true,
+     "seconds": 0.109
+    },
+    {
+     "case": "edges-whitespace",
+     "id": "r",
+     "tokens": 116,
+     "worst_difference": 0.0006,
+     "same_top_option": true,
+     "seconds": 0.118
+    },
+    {
+     "case": "five-levels",
+     "id": "u",
+     "tokens": 141,
+     "worst_difference": 0.0013,
+     "same_top_option": true,
+     "seconds": 0.122
+    },
+    {
+     "case": "five-levels",
+     "id": "q",
+     "tokens": 106,
+     "worst_difference": 0.003,
+     "same_top_option": true,
+     "seconds": 0.266
+    },
+    {
+     "case": "text-ends-on-the-key",
+     "id": "q",
+     "tokens": 85,
+     "worst_difference": 0.0003,
+     "same_top_option": true,
+     "seconds": 0.208
+    },
+    {
+     "case": "field-of-several-lines",
+     "id": "q",
+     "tokens": 93,
+     "worst_difference": 0.002,
+     "same_top_option": true,
+     "seconds": 0.135
+    }
+   ]
+  }
+ }
+}

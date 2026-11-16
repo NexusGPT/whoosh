@@ -1,0 +1,1340 @@
+{
+ "item": "1bcdcd2a",
+ "full_id": "1bcdcd2a-29fd-4bfb-9cc0-28ce2e9ad4de",
+ "title": "Click every control in every Mac screen by check",
+ "state": "gap",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/par-notch.py --selftest",
+   "pass": "\\d+ round-6 checks green on the model, \\d+ mutants, 0 not red",
+   "fail": "NO MUTANT|STRAY MUTANT|NOT RED|Traceback",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "STILL GREEN|MUTANTS \\| door table \\| RED",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/par-searchmac.py --selftest",
+   "pass": "\\d+ door checks, \\d+ mutants, 0 problems",
+   "fail": "[1-9]\\d* problems|Traceback",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-notch.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL par-notch-sweep",
+   "timeout_s": 1800
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/par-welcomemac.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "  FAIL welcomemac-sweep-",
+   "timeout_s": 1800
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL J2\\.9",
+   "timeout_s": 1500
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-settingsai.py --selftest",
+   "pass": "selftest: every check seen red on its broken model",
+   "fail": "PROBLEM|selftest: \\d+ problem|Traceback",
+   "timeout_s": 300
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-trainer.py --selftest",
+   "pass": "selftest: every check seen red on its broken model",
+   "fail": "PROBLEM|selftest: \\d+ problem|Traceback",
+   "timeout_s": 300
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-mcpnotes.py --selftest",
+   "pass": "selftest: every check seen red on its broken model",
+   "fail": "PROBLEM|selftest: \\d+ problem|Traceback",
+   "timeout_s": 300
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-firststart.py --selftest",
+   "pass": "selftest: every check seen red on its broken model",
+   "fail": "PROBLEM|selftest: \\d+ problem|Traceback",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/sweep-settingsai.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "sweep-settingsai/\\S+\\s+(fail|unjudged)",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/sweep-trainer.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "sweep-trainer/\\S+\\s+(fail|unjudged)",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/sweep-mcpnotes.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "sweep-mcpnotes/\\S+\\s+(fail|unjudged)",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/sweep-firststart.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "sweep-firststart/\\S+\\s+(fail|unjudged)",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-settingsreplies.py --selftest",
+   "pass": "selftest: every check was seen red on its broken model",
+   "fail": "NOT RED|NO MUTANT|STRAY MUTANT|NO DOOR|RED on the clean model|Traceback",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-settingscalendars.py --selftest",
+   "pass": "selftest: every check was seen red on its broken model",
+   "fail": "NOT RED|NO MUTANT|STRAY MUTANT|Traceback",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-entraguide.py --selftest",
+   "pass": "selftest: every check was seen red on its broken model",
+   "fail": "NOT RED|NO MUTANT|STRAY MUTANT|Traceback",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-ask.py --selftest",
+   "pass": "selftest: every check was seen red on its broken model",
+   "fail": "NOT RED|NO MUTANT|STRAY MUTANT|Traceback",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/sweep-settingsreplies.py",
+   "pass": "168 checks, 0 failed, 0 not judged",
+   "fail": "(?m)^\\S+\\s+fail\\s",
+   "timeout_s": 1800
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/sweep-settingscalendars.py",
+   "pass": "5 checks, 0 failed, 0 not judged",
+   "fail": "(?m)^\\S+\\s+fail\\s",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/sweep-entraguide.py",
+   "pass": "21 checks, 0 failed, 0 not judged",
+   "fail": "(?m)^\\S+\\s+fail\\s",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/sweep-ask.py",
+   "pass": "4 checks, 0 failed, 0 not judged",
+   "fail": "(?m)^\\S+\\s+fail\\s",
+   "timeout_s": 300
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p; return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p == \"anthropic\" ? nil : p; return true }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-anthropic-key-field-takes-the-typed-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p; return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p == \"openai\" ? nil : p; return true }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-openai-key-field-takes-the-typed-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p; return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p == \"gemini\" ? nil : p; return true }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-gemini-key-field-takes-the-typed-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p; return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).key\"] = { _ in s.section = .providers; s.keyFocus = p == \"openrouter\" ? nil : p; return true }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-openrouter-key-field-takes-the-typed-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in s.connect(p); return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in p == \"anthropic\" ? true : { s.connect(p); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-anthropic-connect-connects\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in s.connect(p); return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in p == \"openai\" ? true : { s.connect(p); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-openai-connect-connects\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in s.connect(p); return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in p == \"gemini\" ? true : { s.connect(p); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-gemini-connect-connects\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in s.connect(p); return true }",
+   "replace": "out[\"mac-settings-ai.provider.\\(p).connect\"] = { _ in p == \"openrouter\" ? true : { s.connect(p); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/provider-openrouter-connect-connects\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.speech.engine.local\": { _ in s.chooseSpeech(provider: nil); return true },",
+   "replace": "\"mac-settings-ai.speech.engine.local\": { _ in true },",
+   "proof": 10,
+   "red": "sweep-settingsai/speech-engine-local-chooses-this-mac\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.chooseSpeech(provider: p); return true",
+   "replace": "s.chooseSpeech(provider: p == \"anthropic\" ? nil : p); return true",
+   "proof": 10,
+   "red": "sweep-settingsai/speech-engine-anthropic-chooses-the-provider\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.chooseSpeech(provider: p); return true",
+   "replace": "s.chooseSpeech(provider: p == \"openai\" ? nil : p); return true",
+   "proof": 10,
+   "red": "sweep-settingsai/speech-engine-openai-chooses-the-provider\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.chooseSpeech(provider: p); return true",
+   "replace": "s.chooseSpeech(provider: p == \"gemini\" ? nil : p); return true",
+   "proof": 10,
+   "red": "sweep-settingsai/speech-engine-gemini-chooses-the-provider\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.chooseSpeech(provider: p); return true",
+   "replace": "s.chooseSpeech(provider: p == \"openrouter\" ? nil : p); return true",
+   "proof": 10,
+   "red": "sweep-settingsai/speech-engine-openrouter-chooses-the-provider\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.speech.shortcuts\": { _ in s.openShortcuts(); return true },",
+   "replace": "\"mac-settings-ai.speech.shortcuts\": { _ in true },",
+   "proof": 10,
+   "red": "sweep-settingsai/speech-open-shortcuts-opens-the-shortcuts-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/BackgroundWork/BackgroundWorkFeature.swift",
+   "find": "[MeaningModelDoor.downloadId: { _ in MeaningModelStore.shared.startInBackground() }]",
+   "replace": "[MeaningModelDoor.downloadId: { _ in false }]",
+   "proof": 10,
+   "red": "sweep-settingsai/meaning-download-leaves-not-downloaded\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[ax + \".download\"] = { _ in guard case .ready = s.modelState(entry) else { s.downloadModel(entry.id); return true }; return false }",
+   "replace": "out[ax + \".download\"] = { _ in guard case .ready = s.modelState(entry) else { return true }; return false }",
+   "proof": 10,
+   "red": "sweep-settingsai/laya-download-starts-the-download\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "guard case .downloading = s.modelState(entry) else { return false }",
+   "replace": "if true { return true }",
+   "proof": 10,
+   "red": "sweep-settingsai/laya-cancel-stops-the-download\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.jev.key.field\"] = { _ in s.keyFocus = \"jev\"; return true }",
+   "replace": "out[\"mac-settings-ai.decisions.jev.key.field\"] = { _ in true }",
+   "proof": 10,
+   "red": "sweep-settingsai/jev-key-field-takes-the-typed-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.connectJev(k); return true",
+   "replace": "return true",
+   "proof": 10,
+   "red": "sweep-settingsai/jev-connect-saves-the-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.jev.consent.allow\"] = { _ in s.setConsent(true); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.jev.consent.allow\"] = { _ in true }",
+   "proof": 10,
+   "red": "sweep-settingsai/jev-allow-gives-the-consent\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.jev.consent.withdraw\"] = { _ in s.setConsent(false); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.jev.consent.withdraw\"] = { _ in true }",
+   "proof": 10,
+   "red": "sweep-settingsai/jev-withdraw-takes-the-consent-back\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.engine.\\(e.rawValue)\"] = { _ in s.chooseEngine(e); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.engine.\\(e.rawValue)\"] = { _ in e == .off ? true : { s.chooseEngine(e); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/engine-off-chooses-no-model\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.engine.\\(e.rawValue)\"] = { _ in s.chooseEngine(e); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.engine.\\(e.rawValue)\"] = { _ in e == .local ? true : { s.chooseEngine(e); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/engine-local-chooses-laya\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.engine.\\(e.rawValue)\"] = { _ in s.chooseEngine(e); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.engine.\\(e.rawValue)\"] = { _ in e == .jev ? true : { s.chooseEngine(e); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/engine-jev-asks-for-its-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in s.section = .page(id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in id == \"which-tab\" ? true : { s.section = .page(id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-which-tab-row-opens-the-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in s.section = .page(id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in id == \"needs-reply\" ? true : { s.section = .page(id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-needs-reply-row-opens-the-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in s.section = .page(id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in id == \"sign-in-codes\" ? true : { s.section = .page(id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-sign-in-codes-row-opens-the-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in s.section = .page(id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in id == \"vips\" ? true : { s.section = .page(id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-vips-row-opens-the-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in s.section = .page(id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in id == \"notify-me\" ? true : { s.section = .page(id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-notify-me-row-opens-the-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in s.section = .page(id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.open.\\(id)\"] = { _ in id == \"labels\" ? true : { s.section = .page(id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-labels-row-opens-the-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.decisions.back\": { _ in s.section = .decisions; return true },",
+   "replace": "\"mac-settings-ai.decisions.back\": { _ in true },",
+   "proof": 10,
+   "red": "sweep-settingsai/page-back-returns-to-the-list\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.page.\\(id).add-rule\"] = { _ in s.addRule(page: id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.page.\\(id).add-rule\"] = { _ in id == \"which-tab\" ? true : { s.addRule(page: id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-add-rule-inserts-a-rule-first\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.page.\\(id).add-model\"] = { _ in s.addModel(page: id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.page.\\(id).add-model\"] = { _ in id == \"vips\" ? true : { s.addModel(page: id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-add-model-inserts-the-model-entry\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+   "find": "guard from != to, from < last, (0..<es.count).contains(to) else { return }",
+   "replace": "guard from != to, from < last, (0..<es.count).contains(to), id != \"which-tab\" else { return }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-move-up-reorders-the-entries\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.page.\\(id).preview\"] = { _ in s.section = .page(id); s.runPreview(page: id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.page.\\(id).preview\"] = { _ in id == \"which-tab\" ? true : { s.section = .page(id); s.runPreview(page: id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-preview-lists-the-last-messages\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.page.\\(id).apply\"] = { _ in s.apply(page: id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.page.\\(id).apply\"] = { _ in id == \"which-tab\" ? true : { s.apply(page: id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-apply-writes-the-preview\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.page.\\(id).proposal.accept\"] = { _ in s.acceptProposal(page: id); return true }",
+   "replace": "out[\"mac-settings-ai.decisions.page.\\(id).proposal.accept\"] = { _ in id == \"labels\" ? true : { s.acceptProposal(page: id); return true }() }",
+   "proof": 10,
+   "red": "sweep-settingsai/page-proposal-accept-adds-the-rule\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "{ $0.enabled.toggle() }; return true",
+   "replace": "{ _ in }; return true",
+   "proof": 10,
+   "red": "sweep-settingsai/page-entry-switch-turns-the-entry-off\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.questionFocus = (id, s.pages[i].entries[n - 1].id); return true",
+   "replace": "return true",
+   "proof": 10,
+   "red": "sweep-settingsai/page-question-field-takes-the-typed-words\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "{ $0.trust = levels[k - 1].1 }; return true",
+   "replace": "{ if k != 1 { $0.trust = levels[k - 1].1 } }; return true",
+   "proof": 10,
+   "red": "sweep-settingsai/page-trust-strict-sets-the-level\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "{ $0.trust = levels[k - 1].1 }; return true",
+   "replace": "{ if k != 3 { $0.trust = levels[k - 1].1 } }; return true",
+   "proof": 10,
+   "red": "sweep-settingsai/page-trust-eager-sets-the-level\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "{ $0.trust = levels[k - 1].1 }; return true",
+   "replace": "{ if k != 2 { $0.trust = levels[k - 1].1 } }; return true",
+   "proof": 10,
+   "red": "sweep-settingsai/page-trust-balanced-sets-the-level\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "{ $0.outcome = tree[k - 1] }; return true",
+   "replace": "{ if k != 2 { $0.outcome = tree[k - 1] } }; return true",
+   "proof": 10,
+   "red": "sweep-settingsai/page-label-menu-item-files-the-rule-under-the-label\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "guard s.proposals[id] != nil else { return false }; s.proposals[id] = nil; return true",
+   "replace": "guard s.proposals[id] != nil else { return false }; return true",
+   "proof": 10,
+   "red": "sweep-settingsai/page-proposal-dismiss-clears-the-proposal\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.agents.new\": { _ in s.section = .agents; s.questionFocus = nil; s.newAgent(); return true },",
+   "replace": "\"mac-settings-ai.agents.new\": { _ in s.section = .agents; return true },",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-new-opens-a-draft-card\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.agents.form.link\": { _ in guard s.formMissing != nil else { return false }; s.section = .providers; return true },",
+   "replace": "\"mac-settings-ai.agents.form.link\": { _ in guard s.formMissing != nil else { return false }; return true },",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-form-link-goes-to-the-providers\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.agents.name\": { _ in s.focusDraftName() },",
+   "replace": "\"mac-settings-ai.agents.name\": { _ in s.keyFocus = \"jev\"; return s.draftAgent != nil },",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-name-field-takes-the-typed-name\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "\"mac-settings-ai.agents.save\": { _ in s.saveDraft(); return true },",
+   "replace": "\"mac-settings-ai.agents.save\": { _ in true },",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-save-keeps-the-agent\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.duplicate(a); return true",
+   "replace": "return true",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-duplicate-copies-the-last-agent\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.toggle(p, on: id); return true",
+   "replace": "w == \"read\" ? true : { s.toggle(p, on: id); return true }()",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-allow-read-toggles-the-permission\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.toggle(p, on: id); return true",
+   "replace": "w == \"search\" ? true : { s.toggle(p, on: id); return true }()",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-allow-search-toggles-the-permission\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.toggle(p, on: id); return true",
+   "replace": "w == \"draft\" ? true : { s.toggle(p, on: id); return true }()",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-allow-draft-toggles-the-permission\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.toggle(p, on: id); return true",
+   "replace": "w == \"label\" ? true : { s.toggle(p, on: id); return true }()",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-allow-label-toggles-the-permission\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.setModel(s.cards[n - 1].id, to: choices[k - 1]); return true",
+   "replace": "return true",
+   "proof": 10,
+   "red": "sweep-settingsai/agents-model-choice-sets-the-model\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-palette.result.ai-settings\"] = open   // the palette lane wins by registry order once it lands",
+   "replace": "out[\"mac-palette.result.ai-settings\"] = { _ in false }",
+   "proof": 10,
+   "red": "sweep-settingsai/palette-ai-settings-line-opens-the-window\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-palette.result.decisions\"] = { m in s.section = .decisions; return WindowBridge.open(.macSettingsAI, in: m) }",
+   "replace": "out[\"mac-palette.result.decisions\"] = { m in WindowBridge.open(.macSettingsAI, in: m) }",
+   "proof": 10,
+   "red": "sweep-settingsai/palette-decisions-line-opens-the-decisions-page\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "\"mac-trainer.hints.on\": { _ in model.hintsOn = true; return true },",
+   "replace": "\"mac-trainer.hints.on\": { _ in return true },",
+   "proof": 11,
+   "red": "sweep-trainer/hints-on-turns-the-hints-on\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "\"mac-trainer.hints.off\": { _ in model.hintsOn = false; return true },",
+   "replace": "\"mac-trainer.hints.off\": { _ in return true },",
+   "proof": 11,
+   "red": "sweep-trainer/hints-off-turns-the-hints-off\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "guard m.rows.indices.contains(i) else { return false }",
+   "replace": "guard m.rows.indices.contains(i), a != \"archive\" else { return false }",
+   "proof": 11,
+   "red": "sweep-trainer/row-archive-shows-the-hint\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "guard m.rows.indices.contains(i) else { return false }",
+   "replace": "guard m.rows.indices.contains(i), a != \"snooze\" else { return false }",
+   "proof": 11,
+   "red": "sweep-trainer/row-snooze-shows-the-hint\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "guard m.rows.indices.contains(i) else { return false }",
+   "replace": "guard m.rows.indices.contains(i), a != \"label\" else { return false }",
+   "proof": 11,
+   "red": "sweep-trainer/row-label-shows-the-hint\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "guard m.rows.indices.contains(i) else { return false }",
+   "replace": "guard m.rows.indices.contains(i), a != \"pin\" else { return false }",
+   "proof": 11,
+   "red": "sweep-trainer/row-pin-shows-the-hint\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "model.dismiss(); return true",
+   "replace": "return true",
+   "proof": 11,
+   "red": "sweep-trainer/hint-dismiss-takes-the-hint-away\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Shortcuts/ShortcutsFeature.swift",
+   "find": "out[\"mac-palette.result.show-all-keys\"] = { m in ShortcutEngine.shared.click(\"keys\", m) }",
+   "replace": "out[\"mac-palette.result.show-all-keys\"] = { m in false }",
+   "proof": 11,
+   "red": "sweep-trainer/palette-show-all-keys-opens-the-overlay\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Shortcuts/ShortcutsFeature.swift",
+   "find": "out[\"mac-shortcuts.action.\\(id)\"] = { m in ShortcutEngine.shared.click(id, m) }",
+   "replace": "out[\"mac-shortcuts.action.\\(id)\"] = { m in id == \"keys\" ? false : ShortcutEngine.shared.click(id, m) }",
+   "proof": 11,
+   "red": "sweep-trainer/show-keys-command-opens-then-closes-the-overlay\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerFeature.swift",
+   "find": "\"mac-trainer.overlay.close\": { model.close($0) },",
+   "replace": "\"mac-trainer.overlay.close\": { _ in false },",
+   "proof": 11,
+   "red": "sweep-trainer/overlay-scrim-closes-the-overlay\\s+fail"
+  },
+  {
+   "file": "Sources/App/BaseFeature.swift",
+   "find": "\"Escape\": { m in m.overlay = nil; m.surface = \"mac-main\"; return true },",
+   "replace": "\"Escape\": { m in if m.overlay == \"mac-trainer.keys\" { return false }; m.overlay = nil; m.surface = \"mac-main\"; return true },",
+   "proof": 11,
+   "red": "sweep-trainer/overlay-escape-closes-the-overlay\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpSession.swift",
+   "find": "_ = AppModel.shared.perform(.setMcpServer(on: true))",
+   "replace": "_ = 0",
+   "proof": 12,
+   "red": "sweep-mcpnotes/start-turns-the-server-on\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.allow.\\(slug)\"] = { _ in s.set(name, allowed: true) }",
+   "replace": "out[\"mac-mcp-notes.allow.\\(slug)\"] = { _ in s.set(name, allowed: name != \"Claude Desktop\") }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/allow-claude-desktop-allows-the-app\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.allow.\\(slug)\"] = { _ in s.set(name, allowed: true) }",
+   "replace": "out[\"mac-mcp-notes.allow.\\(slug)\"] = { _ in s.set(name, allowed: name != \"Cursor\") }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/allow-cursor-allows-the-app\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.allow.\\(slug)\"] = { _ in s.set(name, allowed: true) }",
+   "replace": "out[\"mac-mcp-notes.allow.\\(slug)\"] = { _ in s.set(name, allowed: name != \"Raycast\") }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/allow-raycast-allows-the-app\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.revoke.\\(slug)\"] = { _ in s.set(name, allowed: false) }",
+   "replace": "out[\"mac-mcp-notes.revoke.\\(slug)\"] = { _ in s.set(name, allowed: name == \"Claude Desktop\") }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/revoke-claude-desktop-takes-the-access-back\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.revoke.\\(slug)\"] = { _ in s.set(name, allowed: false) }",
+   "replace": "out[\"mac-mcp-notes.revoke.\\(slug)\"] = { _ in s.set(name, allowed: name == \"Cursor\") }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/revoke-cursor-takes-the-access-back\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.revoke.\\(slug)\"] = { _ in s.set(name, allowed: false) }",
+   "replace": "out[\"mac-mcp-notes.revoke.\\(slug)\"] = { _ in s.set(name, allowed: name == \"Raycast\") }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/revoke-raycast-takes-the-access-back\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.request.\\(r.id).allow\"] = { _ in s.answer(r.id, allowed: true) }",
+   "replace": "out[\"mac-mcp-notes.request.\\(r.id).allow\"] = { _ in false }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/request-allow-answers-yes\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-mcp-notes.request.\\(r.id).refuse\"] = { _ in s.answer(r.id, allowed: false) }",
+   "replace": "out[\"mac-mcp-notes.request.\\(r.id).refuse\"] = { _ in false }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/request-refuse-answers-no\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpLayout.swift",
+   "find": "w.close()",
+   "replace": "return false",
+   "proof": 12,
+   "red": "sweep-mcpnotes/close-pill-puts-the-main-window-back\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "[\"Escape\": { m in m.surface == McpLayout.slot.id && McpWindowDoor.close(m) }]",
+   "replace": "[\"Escape\": { m in false }]",
+   "proof": 12,
+   "red": "sweep-mcpnotes/escape-closes-the-window\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpNotesMacFeature.swift",
+   "find": "out[\"mac-palette.result.outside-ai-apps\"] = { m in McpWindowDoor.open(m) }",
+   "replace": "out[\"mac-palette.result.outside-ai-apps\"] = { m in false }",
+   "proof": 12,
+   "red": "sweep-mcpnotes/palette-line-opens-the-window\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartRows.swift",
+   "find": "\"\\(X).continue\": { _ in m.next() },",
+   "replace": "\"\\(X).continue\": { _ in true },",
+   "proof": 13,
+   "red": "sweep-firststart/continue-goes-to-the-next-step\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartRows.swift",
+   "find": "\"\\(X).back\": { _ in m.back() },",
+   "replace": "\"\\(X).back\": { _ in true },",
+   "proof": 13,
+   "red": "sweep-firststart/back-returns-to-the-step-before\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartRows.swift",
+   "find": "\"\\(X).skip\": { _ in m.skip() },",
+   "replace": "\"\\(X).skip\": { _ in true },",
+   "proof": 13,
+   "red": "sweep-firststart/skip-jumps-to-the-add-account-step\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartRows.swift",
+   "find": "\"\\(X).skip\": { _ in m.skip() },",
+   "replace": "\"\\(X).skip\": { _ in m.step == FirstStartModel.addStep ? true : m.skip() },",
+   "proof": 13,
+   "red": "sweep-firststart/skip-at-the-add-step-leaves-the-empty-inbox\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartRows.swift",
+   "find": "\"\\(X).add-account\": { _ in m.addAccountFromEmptyInbox() },",
+   "replace": "\"\\(X).add-account\": { _ in true },",
+   "proof": 13,
+   "red": "sweep-firststart/add-account-opens-the-sheet\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "public static func typeText(_ text: String, _ app: AppModel) -> Bool { m.tryType(text) }",
+   "replace": "public static func typeText(_ text: String, _ app: AppModel) -> Bool { false }",
+   "proof": 13,
+   "red": "sweep-firststart/try-it-field-finds-by-meaning\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in m.tryKey(k) } }",
+   "replace": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in k == \"J\" ? true : m.tryKey(k) } }",
+   "proof": 13,
+   "red": "sweep-firststart/try-it-key-j-moves-the-focus-down\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in m.tryKey(k) } }",
+   "replace": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in k == \"K\" ? true : m.tryKey(k) } }",
+   "proof": 13,
+   "red": "sweep-firststart/try-it-key-k-moves-the-focus-up\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in m.tryKey(k) } }",
+   "replace": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in k == \"E\" ? true : m.tryKey(k) } }",
+   "proof": 13,
+   "red": "sweep-firststart/try-it-key-e-marks-the-line-done\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in m.tryKey(k) } }",
+   "replace": "for k in [\"J\", \"K\", \"E\", \"H\"] { out[k] = { _ in k == \"H\" ? true : m.tryKey(k) } }",
+   "proof": 13,
+   "red": "sweep-firststart/try-it-key-h-reminds-about-the-line\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "\"Enter\": { _ in enter() },",
+   "replace": "\"Enter\": { _ in false },",
+   "proof": 13,
+   "red": "sweep-firststart/enter-key-continues\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "\"Escape\": { _ in m.active && m.skip() },",
+   "replace": "\"Escape\": { _ in false },",
+   "proof": 13,
+   "red": "sweep-firststart/escape-key-skips\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartFeature.swift",
+   "find": "\"⌘[\": { _ in m.back() },",
+   "replace": "\"⌘[\": { _ in false },",
+   "proof": 13,
+   "red": "sweep-firststart/command-bracket-key-goes-back\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartAIRows.swift",
+   "find": "door(\"writing.key\", fixtureOnly: true) { step.pasteWritingKey(key) },",
+   "replace": "door(\"writing.key\", fixtureOnly: true) { },",
+   "proof": 13,
+   "red": "sweep-firststart/ai-writing-key-connects-a-provider\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartAIRows.swift",
+   "find": "door(\"meaning.download\") { AISetupDoors.fix(.meaning) },",
+   "replace": "door(\"meaning.download\") { },",
+   "proof": 13,
+   "red": "sweep-firststart/ai-meaning-download-starts\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartAIRows.swift",
+   "find": "door(\"sorting.use-jev\") { step.openJev() },",
+   "replace": "door(\"sorting.use-jev\") { },",
+   "proof": 13,
+   "red": "sweep-firststart/ai-use-jev-asks-for-the-key\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartAIRows.swift",
+   "find": "door(\"sorting.jev-key\", fixtureOnly: true) { step.submitJevKey(key) },",
+   "replace": "door(\"sorting.jev-key\", fixtureOnly: true) { },",
+   "proof": 13,
+   "red": "sweep-firststart/ai-jev-key-asks-for-the-consent\\s+fail"
+  },
+  {
+   "file": "Sources/Features/FirstStart/FirstStartAIRows.swift",
+   "find": "door(\"sorting.jev-allow\") { step.allowJev() },",
+   "replace": "door(\"sorting.jev-allow\") { },",
+   "proof": 13,
+   "red": "sweep-firststart/ai-jev-allow-chooses-jev\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(p, \"page.\\(p.rawValue)\", \"page\") { RepliesRouter.go(p) }",
+   "replace": "add(p, \"page.\\(p.rawValue)\", \"page\") { }",
+   "proof": 18,
+   "red": "(?m)^page\\-auto\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.auto, \"popover.close\", \"button\") { s.popover = nil }",
+   "replace": "add(.auto, \"popover.close\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^popover\\-close\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.auto, \"auto.enabled\", \"switch\") { s.setEnabled(.auto, !(s.use(.auto)?.enabled ?? false)) }",
+   "replace": "add(.auto, \"auto.enabled\", \"switch\") { }",
+   "proof": 18,
+   "red": "(?m)^auto\\-enabled\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(page, \"\\(key).match-thread\", \"switch\") { s.setMatchThread(kind, !(s.use(kind)?.matchThread ?? false)) }",
+   "replace": "add(page, \"\\(key).match-thread\", \"switch\") { }",
+   "proof": 18,
+   "red": "(?m)^auto\\-match\\-thread\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.onDemand, \"on-demand.instruction-before\", \"switch\") { s.setOption(.instructionBefore, !s.onDemand.instructionBefore) }",
+   "replace": "add(.onDemand, \"on-demand.instruction-before\", \"switch\") { }",
+   "proof": 18,
+   "red": "(?m)^on\\-demand\\-instruction\\-before\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.onDemand, \"on-demand.change-after\", \"switch\") { s.setOption(.changeAfter, !s.onDemand.changeAfter) }",
+   "replace": "add(.onDemand, \"on-demand.change-after\", \"switch\") { }",
+   "proof": 18,
+   "red": "(?m)^on\\-demand\\-change\\-after\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.auto, \"auto.step.\\(k)\", \"row\") { RepliesRouter.go(.filter) }",
+   "replace": "add(.auto, \"auto.step.\\(k)\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^auto\\-step\\-entry\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(page, \"\\(key).sources\", \"row\") { RepliesRouter.go(.sources) }",
+   "replace": "add(page, \"\\(key).sources\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^auto\\-sources\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(page, \"\\(key).prompt\", \"row\") { RepliesRouter.go(.prompt) }",
+   "replace": "add(page, \"\\(key).prompt\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^auto\\-prompt\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.auto, \"auto.try\", \"button\") { s.tryOnMessage(.auto) }",
+   "replace": "add(.auto, \"auto.try\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^auto\\-try\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.try\", \"button\") { s.tryOnMessage(.onDemand) }",
+   "replace": "add(.retrieval, \"retrieval.try\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-try\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(page, \"\\(key).tone.\\(id)\", \"choice\") { s.setTone(kind, id) }",
+   "replace": "add(page, \"\\(key).tone.\\(id)\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^auto\\-tone\\-choices\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.\\(key).switch\", \"switch\") {",
+   "replace": "add(.filter, \"filter.\\(key).switch\", \"switch\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-entry\\-switch\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.scope.all\", \"check\") { s.setScope(.all) }",
+   "replace": "add(.filter, \"filter.scope.all\", \"check\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-scope\\-all\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.scope.label.\\(l.id)\", \"check\") { s.toggleLabel(l.id) }",
+   "replace": "add(.filter, \"filter.scope.label.\\(l.id)\", \"check\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-scope\\-labels\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.\\(key).match.all\", \"choice\") { s.setMode(card, .all) }",
+   "replace": "add(.filter, \"filter.\\(key).match.all\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-entry\\-match\\-all\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.\\(key).match.any\", \"choice\") { s.setMode(card, .any) }",
+   "replace": "add(.filter, \"filter.\\(key).match.any\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-entry\\-match\\-any\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.\\(key).fact.\\(fk).\\(sk)\", \"segment\") { s.setFact(card, fact, state) }",
+   "replace": "add(.filter, \"filter.\\(key).fact.\\(fk).\\(sk)\", \"segment\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-entry\\-fact\\-unread\\-any\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.entry.sender\", \"field\") { s.setSender(RepliesDoors.sampleSender) }",
+   "replace": "add(.filter, \"filter.entry.sender\", \"field\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-entry\\-sender\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.entry.sender.clear\", \"button\") { s.setSender(\"\") }",
+   "replace": "add(.filter, \"filter.entry.sender.clear\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-entry\\-sender\\-clear\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+   "find": "add(.filter, \"filter.ai.reads.\\(r.rawValue)\", \"check\") { s.toggleRead(r) }",
+   "replace": "add(.filter, \"filter.ai.reads.\\(r.rawValue)\", \"check\") { }",
+   "proof": 18,
+   "red": "(?m)^filter\\-ai\\-reads\\-subject\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.add\", \"button\") { RepliesFolderPicker.choose() }",
+   "replace": "add(.sources, \"sources.add\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-add\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.add-folder\", \"button\") { RepliesFolderPicker.choose() }",
+   "replace": "add(.sources, \"sources.add-folder\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-add\\-folder\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.add-folder.sample\", \"field\") { s.addFolder(RepliesDoors.sampleFolder) }",
+   "replace": "add(.sources, \"sources.add-folder.sample\", \"field\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-add\\-folder\\-sample\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.local.\\(i).remove\", \"menu\") { s.removeFolder(path) }",
+   "replace": "add(.sources, \"sources.local.\\(i).remove\", \"menu\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-local\\-remove\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.account.\\(a.accountId)\", \"row\") { s.toggleAccount(a.accountId) }",
+   "replace": "add(.sources, \"sources.account.\\(a.accountId)\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-account\\-cards\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.account.\\(a.accountId).folder.\\(i)\", \"tile\") { s.toggleSource(f) }",
+   "replace": "add(.sources, \"sources.account.\\(a.accountId).folder.\\(i)\", \"tile\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-folder\\-tiles\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.local.\\(i)\", \"tile\") { s.toggleSource(f) }",
+   "replace": "add(.sources, \"sources.local.\\(i)\", \"tile\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-local\\-tiles\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.calendar.\\(c.calendarId)\", \"switch\") { s.toggleCalendar(c) }",
+   "replace": "add(.sources, \"sources.calendar.\\(c.calendarId)\", \"switch\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-calendar\\-switches\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.scope.this_account\", \"segment\") { s.setSearchScope(.thisAccount) }",
+   "replace": "add(.sources, \"sources.scope.this_account\", \"segment\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-scope\\-this\\-account\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.sources, \"sources.scope.all_accounts\", \"segment\") { s.setSearchScope(.allAccounts) }",
+   "replace": "add(.sources, \"sources.scope.all_accounts\", \"segment\") { }",
+   "proof": 18,
+   "red": "(?m)^sources\\-scope\\-all\\-accounts\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.per-question.\\(n)\", \"choice\") { s.setRetrieval(.excerptsPerQuestion(n: n)) }",
+   "replace": "add(.retrieval, \"retrieval.per-question.\\(n)\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-per\\-question\\-3\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.size.\\(excerptSizeKey(v: z))\", \"choice\") { s.setRetrieval(.excerptSize(size: z)) }",
+   "replace": "add(.retrieval, \"retrieval.size.\\(excerptSizeKey(v: z))\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-size\\-sentence\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.keep.\\(n)\", \"choice\") { s.setRetrieval(.keepN(n: n)) }",
+   "replace": "add(.retrieval, \"retrieval.keep.\\(n)\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-keep\\-3\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.clash.\\(clashRuleKey(v: r))\", \"choice\") { s.setRetrieval(.clash(rule: r)) }",
+   "replace": "add(.retrieval, \"retrieval.clash.\\(clashRuleKey(v: r))\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-clash\\-keep\\-both\\-dated\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.fields\", \"row\") { s.popover = .fields }",
+   "replace": "add(.retrieval, \"retrieval.fields\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-fields\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.ai-filter\", \"row\") { s.popover = .aiFilter }",
+   "replace": "add(.retrieval, \"retrieval.ai-filter\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-ai\\-filter\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.fields.\\(f.rawValue)\", \"check\") { s.toggleField(f) }",
+   "replace": "add(.retrieval, \"retrieval.fields.\\(f.rawValue)\", \"check\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-field\\-date\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.ai-filter.field\", \"field\") { s.setRetrieval(.aiFilterQuestion(question: RepliesDoors.sampleFilter)) }",
+   "replace": "add(.retrieval, \"retrieval.ai-filter.field\", \"field\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-ai\\-filter\\-field\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.ai-filter.save\", \"button\") { s.setRetrieval(.aiFilterQuestion(question: RepliesDoors.sampleFilter)) }",
+   "replace": "add(.retrieval, \"retrieval.ai-filter.save\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-ai\\-filter\\-save\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.retrieval, \"retrieval.ai-filter.off\", \"button\") { s.setRetrieval(.aiFilterQuestion(question: nil)) }",
+   "replace": "add(.retrieval, \"retrieval.ai-filter.off\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^retrieval\\-ai\\-filter\\-off\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.voice, \"voice.sample.\\(n)\", \"choice\") { s.voiceSample = n }",
+   "replace": "add(.voice, \"voice.sample.\\(n)\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^voice\\-sample\\-50\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.voice, \"voice.analyse\", \"button\") { s.analyse(s.voiceSample ?? s.voice?.sampleSize ?? 100) }",
+   "replace": "add(.voice, \"voice.analyse\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^voice\\-analyse\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.voice, \"voice.examples.\\(n)\", \"choice\") { s.setExamples(n) }",
+   "replace": "add(.voice, \"voice.examples.\\(n)\", \"choice\") { }",
+   "proof": 18,
+   "red": "(?m)^voice\\-examples\\-0\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.voice, \"voice.tones\", \"row\") { s.popover = .tones }",
+   "replace": "add(.voice, \"voice.tones\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^voice\\-tones\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.voice, \"voice.tone.\\(t.id).delete\", \"button\") { s.deleteTone(t.id) }",
+   "replace": "add(.voice, \"voice.tone.\\(t.id).delete\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^voice\\-tone\\-delete\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.variables\", \"row\") { s.popover = .variables }",
+   "replace": "add(.prompt, \"prompt.variables\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-variables\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.notes\", \"row\") { s.popover = .notes }",
+   "replace": "add(.prompt, \"prompt.notes\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-notes\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.versions\", \"row\") { s.popover = .versions }",
+   "replace": "add(.prompt, \"prompt.versions\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-versions\\-row\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.preview\", \"button\") { s.openPreview() }",
+   "replace": "add(.prompt, \"prompt.preview\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-preview\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerHintView.swift",
+   "find": ".whooshAx(\"mac-trainer.hint.dismiss\")",
+   "replace": ".accessibilityIdentifier(\"mac-trainer.hint.dismiss\")",
+   "proof": 11,
+   "red": "sweep-trainer/hint-dismiss-button-is-drawn-with-its-own-id\\s+fail"
+  },
+  {
+   "file": "Sources/Features/Trainer/TrainerOverlayView.swift",
+   "find": ".whooshAx(\"mac-trainer.overlay.close\")",
+   "replace": ".accessibilityIdentifier(\"mac-trainer.overlay.close\")",
+   "proof": 11,
+   "red": "sweep-trainer/overlay-scrim-is-drawn-with-its-own-id\\s+fail"
+  },
+  {
+   "file": "Sources/Features/McpNotesMac/McpPaneView.swift",
+   "find": ".whooshAx(id)   // the pill's id plus a frame",
+   "replace": ".accessibilityIdentifier(id)   // the pill's id plus a frame",
+   "proof": 12,
+   "red": "sweep-mcpnotes/pills-are-drawn-with-their-own-id\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/SettingsRepliesMacFeature.swift",
+   "find": "guard m.surface.hasPrefix(\"mac-settings\"), s.popover != nil else",
+   "replace": "guard m.surface.hasPrefix(\"mac-settings\"), s.popover == nil else",
+   "proof": 18,
+   "red": "popover-escape-closes-it\\s+fail"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/SourcesPane.swift",
+   "find": ".keyboardShortcut(\"n\", modifiers: .command)",
+   "replace": ".keyboardShortcut(\"m\", modifiers: .command)",
+   "proof": 18,
+   "red": "sources-add-command-n\\s+fail"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeDoors.swift",
+   "find": "w.pasteText = w.address; w.address = \"\"; w.pasteOpen = true; return true",
+   "replace": "return true",
+   "proof": 4,
+   "red": "FAIL welcomemac-sweep-paste-text-moves-the-typed-words-into-the-paste-area"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeDoors.swift",
+   "find": "\"open\": w.pasteOpen, \"text\": w.pasteText",
+   "replace": "\"open\": false, \"text\": w.pasteText",
+   "proof": 4,
+   "red": "FAIL welcomemac-sweep-paste-list-opens-and-closes-the-paste-area"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeDoors.swift",
+   "find": "t[\"\\(W).preset.\\(p)\"] = { _ in w.setPreset(p); return w.preset == p }",
+   "replace": "t[\"\\(W).preset.\\(p)\"] = { _ in true }",
+   "proof": 4,
+   "red": "FAIL welcomemac-sweep-preset-"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeDoors.swift",
+   "find": "t[\"\\(W).accounts.\\(id)\"] = { _ in w.editing = (w.editing == id) ? nil : id; return true }",
+   "replace": "t[\"\\(W).accounts.\\(id)\"] = { _ in true }",
+   "proof": 4,
+   "red": "FAIL welcomemac-sweep-account-row-tap-opens-and-closes-its-editor"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeDoors.swift",
+   "find": "{ _ in w.move(from: IndexSet(integer: i), to: i - 1); return true }",
+   "replace": "{ _ in true }",
+   "proof": 4,
+   "red": "FAIL welcomemac-sweep-account-move-up-puts-the-row-above-the-one-before"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeDoors.swift",
+   "find": "{ _ in imp.intoAccount = a.id; return true }",
+   "replace": "{ _ in true }",
+   "proof": 4,
+   "red": "FAIL welcomemac-sweep-import-into-picks-an-account"
+  },
+  {
+   "file": "Sources/Features/WelcomeMac/WelcomeDoors.swift",
+   "find": "t[\"\\(W).import.into.matching\"] = { _ in imp.intoAccount = nil; return true }",
+   "replace": "t[\"\\(W).import.into.matching\"] = { _ in true }",
+   "proof": 4,
+   "red": "FAIL welcomemac-sweep-import-into-matching-goes-back-to-the-matching-account"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.note.add\", \"button\") { s.saveNote(RepliesDoors.sampleNote) }",
+   "replace": "add(.prompt, \"prompt.note.add\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-note\\-add\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.note.\\(n.id).delete\", \"button\") { s.deleteNote(n.id) }",
+   "replace": "add(.prompt, \"prompt.note.\\(n.id).delete\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-note\\-delete\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.version.\\(v.version).restore\", \"button\") { s.restore(v.version) }",
+   "replace": "add(.prompt, \"prompt.version.\\(v.version).restore\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-version\\-restore\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesTextDoors.swift",
+   "find": "add(.prompt, \"prompt.variable.\\(v.id)\", \"row\") { s.placeVariable(v) }",
+   "replace": "add(.prompt, \"prompt.variable.\\(v.id)\", \"row\") { }",
+   "proof": 18,
+   "red": "(?m)^prompt\\-variable\\-message\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesEditorDoors.swift",
+   "find": "add(page, \"editor.\\(k.raw)\", \"text\") { _ = cursor(k, at: .max) }",
+   "replace": "add(page, \"editor.\\(k.raw)\", \"text\") { }",
+   "proof": 18,
+   "red": "(?m)^editor\\-prompt\\-click\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesEditorDoors.swift",
+   "find": "add(page, \"editor.\\(k.raw).save\", \"button\") { s.save(k) }",
+   "replace": "add(page, \"editor.\\(k.raw).save\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^editor\\-prompt\\-save\\s+fail\\s"
+  },
+  {
+   "file": "Sources/Features/SettingsRepliesMac/RepliesEditorDoors.swift",
+   "find": "add(page, \"editor.\\(k.raw).revert\", \"button\") { let e = s.editor(k); if e.confirmRevert { e.revert() } else if e.dirty { e.confirmRevert = true } }",
+   "replace": "add(page, \"editor.\\(k.raw).revert\", \"button\") { }",
+   "proof": 18,
+   "red": "(?m)^editor\\-prompt\\-revert\\s+fail\\s"
+  }
+ ],
+ "gap": "hid-keys 2026-11-13: Replies F-rep-3 built as ADDED click doors (`<field>.typed.focus` / `.typed.commit` for sender, folder, AI filter, tone, note, words through `type`, buffer row `mac-settings-replies.typed`), not listed in `controls` so the 167-case sweep is unchanged; one case `sources-add-folder-typed` (sweep-settingsreplies.py, 168 cases, 168 mutants red); the other four fields share the same door builder, no case of their own. hid-keys 2026-11-13 (round gaps 3): built with doors, cases and broken copies in the stand-ins (selftests green), not run on a build: Welcome F-e (Sign in with, Connect with the typed app password), F-f (Try again), F-g (editor Name and Signature by focus then `type`, colour, icon, Remove), F-h (the refused row's link counted by the rig), F-k (Open Full Disk Access counted, fixture state `apple-mail=fda`), F-m (the mark's Fix and Cancel, outcome row `ai-setup.mark.last`), First start F1 (`fixture accounts none` then Continue at step 6). Earlier rounds: notch F1 to F4, trainer F1, Calendars F-cal, MCP F1 ruled. control-cases 2026-11-15: built with broken copies in the stand-ins (selftests green), not run on a build: Welcome F-l and First start F2 (the decision model's Download: `fixture provider-endpoint laya <loopback url>` stages the stub of checks/settingsaimac-check.py, the case clicks Download once and reads the line leave 'not downloaded'; cases `welcomemac-sweep-ai-download-starts-the-decision-model` in par-welcomemac.py and `ai-sorting-download-starts-the-decision-model` in sweep-firststart.py) and the provider-page link door `.provider.link` (case `welcomemac-sweep-provider-link-is-counted-by-the-rig`). STILL LEFT: the lead runs both checks on a hidden test copy (python3 checks/parity/par-welcomemac.py and python3 checks/parity/sweep-firststart.py) and the Cancel of the sorting line stays with par-firststart.py. Item stays gap until that run is green.",
+ "owner": "MCP notes F1: should the standalone window draw request rows (the intent is not in SPEC; requests are answered in McpSettingsPane.swift:12)?",
+ "notes": "Claims and judges that exist (not new proofs of this item's whole acceptance). Proofs 0 to 5 run the existing sweeps and their self-tests that are cheap to run: the notch self-test (par-notch.py:840-868, last line '<n> round-6 checks green on the model, <m> mutants, <k> not red'), the labels door table self-test (par-labelscontactsmac.py:3097-3102 'MUTANTS | door table | green | the <half> of <control> is removed | red': each control of DOORS has a click door and a drawn control, removing either half turns the case red), the search doors self-test (par-searchmac.py:1681 prints 'N door checks, M mutants, K problems', the J2.9 doors step at :2358-2368 clicks every control of the search screen once and reads its outcome), the notch sweep (par-notch.py:498). Printing: par-labelscontactsmac prints one line per case (report()); par-welcomemac prints '  PASS|FAIL <case>' on stderr per case (its main, line 1128 shape); par-notch and par-searchmac print only totals and write one JSON line per case to the results file (journeys/lib/harness.py:244-268: with WHOOSH_BUILD_LABEL and WHOOSH_RESULTS_DIR set, as in the runs above, the passes are in _captures/results/g6/par-<name>-g6.results.jsonl); that is a gap of kind check for those two (print_cases(r) in main) noted in item 46ed60cb. A control with no outcome is listed as a finding in the existing tables (sweep-notch.md: 7 findings; sweep-welcomemac.md: 21 findings; docs/COVERAGE.md reader table F1 to F4). No mutants are listed in this file because the sweeps carry their own (the mutant of a sweep is a model mutant of its self-test plus an app mutant in its MUTANTS block); the lead can read them there. The Bar for this item is a count of screens: 15 Mac screens in shots-sheet SCREENS (:37-43), of which about 8 have a table in COVERAGE.md and about 8 do not. | OLD GAP (before lane gap-states, 2026-11-12): Screens of lane gap-sweep-a: kind check plus the table, size L (about one lane per missing screen, 2 to 3 builders). The reader's finding 'NOT BUILT' is too strong: per-screen sweeps exist in 8 notes and in docs/COVERAGE.md, written by separate lanes. What exists: docs/COVERAGE.md control tables for InboxList and MacShell (:17), Settings General, Accounts and the window (:27), Reader and AttachmentsMac (:85), ComposerMac and QuickReply (:125), SearchMac and MessageBody (:221), Sidebar and PaletteMac (:248), Labels, contacts and Add account (:320); sweep notes docs/lanes/sweep-attachments.md, sweep-inboxlist.md, sweep-macshell.md, sweep-notch.md (29 controls, 22 covered, 7 findings; checks/parity/par-notch.py:498 step par-notch-sweep), sweep-reader.md, sweep-settingsaccounts.md, sweep-settingsgeneral.md, sweep-welcomemac.md (65 controls, 44 covered, 21 findings; cases welcomemac-sweep-*, each with a mutant `sw-<case>`, self-test ends 'selftest: every check seen red on its mutant'). What is missing, from comparing the screens of checks/shots-sheet.py SCREENS (:37-43) with docs/COVERAGE.md (grep -c of each name gives 0, searched): mac-trainer, mac-welcome-accounts (its sweep has a note but no COVERAGE table), mac-settings-ai, mac-settings-replies, mac-settings-calendars, mac-mcp-notes, mac-ask, mac-entra-guide, and the first-start flow; the notch has a note but not a COVERAGE table. For each: (a) a table `screen | control | door id | outcome | check` appended to docs/COVERAGE.md in the shape of the existing sections (:85-125); (b) a driven case per control (click once, read the visible outcome through the control socket, in the screen's own par-*.py or a new step `<screen>-sweep`), a control with no door or no outcome listed as a FINDING row (never skipped); (c) a mutant per case that disables that one control (one line in the app, named in the file's MUTANTS block, and a model mutant in its --selftest), (d) the run on a bundle printing one `name  pass|fail|unjudged  detail` line per case (print_cases of journeys/lib/harness.py:292). Order for the builders: SettingsAIMac, Trainer, McpNotesMac, SettingsRepliesMac and SettingsCalendars, EntraGuide, AskMac, then the notch and welcome tables into COVERAGE.md. Each screen is one item of its own on the board; this item closes when the last table lands. UPDATE lane gap-sweep-a (2026-11-11): four screens now have a table and a sweep: Settings AI and Decisions (checks/parity/sweep-settingsai.py, 49 cases, 11 findings), the trainer (sweep-trainer.py, 11 cases, 4 findings), MCP notes (sweep-mcpnotes.py, 12 cases, 3 findings), the first-start flow (sweep-firststart.py, 18 cases, 6 findings); tables at the end of docs/COVERAGE.md, notes docs/lanes/gap-sweep-a.md. Proofs 6 to 9 run each --selftest (every case seen red on its model, every MUTANTS row's find occurs once in its file); proofs 10 to 13 are the hidden sweeps, one `name  pass|fail|unjudged  detail` line per case, NOT YET RUN: the lead's hidden run on the next build settles each. What remains for this item: the other helper's screens (Settings Replies, Settings Calendars, the Entra guide, Ask, the notch and welcome tables). || Screens of lane gap-sweep-b: kind check plus the table, size L (about one lane per missing screen, 2 to 3 builders). The reader's finding 'NOT BUILT' is too strong: per-screen sweeps exist in 8 notes and in docs/COVERAGE.md, written by separate lanes. What exists: docs/COVERAGE.md control tables for InboxList and MacShell (:17), Settings General, Accounts and the window (:27), Reader and AttachmentsMac (:85), ComposerMac and QuickReply (:125), SearchMac and MessageBody (:221), Sidebar and PaletteMac (:248), Labels, contacts and Add account (:320); sweep notes docs/lanes/sweep-attachments.md, sweep-inboxlist.md, sweep-macshell.md, sweep-notch.md (29 controls, 22 covered, 7 findings; checks/parity/par-notch.py:498 step par-notch-sweep), sweep-reader.md, sweep-settingsaccounts.md, sweep-settingsgeneral.md, sweep-welcomemac.md (65 controls, 44 covered, 21 findings; cases welcomemac-sweep-*, each with a mutant `sw-<case>`, self-test ends 'selftest: every check seen red on its mutant'). What is missing, from comparing the screens of checks/shots-sheet.py SCREENS (:37-43) with docs/COVERAGE.md (grep -c of each name gives 0, searched): mac-trainer, mac-welcome-accounts (its sweep has a note but no COVERAGE table), mac-settings-ai, mac-settings-replies, mac-settings-calendars, mac-mcp-notes, mac-ask, mac-entra-guide, and the first-start flow; the notch has a note but not a COVERAGE table. For each: (a) a table `screen | control | door id | outcome | check` appended to docs/COVERAGE.md in the shape of the existing sections (:85-125); (b) a driven case per control (click once, read the visible outcome through the control socket, in the screen's own par-*.py or a new step `<screen>-sweep`), a control with no door or no outcome listed as a FINDING row (never skipped); (c) a mutant per case that disables that one control (one line in the app, named in the file's MUTANTS block, and a model mutant in its --selftest), (d) the run on a bundle printing one `name  pass|fail|unjudged  detail` line per case (print_cases of journeys/lib/harness.py:292). Order for the builders: SettingsAIMac, Trainer, McpNotesMac, SettingsRepliesMac and SettingsCalendars, EntraGuide, AskMac, then the notch and welcome tables into COVERAGE.md. Each screen is one item of its own on the board; this item closes when the last table lands. UPDATE gap-sweep-b (2026-11-11): written and self-tested, not yet driven: Settings > Replies (checks/parity/sweep-settingsreplies.py, 165 cases, proofs 6 and 10), Settings > Agendas (sweep-settingscalendars.py, 5 cases, proofs 7 and 11), the Entra guide (sweep-entraguide.py, 21 cases, proofs 8 and 12), Ask (sweep-ask.py, 4 cases, proofs 9 and 13: the Ask panel was retired in commit 59f91f249, mac-ask is not in shots-sheet SCREENS, so the file proves the retirement and finds no control); the tables for these four, for the notch (29 controls) and for the welcome accounts screen (65 controls) are at the end of docs/COVERAGE.md. STILL MISSING for these screens: the lead's hidden run of the four sweeps on the next build (proofs 10 to 13), which may turn up a real failure to send back; the findings in docs/lanes/gap-sweep-b.md (F-rep-1 to 3, F-cal-1 and 2) and the notch and welcome findings F1 to F4 and F-a to F-m (each needs a door in Sources/**). The screens of the other helper (Settings > AI, the trainer, the MCP notes screen, the first-start flow) are its part of this file. Only the lead can close this item: it stays `gap` until the hidden runs are green. || fix-screens (2026-11-11): the findings that were in the app's own files are built: trainer F2, F3 (ids on the hint x and the scrim, two cases in sweep-trainer.py, now 13 cases), MCP F3 (the pills are `.whooshAx`, one case, now 13 cases), Replies F-rep-1 and F-rep-2 (Escape and Command-N cases, now 167 cases), Welcome F-a, F-b, F-c, F-d, F-i, F-j (doors in Sources/Features/WelcomeMac/WelcomeDoors.swift, ten cases `welcomemac-sweep-*` in par-welcomemac.py, 70 checks); 12 broken copies added (mutants 147 to 158). NOT built, with the reason in docs/lanes/fix-screens.md: the palette door of the trainer's two lines (PaletteMac), MCP F1 (design question), first-start F1 to F6, Welcome F-e, F-f, F-g, F-h, F-k, F-l, F-m, Replies F-rep-3 and F-cal-1 and 2 (need a verb or a real macOS ask), the notch findings (Notch). The hidden runs of the changed sweeps are the lead's. || ALSO (the other helper's text): Screens of lane gap-sweep-a: kind check plus the table, size L (about one lane per missing screen, 2 to 3 builders). The reader's finding 'NOT BUILT' is too strong: per-screen sweeps exist in 8 notes and in docs/COVERAGE.md, written by separate lanes. What exists: docs/COVERAGE.md control tables for InboxList and MacShell (:17), Settings General, Accounts and the window (:27), Reader and AttachmentsMac (:85), ComposerMac and QuickReply (:125), SearchMac and MessageBody (:221), Sidebar and PaletteMac (:248), Labels, contacts and Add account (:320); sweep notes docs/lanes/sweep-attachments.md, sweep-inboxlist.md, sweep-macshell.md, sweep-notch.md (29 controls, 22 covered, 7 findings; checks/parity/par-notch.py:498 step par-notch-sweep), sweep-reader.md, sweep-settingsaccounts.md, sweep-settingsgeneral.md, sweep-welcomemac.md (65 controls, 44 covered, 21 findings; cases welcomemac-sweep-*, each with a mutant `sw-<case>`, self-test ends 'selftest: every check seen red on its mutant'). What is missing, from comparing the screens of checks/shots-sheet.py SCREENS (:37-43) with docs/COVERAGE.md (grep -c of each name gives 0, searched): mac-trainer, mac-welcome-accounts (its sweep has a note but no COVERAGE table), mac-settings-ai, mac-settings-replies, mac-settings-calendars, mac-mcp-notes, mac-ask, mac-entra-guide, and the first-start flow; the notch has a note but not a COVERAGE table. For each: (a) a table `screen | control | door id | outcome | check` appended to docs/COVERAGE.md in the shape of the existing sections (:85-125); (b) a driven case per control (click once, read the visible outcome through the control socket, in the screen's own par-*.py or a new step `<screen>-sweep`), a control with no door or no outcome listed as a FINDING row (never skipped); (c) a mutant per case that disables that one control (one line in the app, named in the file's MUTANTS block, and a model mutant in its --selftest), (d) the run on a bundle printing one `name  pass|fail|unjudged  detail` line per case (print_cases of journeys/lib/harness.py:292). Order for the builders: SettingsAIMac, Trainer, McpNotesMac, SettingsRepliesMac and SettingsCalendars, EntraGuide, AskMac, then the notch and welcome tables into COVERAGE.md. Each screen is one item of its own on the board; this item closes when the last table lands. UPDATE lane gap-sweep-a (2026-11-11): four screens now have a table and a sweep: Settings AI and Decisions (checks/parity/sweep-settingsai.py, 56 cases, 6 findings: lane fix-checks turned F4 to F8 into 7 driven cases once their doors existed), the trainer (sweep-trainer.py, 11 cases, 4 findings), MCP notes (sweep-mcpnotes.py, 12 cases, 3 findings), the first-start flow (sweep-firststart.py, 18 cases, 6 findings); tables at the end of docs/COVERAGE.md, notes docs/lanes/gap-sweep-a.md. Proofs 6 to 9 run each --selftest (every case seen red on its model, every MUTANTS row's find occurs once in its file); proofs 10 to 13 are the hidden sweeps, one `name  pass|fail|unjudged  detail` line per case, NOT YET RUN: the lead's hidden run on the next build settles each. What remains for this item: the other helper's screens (Settings Replies, Settings Calendars, the Entra guide, Ask, the notch and welcome tables). || Screens of lane gap-sweep-b: kind check plus the table, size L (about one lane per missing screen, 2 to 3 builders). The reader's finding 'NOT BUILT' is too strong: per-screen sweeps exist in 8 notes and in docs/COVERAGE.md, written by separate lanes. What exists: docs/COVERAGE.md control tables for InboxList and MacShell (:17), Settings General, Accounts and the window (:27), Reader and AttachmentsMac (:85), ComposerMac and QuickReply (:125), SearchMac and MessageBody (:221), Sidebar and PaletteMac (:248), Labels, contacts and Add account (:320); sweep notes docs/lanes/sweep-attachments.md, sweep-inboxlist.md, sweep-macshell.md, sweep-notch.md (29 controls, 22 covered, 7 findings; checks/parity/par-notch.py:498 step par-notch-sweep), sweep-reader.md, sweep-settingsaccounts.md, sweep-settingsgeneral.md, sweep-welcomemac.md (65 controls, 44 covered, 21 findings; cases welcomemac-sweep-*, each with a mutant `sw-<case>`, self-test ends 'selftest: every check seen red on its mutant'). What is missing, from comparing the screens of checks/shots-sheet.py SCREENS (:37-43) with docs/COVERAGE.md (grep -c of each name gives 0, searched): mac-trainer, mac-welcome-accounts (its sweep has a note but no COVERAGE table), mac-settings-ai, mac-settings-replies, mac-settings-calendars, mac-mcp-notes, mac-ask, mac-entra-guide, and the first-start flow; the notch has a note but not a COVERAGE table. For each: (a) a table `screen | control | door id | outcome | check` appended to docs/COVERAGE.md in the shape of the existing sections (:85-125); (b) a driven case per control (click once, read the visible outcome through the control socket, in the screen's own par-*.py or a new step `<screen>-sweep`), a control with no door or no outcome listed as a FINDING row (never skipped); (c) a mutant per case that disables that one control (one line in the app, named in the file's MUTANTS block, and a model mutant in its --selftest), (d) the run on a bundle printing one `name  pass|fail|unjudged  detail` line per case (print_cases of journeys/lib/harness.py:292). Order for the builders: SettingsAIMac, Trainer, McpNotesMac, SettingsRepliesMac and SettingsCalendars, EntraGuide, AskMac, then the notch and welcome tables into COVERAGE.md. Each screen is one item of its own on the board; this item closes when the last table lands. UPDATE gap-sweep-b (2026-11-11): written and self-tested, not yet driven: Settings > Replies (checks/parity/sweep-settingsreplies.py, 165 cases, proofs 6 and 10), Settings > Agendas (sweep-settingscalendars.py, 5 cases, proofs 7 and 11), the Entra guide (sweep-entraguide.py, 21 cases, proofs 8 and 12), Ask (sweep-ask.py, 4 cases, proofs 9 and 13: the Ask panel was retired in commit 59f91f249, mac-ask is not in shots-sheet SCREENS, so the file proves the retirement and finds no control); the tables for these four, for the notch (29 controls) and for the welcome accounts screen (65 controls) are at the end of docs/COVERAGE.md. STILL MISSING for these screens: the lead's hidden run of the four sweeps on the next build (proofs 10 to 13), which may turn up a real failure to send back; the findings in docs/lanes/gap-sweep-b.md (F-rep-1 to 3, F-cal-1 and 2) and the notch and welcome findings F1 to F4 and F-a to F-m (each needs a door in Sources/**). The screens of the other helper (Settings > AI, the trainer, the MCP notes screen, the first-start flow) are its part of this file. Only the lead can close this item: it stays `gap` until the hidden runs are green."
+}

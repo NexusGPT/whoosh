@@ -1,0 +1,76 @@
+{
+  "item": "b669f2fd",
+  "full_id": "b669f2fd-f05f-4804-9a1a-51d35205a27e",
+  "title": "Add today's new sentences in 14 languages",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --coverage",
+      "pass": "^coverage: GREEN$",
+      "fail": "^coverage: RED|^RED ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "^catalogue: GREEN$",
+      "fail": "^catalogue: RED|^RED ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/words-catalogue-check.py --all",
+      "pass": "^GREEN words-catalogue-check: every key holds all 14 languages$",
+      "fail": "^RED words-catalogue-check",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/words-catalogue-check.py",
+      "pass": "^GREEN words-catalogue-check: every key holds all 14 languages$",
+      "fail": "^RED words-catalogue-check|^DASH ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 -c \"import json; print('keys', len(json.load(open('Sources/Resources/Localizable.xcstrings'))['strings']))\"",
+      "pass": "^keys \\d+$",
+      "fail": "Traceback",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"^| before \\|^| after \" docs/lanes/sentences-count.md",
+      "pass": "^2$",
+      "fail": "^[01]$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Resources/Localizable.xcstrings",
+      "find": "\"Hold %@ in a draft and speak. Whoosh writes what you say.\": {",
+      "replace": "\"Hold %@ in a draft and speak. Whoosh writes what you say..\": {",
+      "proof": 0,
+      "red": "^coverage: RED"
+    },
+    {
+      "file": "Sources/Resources/Localizable.xcstrings",
+      "find": "\"Hold %@ in a draft and speak. Whoosh writes what you say.\": {",
+      "replace": "\"Hold %@ in a draft and speak. Whoosh writes what you say..\": {",
+      "proof": 3,
+      "red": "^RED words-catalogue-check"
+    },
+    {
+      "file": "docs/lanes/sentences-count.md",
+      "find": "| after (this copy,",
+      "replace": "| aftr (this copy,",
+      "proof": 5,
+      "red": "^[01]$"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Checks: checks/i18n-check.py: --coverage (cmd_coverage, lines 384-405, last line `coverage: GREEN` or `coverage: RED, N cells (N keys)`; dispatched at line 991), --catalogue (cmd_catalogue lines 260-275, last line `catalogue: GREEN` or `RED, N findings`; dispatched line 1000), --gap (line 1007); checks/words-catalogue-check.py (last line GREEN/RED words-catalogue-check; scope default = AISetup, SettingsAIMac/AIWords.swift, FirstStart/FirstStartAI.swift; --all = Sources/). The default scope is the AI setup screens only, so it does not cover the calendar, sidebar and composer lanes: --coverage (every key asked of Words.text in all of Sources/, line 384) does. The mutant renames one key (Sources/Resources/Localizable.xcstrings:49954, the Dictation line asked by Sources/Features/SettingsAIMac/AIWords.swift:32, which is in both scopes). `--compiled <bundle>` reads the catalogue compiled into a build (i18n-check.py header) and is the 'on a build' form; its output line was not read here, so it is not listed as a proof. The static proof 4 is a python one-liner run from the repository root. gap-docs 2026-11-11: the note is docs/lanes/sentences-count.md (before 1860 at 11e9f1c78, after 1976 at 43e1f7504, every step of 2026-11-11 between them, read from git history). On that copy proof 1 (--catalogue) printed 'catalogue: GREEN' (1976 strings x 14 languages = 27664 cells, 0 missing), proof 0 'coverage: GREEN', proofs 2 and 3 'GREEN words-catalogue-check: every key holds all 14 languages', proof 4 'keys 1976'. The earlier RED with 80 findings (i18n-fill.md:9) is gone on this copy. The note does not split the keys by the four lanes: git history carries no lane name per commit."
+}

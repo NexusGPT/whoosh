@@ -1,0 +1,112 @@
+{
+  "item": "135423fa",
+  "full_id": "135423fa-0100-4468-9c18-b617b31f3b8c",
+  "title": "Build ix-composermac",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 journeys/run.py J3",
+      "pass": "J3 GREEN: 8 steps",
+      "fail": "J3 (RED|COULD-NOT-DRIVE)|FAIL J3\\.",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J3.py --selftest",
+      "pass": "J3 selftest: \\d+ checks, \\d+ mutants, 0 not red or missing",
+      "fail": "NO MUTANT|STRAY|NOT IN THE CATALOGUE",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-composermac.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "anAIDraftNotesItsJobAndTheKeysReturnToTheText,aSentMessageCountsOnceForItsRecipient,aSendTheCoreLetGoReadsSentNotCancelled",
+      "pass": "passed",
+      "fail": "failed|error:",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "noJobIsServedBeforeADraftRan,theAIJobNoteIsServedAndAResetTakesItAway",
+      "pass": "(?s)(?=.*Test noJobIsServedBeforeADraftRan\\(\\) passed)(?=.*Test theAIJobNoteIsServedAndAResetTakesItAway\\(\\) passed)",
+      "fail": "failed"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel.swift",
+      "find": "fromId = r.accountId",
+      "replace": "fromId = accounts.first?.id ?? \"\"",
+      "proof": 0,
+      "red": "FAIL J3\\.1/from-is-receiving-account"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "guard (try? m.core.run(command: .cancelSend(outboxId: id))) != nil else { return false }",
+      "replace": "guard true else { return false }",
+      "proof": 0,
+      "red": "FAIL J3\\.6/outbox-entry-cancelled"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel.swift",
+      "find": "public var aiMarkActive: Bool { if let t = aiText { return bodyText == t }; return false }",
+      "replace": "public var aiMarkActive: Bool { return aiText != nil }",
+      "proof": 0,
+      "red": "FAIL J3\\.3/mark-clears-on-edit"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCoreComposer.swift",
+      "find": "guard case .sent = e.state else { return false }",
+      "replace": "guard true else { return false }",
+      "proof": 0,
+      "red": "FAIL J3\\.(6/recipient-received-nothing|7/recipient-got-exactly-one)"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+AI.swift",
+      "find": "(m.core as? FixtureCore)?.noteAIJob(voiceProfileAddress: from)",
+      "replace": "_ = from",
+      "proof": 0,
+      "red": "FAIL J3\\.3/draft-uses-(writer-agent|voice-profile-of-address)"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+AI.swift",
+      "find": "_ = self.focus(.body)",
+      "replace": "_ = 0",
+      "proof": 0,
+      "red": "FAIL J3\\.3/(edit-lands-in-the-draft|mark-clears-on-edit)"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureCoreComposer.swift",
+      "find": "guard case .sent = e.state else { return false }",
+      "replace": "guard true else { return false }",
+      "proof": 3,
+      "red": "Test aSentMessageCountsOnceForItsRecipient.*failed"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+AI.swift",
+      "find": "(m.core as? FixtureCore)?.noteAIJob(voiceProfileAddress: from)",
+      "replace": "_ = from",
+      "proof": 3,
+      "red": "Test anAIDraftNotesItsJobAndTheKeysReturnToTheText.*failed"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureReset.swift",
+      "find": "        aiJobNote = nil",
+      "replace": "        _ = 0",
+      "proof": 4,
+      "red": "Test theAIJobNoteIsServedAndAResetTakesItAway.*failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims: From = thread account (J3.1/from-is-receiving-account, journeys/J3.py:291), holding Fn 'listening' (J3.py:296, dictation row; the visible word is ComposerFoot.swift:88), AI mark until edited (J3.py:328-331, mark-clears-on-edit :331 is red), shorter + Cmd-Z (J3.py:342-344), Cmd-Enter then Z reopens, SMTP received 0 (J3.py:361-365, :365 reads server/<recipient>/inbox/count, NOT_SERVED today), Cmd-Shift-L tomorrow 8:00 in Scheduled (J3.py:395-402). The journey prints no pass line per check, only 'J3 GREEN: ...' (journeys/run.py:61) and 'FAIL <case>' for each red one, so the GREEN line is the proof. Driver-side mutation drive: J3_MUTATE=<act label> python3 journeys/run.py J3 drops an act and must go red (journeys/J3.py:25,131-136; labels fn-down, fn-up, ai-run, ai-edit, rewrite-pick, cmd-z, send-1, undo-z, wait-1s, expire, send-2, pick-tomorrow, send-later-key, type-fix). Mutant 3 changes aiMarkActive so the mark never clears on edit; its red line is the case that already fails today, so run it only after gap item (3) is fixed. | gap-composer lane: (1) the gaps were in part the test engine's data and in part the composer: ai_job/last/agent and ai_job/last/voice_profile_address are served by Sources/CoreBridge/FixtureCoreComposer.swift (stateComposerServed) from the job the composer reports (noteAIJob, called in ComposerModel+AI.swift runDraft) and the agent roster's Writer; nothing is served before a draft ran. (2) server/<address>/inbox/count counts the SENT outbox entries that go to the address (a quick-send reply, which keeps no To, goes to its thread's sender). The journey's RECIP named the placeholder 'test-recipient', an address no mail goes to: journeys/J3.py now reads the address from the reply's header (case J3.1/reply-addressed-to-one-recipient). (3) after an AI draft the composer now asks its cursor back into the text (runDraft: focus(.body)); this is a code reading, not a proof: the log showed first responder 'reader' and the typed '.' absent, the cause is not shown by a saved run, so the lead's J3 run decides (the mutant for it is the line removed). Not run in this lane: no app, compiler or journey. || fix-screens (2026-11-11): the job note is a stored property of the fixture core (FixtureCore.aiJobNote, reset in FixtureReset.swift), no longer a static book; proof 4, Tests/Unit/FixtureAIJobResetTests.swift (not compiled by the builder)."
+}

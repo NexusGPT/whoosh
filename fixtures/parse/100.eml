@@ -1,0 +1,16 @@
+From: Lumen Bank <orders@example.com>
+To: Assem Example <assem@example.org>
+Subject: Your order has shipped
+Date: Thu, 05 Nov 2026 05:33:00 +0000
+Message-ID: <8afe003ec5600311@example.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Thanks for your order!
+
+Order #56640-68 is confirmed.
+Total: EUR 327.59
+Estimated delivery: 12 November 2026.
+
+Questions? Call 0410 60 78 93.

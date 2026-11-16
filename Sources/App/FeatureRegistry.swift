@@ -1,0 +1,52 @@
+// The complete list of feature types (repo-shape.md rule 3). Written once at the root commit:
+// a lane fills the stub type in its own folder and never edits this file.
+@MainActor
+public enum FeatureRegistry {
+    public static let all: [any FeatureModule.Type] = [
+        AttachmentsMacFeature.self,      // first: it holds the keys only while a chip is selected or Quick Look is open
+        SpineFeature.self,
+        DesignFeature.self,
+        ComponentsFeature.self,
+        ShortcutsFeature.self,
+        SignInFeature.self,
+        MessageBodyFeature.self,
+        RichTextFeature.self,
+        EmbeddingFeature.self,
+        OnDeviceAIFeature.self,
+        DictationFeature.self,
+        DeviceSyncFeature.self,
+        PushClientFeature.self,
+        MacShellFeature.self,
+        SidebarFeature.self,
+        InboxListFeature.self,
+        ReaderFeature.self,
+        QuickReplyFeature.self,
+        ComposerMacFeature.self,
+        SearchMacFeature.self,
+        FirstStartFeature.self,          // before PaletteMacFeature: the first feature to claim `mac-main.overlay` draws it, and the flow keeps the palette's overlay under it
+        PaletteMacFeature.self,
+        TrainerFeature.self,
+        NotchFeature.self,
+        AddAccountFeature.self,
+        EntraGuideFeature.self,
+        WelcomeMacFeature.self,
+        SettingsAccountsMacFeature.self,
+        SettingsCalendarsMacFeature.self,
+        BackgroundWorkFeature.self,
+        SettingsAIMacFeature.self,
+        SettingsGeneralMacFeature.self,
+        SettingsRepliesMacFeature.self,
+        LabelsContactsMacFeature.self,
+        McpNotesMacFeature.self,
+        WelcomePhoneFeature.self,
+        InboxPhoneFeature.self,
+        ThreadPhoneFeature.self,
+        ComposerPhoneFeature.self,
+        SearchPhoneFeature.self,
+        PalettePhoneFeature.self,
+        AskPhoneFeature.self,
+        SettingsPhoneFeature.self,
+        LabelsContactsPhoneFeature.self,
+        SendWaveFeature.self,
+    ]
+}

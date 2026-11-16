@@ -1,0 +1,76 @@
+{
+  "item": "e30e2ceb",
+  "full_id": "e30e2ceb-29b4-4e5c-8cac-0cbca2acba70",
+  "title": "Build the mail content pipeline in the engine (A129)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p parse --test segments_audit",
+      "pass": "test result: ok\\. 18 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p parse --test body_r4_corpus corpus_new_content_characters_visible_is_100_percent_with_the_fold_applied -- --nocapture",
+      "pass": "new-content characters still visible = 100 % \\((\\d+) of \\1\\)",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p parse --test body_r4_engine",
+      "pass": "test result: ok\\. 30 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/parse/src/segment.rs",
+      "find": "let anchored = reasons.iter().any(|r| r.is_anchor());",
+      "replace": "let anchored = true;",
+      "proof": 0,
+      "red": "invariant_3_hiding_requires_an_anchor.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/engine.rs",
+      "find": "if !p.canonical.trim().is_empty() && !segments.iter().any(|s| s.visibility == Visibility::Show) {",
+      "replace": "if false && !segments.iter().any(|s| s.visibility == Visibility::Show) {",
+      "proof": 0,
+      "red": "invariant_2_never_empty.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/engine.rs",
+      "find": "segments.push(Segment { kind: l.kind, text: t.to_string(), html,",
+      "replace": "segments.push(Segment { kind: l.kind, text: t.trim_end().to_string(), html,",
+      "proof": 0,
+      "red": "invariant_1_lossless_on_every_corpus_mail.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/engine.rs",
+      "find": "original_text: parts.text.clone(), original_html: parts.html.clone(), degraded: false,",
+      "replace": "original_text: parts.text.as_deref().map(crate::canonical), original_html: parts.html.clone(), degraded: false,",
+      "proof": 0,
+      "red": "invariant_4_the_original_is_retained.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/engine.rs",
+      "find": "match catch_unwind(AssertUnwindSafe(|| run(parts, earlier, opts))) {",
+      "replace": "match Ok::<_, ()>(run(parts, earlier, opts)) {",
+      "proof": 0,
+      "red": "invariant_5_a_failure_degrades_to_visible_escaped_text.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/segment.rs",
+      "find": "if kind.authored() || reasons.is_empty() { return Visibility::Show; }",
+      "replace": "if reasons.is_empty() { return Visibility::Show; }",
+      "proof": 1,
+      "red": "FAIL|test result: FAILED|still visible = [0-9.]+ %"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The reader's 'not checked' is closed by reading: core/crates/parse/src/segment.rs:47 SegmentKind has the seven kinds; each segment carries visibility, confidence and reasons (core/crates/parse/tests/segments_audit.rs:19 every_segment_is_well_formed). Tests: core/crates/parse/tests/segments_audit.rs: one test per kind (lines 30, 38, 50, 62, 71, 78, 89, 97), the 14-mail corpus (:119-:164 corpus_every_new_content_character_is_visible_with_the_fold_applied), the five invariants (:192 invariant_1_lossless_on_every_corpus_mail, :207 invariant_2_never_empty, :224 invariant_3_hiding_requires_an_anchor, :241 invariant_4_the_original_is_retained, :251 invariant_5_a_failure_degrades_to_visible_escaped_text) = 18 #[test] functions (grep -c). The hand-written corpus: core/crates/parse/tests/body_r4_corpus.rs:129 with 33 files in tests/corpus/ (ls count 33), and with --nocapture it prints `new-content characters still visible = 100 % (N of N)` at line 184 (the pass line of proof 1; 100 is printed only when authored_visible == authored_total). core/crates/parse/tests/body_r4_engine.rs has 30 tests (grep -c); its invariants at :22-:79. The five mutants for the five invariants are the lines M1-M5 of core/crates/parse/tests/mutants-segments.sh:21-28 (each one exact edit; the script is the author's runner: `sh core/crates/parse/tests/mutants-segments.sh <worktree> <log folder>` prints RED or SURVIVED per mutant and restores the file with git checkout, so the lead may run it instead of the runner's own mutation); the sixth mutant is the script's M12 (authored kinds can be put away), red on the corpus metric."
+}

@@ -1,0 +1,81 @@
+{
+ "item": "57586479",
+ "full_id": "57586479-9993-4512-9746-b1377b684044",
+ "title": "Build fn-perf-mac",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "python3 perf/launch.py --selftest",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD ",
+   "timeout_s": 120
+  },
+  {
+   "kind": "static",
+   "run": "python3 perf/interaction.py --selftest",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD ",
+   "timeout_s": 120
+  },
+  {
+   "kind": "static",
+   "run": "python3 perf/memory-mac.py --selftest",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD ",
+   "timeout_s": 120
+  },
+  {
+   "kind": "lead",
+   "run": "on a quiet machine (load under PERF_LOAD_MAX 12) with an installed main bundle that holds Contents/Resources/rig-hidden.ok: python3 perf/launch.py --bundle <App.app>; python3 perf/interaction.py through launch-one (perf/interaction.py:7 gives the exact sh); python3 perf/memory-mac.py --accounts 30 through launch-one (perf/memory-mac.py:4); read the exit code of each. This proves the exit codes on a real build; today's saved runs exit 1 (over budget), which is the rule working, not the item red.",
+   "pass": "launch.py exit 1 when over and 0 when under; interaction.py and memory-mac.py likewise; each prints 'N checks, F failed, U not judged'"
+  }
+ ],
+ "mutants": [
+  {
+   "file": "perf/launch.py",
+   "find": "None if warm is None else warm >= c)",
+   "replace": "None if warm is None else warm > c)",
+   "proof": 0,
+   "red": "BAD\\s+fresh copy at the cold budget"
+  },
+  {
+   "file": "perf/launch.py",
+   "find": "None if cold is None else cold >= c)",
+   "replace": "None if cold is None else cold > c)",
+   "proof": 0,
+   "red": "BAD\\s+cold at budget"
+  },
+  {
+   "file": "perf/launch.py",
+   "find": "None if first_frame is None else first_frame >= f)",
+   "replace": "None if first_frame is None else first_frame > f)",
+   "proof": 0,
+   "red": "BAD\\s+first frame at budget"
+  },
+  {
+   "file": "perf/launch.py",
+   "find": "None if same is None else same >= sm)",
+   "replace": "None if same is None else same > sm)",
+   "proof": 0,
+   "red": "BAD\\s+same copy at budget"
+  },
+  {
+   "file": "perf/interaction.py",
+   "find": "return (label, \"worst %.1f\" % max(xs), \"< %g\" % lim, max(xs) >= lim)",
+   "replace": "return (label, \"worst %.1f\" % max(xs), \"< %g\" % lim, max(xs) > lim)",
+   "proof": 1,
+   "red": "BAD\\s+one commit at budget"
+  },
+  {
+   "file": "perf/memory-mac.py",
+   "find": "None if mb is None else mb >= lim)]",
+   "replace": "None if mb is None else mb > lim)]",
+   "proof": 2,
+   "red": "BAD\\s+at budget"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Rules in code: perf/launch.py:9 and judge() 89-99 (exit 1 through finish(), line 62-71: 'return 1 if bad or nj or not verdicts else 0'); the four verdict rows are 'warm, fresh copy' judged against LAUNCH_COLD_MS 1500 (a new copy's first launch, launch-r3 ruling in the judge() comment, lines 91-94), 'warm, same copy' against LAUNCH_SAME_COPY_MS 400 (docs/CONSTANTS.md:12; this is the acceptance's 'warm launch to inbox >= 400 ms'), 'cold launch' against LAUNCH_COLD_MS 1500 and 'first frame' against FIRST_FRAME_MS 100 (CONSTANTS.md:9-11). Selftest cases at perf/launch.py:142-167 print 'ok|BAD <case> over=[...]' per case: 'cold at budget' (cold flips at 1500), 'first frame at budget', 'same copy at budget (its own row)', 'fresh copy at the cold budget'; so each of the three thresholds has a selftest line that goes BAD on a one-character mutant (the 'launch threshold mutant' the reader found missing: these 4). perf/interaction.py: judge() 79-92 (commit < INTERACTION_COMMIT_MS 50; arrival to first frame < 50+16; longest presented-frame gap < 1.5 x FRAME_MS = 24), selftest 106-127; 'a perfect 60 Hz gap is fine' and 'a dropped frame (33 ms gap)' are in it. NOTE the acceptance says 'any frame >= 16 ms'; the code, by the lead's ruling of 2026-11-09 (CONSTANTS.md:13, interaction.py:2-5), judges the longest presented-frame gap under 24 ms and the arrival-to-first-frame under 66 ms: the acceptance text and the ledger disagree, the code follows the ledger; the owner may want the sentence changed. perf/memory-mac.py: judge() 126-132 (>= MEM_MAC_MB 600, CONSTANTS.md:16; only counts at accounts == 30), selftest 135-171 including 'at budget', 'a plausible figure over the budget fails'. The selftests need no app. Proof 3 is the lead's: perf gates give no verdict above PERF_LOAD_MAX (perf/launch.py:55-58), so they need a quiet machine; the 30-account fixture is `fixture load full-history-30`, 300,000 messages (memory-mac.py:20-22). The mutants are in the python of the gate itself, which is the thing the item delivers; the mutant touches no app and needs no build. Saved real-run numbers over budget (read only): _captures/launch-r1/launch-main55.log:4 (warm 1742 ms), _captures/perf-diag/main55/interaction-r1-try1-py.log:14 (gap 137.8 ms); these are the app's problem, which items efa93fcb, 8a89c2b4 and 8736d094 own."
+}

@@ -1,0 +1,106 @@
+{
+  "item": "d58d8ad5",
+  "full_id": "d58d8ad5-bde8-4445-868c-de26d4dced1d",
+  "title": "Build the Settings Réponses panes",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL |NOT JUDGED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsreplies-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "selftest: FAILED|NOT RED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "PASS no-text-literal-holds-a-bare-sentence",
+      "fail": "FAIL no-text-literal-holds-a-bare-sentence",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsreplies-check.py",
+      "pass": "PASS every-control-has-a-case",
+      "fail": "FAIL every-control-has-a-case",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+      "fail": "selftest FAIL|[1-9]\\d* not red",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state replies-panes \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/gap-shots/replies-panes --states replies-panes",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b28 checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "open the 28 pictures state-replies-panes-<pane>-<light|dark>-<1280x820|700x480>.png of _captures/results/gap-shots/replies-panes/index.html beside docs/design/boards/ai-replies-r7 (auto, on-demand, sources, retrieval, voice, prompt, filter-page), light and dark",
+      "pass": "each pane matches its board in both themes at both sizes"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsRepliesMac/RepliesDoors.swift",
+      "find": "add(.auto, \"auto.enabled\", \"switch\") { s.setEnabled(.auto, !(s.use(.auto)?.enabled ?? false)) }",
+      "replace": "add(.auto, \"auto.enabled\", \"switch\") { }",
+      "proof": 0,
+      "red": "FAIL use-switches"
+    },
+    {
+      "file": "Sources/Features/SettingsRepliesMac/SourcesPane.swift",
+      "find": "Text(\"+\").font(.system(size: 18, weight: .light))",
+      "replace": "Text(\"Add\").font(.system(size: 18, weight: .light))",
+      "proof": 3,
+      "red": "FAIL no-text-literal-holds-a-bare-sentence"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "        return _ok(got, want), \"%s = %r\" % (field, got)",
+      "replace": "        return True, \"%s = %r\" % (field, got)",
+      "proof": 5,
+      "red": "selftest FAIL: states mutant page-stuck is red"
+    },
+    {
+      "file": "Sources/Features/SettingsRepliesMac/SourceTiles.swift",
+      "find": ".lineLimit(2).fixedSize(horizontal: false, vertical: true)   // round 24: a name wraps, never cut (two tiles read « Clients… » at 700x480)",
+      "replace": ".lineLimit(1).truncationMode(.tail)",
+      "proof": 7,
+      "red": "FAIL replies-panes/sources [^\\n]*700x480[^\\n]*cut, where no name may be cut"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The mutant above is the real app break of the first control the check lists: the auto-draft switch no longer toggles; the case use-switches (settingsreplies-check.py:112) reads the core's reply/use/auto enabled and goes red. The six panes: RepliesPage.swift:9 doc; the page: FilterPage.swift:3; its cards reuse the label inspector's components. The check is journey-free (its own runner, run() at :1534): its output is the total line only. The i18n check is global, not limited to this pane. | gap-shots (2026-11-11): checks/shots-sheet.py STATES 'replies-panes' reaches each pane by `click mac-settings-replies.page.<auto|on-demand|sources|retrieval|voice|prompt|filter>` and reads `rows mac-settings-replies.place` until its page says so, then pictures it light and dark at 1280x820 and 700x480 (the Settings minimum; hidden, fixture core): 7 views x 2 sizes x 2 themes = 28 files state-replies-panes-<pane>-<theme>-<WxH>.png. The board is not in this repository (docs/design/boards is absent here): the comparison is the lead's eyes. Proofs 3 to 6 are new: the stand-in self-test (never proof of the app), the dry listing, the hidden run, the eyes step. The reader's step-by-step of the reach is in docs/lanes/gap-shots.md. | hid-ai round 24 (main114 judge d58d8ad5.md: sources 700x480 « Clients… » twice; voice dark 700x480 « My voice » cut): proof 7's state now judges each pane's fit on its line: the sources view runs `labels` and FAILs any cut tile name or path (strict, no ellipsis allowed; ids <tile>.name and <tile>.path), the prompt and voice views FAIL when the editors row says text_cut. Broken copy: the tile name back to one line with an ellipsis. The voice fix (the card takes the text's laid-out height, RepliesEditorState.textHeight) has no one-line broken copy that is sure to go red: main114's cut came from one combination (dark after light at the same size); the voice view's text_cut line is the check."
+}

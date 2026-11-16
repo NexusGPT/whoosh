@@ -1,0 +1,25 @@
+# Attribution lines ("On <date>, <name> wrote:"), one per line: <language> <TAB> <regex>.
+# Read case-insensitively against one line, or up to ATTRIBUTION_WRAP_LINES lines joined by a space (clients wrap long ones).
+# Each must end on the colon that introduces the quote: a sentence that only mentions "wrote" never ends that way.
+en	^on\s.{4,240}\swrote\s*:$
+en	^.{2,160}\swrote\s*:$
+fr	^le\s.{4,240}\sa\s+écrit\s*:$
+fr	^.{2,160}\sa\s+écrit\s*:$
+de	^am\s.{4,240}\sschrieb\s.{0,160}:$
+de	^.{2,160}\sschrieb\s+am\s.{4,160}:$
+de	^.{2,160}\sschrieb\s*:$
+es	^el\s.{4,240}\sescribió\s*:$
+es	^.{2,160}\sescribió\s*:$
+it	^il\s.{4,240}\sha\s+scritto\s*:$
+it	^.{2,160}\sha\s+scritto\s*:$
+pt	^(em|no\s+dia)\s.{4,240}\sescreveu\s*:$
+pt	^.{2,160}\sescreveu\s*:$
+nl	^op\s.{4,240}\sschreef\s.{0,160}:$
+nl	^.{2,160}\sschreef\s*:$
+pl	^(w\s+dniu|dnia)\s.{4,240}\snapisał(a|\(a\))?\s*:$
+pl	^.{2,160}\snapisał(a|\(a\))?\s*:$
+et	^.{2,240}\skirjutas\s*.{0,160}:$
+fi	^.{2,240}\skirjoitti\s*.{0,160}:$
+sv	^den\s.{4,240}\sskrev\s.{0,160}:$
+sv	^.{2,160}\sskrev\s*:$
+ru	^.{2,240}\s(пишет|написал|написала|написал\(а\))\s*:$

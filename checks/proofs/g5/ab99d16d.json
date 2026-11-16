@@ -1,0 +1,18 @@
+{
+  "item": "ab99d16d",
+  "full_id": "ab99d16d-8561-4b58-abd8-41da6d111d43",
+  "title": "Prove a test copy asks no model file outside this Mac",
+  "state": "prove",
+  "proofs": [
+    {"kind": "unit", "run": "aRigCopyReplacesARealHostByAnAddressThatRefuses,aRigCopyKeepsAnAddressOnThisMac,aRigCopyRefusesAnAddressWithNoHost,theOwnersCopyKeepsTheRealHost", "pass": "Test theOwnersCopyKeepsTheRealHost\\(\\) passed", "fail": "recorded an issue|failed after", "timeout_s": 900},
+    {"kind": "unit", "run": "modelsFolderRigSafeIsTheSharedRule", "pass": "Test modelsFolderRigSafeIsTheSharedRule\\(\\) passed", "fail": "recorded an issue|failed after", "timeout_s": 900},
+    {"kind": "hidden", "core": "fixture", "run": "python3 checks/settingsaimac-check.py", "pass": "PASS J5\\.7/laya-download-with-no-loopback-base-asks-nothing-outside-this-mac: row failed in .*stub requests: 0; peers off this Mac: 0 \\[\\]; lsof peers read: \\d+", "fail": "FAIL J5\\.7/laya-download-with-no-loopback-base|NOT JUDGED", "timeout_s": 600},
+    {"kind": "static", "run": "python3 checks/settingsaimac-check.py --selftest", "pass": "selftest: OK \\(0 mutants not red\\)", "fail": "selftest: FAILED|NOT RED", "timeout_s": 300}
+  ],
+  "mutants": [
+    {"file": "Sources/CoreBridge/CoreHost.swift", "find": "public static func safe(_ url: URL, env: [String: String]? = nil) -> URL { allows(url, env: env) ? url : refusing }", "replace": "public static func safe(_ url: URL, env: [String: String]? = nil) -> URL { url }", "proof": 0, "red": "aRigCopyReplacesARealHostByAnAddressThatRefuses\\(\\) (recorded an issue|failed)"}
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "BUILT (lane tail-settings): hidden proof 2 is the case J5.7/laya-download-with-no-loopback-base-asks-nothing-outside-this-mac in checks/settingsaimac-check.py (c_laya_no_base). It takes the loopback base away (`fixture provider-endpoint laya \"\"`: the real address as the owner's copy has it, which a rig copy turns into RigNet.refusing 127.0.0.1:1), clicks mac-settings-ai.decisions.local.download, reads the row until it says failed within 5 s with the refusal's words, reads the request counts of the three loopback stubs (must be 0) and samples the copy's sockets with lsof on <run folder>/rig.pid (peers_of reads like offenders_of, checks/firstrun-check.py:931). The pass line prints 'stub requests: 0; peers off this Mac: 0 []; lsof peers read: N'. A copy whose pid or lsof cannot be read is NOT JUDGED, never a pass. Self-test (proof 3): the stand-in mutant laya-download-asks-outside turns the case red (peers off this Mac: 1). No app mutant for the hidden case on purpose: RigNet.safe broken would make the hidden copy ask the real host; the unit mutant above stays the proof that the rule itself goes red when broken. Needs a build that serves `fixture provider-endpoint laya \"\"` (it does: FixtureVerbs.swift providerEndpointRefused lets an empty address through). Unit tests: Tests/Unit/ModelsFolderRigSafeTests.swift:13,19,26,30 (all four names exist); the shared rule Sources/CoreBridge/CoreHost.swift:65-87 (RigNet.safe :87), used by ModelsFolder.rigSafe Sources/Features/OnDeviceAI/Core/ModelsFolder.swift:30; test of the same rule Tests/Unit/RigNetProviderEndpointTests.swift:30. The pass line in a unit log has the shape 'Test <name>() passed after N seconds.' Built-app half: no existing case judges it (grep of 'download' in checks/decision-check.py and checks/rig-hidden-check.py finds none; settingsaimac-check cases use a loopback fake)."
+}

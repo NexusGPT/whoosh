@@ -1,0 +1,61 @@
+{
+  "item": "964bf15d",
+  "full_id": "964bf15d-237e-4252-87fe-10d91ecfc528",
+  "title": "Digit chords work on an AZERTY keyboard",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "anAzertyTwoKeyUnderCommandIsCommandTwo,everyAzertyDigitKeyUnderCommandNamesItsDigit,aQwertyTwoKeyUnderCommandIsStillCommandTwo,controlAndShiftCommandDigitsAreReadByKeyToo,aShiftOnlyChordKeepsItsTypedCharacter,aDigitRowKeyWithNoModifierIsTypedTextNotAChord,keysOutsideTheDigitRowAreUnchanged,theKeyCodeVerbBuildsTheAzertyEventAndChordKitReadsIt,theKeyCodeVerbBuildsEveryDigitChordTheSourceBinds,theKeyCodeVerbRefusesGarbageInWords,theSameKeyCodeTwiceResolvesTheSameChord",
+      "pass": "Test run with 11 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-keys.py",
+      "pass": "(?s)\\A(?=.*par-keys-digits/azerty-cmd-2-[a-z0-9-]+\\s+pass )(?=.*par-keys-digits/azerty-ctrl-2-[a-z0-9-]+\\s+pass )",
+      "fail": "par-keys-digits/[a-z0-9-]+\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-keys.py --selftest",
+      "pass": "par-keys selftest: green \\(0 problems\\)",
+      "fail": "STILL GREEN|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "the owner presses ⌘2 on a main bundle built from this commit or later, on their AZERTY keyboard, in the installed copy, and says whether the second account (or tab) answers",
+      "pass": "owner: ⌘2 works"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Shortcuts/ChordKit.swift",
+      "find": "if flags != [.shift], !flags.isEmpty, let digit = digitRow[e.keyCode] { return prefix + digit }",
+      "replace": "if flags == [.command], let digit = digitRow[e.keyCode] { return prefix + digit }",
+      "proof": 0,
+      "red": "controlAndShiftCommandDigitsAreReadByKeyToo\\(\\) failed|✘ Test controlAndShiftCommandDigitsAreReadByKeyToo"
+    },
+    {
+      "file": "Sources/Features/Shortcuts/ChordKit.swift",
+      "find": "25: \"9\", 29: \"0\"]",
+      "replace": "25: \"9\"]",
+      "proof": 0,
+      "red": "aQwertyTwoKeyUnderCommandIsStillCommandTwo\\(\\) failed|✘ Test aQwertyTwoKeyUnderCommandIsStillCommandTwo|✘ Test everyAzertyDigitKeyUnderCommandNamesItsDigit"
+    },
+    {
+      "file": "Sources/Features/Shortcuts/ChordKit.swift",
+      "find": "let digitRow: [UInt16: String] = [18: \"1\", 19: \"2\",",
+      "replace": "let digitRow: [UInt16: String] = [18: \"1\", 19: \"3\",",
+      "proof": 0,
+      "red": "anAzertyTwoKeyUnderCommandIsCommandTwo\\(\\) failed|✘ Test anAzertyTwoKeyUnderCommandIsCommandTwo"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner presses ⌘2 on their AZERTY keyboard in a main bundle and says the second account/tab answers (SPEC A99, owner 2026-11-09 23:25: 'cmd+2, cmd+3, etc. don't work on my azerty keyboard'; the acceptance's own words 'their word'). The lead can prove the key resolution by key code (proofs 0 to 2) but not the owner's keyboard or their word.",
+  "notes": "Claims and judges. (1) ⌘1 to ⌘0 and ⌃1 to ⌃9 are read by physical key code: Sources/Features/Shortcuts/ChordKit.swift:24-28 (digitRow keyed by key code 18 to 29; a chord with any modifier except Shift alone resolves by the key, not by the character); Tests/Unit/ChordKitTests.swift:25 anAzertyTwoKeyUnderCommandIsCommandTwo (the unit test the acceptance names: an AZERTY-shaped event, key code 19, characters é, resolves to ⌘2), :30 everyAzertyDigitKeyUnderCommandNamesItsDigit, :37 aQwertyTwoKeyUnderCommandIsStillCommandTwo, :42 controlAndShiftCommandDigitsAreReadByKeyToo (event(19, typed: 'é', [.control]) == '⌃2' at :43), :48 aShiftOnlyChordKeepsItsTypedCharacter, :55, :60, and the `key code` socket verb: :68 theKeyCodeVerbBuildsTheAzertyEventAndChordKitReadsIt (expects ⌘2 at :72), :78 theKeyCodeVerbBuildsEveryDigitChordTheSourceBinds, :88, :104; Sources/ControlSocket/KeyCodeVerb.swift:7. The unit run the reader cites (_captures/tests/swift-tests-lane/unit-run3.log:2419 passed, but the whole run 'failed with 57 issues' at :2931) names no commit; proof 0 is a run of exactly these 11 tests, so the other 57 issues do not count unless one of them is in this file (the lead reads the run's failing names). (2) driven: checks/parity/par-keys.py:1333-1379 (step par-keys-digits, one case 'azerty-<chord slug>-<command>' per digit chord of the source, pressed with the key-code verb and read back as the chord text: every digit chord must come back as its own label) prints one line per case through print_cases (:1570). (3) the original fix named in the acceptance, commit 3210806a, exists in the repository (`git cat-file -t 3210806a` prints commit). Mutants: three one-line breaks of ChordKit.swift, find strings occur once at 0aa1558e; the first two are the lane's own comments in ChordKitTests.swift:43, :38-39."
+}

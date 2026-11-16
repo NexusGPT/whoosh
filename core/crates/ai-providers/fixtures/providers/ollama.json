@@ -1,0 +1,97 @@
+{
+  "provider": "ollama",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "scenarios": {
+    "list_models": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "http://localhost:11434/v1/models",
+          "headers": {},
+          "absent": [
+            "Authorization"
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "object": "list",
+            "data": [
+              {
+                "id": "fixture-llama:latest",
+                "object": "model",
+                "created": 1,
+                "owned_by": "library"
+              },
+              {
+                "id": "fixture-gemma:2b",
+                "object": "model",
+                "created": 2,
+                "owned_by": "library"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "http://localhost:11434/v1/chat/completions",
+          "headers": {},
+          "absent": [
+            "Authorization"
+          ],
+          "body_contains": [
+            "\"model\":\"ghost-model\""
+          ]
+        },
+        "response": {
+          "status": 404,
+          "body": {
+            "error": {
+              "message": "model \"ghost-model\" not found, try pulling it first",
+              "type": "api_error",
+              "param": null,
+              "code": null
+            }
+          }
+        }
+      }
+    ],
+    "complete": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "http://localhost:11434/v1/chat/completions",
+          "headers": {},
+          "absent": [
+            "Authorization"
+          ],
+          "body_contains": [
+            "\"model\":\"fixture-llama:latest\"",
+            "\"content\":\"Shorten this reply to one line.\""
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "id": "chatcmpl-fixture",
+            "object": "chat.completion",
+            "choices": [
+              {
+                "index": 0,
+                "finish_reason": "stop",
+                "message": {
+                  "role": "assistant",
+                  "content": "Thanks Marta, Friday works for me."
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

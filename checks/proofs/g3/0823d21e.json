@@ -1,0 +1,56 @@
+{
+  "item": "0823d21e",
+  "full_id": "0823d21e-7ea6-48b5-90e4-7ff3f875090d",
+  "title": "Fix sending a new message from the composer",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 journeys/run.py J6",
+      "pass": "J6 GREEN: 7 steps",
+      "fail": "J6 (RED|COULD-NOT-DRIVE)|FAIL J6\\.7/",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "aNewMessageSendsADraftTheCoreHolds,aSendTheCoreLetGoReadsSentNotCancelled,aSendCancelledElsewhereReopensTheComposer",
+      "pass": "passed",
+      "fail": "failed|error:",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "else { id = try m.core.run(command: .send(draftId: try saveNewDraft(m))).createdId }",
+      "replace": "else { id = try m.core.run(command: .send(draftId: \"draft-new\")).createdId }",
+      "proof": 0,
+      "red": "FAIL J6\\.7/(outbox-entry-queued|send-opens-the-undo-window|send-closes-the-composer)"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "if wentOut(m) { expire(m) } else { phase = .editing }",
+      "replace": "phase = .editing",
+      "proof": 0,
+      "red": "FAIL J6\\.7/send-closes-the-composer"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "else { id = try m.core.run(command: .send(draftId: try saveNewDraft(m))).createdId }",
+      "replace": "else { id = try m.core.run(command: .send(draftId: \"draft-new\")).createdId }",
+      "proof": 1,
+      "red": "aNewMessageSendsADraftTheCoreHolds.*(failed|issue)|Test aNewMessageSendsADraftTheCoreHolds.*failed"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "if wentOut(m) { expire(m) } else { phase = .editing }",
+      "replace": "phase = .editing",
+      "proof": 1,
+      "red": "Test aSendTheCoreLetGoReadsSentNotCancelled.*failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "J6.7 is the notch-drop step of journeys/J6.py:293-337 (not the J3 send): its cases send-opens-the-undo-window (:318), outbox-entry-queued (:331), outbox-with-attachment (:332) and send-closes-the-composer (:330). The code fix is ComposerModel+Send.swift:69 and saveNewDraft :90-98. | gap-composer lane: the cause of the open composer was ComposerModel+Send.swift reconcile: the view polls every 200 ms while counting, and an entry that left the core's open list read as 'cancelled elsewhere' (phase = .editing) even when it had been SENT (J6.7 advances the fixture clock 60 s, so the core's window ends before the bar's own). Now reconcile asks the Sent list (wentOut, entryDraftId read when the window opened) and a sent entry expires (the bar says Sent, the composer closes). Unit tests: Tests/Unit/ComposerMacTests.swift aNewMessageSendsADraftTheCoreHolds, aSendTheCoreLetGoReadsSentNotCancelled, aSendCancelledElsewhereReopensTheComposer. Unverified until the lead runs J6 and the unit tests (nothing was compiled or run in this lane)."
+}

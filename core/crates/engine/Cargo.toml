@@ -1,0 +1,69 @@
+[package]
+name = "engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The real core: a Rust WhooshCore that detects a provider, checks an account with a real sign-in, adds it (slice 1), syncs it by IMAP into the store and answers the mail reads from it (slice 2). The ffi library exposes it to Swift as open_rust_core."
+build = "build.rs"
+
+[dependencies]
+netguard = { path = "../netguard" }   # engine-act-r6 round 5: a rig copy reaches this Mac only (outbound_allowed before any lookup or dial)
+contracts = { workspace = true }
+uniffi = { workspace = true }
+# live: the real HTTPS transport for ISPDB, the domain's autoconfig files and Autodiscover
+autoconfig = { path = "../autoconfig", features = ["live"] }
+sync-imap = { path = "../sync-imap" }
+send = { path = "../send" }
+store = { path = "../store" }
+# engine-actions: Unsubscribe by a mail link queues one outbox entry through the outbox crate's own store adapter
+outbox = { path = "../outbox" }
+# engine-act: the mail actions (archive, snooze, pin, label, move, read, star, spam, drafts, undo) run through the actions crate
+actions = { path = "../actions" }
+# delta 18: the mail import (Apple Mail, Outlook .olm, mbox) runs through the import crate into the same store
+import = { path = "../import" }
+secrets = { path = "../secrets" }
+# slice 2: the scheduler (first screen, then history, per-account failure in words) and the body parser/sanitiser
+sync-engine = { path = "../sync-engine" }
+parse = { path = "../parse" }
+# slice 2b: the browser sign-in (PKCE, the loopback, the refresh) and its HTTP to the provider's authority, over the same
+# reqwest and ring TLS as autoconfig (rustls-no-provider: the aws-lc C globals never enter the app)
+oauth = { path = "../oauth" }
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "rustls-no-provider"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+async-trait = "0.1"
+tokio = { version = "1", default-features = false, features = ["rt-multi-thread", "net", "time", "sync", "macros"] }
+# delta 17: the labelling order (entry rules, the AI over the enabled labels, the exit filter with its fallback) runs on every message
+# the sync stores. The decision crate holds the order, smart-inbox the facts a message is judged on, rusqlite the one read-only
+# connection those facts and the current filing are read through (the same rusqlite as the store's).
+decision = { path = "../decision" }
+smart-inbox = { path = "../smart-inbox" }
+rusqlite = { version = "0.41", features = ["bundled"] }
+# realcore-slice3b, the hidden check only: the rig's AI provider (check_flow.rs) is the providers table's LM Studio adapter over a loopback
+# transport made from the reqwest above. No `live` feature: that one brings reqwest's own rustls (the aws-lc C globals the app never links).
+ai-providers = { path = "../ai-providers" }
+# junk-r2: the local spam filter (the SpamBayes method, header rules, the owner's blocks), std only, scored on live arrivals
+junk = { path = "../junk" }
+# sync-full-r1: every stored body joins the word index (tantivy) and the meaning index (usearch, through the contract Embedder)
+search-text = { path = "../search-text" }
+search-vector = { path = "../search-vector" }
+# reply-engine: the draft engine behind ReplyWork joins the three reply crates (retrieval, voice, sources); attachment-index names the document kind
+# the sources' TextReader port takes (`AttachmentKind`)
+reply-retrieval = { path = "../reply-retrieval" }
+reply-voice = { path = "../reply-voice" }
+reply-sources = { path = "../reply-sources" }
+attachment-index = { path = "../attachment-index" }
+
+[dev-dependencies]
+# the sync-imap and autoconfig test fakes are reused by path (tests/realcore.rs); these are what they import
+async-trait = "0.1"
+futures = "0.3"
+base64 = "0.22"
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring"] }
+tokio = { version = "1", default-features = false, features = ["rt-multi-thread", "macros", "net", "time", "sync", "io-util"] }
+tempfile = "3"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+serde_json = "1"
+# the sync-imap test fake (reused by path) inflates and deflates a compressed connection (COMPRESS=DEFLATE)
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+# fix-realcore round 15: the staged SMTP fake (send/tests/staged/mod.rs, included by path) resets a connection (SO_LINGER 0); MIT OR Apache-2.0, already in the lock file
+socket2 = "0.6"

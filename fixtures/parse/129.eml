@@ -1,0 +1,34 @@
+From: Kestrel VPN <security@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: New sign-in to your account
+Date: Wed, 11 Nov 2026 12:04:00 +0000
+Message-ID: <134a161525c72e4a@mail.example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============3975371493576563695=="
+
+--===============3975371493576563695==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+We noticed a new sign in to your account from Chrome on a Mac at 14:32. Revie=
+w recent activity: https://mail.example.net/security/activity
+
+--===============3975371493576563695==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Kestrel VPN</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img src=3D"//track.example.org/banner/7bf2b=
+471.jpg" width=3D"1" height=3D"1"><h2>Kestrel VPN</h2><p>We noticed a new sig=
+n in to your account from Chrome on a Mac at 14:32.</p><p>If this was you, no=
+ action is needed. If not, <a href=3D"https://example.net/security/activity">=
+review recent activity</a>.</p><p style=3D"font-size:11px;color:#888">You rec=
+eive this because of your account. <a href=3D"https://example.net/unsubscribe=
+?u=3D9fef20">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Privac=
+y</a></p></td></tr></table></body></html>
+
+--===============3975371493576563695==--

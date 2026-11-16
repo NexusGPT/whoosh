@@ -1,0 +1,8 @@
+# A shop's order confirmation: a coloured wrapper, a fixed 600 px table, product pictures. Designed.
+subject: Your order 48213 is confirmed
+layout: designed
+fold_from: none
+authored: Thank you for your order. We will let you know when it ships.
+authored: Order 48213
+--- html
+<body style="margin:0;background:#eeeeee"><table width="100%" bgcolor="#eeeeee"><tr><td align="center"><table width="600" bgcolor="#ffffff" style="font-family:Arial,sans-serif"><tr><td bgcolor="#1a73e8" style="color:#ffffff;font-size:22px;padding:16px">Order 48213</td></tr><tr><td style="padding:16px">Thank you for your order. We will let you know when it ships.</td></tr><tr><td><table width="100%"><tr><td><img src="https://shop.example.com/p/mug.jpg" width="80"></td><td>Blue ceramic mug</td><td>12.00 EUR</td></tr><tr><td><img src="https://shop.example.com/p/plate.jpg" width="80"></td><td>Stoneware plate</td><td>18.00 EUR</td></tr></table></td></tr><tr><td bgcolor="#f6f6f6" style="padding:16px">Total 30.00 EUR</td></tr></table></td></tr></table></body>

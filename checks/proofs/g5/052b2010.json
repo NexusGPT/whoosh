@@ -1,0 +1,39 @@
+{
+  "item": "052b2010",
+  "full_id": "052b2010-6d3e-485b-845d-ca276360aeff",
+  "title": "Fix the indexer that sometimes never settles after a reopen",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test indexer_reopen",
+      "pass": "test a_core_reopened_on_one_folder_settles_its_indexer_every_time \\.\\.\\. ok",
+      "fail": "FAILED|panicked|the indexer settled",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_forms",
+      "pass": "test result: ok\\. 7 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "the lead repeats proof 1 ten times in a row with the same command, one compile, ten runs (a shell loop over the built test binary or ten cargo test invocations), and keeps ten saved outputs: count the lines 'test result: ok. 7 passed; 0 failed' in them",
+      "pass": "10"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/search-text/src/lib.rs",
+      "find": "if more & WAKE_IDS != 0 { reindex_pending(engine, shared)?; }",
+      "replace": "",
+      "proof": 0,
+      "red": "a_core_reopened_on_one_folder_settles_its_indexer_every_time .*FAILED|the indexer settled"
+    }
+  ],
+  "gap": "S, on the count only: 'passes 10 runs in a row' is a loop the lead runs (proof 2); no script in the repo runs it, and a flaky test needs the contention the docs describe (docs/lanes/indexer-race.md 'Point 2': the hang appeared only with the seven tests of engine_search_forms running at once, both threads at background priority), so the ten runs must be of the whole test file, not of the single test. The second mutant idea, the one the lane note names, is the same line (indexer_reopen.rs:8-9).",
+  "owner": null,
+  "notes": "Cause named with file and lines: docs/lanes/indexer-race.md ('The cause', base 61f5631d): a lost wake-up in core/crates/search-text/src/lib.rs step (lines 254 to 285 on the base): the exact comparison's take_now (lib.rs:267 on the base) swallows a WAKE_IDS raised by reindex during it, the ids stay in pending, pending() never reaches 0, Indexer::settle (core/crates/engine/src/indexer.rs:183-184) waits out its ceiling (the 120 s hang of e_a_restart_gives_the_same_list, engine_search_forms.rs:228 now, the old :125 in the note). Fix: the line the mutant removes, core/crates/search-text/src/lib.rs:289 now. Test that fails on the old code: core/crates/engine/tests/indexer_reopen.rs:59 (30 reopenings, 400 new mails each, 16 queued during the comparison; its header :1-12 says it fails at 'the indexer settled' without the line). Merge of the lane: commit 5ad6918c. The older pass of the restart test at main84 is on record (_captures/lead/main84-verify/cargo-merged.log:707), not at this commit. engine_search_forms has 7 #[test] functions (grep count), so the pass regex says 7 passed."
+}

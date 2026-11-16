@@ -1,0 +1,10 @@
+# Yahoo Mail: div.yahoo_quoted.
+subject: Re: Bike repair
+sender: Gus Moreno
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY hide
+authored: The bike is ready, you can pick it up after five.
+history: Is my bike ready yet?
+--- html
+<div class="ydp1a2b3c4dyahoo-style-wrap"><div>The bike is ready, you can pick it up after five.</div></div><div id="yahoo_quoted_1234567890" class="yahoo_quoted"><div>On Tuesday, November 10, 2026, 09:12:44 AM GMT+1, Hana Sato &lt;hana@example.jp&gt; wrote:</div><div><div>Is my bike ready yet?</div></div></div>

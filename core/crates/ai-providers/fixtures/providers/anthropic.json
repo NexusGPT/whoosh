@@ -1,0 +1,138 @@
+{
+  "provider": "anthropic",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "key": "sk-ant-FIXTURE-not-a-real-key-0001",
+  "bad_key": "sk-ant-FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "list_models": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://api.anthropic.com/v1/models",
+          "headers": {
+            "x-api-key": "sk-ant-FIXTURE-not-a-real-key-0001",
+            "anthropic-version": "2023-06-01"
+          },
+          "absent": [
+            "Authorization"
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "data": [
+              {
+                "type": "model",
+                "id": "fixture-claude-a",
+                "display_name": "Fixture A",
+                "created_at": "2026-01-01T00:00:00Z"
+              },
+              {
+                "type": "model",
+                "id": "fixture-claude-b",
+                "display_name": "Fixture B",
+                "created_at": "2026-02-01T00:00:00Z"
+              }
+            ],
+            "has_more": true,
+            "first_id": "fixture-claude-a",
+            "last_id": "fixture-claude-b"
+          }
+        }
+      },
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://api.anthropic.com/v1/models?after_id=fixture-claude-b",
+          "headers": {
+            "x-api-key": "sk-ant-FIXTURE-not-a-real-key-0001",
+            "anthropic-version": "2023-06-01"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "data": [
+              {
+                "type": "model",
+                "id": "fixture-claude-c",
+                "display_name": "Fixture C",
+                "created_at": "2026-03-01T00:00:00Z"
+              }
+            ],
+            "has_more": false,
+            "first_id": "fixture-claude-c",
+            "last_id": "fixture-claude-c"
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://api.anthropic.com/v1/models",
+          "headers": {
+            "x-api-key": "sk-ant-FIXTURE-not-a-real-key-REFUSED",
+            "anthropic-version": "2023-06-01"
+          },
+          "absent": [
+            "Authorization"
+          ]
+        },
+        "response": {
+          "status": 401,
+          "body": {
+            "type": "error",
+            "error": {
+              "type": "authentication_error",
+              "message": "invalid x-api-key"
+            },
+            "request_id": "req_fixture_0001"
+          }
+        }
+      }
+    ],
+    "complete": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://api.anthropic.com/v1/messages",
+          "headers": {
+            "x-api-key": "sk-ant-FIXTURE-not-a-real-key-0001",
+            "anthropic-version": "2023-06-01"
+          },
+          "absent": [
+            "Authorization"
+          ],
+          "body_contains": [
+            "\"model\":\"fixture-claude-a\"",
+            "\"system\":\"Write like the owner.\"",
+            "\"max_tokens\":",
+            "\"content\":\"Shorten this reply to one line.\""
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "id": "msg_fixture_1",
+            "type": "message",
+            "role": "assistant",
+            "model": "fixture-claude-a",
+            "content": [
+              {
+                "type": "text",
+                "text": "Thanks Marta, Friday works for me."
+              }
+            ],
+            "stop_reason": "end_turn",
+            "usage": {
+              "input_tokens": 1,
+              "output_tokens": 1
+            }
+          }
+        }
+      }
+    ]
+  }
+}

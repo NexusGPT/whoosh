@@ -1,0 +1,6 @@
+{
+  "value": [
+    { "subscriptionId": "sub-inbox-example", "lifecycleEvent": "missed", "clientState": "client-state-example", "tenantId": "00000000-0000-0000-0000-0000000000bb" },
+    { "subscriptionId": "sub-unknown-example", "lifecycleEvent": "reauthorizationRequired", "clientState": "client-state-example", "tenantId": "00000000-0000-0000-0000-0000000000bb" }
+  ]
+}

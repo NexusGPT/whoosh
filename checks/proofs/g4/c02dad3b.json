@@ -1,0 +1,252 @@
+{
+  "item": "c02dad3b",
+  "full_id": "c02dad3b-e8aa-4190-8376-c230b0cf3093",
+  "title": "Stop a test copy opening any outside socket",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p netguard",
+      "pass": "test result: ok\\.",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p oauth --features http --test rig_guard",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p autoconfig --features live --test rig_guard",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p send --test rig_guard",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p sync-imap --test rig_guard",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p ai-providers --features live --test rig_guard",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p sync-gmail-api --features live --test rig_guard",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p sync-graph --test rig_guard",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_rig_guard",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_rig_guard_open",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice2",
+      "pass": "^PASS +no-outbound-refused +the guard refused 0 outbound connection\\(s\\)",
+      "fail": "^FAIL +no-outbound-refused",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"^| [0-9]* | \\|^| S[0-9] |\" docs/lanes/outside-sockets.md",
+      "pass": "^26$",
+      "fail": "^(0|[1-9]|1[0-9]|2[0-5]|2[7-9]|[3-9][0-9])$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --lib ai_settings::",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --lib check_flow::",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/oauth/src/token.rs",
+      "find": "netguard::outbound_allowed_url(url)?;   // engine-act-r6 round 5",
+      "replace": "",
+      "proof": 1,
+      "red": "the_token_endpoint_of_a_rig_process_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/send/src/smtp.rs",
+      "find": "netguard::outbound_allowed(&smtp.host)?;",
+      "replace": "",
+      "proof": 3,
+      "red": "the_smtp_dialer_of_a_rig_process_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/transport.rs",
+      "find": "netguard::outbound_allowed(host).map_err(refused)?;",
+      "replace": "",
+      "proof": 4,
+      "red": "the_imap_dialer_and_the_smtp_check_of_a_rig_process_reach_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/autoconfig/src/adapters/dns_hickory.rs",
+      "find": "netguard::outbound_allowed(name).map_err(|_| NetError::Refused)?;",
+      "replace": "",
+      "proof": 2,
+      "red": "the_detectors_http_dns_and_probe_of_a_rig_process_reach_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/autoconfig/src/adapters/http_reqwest.rs",
+      "find": "netguard::outbound_allowed_url(&req.url).map_err(|_| NetError::Refused)?;",
+      "replace": "",
+      "proof": 2,
+      "red": "the_detectors_http_dns_and_probe_of_a_rig_process_reach_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/autoconfig/src/adapters/tls_probe.rs",
+      "find": "netguard::outbound_allowed(host).map_err(|_| NetError::Refused)?;",
+      "replace": "",
+      "proof": 2,
+      "red": "the_detectors_http_dns_and_probe_of_a_rig_process_reach_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/ai-providers/src/live.rs",
+      "find": "netguard::outbound_allowed_url(&request.url).map_err(|e| e.to_string())?;",
+      "replace": "",
+      "proof": 5,
+      "red": "a_rig_transport_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/sync-gmail-api/src/live.rs",
+      "find": "netguard::outbound_allowed_url(&url).map_err(|e| e.to_string())?;",
+      "replace": "",
+      "proof": 6,
+      "red": "a_rig_gmail_transport_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/sync-graph/src/client.rs",
+      "find": "netguard::outbound_allowed_url(&cfg.base_url)?;",
+      "replace": "",
+      "proof": 7,
+      "red": "a_rig_mailbox_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/unsubscribe.rs",
+      "find": "netguard::outbound_allowed_url(url)?;   // engine-act-r6 round 5",
+      "replace": "",
+      "proof": 8,
+      "red": "a_rig_core_reaches_this_mac_only_and_counts_what_it_refused.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/sign_in/authority.rs",
+      "find": "netguard::outbound_allowed_url(url)?;   // engine-act-r6 round 5:",
+      "replace": "// engine-act-r6 round 5:",
+      "proof": 8,
+      "red": "a_rig_core_reaches_this_mac_only_and_counts_what_it_refused.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "docs/lanes/outside-sockets.md",
+      "find": "| S9 |",
+      "replace": "| X9 |",
+      "proof": 11,
+      "red": "^25$"
+    },
+    {
+      "file": "core/crates/engine/src/check_flow.rs",
+      "find": ".redirect(reqwest::redirect::Policy::none()).timeout(Duration::from_millis(AI_HTTP_TIMEOUT_MS))",
+      "replace": ".timeout(Duration::from_millis(AI_HTTP_TIMEOUT_MS))",
+      "proof": 13,
+      "red": "the_check_transport_does_not_follow_a_redirect_off_the_first_address \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/ai-providers/src/live.rs",
+      "find": "Err(e) => a.error(e.to_string()),",
+      "replace": "Err(_) => a.follow(),",
+      "proof": 5,
+      "red": "a_rig_transport_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/sync-graph/src/client.rs",
+      "find": "Err(e) => a.error(e.to_string()),",
+      "replace": "Err(_) => a.follow(),",
+      "proof": 7,
+      "red": "a_rig_mailbox_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/sync-graph/src/client.rs",
+      "find": "netguard::outbound_allowed_url(url)?;   // rig-net-rust: the dial itself, before the token is read and before any lookup",
+      "replace": "",
+      "proof": 7,
+      "red": "a_rig_mailbox_reaches_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/validate.rs",
+      "find": "netguard::outbound_allowed(host).map_err(|e| (Step::SmtpConnect, match e { contracts::CoreError::Action { failure } => failure.reason_words, other => other.to_string() }))?;   // engine-act-r6 round 5",
+      "replace": "",
+      "proof": 4,
+      "red": "the_imap_dialer_and_the_smtp_check_of_a_rig_process_reach_this_mac_only.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "    netguard::outbound_allowed(host)?;\n    netguard::lookup(host, 0)",
+      "replace": "    netguard::lookup(host, 0)",
+      "proof": 12,
+      "red": "the_provider_transport_reaches_past_this_mac_on_the_owners_copy_only_and_never_follows_a_redirect \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/ai_settings.rs",
+      "find": "        netguard::outbound_allowed_url(&url).map_err(|e| words_of(&e))?;\n",
+      "replace": "",
+      "proof": 12,
+      "red": "the_provider_transport_reaches_past_this_mac_on_the_owners_copy_only_and_never_follows_a_redirect \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/sync-gmail-api/src/live.rs",
+      "find": "Err(e) => a.error(e.to_string()),",
+      "replace": "Err(_) => a.follow(),",
+      "proof": 6,
+      "red": "a_rig_gmail_transport_does_not_follow_a_redirect_away \\.\\.\\. FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Guarded sites at 0aa1558e (core/crates/..., file:line): oauth/src/token.rs:51; sync-graph/src/client.rs:68 (redirect), :86 (resolver), :103, :150; autoconfig/src/adapters/dns_hickory.rs:84, http_reqwest.rs:23 (redirect) and :65, tls_probe.rs:37-38; sync-imap/src/transport.rs:153, validate.rs:157; send/src/smtp.rs:38; ai-providers/src/live.rs:14, :22, :43, :61; sync-gmail-api/src/live.rs:15, :24, :49, :67; engine/src/unsubscribe.rs:75, engine/src/sign_in/authority.rs:38, engine/src/ai_settings.rs:536-537 and :576; engine/src/rig.rs:90 (closes the process on a rig copy), rust_core.rs:710 (serves rig/refused-outbound only in a rig process); netguard/src/lib.rs:20 (REFUSED_STATE_PATH = rig/refused-outbound). Tests: <crate>/tests/rig_guard.rs for oauth (:8), autoconfig (:12), send (:14), sync-imap (:12), ai-providers (:40), sync-gmail-api (:18), sync-graph (:39, async); engine/tests/engine_rig_guard.rs:23; engine/tests/engine_rig_guard_open.rs:20 the_owners_core_is_not_refused_by_the_guard (a non-rig core is not affected); netguard/tests/guard.rs:6. Each mutant deletes the guard line (the tests listen on 127.0.0.1 only, so a removed guard is counted locally, never on the network: engine_rig_guard.rs header). The unsubscribe mutant and the sign-in authority mutant are both red in engine_rig_guard (it drives the authority at lines ~58-62 and the unsubscribe after). A removed guard line must still compile (the `?` lines are statements: deleting them leaves unused-variable warnings at most). The previous run's mutant log (_captures/engine-act-r6/r5-mutant-dns-unguarded.log, last line `cargo exit 101`) is the dns_hickory mutant. (gap-engine-tests, 2026-11-11) CLOSED: (1) check_flow.rs: the rig's AI client now has `.redirect(reqwest::redirect::Policy::none())` (core/crates/engine/src/check_flow.rs, the client builder in `Loopback::send`), and a new test in that file's own test module, the_check_transport_does_not_follow_a_redirect_off_the_first_address, answers a 302 from a loopback listener that names a SECOND loopback listener: the 302 is the answer and the second listener is never dialled (nothing leaves this Mac even in the broken copy). New proof 13 (`--lib check_flow::`, 3 tests) and its broken copy. (2) six of the seven sites now have a broken copy in this file, each against the test that already existed in its crate (the lane's own comments at the foot of those tests name them): ai-providers redirect guard live.rs:43 (proof 5), sync-graph redirect guard client.rs:68 and dial guard client.rs:150 (proof 7), sync-imap SMTP check validate.rs:157 (proof 4), engine ai_settings.rs:536 (the lookup guard, `guarded_lookup`) and :576 (`route`) (new proof 12, the one test the_provider_transport_reaches_past_this_mac_on_the_owners_copy_only_and_never_follows_a_redirect, ai_settings.rs:684). The seventh, sync-gmail-api live.rs:49, has no test (above). Whether each broken copy compiles and goes red is for the lead's runs; none was run here. S9 (the Swift loads of a model or a tokenizer from a folder) was read on 15 Nov 2026 in the packages build main191 resolved (swift-transformers 1.4.0, mlx-swift-lm 4ab26799): docs/lanes/outside-sockets.md row S9 holds the deciding lines; the lead checked that loadConfig(modelFolder:) (Hub.swift:247-317) holds no snapshot, httpGet, URLSession or download call. The test a_rig_gmail_transport_does_not_follow_a_redirect_away exists at core/crates/sync-gmail-api/tests/rig_guard.rs:42 and ran in the lead's engine-test proofs (lead-tools/audit/cargo-head192)."
+}

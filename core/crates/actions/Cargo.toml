@@ -1,0 +1,12 @@
+[package]
+name = "actions"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh actions: the use cases that change mail (archive, snooze, pin, label, move, read, undo, contacts, trash, spam, unsubscribe). Each commits in the store first, writes back through the MailAdapter port, and rolls back in words when the server refuses."
+
+[dependencies]
+contracts = { workspace = true }
+store = { path = "../store" }
+# The same rusqlite the store uses (MIT, bundled SQLite): the write closures run SQL on the store's transaction.
+rusqlite = { version = "0.41", features = ["bundled", "hooks"] }

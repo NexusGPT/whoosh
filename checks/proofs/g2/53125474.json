@@ -1,0 +1,104 @@
+{
+  "item": "53125474",
+  "full_id": "53125474-8036-4157-9256-bac3b01144dd",
+  "title": "Build fn-perf-iphone",
+  "state": "outside",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 -I -c \"import importlib.util as u; s=u.spec_from_file_location('m','perf/memory-iphone.py'); m=u.module_from_spec(s); s.loader.exec_module(m); print('MEM_IPHONE_MB', m.constant('MEM_IPHONE_MB')); print('PUSH_ARRIVAL_P95_S', m.constant('PUSH_ARRIVAL_P95_S')); print('PERF_LOAD_MAX', m.constant('PERF_LOAD_MAX'))\"",
+      "pass": "(?s)(?=.*MEM_IPHONE_MB 250\\.0)(?=.*PUSH_ARRIVAL_P95_S 180\\.0)(?=.*PERF_LOAD_MAX 12\\.0)",
+      "fail": "Traceback|KeyError|None",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/memory-iphone.py --selftest",
+      "pass": "(?s)(?=.*\\| at-the-limit \\| (?:-|[a-z0-9/-]+) \\| 0, WITHIN BUDGET \\| 0, WITHIN BUDGET \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| one-over \\| (?:-|[a-z0-9/-]+) \\| 1, OVER BUDGET \\| 1, OVER BUDGET \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| fixture-is-29 \\| (?:-|[a-z0-9/-]+) \\| 1, NOT JUDGED \\| 1, NOT JUDGED \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| no-measure \\| (?:-|[a-z0-9/-]+) \\| 1, NOT JUDGED \\| 1, NOT JUDGED \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| busy-machine-is-judged-all-the-same \\| (?:-|[a-z0-9/-]+) \\| 0, WITHIN BUDGET \\| 0, WITHIN BUDGET \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| busy-4-cores-is-judged-and-over-is-red \\| (?:-|[a-z0-9/-]+) \\| 1, OVER BUDGET \\| 1, OVER BUDGET \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| no-socket \\| (?:-|[a-z0-9/-]+) \\| 1, NOT JUDGED \\| 1, NOT JUDGED \\| (?:\\d+ \\| )?yes \\|)(?=.*selftest: 9 cases, 0 differ)",
+      "fail": "\\| NO \\||Traceback|selftest: \\d+ cases, [1-9]\\d* differ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/push-arrival.py --selftest",
+      "pass": "(?s)(?=.*\\| p95-at-the-limit \\| (?:-|[a-z0-9/-]+) \\| 0, WITHIN BUDGET \\| 0, WITHIN BUDGET \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| p95-one-ms-over \\| (?:-|[a-z0-9/-]+) \\| 1, OVER BUDGET \\| 1, OVER BUDGET \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| two-slow-in-twenty \\| (?:-|[a-z0-9/-]+) \\| 1, OVER BUDGET \\| 1, OVER BUDGET \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| no-measure \\| (?:-|[a-z0-9/-]+) \\| 1, NOT JUDGED \\| 1, NOT JUDGED \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| busy-machine \\| (?:-|[a-z0-9/-]+) \\| 1, NOT JUDGED \\| 1, NOT JUDGED \\| (?:\\d+ \\| )?yes \\|)(?=.*\\| no-socket \\| (?:-|[a-z0-9/-]+) \\| 1, NOT JUDGED \\| 1, NOT JUDGED \\| (?:\\d+ \\| )?yes \\|)(?=.*selftest: 6 cases, 0 differ)",
+      "fail": "\\| NO \\||Traceback|selftest: \\d+ cases, [1-9]\\d* differ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 perf/memory-iphone.py",
+      "pass": "MEM_IPHONE_MB|WITHIN BUDGET",
+      "fail": "OVER BUDGET|NOT JUDGED|REFUSED|NO SOCKET|DIED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "OUTSIDE (needs a real iPhone 17 Pro for the counting cell; the simulator's relay leg is a stand-in): with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 perf/push-arrival.py, run on the real device by the owner",
+      "pass": "WITHIN BUDGET",
+      "fail": "OVER BUDGET|NOT JUDGED",
+      "timeout_s": 1200
+    }
+  ],
+  "mutants": [
+    {
+      "file": "docs/CONSTANTS.md",
+      "find": "| MEM_MAC_MB / MEM_IPHONE_MB | 600 with 30 accounts / 250 | same |",
+      "replace": "| MEM_MAC_MB / MEM_IPHONE_MB | 600 with 30 accounts / 999 | same |",
+      "proof": 0,
+      "red": "MEM_IPHONE_MB 999\\.0"
+    },
+    {
+      "file": "docs/CONSTANTS.md",
+      "find": "| PUSH_ARRIVAL_P95_S | 180 |",
+      "replace": "| PUSH_ARRIVAL_P95_S | 900 |",
+      "proof": 0,
+      "red": "PUSH_ARRIVAL_P95_S 900\\.0"
+    },
+    {
+      "file": "perf/memory-iphone.py",
+      "find": "verdict = \"OVER BUDGET\" if mb > limit else \"WITHIN BUDGET\"",
+      "replace": "verdict = \"OVER BUDGET\" if mb >= limit else \"WITHIN BUDGET\"",
+      "proof": 1,
+      "red": "\\| at-the-limit \\| - \\| 0, WITHIN BUDGET \\| 1, OVER BUDGET \\| NO \\|"
+    },
+    {
+      "file": "perf/memory-iphone.py",
+      "find": "if accounts != len(json.load(",
+      "replace": "if False and accounts != len(json.load(",
+      "proof": 1,
+      "red": "\\| fixture-is-29 \\| memory/fixture-is-30 \\| 1, NOT JUDGED \\| 0, WITHIN BUDGET \\| NO \\|"
+    },
+    {
+      "file": "perf/memory-iphone.py",
+      "find": "if constant(\"PERF_LOAD_MAX\") is None:",
+      "replace": "if not judged_load()[0]:",
+      "proof": 1,
+      "red": "\\| busy-machine-is-judged-all-the-same \\| - \\| 0, WITHIN BUDGET \\| 1, NOT JUDGED \\| NO \\|"
+    },
+    {
+      "file": "perf/push-arrival.py",
+      "find": "got = p95(ms)",
+      "replace": "got = sum(ms) / len(ms)",
+      "proof": 2,
+      "red": "\\| two-slow-in-twenty \\| push/tail-not-mean \\| 1, OVER BUDGET \\| 0, WITHIN BUDGET \\| 20 \\| NO \\|"
+    },
+    {
+      "file": "perf/push-arrival.py",
+      "find": "verdict = \"OVER BUDGET\" if got > limit_ms else \"WITHIN BUDGET\"",
+      "replace": "verdict = \"OVER BUDGET\" if got >= limit_ms else \"WITHIN BUDGET\"",
+      "proof": 2,
+      "red": "\\| p95-at-the-limit \\| - \\| 0, WITHIN BUDGET \\| 1, OVER BUDGET \\| 20 \\| NO \\|"
+    },
+    {
+      "file": "perf/push-arrival.py",
+      "find": "if load_avg() > cap:",
+      "replace": "if load_avg() > cap * 1000:",
+      "proof": 2,
+      "red": "\\| busy-machine \\| - \\| 1, NOT JUDGED \\| 0, WITHIN BUDGET \\| 20 \\| NO \\|"
+    }
+  ],
+  "gap": null,
+  "owner": "Confirm PUSH_ARRIVAL_P95_S = 180 s (docs/CONSTANTS.md:62 says 'owner confirms').",
+  "notes": "OUTSIDE: the 30-account iPhone run (memory resident MB) needs the iOS 26.5 simulator runtime, and the push p95 cell needs a real iPhone 17 Pro (the simulator's relay leg is a stand-in); proofs 3 and 4 (lead). Open for the owner: confirm PUSH_ARRIVAL_P95_S = 180 s (docs/CONSTANTS.md:62). Built here: --selftest in perf/memory-iphone.py (proof 1) and perf/push-arrival.py (proof 2): each runs the script's own main() against a stand-in socket and compares exit code and verdict with the expected pair of each case: memory at the limit (250) exit 0, 0.5 MB over exit 1, the fixture at 29 accounts exit 1 NOT JUDGED, no measure, a busy machine, no socket; push p95 at the limit exit 0, one ms over exit 1, two slow pushes in twenty exit 1 while their mean is far below the limit, no measure, a busy machine, no socket; the push cases also count 20 pushes delivered. Each of the six script mutants is a one-line edit of a judge (>= for >, the account check off, the load gate off, the mean for the p95). CHANGED BEHAVIOUR in both scripts: the load gate compared the load per core with PERF_LOAD_MAX = 12, which the ledger states as the one-minute load average (docs/CONSTANTS.md:43), so the gate could not trip; it now compares the one-minute load average (new function load_avg()) and the case busy-machine proves it. The old text of this note on PERF_LOAD_MAX being missing is out of date (the row exists). Proof indices: 0 constants, 1 memory selftest, 2 push selftest, 3 lead memory, 4 lead push. The earlier mutants on proof 0 are unchanged. Claims: (a) memory-iphone exits 1 above 250 MB on the 30-account fixture: perf/memory-iphone.py:23-36 constant(), :88-104 main (accounts/count must equal the fixture's 30 else NOT JUDGED), limit constants.rs:12 and docs/CONSTANTS.md:16; (b) push-arrival exits 1 above PUSH_ARRIVAL_P95_S: perf/push-arrival.py:105-125, N = 20 pushes (:91), p95 :99-101, constants.rs:60 and docs/CONSTANTS.md:62. Proof 0 reads the constants through the scripts' own parser (no app, no socket, nothing compiled); it does not prove the exit code. Both scripts print the line `1 checks, F failed, U not judged` and exit 1 unless WITHIN BUDGET (:70-83), and print their verdict to stderr; so proofs 1 and 2 must read both streams. The mutants are the value-rows the scripts read: breaking either makes proof 0 print another number. I did not run any of these. Standing rule applies: both scripts read the machine load and the app's memory, they do not themselves add any load. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Proof 3 now runs through the rig on a calm machine (PERF_LOAD_MAX 12). What stays outside: proof 4 only, the push p95 cell, which needs a real iPhone 17 Pro (the simulator's relay leg is a stand-in), and the owner's confirmation of PUSH_ARRIVAL_P95_S = 180 s (docs/CONSTANTS.md:62). | Round 6: perf/memory-iphone.py compares the load per core (PERF_LOAD_MAX x cores / 12, the ledger: one runnable per core on a 12-core Mac), names both figures when it does not judge, and has a broken copy memory/load-raw (selftest 9 cases)."
+}

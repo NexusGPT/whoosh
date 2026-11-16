@@ -1,0 +1,19 @@
+{
+  "item": "250fdb26",
+  "full_id": "250fdb26-f64e-478c-a141-cf8134b0f993",
+  "title": "Keep AI reply source excerpts in the local database",
+  "state": "prove",
+  "proofs": [
+    {"kind": "cargo", "run": "--release -p engine --test engine_source_excerpts -- --nocapture", "pass": "test result: ok\\. [0-9]+ passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 1200},
+    {"kind": "cargo", "run": "--release -p engine --test engine_source_excerpts the_walks_write_their_excerpts_and_stamps_to_the_local_database", "pass": "test the_walks_write_their_excerpts_and_stamps_to_the_local_database \\.\\.\\. ok", "fail": "FAILED|panicked", "timeout_s": 900},
+    {"kind": "cargo", "run": "--release -p engine --test engine_source_excerpts after_a_restart_the_retrieval_reads_the_stored_excerpts_with_no_walk", "pass": "test after_a_restart_the_retrieval_reads_the_stored_excerpts_with_no_walk \\.\\.\\. ok", "fail": "FAILED|panicked", "timeout_s": 900},
+    {"kind": "cargo", "run": "--manifest-path core/crates/store/migrations/Cargo.toml --test migration_v16", "pass": "test result: ok\\. [0-9]+ passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 900}
+  ],
+  "mutants": [
+    {"file": "core/crates/store/src/realcore.rs", "find": "chunks.iter().filter(|c| !c.3.trim().is_empty())", "replace": "chunks.iter().filter(|c| false && !c.3.trim().is_empty())", "proof": 1, "red": "the_walks_write_their_excerpts_and_stamps_to_the_local_database .*FAILED|one excerpt for the short note"},
+    {"file": "core/crates/engine/src/replies_work/adapters/stored_excerpts.rs", "find": "source_chunks_ranked(sources.iter().map(key_of).collect(), wanted, limit)", "replace": "source_chunks_ranked(sources.iter().map(key_of).collect(), Vec::new(), limit)", "proof": 2, "red": "after_a_restart_the_retrieval_reads_the_stored_excerpts_with_no_walk .*FAILED|panicked"}
+  ],
+  "gap": "S, test, for the calendar half and the old location. (1) The item's two walks are the folder walk and the calendar walk; the write test (engine_source_excerpts.rs:90) reads a folder's rows and, per its comment, the calendar's origin Event rows (source key 'calendar', item key '<event id>@<start ms>'): the lead must confirm by reading the test's assertions below line 100 that the calendar rows are asserted, else a calendar assertion is S to add. (2) 'today both sit in an in-memory index (memory_excerpts.rs:66)': the in-memory adapter still exists 'for the tests that use it' (stored_excerpts.rs:3) and is still exported (core/crates/engine/src/replies_work/mod.rs:24); nothing proves the production path (RustCore::open_production) no longer uses MemoryExcerpts: add a static grep case 'MemoryExcerpts' outside tests (S) or accept the restart test (proof 2) as the proof, since it opens the production core, deletes the folder, reopens and finds the note. The mutants above are mine, one line each; the test comments name theirs (rows-not-written, search-reads-nothing) but no source switch of those names exists (grep of core/crates/engine/src and store/src finds none).",
+  "owner": null,
+  "notes": "Table: core/crates/store/migrations/sql/0016_attachment_columns_source_chunk.sql:18 (source_chunk); writer core/crates/store/src/realcore.rs:1212-1225 (source_put_item); reader core/crates/engine/src/replies_work/adapters/stored_excerpts.rs:60 (source_chunks) and :83 (source_chunks_ranked, word index from migration 0021). Tests: core/crates/engine/tests/engine_source_excerpts.rs:90 (writes), :132 (changed item replaced, unchanged not re-read), :159 (gone file leaves the database), :189, :210 (restart, no walk), :262 (10,000 search, see item 275bed0c). A prior pass is on record at the main84 merge log (_captures/lead/main84-verify/cargo-merged.log:716-717) but not at this commit. A cargo run needs one compile at a time."
+}

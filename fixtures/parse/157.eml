@@ -1,0 +1,31 @@
+From: Jonas Peeters <jonas.peeters@example.net>
+To: Assem Example <assem@example.org>
+Subject: Canceled: Team lunch
+Date: Fri, 13 Nov 2026 17:42:00 +0000
+Message-ID: <53c1ca56ad0f48fc@mail.example.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============9193945672518172231=="
+
+--===============9193945672518172231==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Jonas Peeters invites you to Team lunch.
+
+--===============9193945672518172231==
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+Content-Type: text/calendar; method="CANCEL"; charset="UTF-8"
+MIME-Version: 1.0
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vRXhhbXBsZSBDYWxlbmRhci8vRU4NClZFUlNJT046
+Mi4wDQpNRVRIT0Q6Q0FOQ0VMDQpCRUdJTjpWRVZFTlQNClVJRDo5YjE2MzZlYzBmZWJmZDVhZDY3
+YUBleGFtcGxlLm9yZw0KRFRTVEFSVDoyMDI2MTExMFQxMDMwMDBaDQpEVEVORDoyMDI2MTExMFQx
+MTMwMDBaDQpTVU1NQVJZOlRlYW0gbHVuY2gNCkxPQ0FUSU9OOmh0dHBzOi8vbWVldC5leGFtcGxl
+Lm5ldC8zODdkODUNCk9SR0FOSVpFUjtDTj1Kb25hcyBQZWV0ZXJzOm1haWx0bzpqb25hcy5wZWV0
+ZXJzQGV4YW1wbGUubmV0DQpBVFRFTkRFRTtDTj1Bc3NlbSBFeGFtcGxlO1JPTEU9UkVRLVBBUlRJ
+Q0lQQU5UO1BBUlRTVEFUPU5FRURTLUFDVElPTjtSU1ZQPVQNCiBSVUU6bWFpbHRvOmFzc2VtQGV4
+YW1wbGUub3JnDQpTVEFUVVM6Q0FOQ0VMTEVEDQpTRVFVRU5DRTowDQpFTkQ6VkVWRU5UDQpFTkQ6
+VkNBTEVOREFSDQo=
+
+--===============9193945672518172231==--

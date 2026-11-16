@@ -1,0 +1,20 @@
+# Signature evidence, one per line: <kind> <TAB> <regex>, read case-insensitively against one trimmed line.
+# closing: a whole line that closes a letter. contact: a line that carries contact details. Two independent signals make a signature.
+closing	^(best|kind|warm|many thanks|thanks|thank you|regards|best regards|kind regards|warm regards|cheers|sincerely|yours|all the best)[,.!]?$
+closing	^(best|kind|warm)\s+(regards|wishes)[,.!]?$
+closing	^(cordialement|bien cordialement|bien à vous|merci|amicalement|salutations)[,.!]?$
+closing	^(mit freundlichen grüßen|viele grüße|beste grüße|liebe grüße|grüße|gruß|mfg)[,.!]?$
+closing	^(saludos|un saludo|atentamente|gracias)[,.!]?$
+closing	^(cordiali saluti|saluti|grazie|distinti saluti)[,.!]?$
+closing	^(atenciosamente|cumprimentos|obrigado|obrigada|abraços)[,.!]?$
+closing	^(met vriendelijke groet|vriendelijke groeten|groeten|groet)[,.!]?$
+closing	^(pozdrawiam|z poważaniem|dziękuję)[,.!]?$
+closing	^(lugupidamisega|parimat|tervitades)[,.!]?$
+closing	^(ystävällisin terveisin|terveisin|kiitos)[,.!]?$
+closing	^(med vänliga hälsningar|vänliga hälsningar|hälsningar|mvh)[,.!]?$
+closing	^(с уважением|спасибо|всего доброго)[,.!]?$
+delimiter	^-- ?$
+contact	(\+?\d[\d ().-]{7,}\d)
+contact	^(tel|tél|phone|mobile|mob|fax|cell|téléphone|telefon|tfn|puh|тел)\.?\s*[:.]
+contact	[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}
+contact	^(https?://|www\.)\S+$

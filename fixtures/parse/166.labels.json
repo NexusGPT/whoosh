@@ -1,0 +1,20 @@
+{
+ "id": "166",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "02d312e2f20f4032ec73@accounts.example.com",
+  "summary": "Design review",
+  "organizer": "yara.costa@mail.example.net",
+  "all_day": false,
+  "start_utc_ms": 1795249800000,
+  "start_local": null,
+  "tzid": null,
+  "location": "Rue Example 12, Brussels"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

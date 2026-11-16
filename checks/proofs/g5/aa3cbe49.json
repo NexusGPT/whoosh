@@ -1,0 +1,19 @@
+{
+  "item": "aa3cbe49",
+  "full_id": "aa3cbe49-477e-46d1-b960-d8852aa9c091",
+  "title": "Serve the re-run preview in the test app's core",
+  "state": "prove",
+  "proofs": [
+    {"kind": "cargo", "run": "--release -p engine --test engine_preview_r8", "pass": "test result: ok\\. [0-9]+ passed; 0 failed", "fail": "FAILED|panicked", "timeout_s": 900},
+    {"kind": "static", "run": "python3 checks/parity/par-labelscontactsmac.py --selftest", "pass": "[0-9]+ checks, 0 failed, 0 not judged|0 problems", "fail": "NOT RED|NO MUTANT|RED on the model", "timeout_s": 900},
+    {"kind": "hidden", "core": "fixture", "run": "python3 checks/parity/par-labelscontactsmac.py", "pass": "a125-no-model-and-no-matching-rule-says-0-join-and-the-line +pass", "fail": "a125-(no-model-and-no-matching-rule-says-0-join-and-the-line|the-question-and-the-run-agree) +(fail|unjudged)", "timeout_s": 1200},
+    {"kind": "hidden", "core": "fixture", "run": "python3 checks/parity/par-labelscontactsmac.py", "pass": "a125-the-question-and-the-run-agree +pass", "fail": "a125-the-question-and-the-run-agree +(fail|unjudged)", "timeout_s": 1200}
+  ],
+  "mutants": [
+    {"file": "Sources/CoreBridge/FixtureLabels.swift", "find": "case (\"label\", 4) where p[2] == \"rerun\" && p[3] == \"preview\":", "replace": "case (\"label\", 4) where p[2] == \"rerun\" && p[3] == \"preview-off\":", "proof": 2, "red": "a125-no-model-and-no-matching-rule-says-0-join-and-the-line +unjudged +the core serves no label/<l>/rerun/preview"},
+    {"file": "core/crates/engine/src/flow_ctx.rs", "find": "(0, if ai_ok { ai.iter()", "replace": "(0, if true { ai.iter()", "proof": 0, "red": "with_no_model_the_preview_counts_nothing_by_the_ai_and_says_why .*FAILED"}
+  ],
+  "gap": "S, check: the board text names core/crates/engine/src/flow_ctx.rs:259; the real route is now rerun_preview at flow_ctx.rs:267-290 (called at core/crates/engine/src/rust_core.rs:526), so no builder should follow the old line. The fixture core mirrors it in Sources/CoreBridge/FixtureAgents.swift:239 rerunPreviewLocked (served by FixtureLabels.swift:558). No test compares the two answers key by key (by_rule, by_ai, leave, stay, beyond, ai_words): the fixture builds its JSON on its own. A unit test in Tests/Unit that feeds the same label to the fixture and checks the six keys and the ai_words sentence ('The AI cannot sort yet: ...', flow_ctx.rs:262-264) would pin the mirror (S). The a125 cases carry the proof on a built app only through the fixture.",
+  "owner": null,
+  "notes": "Cases: checks/parity/par-labelscontactsmac.py:2240 a_no_model, :2271 a_agree, registered :2279-2281 (with a_blank, a125-a-blank-rule-value-matches-nothing, not part of the item). Engine tests: core/crates/engine/tests/engine_preview_r8.rs:82 with_no_model_the_preview_counts_nothing_by_the_ai_and_says_why, :105 a_jev_with_its_key_and_consent_has_no_refusal_and_the_preview_counts_its_mail. Commit 33d957cb (fixture serves the route). Old red: _captures/tests/r79/par-labelscontactsmac-main79.log:62,64 ('the core serves no label/<l>/rerun/preview (an older core)'). The cargo count in proof 0 assumes 2 tests (grep of fn names in the file found these two as #[test] functions); the regex accepts any count."
+}

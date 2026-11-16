@@ -1,0 +1,57 @@
+{
+  "item": "5a86f33a",
+  "full_id": "5a86f33a-bd5c-4d49-a01a-29c467aab2a0",
+  "title": "Check the real engine's search after a restart",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "WHOOSH_EMBED_WEIGHTS=\"$WHOOSH_EMBED_WEIGHTS\" python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "(?s)PASS\\s+search/consultant-is-an-exact-match-though-the-mail-holds-consultants .*PASS\\s+search/advisor-mail-ranks-first-by-meaning-after-the-exact-group .*PASS\\s+search/a-query-with-no-shared-word-ranks-the-seeded-pair-first-by-meaning .*PASS\\s+search/from-filter-keeps-only-that-sender .*PASS\\s+search/to-filter-keeps-only-the-mail-the-owner-sent .*PASS\\s+search/people-list-a-recipient-of-sent-mail-and-are-ready .*PASS\\s+search/a-restart-gives-the-same-answers ",
+      "fail": "FAIL\\s+search/|NOT JUDGED\\s+search/(consultant|advisor|a-query|from|to|people|a-restart)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "WHOOSH_EMBED_WEIGHTS=\"$WHOOSH_EMBED_WEIGHTS\" python3 checks/realcore-check.py {bundle} --slice-search --mutant",
+      "pass": "mutant search-never-answers: RED as it must be",
+      "fail": "SURVIVED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_search_forms --test engine_people",
+      "pass": "(?s)test result: ok\\. \\d+ passed; 0 failed.*test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice search: model all pass .*each red on its own case",
+      "fail": "FAILS|WRONG|SURVIVED|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/people.rs",
+      "find": "p.to_count += 1;",
+      "replace": "p.to_count += 0;",
+      "proof": 0,
+      "red": "FAIL\\s+search/people-list-a-recipient-of-sent-mail-and-are-ready"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": ".then_with(|| at.get(b.message_id.as_str()).cmp(&at.get(a.message_id.as_str())))",
+      "replace": ".then_with(|| at.get(a.message_id.as_str()).cmp(&at.get(b.message_id.as_str())))",
+      "proof": 2,
+      "red": "d_no_mail_is_dropped_by_a_score \\.\\.\\. FAILED|e_a_restart_gives_the_same_list \\.\\.\\. FAILED|FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. The acceptance names five claims; checks/realcore-check.py --slice-search prints one 'PASS|FAIL|NOT JUDGED search/<case> <detail>' line per case (main_slice_search :2385, format at :2420, judge_search :2312, case names SEARCH_ALL_CASES :2045-2048). (1) 'consultant' finds the consultants mail as exact: case consultant-is-an-exact-match-though-the-mail-holds-consultants (judge_search a_ok at :2321, needs the id in the exact group and matched_in not meaning). (2) a query with no shared word ranks the related mail first under Close in meaning: advisor-mail-ranks-first-by-meaning-after-the-exact-group and a-query-with-no-shared-word-ranks-the-seeded-pair-first-by-meaning (judged only when a model answers; with no model both are NOT JUDGED (:2324-2327), so the lead must pass WHOOSH_EMBED_WEIGHTS=<model folder> to the run, as the check's docstring says at :82-83; the run string above forwards the lead's variable). (3) a from: and a to: pill filter: from-filter-keeps-only-that-sender, to-filter-keeps-only-the-mail-the-owner-sent. (4) a person only in sent mail is suggested: people-list-a-recipient-of-sent-mail-and-are-ready (judge_people :2305: people/prefix/fay has to_count > 0 and from_count 0, people/ready true). (5) all after a restart of the copy: a-restart-gives-the-same-answers (:2353-2364, asks the word search, both filters and the people again after scripts/launch-one.sh --relaunch). The stated claim 'a check that prints only failures cannot prove a pass' is met: every case prints its own line. The ninth case an-engine-refusal-is-said-in-words-not-as-a-list is NOT JUDGED on purpose (the screen never sends empty words; the hook needed is a socket verb `core run search`) and is not part of the acceptance; so the run's total line is '10 checks, 0 failed, 1 not judged' at best and the pass regex does not use the total. The run is marked SEEDED-SLICE-SEARCH (:2419): it proves the engine path and the restart, NOT a first run of the installed app. Last saved runs: _captures/lead/main85/realcore-search-model.log (10 checks, 0 failed, 3 not judged: no model then) and _captures/lead/main85/realcore-search-model-3.log:12-13 where PASS lines held for consultant, meaning, from, to, but FAIL for people-list (people/prefix/fay [] and the owner's own address listed with from_count 1 before the restart) and FAIL for a-restart-gives-the-same-answers (the people part of the restart case, because the before-people were wrong; after the restart people/prefix/fay held to_count 1). Hypothesis, not verified: the first build of the people book ran before the Sent folder's role was known, so the sent mail counted as a mail from the owner (people.rs:246 by_owner uses `own.contains(&from) || sent.contains(...)`); the file people.rs:12-14 documents a 'known limit' for mail moved between folders. If the new run is red again on those two lines, a code fix in core/crates/engine/src/people.rs is a gap (size M, a builder to read the saved log first). Engine side red at main84: core/crates/engine/tests/engine_search_forms.rs:228 e_a_restart_gives_the_same_list FAILED (_captures/lead/main84-verify/cargo-rows-1.log:847): proof 2 must show it green. The mutant for proof 0 turns the sent-mail count off, which the people case reads; the mutant of proof 2 swaps the date order tie-break (one line, search_cmd.rs:274). Also available: the check's own mutant run (proof 1, hook `search-never-answers`, core/crates/engine/src/search_cmd.rs:106 and :116, rust_core.rs:168). `{bundle}` is the built Whoosh.app; realcore-check launches the hidden rig copy itself (scripts/launch-one.sh, WHOOSH_RIG_HIDDEN=1 at :2403), the runner must not wrap it."
+}

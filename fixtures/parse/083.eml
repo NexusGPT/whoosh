@@ -1,0 +1,36 @@
+From: Marlow Travel <no-reply@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Your Marlow Travel sign-in code
+Date: Wed, 04 Nov 2026 10:27:00 +0000
+Message-ID: <8aa7422ce6b9faee@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============6042884877821026662=="
+
+--===============6042884877821026662==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+WW91ciBjb2RlIGlzIDU3NzIxMy4NCk9yIHNpZ24gaW4gd2l0aCBvbmUgY2xpY2s6IGh0dHBzOi8v
+YXV0aC5leGFtcGxlLm5ldC92ZXJpZnk/dG9rZW49OGFhYWI5NWZhYWZiODliZGRhOWViOWMzJmVt
+YWlsPWFzc2VtJTQwZXhhbXBsZS5vcmcNCg==
+
+--===============6042884877821026662==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Marlow Travel</titl=
+e><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-si=
+ze:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspac=
+ing=3D"0"><tr><td align=3D"center"><img width=3D"1" height=3D"1" style=3D"dis=
+play:none" src=3D"https://cdn.example.net/px/6eccf540.png" srcset=3D"https://=
+cdn.example.net/px/6eccf540.png 2x"><h2>Marlow Travel</h2><p>Your code is <b>=
+577213</b>.</p><p>Or <a href=3D"https://auth.example.net/verify?token=3D8aaab=
+95faafb89bdda9eb9c3&amp;email=3Dassem%40example.org">sign in with one click</=
+a>.</p><p style=3D"font-size:11px;color:#888">You receive this because of you=
+r account. <a href=3D"https://example.net/unsubscribe?u=3Dfd1cfb">Unsubscribe=
+</a> | <a href=3D"https://example.net/privacy">Privacy</a></p></td></tr></tab=
+le></body></html>
+
+--===============6042884877821026662==--

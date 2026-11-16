@@ -1,0 +1,15 @@
+loaded in 1.17 s, peak resident 1667 MB
+PASS reply-wanted/q1 2.06 s  worst gap 0.00017  top true (authors true)  got 0.9824 0.0176
+PASS newsletter/q1 0.07 s  worst gap 0.00011  top false (authors false)  got 0.0106 0.9894
+PASS newsletter/q2 0.05 s  worst gap 0.00286  top true (authors true)  got 0.8247 0.1753
+PASS four-way/kind 0.10 s  worst gap 0.00003  top receipt (authors receipt)  got 0.9984 0.0006 0.0007 0.0003
+PASS urgency/u 0.25 s  worst gap 0.00110  top 2 (authors 2)  got 0.0036 0.1293 0.8671
+PASS long-thread/q1 0.05 s  worst gap 0.01446  top true (authors true)  got 0.6840 0.3160
+PASS long-thread/kind 0.05 s  worst gap 0.01460  top other (authors other)  got 0.0904 0.3719 0.0649 0.4728
+PASS twelve-way/topic 0.05 s  worst gap 0.00068  top delivery (authors delivery)  got 0.0005 0.9804 0.0006 0.0002 0.0003
+PASS edges-whitespace/r 0.04 s  worst gap 0.00242  top oui (authors oui)  got 0.9314 0.0686
+PASS five-levels/u 0.05 s  worst gap 0.00488  top 2 (authors 2)  got 0.0104 0.2238 0.4516 0.0564 0.2578
+PASS five-levels/q 0.04 s  worst gap 0.00353  top false (authors false)  got 0.2291 0.7709
+PASS text-ends-on-the-key/q 0.03 s  worst gap 0.00011  top false (authors false)  got 0.0347 0.9653
+PASS field-of-several-lines/q 0.03 s  worst gap 0.00543  top true (authors true)  got 0.8470 0.1530
+13 questions, 0 farther than 0.05 from the authors' answer, 0 with another top option, worst gap 0.01460; token ids: 13 trace lines, 0 differ; seconds a question after the first: least 0.03, median 0.05, most 0.25 (the first 2.06); peak resident 1667 MB

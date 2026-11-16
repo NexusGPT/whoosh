@@ -1,0 +1,63 @@
+{
+  "item": "6f12c0a5",
+  "full_id": "6f12c0a5-6223-4355-8141-b164c23e443f",
+  "title": "Build par-welcomemac",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-welcomemac.py",
+      "pass": "(?s)(?=.*PASS +proton-bridge-mac-only)(?=.*PASS +zoho-regions)(?=.*PASS +spacemail-preset)(?=.*PASS +yahoo-app-password-route)(?=.*PASS +aol-app-password-route)",
+      "fail": "FAIL (proton-bridge-mac-only|zoho-regions|spacemail-preset|yahoo-app-password-route|aol-app-password-route)",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-welcomemac.py --selftest",
+      "pass": "(?s)(?=.*\\| proton-bridge-mac-only \\| proton-as-imap \\| .* \\| red on proton-bridge-mac-only \\|)(?=.*\\| zoho-regions \\| zoho-one-region \\| .* \\| red on zoho-regions \\|)(?=.*\\| spacemail-preset \\| spacemail-unknown \\| .* \\| red on spacemail-preset \\|)(?=.*\\| yahoo-app-password-route \\| yahoo-no-link \\| .* \\| red on yahoo-app-password-route \\|)(?=.*\\| aol-app-password-route \\| aol-as-yahoo \\| .* \\| red on aol-app-password-route \\|)(?=.*selftest: every check seen red on its mutant)",
+      "fail": "NOT RED|BASE FAIL|problem\\(s\\)",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/WelcomeMac/WelcomeRoutes.swift",
+      "find": "link: nil, linkWords: nil, server: \"mail.spacemail.com\", usesSheet: false, macOnly: false)",
+      "replace": "link: nil, linkWords: nil, server: \"mail.spacemail.org\", usesSheet: false, macOnly: false)",
+      "proof": 0,
+      "red": "FAIL spacemail-preset"
+    },
+    {
+      "file": "Sources/Features/WelcomeMac/WelcomeRoutes.swift",
+      "find": "server: \"127.0.0.1 (Bridge, this Mac)\", usesSheet: false, macOnly: true)",
+      "replace": "server: \"127.0.0.1 (Bridge, this Mac)\", usesSheet: false, macOnly: false)",
+      "proof": 0,
+      "red": "FAIL proton-bridge-mac-only"
+    },
+    {
+      "file": "Sources/Features/WelcomeMac/WelcomeRoutes.swift",
+      "find": "server: \"imap.zoho.\\(region)\", usesSheet: false, macOnly: false)",
+      "replace": "server: \"imap.zoho.com\", usesSheet: false, macOnly: false)",
+      "proof": 0,
+      "red": "FAIL zoho-regions"
+    },
+    {
+      "file": "Sources/Features/WelcomeMac/WelcomeRoutes.swift",
+      "find": "link: \"https://login.yahoo.com/account/security\", linkWords: \"Open Yahoo account security\"",
+      "replace": "link: \"https://example.invalid/account/security\", linkWords: \"Open Yahoo account security\"",
+      "proof": 0,
+      "red": "FAIL yahoo-app-password-route"
+    },
+    {
+      "file": "Sources/Features/WelcomeMac/WelcomeRoutes.swift",
+      "find": "link: \"https://login.aol.com/account/security\", linkWords: \"Open AOL account security\"",
+      "replace": "link: \"https://login.yahoo.com/account/security\", linkWords: \"Open AOL account security\"",
+      "proof": 0,
+      "red": "FAIL aol-app-password-route"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Route table: Sources/Features/WelcomeMac/WelcomeRoutes.swift (yahoo :63-65, aol :66-68, proton :69-71, spacemail :72-74, zoho(_:) :76-81). Case code and expected values: par-welcomemac.py:41-75 (route(r, address) types the address and reads the rows `mac-welcome-accounts.route`). Selftest table rows are printed by checks/welcomemac-check.py:199-209 (`| name | mutant | words | red on name |`), mutants proton-as-imap, zoho-one-region, spacemail-unknown, yahoo-no-link, aol-as-yahoo come from the @check lines (par-welcomemac.py:47, :53, :59, :65, :71). Proof 0 in its current form is judged only by the total line (`0 failed`): that is what the gap fixes. A line of the other `--source` mode (par-welcomemac.py:1121-1129) prints PASS for nine source cases only; it does not cover the named routes. | gap-welcome: checks/welcomemac-check.py main now prints `  PASS <name>` on stdout for every passing case (before the totals line); a failing case still prints `  FAIL <name>: <detail>` on stderr. Saved dry run of the real main against the stand-in model printed a PASS line for all five named routes. The package total can still carry the three failures the r83 run showed (open-inbox, gemini and openrouter key paste: _captures/tests/r83/par-welcomemac-main83.log lines 5-7); the lead's run at this commit says whether they remain; they name no route and the proof reads the five route lines only."
+}

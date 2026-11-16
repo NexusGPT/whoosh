@@ -1,0 +1,60 @@
+{
+  "item": "183fe10a",
+  "full_id": "183fe10a-2639-4f4c-84f3-073ea13ab7f8",
+  "title": "Confirm the hidden meaning check with the model in a real folder",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "test ! -L <WHOOSH_EMBED_WEIGHTS folder> && ls <folder> (the folder is a real directory, not a symbolic link, and holds the weight files); keep the output",
+      "pass": "config\\.json"
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/advisor-mail-ranks-first-by-meaning-after-the-exact-group",
+      "fail": "FAIL +search/advisor-mail-ranks-first-by-meaning-after-the-exact-group|model_failed",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-search",
+      "pass": "PASS +search/a-query-with-no-shared-word-ranks-the-seeded-pair-first-by-meaning",
+      "fail": "FAIL +search/a-query-with-no-shared-word-ranks-the-seeded-pair-first-by-meaning",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "if a meaning case is red: grep the core.log of that run for the engine's note",
+      "pass": "search: the model did not embed the query: the search model could not (load|tokenise|run|check): "
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest: model all pass, mutant model red",
+      "fail": "NOT RED|FAIL",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest model folder: a real folder taken, a symbolic link refused, a missing path refused: yes",
+      "fail": "selftest model folder: .*NO",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/realcore-check.py",
+      "find": "    if os.path.islink(path):",
+      "replace": "    if False:",
+      "proof": 5,
+      "red": "a missing path refused: NO"
+    }
+  ],
+  "gap": "",
+  "owner": null,
+  "notes": "fix-realcore round 4 (2026-11-12): the symbolic-link refusal is in the check: checks/realcore-check.py:2747 `weights_refusal` (a symbolic link, or a path that is not a folder, is refused in words: `FAIL search/model-folder-is-a-real-folder <reason>` and no copy is started; the crawl slice refuses the same way), called by `main_slice_search` and `main_slice_crawl`; a run with a real folder prints `PASS search/model-folder-is-a-real-folder` first. Its self-test `selftest_weights` (:2761) makes a real folder and a symbolic link to it in a fresh temporary folder; the broken copy (line 2754, `if os.path.islink(path):` -> `if False:`) makes it print NO and the whole --selftest exit 1. Proofs 1 and 2: the two meaning cases PASS on _captures/lead/main97/proofs-hidden/again-014.log; the lead's next run with a real folder repeats them. | Flag: checks/realcore-check.py:78 (--slice-search), env :2398-2400 (adds WHOOSH_EMBED_WEIGHTS to the rig copy's environment). Case names: 'search/advisor-mail-ranks-first-by-meaning-after-the-exact-group' and 'search/a-query-with-no-shared-word-ranks-the-seeded-pair-first-by-meaning' (as printed in the main85 log). Output line shape: 'PASS|FAIL|NOT JUDGED <case>  <detail>' then '10 checks, N failed, N not judged'. The note's words: docs/lanes/query-embed.md and core/crates/engine/tests/engine_query_embed_note.rs:119. | OLD GAP (before lane gap-states, 2026-11-12): M, the run, and three limits of the check itself. (1) The run is the lead's, on a build holding b6f90810 (the engine's note) and the resolved-folder change; proofs 1 and 2 are its two PASS lines. On record only: _captures/lead/main85/realcore-search-model-3.log lines 4 and 5 PASS for the two cases, same run FAIL for 'people-list-a-recipient-of-sent-mail-and-are-ready' (line 9) and 'a-restart-gives-the-same-answers' (line 10), 10 checks, 2 failed, 1 not judged: those two reds are not in this item but the item asks that they be explained when the run is quoted; _captures/lead/main85/realcore-search-model-debug2.log (symbolic-link folder) read stage 'model_failed'. (2) 'not seeded': checks/realcore-check.py --slice-search always seeds the mail pair with WHOOSH_CORE_CHECK_SEARCH=1 and says so in its second output line ('SEEDED-SLICE-SEARCH: ... NOT a first run of the installed app', checks/realcore-check.py header :78-82), so a check that is not seeded does not exist: that half of the board's wording is covered by item b43515ba (a count on the installed build). (3) The check takes the folder only from the WHOOSH_EMBED_WEIGHTS environment (realcore-check.py:2398-2400) and does not itself verify it is not a symbolic link: proof 0 does, by hand (S: add 'refuse a symbolic link' to the check, an extra line)."
+}

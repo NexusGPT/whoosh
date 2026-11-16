@@ -1,0 +1,22 @@
+[package]
+name = "ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The one library Swift links: re-exports the contract crate (and, as the core crates land, the real core) through UniFFI."
+
+[lib]
+name = "whoosh_ffi"
+crate-type = ["staticlib", "cdylib", "lib"]
+
+[[bin]]
+name = "uniffi-bindgen"
+path = "src/bin/uniffi-bindgen.rs"
+
+[dependencies]
+contracts = { workspace = true }
+# the attachment readers Swift answers are adapted here to the indexer's own traits (delta 10)
+attachment-index = { path = "../attachment-index" }
+# the real core, slice 1 (2026-11-09): RustCore and its factory open_rust_core, in the "engine" UniFFI namespace
+engine = { path = "../engine" }
+uniffi = { workspace = true, features = ["cli"] }

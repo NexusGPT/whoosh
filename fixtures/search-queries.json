@@ -1,0 +1,141 @@
+{
+ "schema": "whoosh-search-queries/1",
+ "note": "Queries and expected answers for the search crate (core/crates/search, work item fn-search-hybrid). The mail is NOT repeated here: every message id refers to the J2 corpus named in 'corpus'. The meaning rankings stand in for the vector index (the embedder is the vector lane's); the text side is computed from the corpus. Every fused score below was computed by hand, written as its sum of shares 1/(k + rank) with ranks counted from 1 and k = RRF_K from docs/CONSTANTS.md; no number of the ledger is restated except k, which the test checks against the ledger.",
+ "corpus": "fixtures/tests-j2.json",
+ "today": "2026-11-07",
+ "utc_offset_min": 0,
+ "accounts": [
+  {"id": "acc-01", "name": "Personal", "indexed": true},
+  {"id": "acc-02", "name": "Family", "indexed": true},
+  {"id": "acc-03", "name": "Studio", "indexed": true},
+  {"id": "acc-04", "name": "Nordlicht", "indexed": true},
+  {"id": "acc-05", "name": "Printwerk desk", "indexed": true},
+  {"id": "acc-06", "name": "Billing", "indexed": true},
+  {"id": "acc-07", "name": "Atelier desk", "indexed": true},
+  {"id": "acc-08", "name": "Hosting", "indexed": true},
+  {"id": "acc-09", "name": "Travel", "indexed": true},
+  {"id": "acc-10", "name": "Home", "indexed": true},
+  {"id": "acc-11", "name": "Club", "indexed": true},
+  {"id": "acc-12", "name": "Linea second", "indexed": true},
+  {"id": "acc-13", "name": "Newsletter", "indexed": true},
+  {"id": "acc-14", "name": "Archive", "indexed": true},
+  {"id": "acc-15", "name": "Harbour", "indexed": false},
+  {"id": "acc-16", "name": "Meridian", "indexed": false},
+  {"id": "acc-17", "name": "Quarry", "indexed": false},
+  {"id": "acc-18", "name": "Lantern", "indexed": false},
+  {"id": "acc-19", "name": "Juniper", "indexed": false},
+  {"id": "acc-20", "name": "Saffron", "indexed": false},
+  {"id": "acc-21", "name": "Tundra", "indexed": false},
+  {"id": "acc-22", "name": "Orchard", "indexed": false},
+  {"id": "acc-23", "name": "Beacon", "indexed": false},
+  {"id": "acc-24", "name": "Ember", "indexed": false},
+  {"id": "acc-25", "name": "Fjord", "indexed": false},
+  {"id": "acc-26", "name": "Granite", "indexed": false},
+  {"id": "acc-27", "name": "Hollow", "indexed": false},
+  {"id": "acc-28", "name": "Ivory", "indexed": false},
+  {"id": "acc-29", "name": "Kestrel", "indexed": false},
+  {"id": "acc-30", "name": "Lagoon", "indexed": false}
+ ],
+ "meaning": {
+  "supplier price quote spring": ["msg-s06", "msg-01", "msg-s05", "msg-01a"],
+  "price": ["msg-s06", "msg-01", "msg-s05"],
+  "0.84 EUR": ["msg-s07", "msg-s05", "msg-01"],
+  "9.99 EUR": ["msg-s07"],
+  "Q1 print run": ["msg-s06", "msg-s05"]
+ },
+ "filters": [
+  {
+   "text": "from:\"Linea Supply\" before June has attachment",
+   "chips": [{"kind": "from", "value": "Linea Supply"}, {"kind": "before", "value": "June", "bound": "2026-06-01"}, {"kind": "attachment"}],
+   "residual": "",
+   "threads": ["thr-01"],
+   "messages": ["msg-01"],
+   "why": "msg-01b and msg-s03 have no attachment, msg-s02 is after June, msg-01a is from the owner, msg-s04 has no attachment"
+  },
+  {
+   "text": "price from:\"Linea Supply\" before June has attachment",
+   "chips": [{"kind": "from", "value": "Linea Supply"}, {"kind": "before", "value": "June", "bound": "2026-06-01"}, {"kind": "attachment"}],
+   "residual": "price",
+   "threads": ["thr-01"],
+   "messages": ["msg-01"],
+   "marked": {"msg-01": ["price"]},
+   "why": "the meaning list also names msg-s06 and msg-s05; the filters drop both (other senders)"
+  },
+  {
+   "text": "quote account Nordlicht",
+   "chips": [{"kind": "account", "value": "Nordlicht"}],
+   "residual": "quote",
+   "threads": ["thr-01"],
+   "messages": ["msg-01", "msg-01a", "msg-01b"],
+   "why": "msg-s05 holds 'Quote' too but sits in acc-05; three messages of thr-01 fold into one thread row"
+  },
+  {
+   "text": "unread after August",
+   "chips": [{"kind": "unread"}, {"kind": "after", "value": "August", "bound": "2026-09-01"}],
+   "residual": "",
+   "threads": ["thr-s08", "thr-s07", "thr-s02"],
+   "why": "every corpus message loads unread; after August starts on 2026-09-01; newest first"
+  }
+ ],
+ "fusion": {
+  "k_constant": "RRF_K",
+  "k": 60,
+  "text": ["msg-s05", "msg-s02", "msg-01b", "msg-01"],
+  "meaning": ["msg-s02", "msg-s06", "msg-01"],
+  "hand": [
+   {"id": "msg-s02", "shares": "1/62 + 1/61", "score": 0.032522475},
+   {"id": "msg-01", "shares": "1/64 + 1/63", "score": 0.031498016},
+   {"id": "msg-s05", "shares": "1/61", "score": 0.016393443},
+   {"id": "msg-s06", "shares": "1/62", "score": 0.016129032},
+   {"id": "msg-01b", "shares": "1/63", "score": 0.015873016}
+  ],
+  "order": ["msg-s02", "msg-01", "msg-s05", "msg-s06", "msg-01b"],
+  "threads": [
+   {"thread": "thr-s02", "matches": ["msg-s02"]},
+   {"thread": "thr-01", "matches": ["msg-01", "msg-01b"]},
+   {"thread": "thr-s05", "matches": ["msg-s05"]},
+   {"thread": "thr-s06", "matches": ["msg-s06"]}
+  ],
+  "order_if_k_were_1": ["msg-s02", "msg-s05", "msg-01", "msg-s06", "msg-01b"],
+  "why": "msg-01 (two rank-4ish shares) beats msg-s05 (one rank-1 share) only when k is large: at k = 60, 1/64 + 1/63 > 1/61; at k = 1, 1/5 + 1/4 = 0.45 < 1/2"
+ },
+ "meaning_query": {
+  "text": "supplier price quote spring",
+  "threads": ["thr-s06", "thr-01", "thr-s05"],
+  "thread_matches": {"thr-01": ["msg-01", "msg-01a"]},
+  "why": "no corpus message holds all four words, so the text list is empty and meaning alone ranks; thr-s06 shares no word with the query"
+ },
+ "exact": {
+  "text": "\"0.84 EUR\"",
+  "first_thread": "thr-01",
+  "exact_messages": ["msg-01"],
+  "not_exact": ["msg-s07", "msg-s05"],
+  "threads": ["thr-01", "thr-s07", "thr-s05"],
+  "marked": {"msg-01": ["0.84 EUR"]},
+  "why": "the meaning list puts both decoys first; the exact holder still leads"
+ },
+ "exact_tier": {
+  "text": "\"Q1 print run\"",
+  "threads": ["thr-s02", "thr-01", "thr-s06", "thr-s05"],
+  "thread_matches": {"thr-01": ["msg-01", "msg-01b", "msg-01a"]},
+  "why": "four messages hold the phrase (text ranks, newest first: msg-s02, msg-01, msg-01b, msg-01a); the meaning list puts msg-s06 then msg-s05 first. By fused score alone msg-s06 (1/61) would beat msg-01 (1/62) and thr-s06 would sit second; exact holders go first, so thr-01 is second"
+ },
+ "no_exact": {
+  "text": "\"9.99 EUR\"",
+  "threads": ["thr-s07"],
+  "no_exact_match": true
+ },
+ "partial": {
+  "text": "quote",
+  "indexed_count": 14,
+  "loading": ["Harbour", "Meridian", "Quarry", "Lantern", "Juniper", "Saffron", "Tundra", "Orchard", "Beacon", "Ember", "Fjord", "Granite", "Hollow", "Ivory", "Kestrel", "Lagoon"],
+  "offer_server_search": true
+ },
+ "smart_folder": {
+  "name": "Supplier quotes",
+  "parent": "Work",
+  "query": "from:\"Linea Supply\" before June has attachment",
+  "threads": ["thr-01"],
+  "existing_name_refused": "supplier QUOTES"
+ }
+}

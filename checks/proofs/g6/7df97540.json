@@ -1,0 +1,114 @@
+{
+  "item": "7df97540",
+  "full_id": "7df97540-ff7f-4d08-9fc9-550a75c9b379",
+  "title": "First-start import step with progress and the Settings offer",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-welcomemac.py",
+      "pass": "(?s)\\A(?=.*PASS import-sources-listed-from-the-scan)(?=.*PASS import-start-then-progress-from-the-run)(?=.*PASS import-skip-goes-to-the-inbox)(?=.*PASS import-cancel-ends-the-run)(?=.*PASS welcomemac-sweep-import-done-leaves-for-the-inbox)(?=.*\\d+ checks, 0 failed, 0 not judged)",
+      "fail": "FAIL import-|NOT JUDGED import-|UNJUDGED import-",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-welcomemac.py --selftest",
+      "pass": "selftest: every check seen red on its mutant",
+      "fail": "problem\\(s\\)|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-firststart.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL |Traceback",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "grep -c -E '\"case\": \"(import-sources|import-progress|the-import-step-is-the-panel-with-finish-and-skip|replies-continue-goes-to-the-import-step|finish-at-the-import-step-lifts-the-veil-too|a-finished-run-keeps-the-flow-on-the-import-step)\", \"verdict\": \"PASS\"' _captures/results/g6/par-firststart-g6.results.jsonl",
+      "pass": "^6$",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-settingsaccountsmac.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL |Traceback",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "grep -c -E '\"case\": \"import-(button-opens-the-import-sheet|close-button-closes-the-sheet|scrim-closes-the-sheet)\", \"verdict\": \"PASS\"' _captures/results/g6/par-settingsaccountsmac-g6.results.jsonl",
+      "pass": "^3$",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+      "fail": "selftest FAIL|[1-9]\\d* not red",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state welcome-import-step \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state settings-import-offer \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/gap-shots/welcome-import-step --states welcome-import-step",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b8 checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/gap-shots/settings-import-offer --states settings-import-offer",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b4 checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "open pictures state-welcome-import-step-<sources|progress-half>-<light|dark>-<1280x820|960x600>.png and state-settings-import-offer-sheet-<light|dark>-<1280x820|700x480>.png under _captures/results/gap-shots/ beside the first-start board",
+      "pass": "the step lists Apple Mail with its count 18423, then shows the run half done; the Settings sheet lists the same source"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "        return _ok(got, want), \"%s = %r\" % (field, got)",
+      "replace": "        return True, \"%s = %r\" % (field, got)",
+      "proof": 7,
+      "red": "selftest FAIL: states mutant page-stuck is red"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "What exists (the reader's search was for 'import' in file names containing first/onboard/welcome and found only phone files; the Mac step lives under other names). (1) the optional step shows the source choice, progress and count: Sources/Features/WelcomeMac/ImportRows.swift (rows `mac-welcome...import`), WelcomeMacFeature.swift, Sources/Features/FirstStart/FirstStartRows.swift, FirstStartModel.swift, FirstStartSheet.swift, FirstStartRoot.swift; cases in checks/parity/par-welcomemac.py Round 4 (:6-9, :86-): import-sources-listed-from-the-scan, import-select-apple-mail, import-select-outlook-archive, import-select-mailbox-file, import-choose-adds-the-picked-archive, import-start-then-progress-from-the-run, import-start-into-the-matching-account-or-imported, import-progress, import-bad-pick-refused-in-the-contract-words, import-full-disk-access-refusal-words; the progress comes from `fixture import-progress` (FixtureImport.swift). (2) Skip works, cancel and done: import-skip-goes-to-the-inbox, import-cancel-ends-the-run, import-done-leaves-for-the-inbox; checks/parity/par-firststart.py cases import-sources, import-progress, the-import-step-is-the-panel-with-finish-and-skip, replies-continue-goes-to-the-import-step, finish-at-the-import-step-lifts-the-veil-too, a-finished-run-keeps-the-flow-on-the-import-step. (3) Settings > Accounts offers it again: Sources/Features/SettingsAccountsMac/AccountsImportSheet.swift (the 'Import mail…' sheet: sources found on this Mac with their message count, 'Choose a file…'); par-settingsaccountsmac.py cases import-button-opens-the-import-sheet, import-close-button-closes-the-sheet, import-scrim-closes-the-sheet. (4) 'par check green and seen red': par-welcomemac prints '  PASS|FAIL <case>: detail' per case on stderr (line 184 of checks/welcomemac-check.py) so the first proof shows each pass; its self-test runs every check against each model mutant (docstring line 14; proof 1 prints 'selftest: every check seen red on its mutant', welcomemac-check.py:166); par-firststart and par-settingsaccountsmac print only totals, so proofs 3 and 5 count the PASS records of their results file (journeys/lib/harness.py:244-268; WHOOSH_BUILD_LABEL and WHOOSH_RESULTS_DIR as in the runs above). (5) 14 languages: case import-keys-in-14-languages-fr-first (a source check, par-welcomemac.py:1120 `--source` mode: no app) and proof 6. Standing rules: hidden, fixture core, nothing leaves the Mac (the import verbs are the fixture's). The import itself is the engine's (core/crates/import, item of its own). | gap-shots (2026-11-11): the two pictures the gap asked for are states of checks/shots-sheet.py: 'welcome-import-step' (reset the panel, type fine@outlook.com, click Continue and Connect so an account is connected and the panel shows itself, `fixture import-sources apple-mail=18423`, click ...import.scan, then view sources: click ...import.select.apple-mail; view progress-half: click ...import.start and `fixture import-progress <run> 9211` = half of the 18423 the progress row serves) and 'settings-import-offer' (`fixture import-sources apple-mail=18423`, click mac-settings-accounts.import, rows ...import.sheet open). Not run on a build: whether the Welcome window shows the panel once the typed account is healthy (ImportModel.showing: connected && !skipped, WelcomeView.swift:108); if it does not, the state is NOT JUDGED naming the row that never said so."
+}

@@ -1,0 +1,93 @@
+{
+  "provider": "chatgpt",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service. The route is the one the Codex CLI uses; OpenAI publishes no policy for it in other apps, so every shape here is the least certain in the crate.",
+  "key": "eyJfixture.token-FIXTURE-not-a-real-key-0001",
+  "bad_key": "eyJfixture.token-FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "list_models": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://chatgpt.com/backend-api/codex/models",
+          "headers": {
+            "Authorization": "Bearer eyJfixture.token-FIXTURE-not-a-real-key-0001",
+            "chatgpt-account-id": "acct-fixture-0001"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "object": "list",
+            "data": [
+              {
+                "id": "fixture-chatgpt-a"
+              },
+              {
+                "id": "fixture-chatgpt-b"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "https://chatgpt.com/backend-api/codex/models",
+          "headers": {
+            "Authorization": "Bearer eyJfixture.token-FIXTURE-not-a-real-key-REFUSED",
+            "chatgpt-account-id": "acct-fixture-0001"
+          }
+        },
+        "response": {
+          "status": 401,
+          "body": {
+            "error": {
+              "message": "Your authentication token has expired. Please try signing in again.",
+              "type": "invalid_request_error",
+              "code": "token_expired"
+            }
+          }
+        }
+      }
+    ],
+    "complete": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://chatgpt.com/backend-api/codex/responses",
+          "headers": {
+            "Authorization": "Bearer eyJfixture.token-FIXTURE-not-a-real-key-0001",
+            "chatgpt-account-id": "acct-fixture-0001"
+          },
+          "body_contains": [
+            "\"model\":\"fixture-chatgpt-a\"",
+            "\"store\":false",
+            "\"type\":\"input_text\"",
+            "\"text\":\"Shorten this reply to one line.\""
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "id": "resp_fixture_cg",
+            "status": "completed",
+            "output": [
+              {
+                "type": "message",
+                "role": "assistant",
+                "content": [
+                  {
+                    "type": "output_text",
+                    "text": "Thanks Marta, Friday works for me."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

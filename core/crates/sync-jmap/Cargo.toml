@@ -1,0 +1,17 @@
+[package]
+name = "sync-jmap"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+contracts = { workspace = true }
+netguard = { path = "../netguard" }   # jmap-guard: a rig copy reaches this Mac only (outbound_allowed_url before the JMAP dial)
+jmap-client = { version = "0.4", default-features = false, features = ["async"] }
+tokio = { version = "1", default-features = false, features = ["rt", "macros", "net", "time", "sync", "io-util"] }
+futures = "0.3"
+async-trait = "0.1"
+
+[dev-dependencies]
+serde_json = "1"
+tokio = { version = "1", default-features = false, features = ["rt-multi-thread", "macros", "net", "time", "sync", "io-util"] }

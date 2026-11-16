@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HAND-WRITTEN Autodiscover POX response (Outlook response schema 2006a) of an on-premises server. -->
+<Autodiscover xmlns="http://schemas.microsoft.com/exchange/autodiscover/responseschema/2006">
+  <Response xmlns="http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a">
+    <Account>
+      <AccountType>email</AccountType>
+      <Action>settings</Action>
+      <Protocol>
+        <Type>IMAP</Type>
+        <Server>mail.onprem.example</Server>
+        <Port>993</Port>
+        <LoginName>jane@onprem.example</LoginName>
+        <SSL>on</SSL>
+      </Protocol>
+      <Protocol>
+        <Type>SMTP</Type>
+        <Server>mail.onprem.example</Server>
+        <Port>587</Port>
+        <Encryption>TLS</Encryption>
+      </Protocol>
+    </Account>
+  </Response>
+</Autodiscover>

@@ -1,0 +1,112 @@
+{
+  "item": "74ce9fdc",
+  "full_id": "74ce9fdc-84f0-4f80-a60d-2ff4c60cc8fd",
+  "title": "Make HTML mail keep its look safely (A129)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p parse --test body_r4_engine -- style_rules_are_inlined_and_unsafe_selectors_dropped past_a_cap_nothing_is_inlined_and_the_field_says_which elements_never_kept_are_gone_from_both_layers attributes_and_links_follow_the_allow_list_in_both_layers css_properties_never_kept_and_the_bodys_size_dropped remote_images_are_replaced_and_counted_and_cid_images_resolve_to_their_part hostile_nesting_degrades_to_escaped_text_quickly",
+      "pass": "test result: ok\\. 7 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p parse --test body_r5_pictures",
+      "pass": "test result: ok\\. 9 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/messagebody-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-74ce9fdc\" --screens mac-main",
+      "pass": "^PASS mac-main (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/shots-74ce9fdc --states reader-designed-and-plain-sample",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "read _captures/results/shots-74ce9fdc/pics/state-reader-designed-and-plain-sample-designed-light-1280x820.png, then ...-plain-light-1280x820.png",
+      "pass": "the newsletter keeps its own backgrounds, table layout and colours (the fixture's designed mail carries them as bgcolor and color attributes: docs/design/fixtures/mac-main-sample.json sample_mails.designed holds no <style> block; the style-block inlining is proved in cargo body_r4_engine.rs and SPEC A129 asks for 'its own backgrounds, tables, pictures'); no remote picture is drawn (the pictures line counts them: 3 pictures, 2 trackers); the plain sample reads as paragraphs, unchanged"
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"^## [1-5]\\.\" docs/lanes/html-kept-and-dropped.md",
+      "pass": "^5$",
+      "fail": "^[0-4]$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/parse/src/engine.rs",
+      "find": "p.inlining = inline_styles(&mut dom, opts.deadline);",
+      "replace": "p.inlining = Default::default();",
+      "proof": 0,
+      "red": "style_rules_are_inlined_and_unsafe_selectors_dropped.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/css.rs",
+      "find": "if selectors.saturating_mul(elements) > MATCHES_MAX {",
+      "replace": "if false {",
+      "proof": 0,
+      "red": "past_a_cap_nothing_is_inlined_and_the_field_says_which.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/display.rs",
+      "find": "const DROP: &[&str] = &[",
+      "replace": "const DROP: &[&str] = &[]; const _DROP_OFF: &[&str] = &[",
+      "proof": 0,
+      "red": "elements_never_kept_are_gone_from_both_layers.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/display.rs",
+      "find": "    [\"http:\", \"https:\", \"mailto:\", \"tel:\"].iter().any(|p| v.starts_with(p))",
+      "replace": "    true || [\"http:\", \"https:\", \"mailto:\", \"tel:\"].iter().any(|p| v.starts_with(p))",
+      "proof": 0,
+      "red": "attributes_and_links_follow_the_allow_list_in_both_layers.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/css.rs",
+      "find": "matches!(p, \"position\" | \"float\"",
+      "replace": "matches!(p, \"float\"",
+      "proof": 0,
+      "red": "css_properties_never_kept_and_the_bodys_size_dropped.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/parse/src/engine.rs",
+      "find": "if nesting_estimate(html) > HTML_NESTING_MAX {",
+      "replace": "if nesting_estimate(html) > usize::MAX {",
+      "proof": 0,
+      "red": "hostile_nesting_degrades_to_escaped_text_quickly.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "docs/lanes/html-kept-and-dropped.md",
+      "find": "## 3. CSS properties",
+      "replace": "## 3 CSS properties",
+      "proof": 5,
+      "red": "^4$"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The reader's 'not checked' for remote blocking and the hostile bound is closed by reading: body_r4_engine.rs:343 (remote images replaced and counted, cid images resolve), :355 (hostile nesting degrades to escaped text quickly), :426 (a body over the size cap is escaped text with a warning), :294 (caps of the inliner). Each test's comment names its mutant (body_r4_engine.rs lines 291-353: r4-styles-not-inlined, r4-matches-cap-unchecked, r4-drop-list-empty, r4-any-href-kept, r4-position-allowed, r4-cid-not-resolved, r4-nesting-cap-off); the six find strings here are the real one-line edits of those (engine.rs:301, css.rs:400, display.rs:30, display.rs:52, css.rs:111, engine.rs:297); r4-cid-not-resolved is not given (display.rs:162-167 spans several lines). The test counts 7 and 9 are the number of names / #[test] functions read in the files (body_r5_pictures.rs: grep -c '^#\\[test\\]' = 9). gap-docs 2026-11-11: the three lists (tags, attributes, CSS properties, kept and dropped, with file and line) are in docs/lanes/html-kept-and-dropped.md, read from core/crates/parse/src/display.rs, css.rs and sanitise.rs and from ammonia 4.2.4's defaults (lib.rs:378-446 in the cargo registry). Correction to the notes above: blocked_property is at css.rs:109 (not :111) and the mutant find strings were each checked to occur once. The note names two layers (the display document and SafeHtml.html) and says what was not checked (what ammonia keeps of an element in no list)."
+}

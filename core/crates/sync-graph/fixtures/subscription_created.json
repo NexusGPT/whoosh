@@ -1,0 +1,9 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity",
+  "id": "sub-inbox-example",
+  "resource": "me/mailFolders('inbox-id')/messages",
+  "changeType": "created,updated,deleted",
+  "clientState": "client-state-example",
+  "notificationUrl": "https://relay.example.net/graph/notify",
+  "expirationDateTime": "2026-11-13T23:59:00Z"
+}

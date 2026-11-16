@@ -1,0 +1,20 @@
+[package]
+name = "search"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh hybrid search: typed filters in words, text and meaning hits fused by reciprocal rank, grouped by thread."
+
+[dependencies]
+contracts = { workspace = true }
+# the attachment hit lists and their merge (contracts delta 10 hook)
+attachment-index = { path = "../attachment-index" }
+# the real core's attachment port: the store's catalog and candidates, the vector index's text keys (contracts-d11 hook)
+store = { path = "../store" }
+search-vector = { path = "../search-vector" }
+
+[dev-dependencies]
+rusqlite = "0.41"
+tempfile = "3.27.0"
+# Reads fixtures/search-queries.json and its corpus fixtures/tests-j2.json (MIT/Apache-2.0; already in the lockfile).
+serde_json = "1.0.154"

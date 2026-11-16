@@ -1,0 +1,14 @@
+From: Postbox Example <hello@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: Your sign-in link
+Date: Mon, 02 Nov 2026 13:10:00 +0000
+Message-ID: <3455d8a92ff1d99e@example.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+SGVsbG8sDQoNCkxvZyBpbiBieSBvcGVuaW5nIHRoaXMgbGluazoNCg0KaHR0cHM6Ly9hdXRoLmV4
+YW1wbGUubmV0L2xvZ2luL2NhbGxiYWNrP2NvZGU9ZmZhNjNjZGQwZGE3MTdiM2M5MzdkNmJjDQoN
+CklmIHlvdSBkaWQgbm90IGFzayBmb3IgaXQsIGlnbm9yZSB0aGlzIGVtYWlsLg0KDQpUbyBzdG9w
+IHRoZXNlIGVtYWlscyB2aXNpdCBodHRwczovL2V4YW1wbGUubmV0L3Vuc3Vic2NyaWJlP3U9YTZk
+ZjE4DQo=

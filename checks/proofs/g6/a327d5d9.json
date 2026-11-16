@@ -1,0 +1,47 @@
+{
+  "item": "a327d5d9",
+  "full_id": "a327d5d9-e906-4b09-8e8b-48f5ebbc9896",
+  "title": "Prove the labelling flow on a bundle with the À répondre example",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "(?s)a140-step-1-picks-37\\s+pass .*a140-the-ai-accepts-32\\s+pass .*a140-the-exit-filter-keeps-24\\s+pass .*a140-8-go-to-primary\\s+pass .*a140-a-reply-moves-one-message-out-of-the-label\\s+pass ",
+      "fail": "a140-[a-z0-9-]+\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "STILL GREEN|MUTANTS \\|[^\\n]*\\| RED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test label_flow_d17",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "lead",
+      "run": "name the bundle label of the build the run used (the acceptance says 'the main49 bundle', which is an old label: any main bundle that holds the A140 fixture counts) and read the example's figures from the run's lines as counts: picks, accepts, keeps, to Primary, waiting",
+      "pass": "picks 37, accepts 32, keeps 24, Primary 8"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/parity/par-labelscontactsmac.py",
+      "find": "EX_PINNED = {\"entry\": 37, \"ai\": 32, \"kept\": 24, \"sent\": 8, \"waiting\": 5}",
+      "replace": "EX_PINNED = {\"entry\": 38, \"ai\": 32, \"kept\": 24, \"sent\": 8, \"waiting\": 5}",
+      "proof": 1,
+      "red": "MUTANTS \\| example figures \\| RED"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner opens the inspector of the label À répondre on their own Mac, in a bundle the lead names, and says the three cards read as the example says (their eyes, their word). The lead cannot give that.",
+  "notes": "What the acceptance asks versus what exists. The acceptance's figures (entry rule catches 1, AI sorts 31, exit keeps 23, 8 go to Primary) are the figures before SPEC A140 (docs/SPEC.md:158). The fixture's example now reads 37 picked by step 1, 32 accepted by the AI, 24 kept by step 3, 8 sent to the fallback (Primary), 5 waiting for the AI (docs/lanes/flow3-swift.md section 5, from docs/design/fixtures/mac-main-sample.json `flow_example`; pinned in checks/parity/par-labelscontactsmac.py:929 EX_PINNED, derived by example_figures() at :928, the self-test holds the two equal and the mutant above breaks the pin). 31 + 1 = 32 is the same total of AI-or-entry filed mails; 23 + 1 kept is 24. This is a question for the owner/lead: confirm the A140 figures replace the old ones. Judges: par-labelscontactsmac.py EXAMPLE list (:2640-2650) prints one 'name  pass|fail|unjudged  detail' line per case via report() (:2968-2973): a140-step-1-picks-37 (e_entry), a140-the-ai-accepts-32 (e_ai), a140-the-exit-filter-keeps-24 (e_kept), a140-8-go-to-primary (e_primary), a140-a-reply-moves-one-message-out-of-the-label (e_reply, 'a reply moves one out'), a140-5-picked-mails-wait-for-the-ai, a140-no-warning-says-the-ai-will-see-none, a140-the-example-row-step-1-once-filed-is-now-exit. Each has its own mutant in the self-test (proof 1), e.g. entry-count-wrong, ai-count-wrong, kept-count-wrong, primary-count-wrong, reply-keeps-it-in. The reader's finding ('NOT BUILT': the string main49 appears only in audit files) is true of the label 'main49': no run on that bundle exists; the checks and the fixture rows exist at this commit, so proof 0 is the first run. The hidden run uses the fixture core on a bundle the lead builds (scripts/launch-one.sh, WHOOSH_RIG_HIDDEN=1). Engine-side counterpart for the same pipeline on stored mail: core/crates/engine/tests/label_flow_d17.rs:506 a140_the_counts_say_picked_accepted_and_waiting_and_why_names_step_1_and_the_ai."
+}

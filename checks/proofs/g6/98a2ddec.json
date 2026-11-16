@@ -1,0 +1,177 @@
+{
+  "item": "98a2ddec",
+  "full_id": "98a2ddec-2dba-46a2-809c-bcf145107388",
+  "title": "Build the search results in look S1",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "aTypedWordInsideALongerWordInTheSubjectIsBold,aSenderNameMatchIsBoldInTheSenderAndTheSubjectStaysPlain,aTextOnlyMatchShowsThePassageAroundTheLettersNotTheFirstLine,theCountLineSaysTheMatchesAndNothingAboutTheOtherMails,whileTheIndexIsBeingBuiltOneLineSaysHowFarItIs,aRefusedSearchSaysTheSentenceWithTheEnginesReason,inTheWordsStageTheOtherMailsWaitUnderALineAndTheRankedAnswerSwapsThemInKeepingTheSelection,whenNoMeaningOrderExistsTheOtherMailsAreListedByDateUnderThatLine,theMissingMeaningOrderIsSaidInTheAppsLanguageNeverInTheEnginesEnglish,enterOnAResultOpensThatMailInTheReaderAndTheResultsStay,downInTheReaderMovesToTheNextResultAndTheReaderFollows",
+      "pass": "Test run with 11 tests in \\d+ suites? passed",
+      "fail": "✘|failed|error:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J2\\.",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "lead",
+      "run": "grep -c -E '\"case\": \"par-(every-match-shows-its-evidence|count-line-says-matches-and-close-in-meaning|divider-starts-the-close-group-and-follows-the-stage|could-not-run-note-says-the-engines-words|ranking-line-shows-while-the-second-answer-is-held|reader-follows-the-selected-result)\", \"verdict\": \"PASS\"' _captures/results/g6/par-searchmac-g6.results.jsonl",
+      "pass": "^6$",
+      "fail": "No such file",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/shots-mac-search --screens mac-search",
+      "pass": "(?s)PASS mac-search .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL mac-search|NOT JUDGED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "lead",
+      "run": "open _captures/results/g6/search-s1-results/index.html (from proof 11: the state search-s1-after-enter, a sender pill and a word with Return pressed, the results on screen) and compare its four pictures state-search-s1-after-enter-results-<light|dark>-<1280x820|960x632>.png with the picked page S1 Quiet on layout L1 + P1 (its 'After Enter' and 'Small window, 960 x 632'; docs/surfaces/mac-search.md:2-4 and :20: boards at http://127.0.0.1:8792/design/boards/search-r2-style/ and search-r2-layout/, served by the lead's local server, not in the repository); read as counts of mismatches per size. Proof 3's sheet pictures show the screen as it opens (an empty field with recent searches), not the results",
+      "pass": "0 differences at 1280x820 and 960x632"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-index-line-shows-while-the-meaning-index-builds +pass",
+      "fail": "par-index-line-shows-while-the-meaning-index-builds +fail|NOT JUDGED [^\\n]*par-index-line-shows-while-the-meaning-index-builds",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ gap checks, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems",
+      "timeout_s": 300
+    },
+    {
+      "kind": "unit",
+      "run": "theIndexProgressVerbPutsItsTwoFiguresOnTheModelAndRefusesWhatIsNotTwoNumbers",
+      "pass": "passed",
+      "fail": "failed|recorded an issue",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+      "fail": "NOT RED|selftest FAIL|Traceback",
+      "timeout_s": 600
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/shots-states --states search-bold-letters,search-letters-inside-a-longer-word,search-count-line-and-related-group,search-could-not-run,search-index-line --deadline 1500",
+      "pass": "(?s)PASS search-bold-letters/results .*PASS search-letters-inside-a-longer-word/results .*PASS search-count-line-and-related-group/count-and-related .*PASS search-could-not-run/refused .*PASS search-index-line/index-line .*20 checks, 0 failed, 0 not judged",
+      "fail": "FAIL search-|NOT JUDGED search-",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/search-s1-results --states search-s1-after-enter",
+      "pass": "(?s)PASS search-s1-after-enter/results light 1280x820 .*PASS search-s1-after-enter/results dark 1280x820 .*PASS search-s1-after-enter/results light 960x632 .*PASS search-s1-after-enter/results dark 960x632 .*4 checks, 0 failed, 0 not judged",
+      "fail": "FAIL search-s1-after-enter|NOT JUDGED search-s1-after-enter",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchMac/SearchMacModel.swift",
+      "find": "static var refusedSentence: String { Words.text(\"The search could not run.\") }",
+      "replace": "static var refusedSentence: String { \"\" }",
+      "proof": 0,
+      "red": "aRefusedSearchSaysTheSentenceWithTheEnginesReason\\(\\) failed|✘ Test aRefusedSearchSays"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchResultsList.swift",
+      "find": "guard IndexProgress.isBuilding(s) else { return nil }",
+      "replace": "return nil",
+      "proof": 0,
+      "red": "whileTheIndexIsBeingBuiltOneLineSaysHowFarItIs\\(\\) failed|✘ Test whileTheIndexIsBeingBuilt"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchMacModel.swift",
+      "find": "static func countLine(_ n: Int) -> String { n == 0 ? Words.text(\"No match\") : matched(n) }",
+      "replace": "static func countLine(_ n: Int) -> String { matched(n) }",
+      "proof": 0,
+      "red": "FAIL|✘ Test oneMatchReads|failed"
+    },
+    {
+      "file": "Sources/Features/SearchMac/SearchResultsList.swift",
+      "find": "guard IndexProgress.isBuilding(s) else { return nil }",
+      "replace": "",
+      "proof": 6,
+      "red": "par-index-line-shows-while-the-meaning-index-builds +fail"
+    },
+    {
+      "file": "Sources/ControlSocket/FixtureVerbs.swift",
+      "find": "s.indexed = indexed; s.queued = queued",
+      "replace": "s.indexed = queued; s.queued = indexed",
+      "proof": 8,
+      "red": "theIndexProgressVerbPutsItsTwoFiguresOnTheModelAndRefusesWhatIsNotTwoNumbers\\(\\) failed|✘ Test theIndexProgressVerbPutsItsTwoFiguresOnTheModelAndRefusesWhatIsNotTwoNumbers"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "launched(SEARCH_DOMAIN[:5]) + [(\"wait\", SH, \"matches\", (\"ge\", 1)), (\"settle\", SETTLE_S)],",
+      "replace": "launched(SEARCH_DOMAIN[:5]) + [(\"settle\", SETTLE_S)],",
+      "proof": 9,
+      "red": "NOT RED|selftest FAIL"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "launched(LONGER_WORD) + [(\"wait\", SH, \"matches\", (\"ge\", 1)), (\"settle\", SETTLE_S)],",
+      "replace": "launched(LONGER_WORD) + [(\"settle\", SETTLE_S)],",
+      "proof": 9,
+      "red": "NOT RED|selftest FAIL"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "THREE_PARTS + [(\"wait\", SH, \"matches\", (\"ge\", 1)), (\"wait\", SSEC, \"#len\", (\"ge\", 1)), (\"settle\", SETTLE_S)],",
+      "replace": "launched(MEANING_QUERY) + [(\"settle\", SETTLE_S)],",
+      "proof": 9,
+      "red": "NOT RED|selftest FAIL"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "[(\"key\", \"Enter\"), (\"wait\", SREF, \"#len\", (\"ge\", 1)), (\"settle\", SETTLE_S)],",
+      "replace": "[(\"key\", \"Enter\"), (\"settle\", SETTLE_S)],",
+      "proof": 9,
+      "red": "NOT RED|selftest FAIL"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "[(\"verb\", \"fixture\", \"index-progress\", \"40\", \"60\")] + launched(MEANING_QUERY) + [(\"wait\", SNOTE, \"#len\", (\"ge\", 1)), (\"settle\", SETTLE_S)],",
+      "replace": "launched(MEANING_QUERY) + [(\"wait\", SNOTE, \"#len\", (\"ge\", 1)), (\"settle\", SETTLE_S)],",
+      "proof": 9,
+      "red": "NOT RED|selftest FAIL"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "+ launched(MEANING_QUERY) + [(\"wait\", SNOTE, \"#len\", (\"ge\", 1)), (\"settle\", SETTLE_S)],",
+      "replace": "+ launched(MEANING_QUERY) + [(\"settle\", SETTLE_S)],",
+      "proof": 9,
+      "red": "NOT RED|selftest FAIL"
+    }
+  ],
+  "gap": null,
+  "owner": "Only the eyes step is left (proof 5): compare the pictures of the search screen, light and dark, at 1280x820 and 960x632, with the picked page S1 Quiet on layout L1 + P1. Built in lane fix-rest-app: `fixture index-progress <indexed> <queued>` (FixtureVerbs.swift, unit proof 8, so the hidden case par-index-line-shows-while-the-meaning-index-builds of proof 6 is judged) and the five search states of checks/shots-sheet.py (proof 9 is its self-test with one broken model per state, proof 10 draws them: the pictures are in _captures/results/g6/shots-states/index.html). The owner's own query \"consultant\" exists only in the owner's private mail; the fixture's forms of it are the letters of a sender's name (`linea`) and the letters inside a longer word (`print`, Printwerk).",
+  "notes": "Claims and judges that exist. (1) inbox rows with bold matches: unit tests Tests/Unit/SearchEvidenceTests.swift:26, :36, :46 (see item 367f26ff for the full list and its mutants) and check case par-every-match-shows-its-evidence (checks/parity/par-searchmac.py, J2.2, in the results file). (2) the Close in meaning line: SearchSuggestTests.swift:300 inTheWordsStage..., :325 whenNoMeaningOrderExists..., :367 theMissingMeaningOrderIsSaidInTheAppsLanguageNeverInTheEnginesEnglish; check cases par-divider-starts-the-close-group-and-follows-the-stage and par-ranking-line-shows-while-the-second-answer-is-held. (3) the count line: SearchEvidenceTests.swift:158 theCountLineSays...; par-count-line-says-matches-and-close-in-meaning. (4) the could-not-run sentence: SearchMacModel.swift:260 refusedSentence ('The search could not run.'), SearchMacRows.swift:67 `mac-search.refused` row; SearchSuggestTests.swift:243 aRefusedSearchSaysTheSentenceWithTheEnginesReason; check par-could-not-run-note-says-the-engines-words (needs the fixture hook `fixture search-refuse on|off`: NOT JUDGED without it, par-searchmac.py:2563 comment). (5) the index progress line: unit only (gap piece 1); IndexProgressTests.swift:14-85 judge the sentence parts. (6) the reader follows: Tests/Unit/ReaderShowsResultTests.swift:78 enterOnAResultOpensThatMailInTheReaderAndTheResultsStay, :112 downInTheReaderMovesToTheNextResultAndTheReaderFollows; check par-reader-follows-the-selected-result. Proof 2 counts six PASS records in the results file written by proof 1 (the case names are those of par-searchmac.py; `grep -c` prints a number; the regex ^6$ requires all six). The reader's finding named SearchEvidence.swift and SearchResultsList.swift as built and no run: the evidence unit tests exist and are the first run. Mutants: three Swift one-line breaks; find strings occur once at 0aa1558e; the third is shared with item 367f26ff. 14 languages: proof 4 (catalogue check). | lane fix-rest-app: states search-bold-letters, search-letters-inside-a-longer-word, search-count-line-and-related-group, search-could-not-run, search-index-line (checks/shots-sheet.py STATES, listed by `--list-states`). `fixture reset` does not clear the index builder's figures, so the check's run_combo sends `fixture index-progress 0 0` after each reset. | hid-search round 21 (main111 judge of proof 5: 'No picture shows the search results or the 960x632 size'): proof 3's `--screens mac-search` pictures the screen as it opens (fixture reset, shot, an empty field with its recents) at the sheet's sizes 1280x820 and 960x600: right for the screen sheet, not a wait to fix. A named state, search-s1-after-enter (checks/shots-sheet.py), types `from:orders@linea-supply-example.com quote` and Return, waits for the count line's matches, and pictures it at 1280x820 and 960x632, light and dark; proof 11 runs it, proof 5 reads its four pictures."
+}

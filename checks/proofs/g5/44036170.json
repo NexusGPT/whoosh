@@ -1,0 +1,97 @@
+{
+  "item": "44036170",
+  "full_id": "44036170-f557-48a7-83cb-2e180fe188da",
+  "title": "Align the draft card with the reply field under it",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "ownBlocksShareTheirLeftInset,ownBlocksShareTheirRightInset,receivedMessageHasTheMirroredInsets,authorOffsetIsTheReadersThirtyTwo,unfocusedReplyFieldIsLiftedGlassNotTheBlueTint,receivedMessageStaysFlat,replyFieldTakesTheSlabsRadius,theClosedReplyFieldServesOneRowNamingItsLiftedGlass,noRowAnswersWhileTheQuickReplyIsOpenOnTheThread,theMaterialWordFollowsTheFill",
+      "pass": "Test replyFieldTakesTheSlabsRadius\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-quickreply.py",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL [^ ]*(draft-card-shows-first-lines|draft-card-keys-shown|esc-keeps-words-as-draft-card|foot-own-blocks-share-left-edge|foot-own-blocks-share-right-edge|foot-message-keeps-the-author-offset|draft-card-is-lifted-glass|reply-field-material-is-lifted|dots-pill-lies-inside-its-card)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-quickreply.py --selftest",
+      "pass": "selftest incl\\. thread foot: [0-9]+ checks, [0-9]+ mutants, 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants, 0 not red",
+      "fail": "selftest FAIL|[1-9]\\d* not red",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/shots-sheet.py --list-states",
+      "pass": "state thread-saved-draft \\(item",
+      "fail": "Traceback|usage:",
+      "timeout_s": 60
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/gap-shots/thread-saved-draft --states thread-saved-draft",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b4 checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "open pictures state-thread-saved-draft-draft-card-<light|dark>-<1280x820|960x600>.png of _captures/results/gap-shots/thread-saved-draft/index.html",
+      "pass": "the draft card and the closed reply field start and end at one x and wear one fill; the received message keeps its 32 pt offset"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/QuickReply/ThreadFootLayout.swift",
+      "find": "case .outgoing, .draft, .reply: return (authorOffset, 0)",
+      "replace": "case .outgoing, .reply: return (authorOffset, 0)\n        case .draft: return (0, 0)",
+      "proof": 0,
+      "red": "ownBlocksShareTheirLeftInset\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "checks/shots-sheet.py",
+      "find": "        return _ok(got, want), \"%s = %r\" % (field, got)",
+      "replace": "        return True, \"%s = %r\" % (field, got)",
+      "proof": 3,
+      "red": "selftest FAIL: states mutant page-stuck is red"
+    },
+    {
+      "file": "Sources/Features/Reader/ReaderReply.swift",
+      "find": "fill == .lifted ? \"lifted\" : \"flat\"",
+      "replace": "true ? \"lifted\" : \"flat\"",
+      "proof": 0,
+      "red": "theMaterialWordFollowsTheFill\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/Reader/ReaderReply.swift",
+      "find": "fill == .lifted ? \"lifted\" : \"flat\"",
+      "replace": "fill == .lifted ? \"flat\" : \"flat\"",
+      "proof": 1,
+      "red": "FAIL par-quickreply-foot/reply-field-material-is-lifted"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyView.swift",
+      "find": ".whooshAx(\"mac-main.reader.body.dots\")",
+      "replace": ".offset(x: 4000).whooshAx(\"mac-main.reader.body.dots\")",
+      "proof": 1,
+      "red": "FAIL par-quickreply-foot/dots-pill-lies-inside-its-card"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner confirms the look against the picked design (docs/surfaces/mac-quickreply.md, 'picked-cards', board thread-cards B and cards-s3 'Lifted until it lands'): a picture they have seen is theirs to accept.",
+  "notes": "SPEC A147 (docs/SPEC.md:165). The unit tests carry the item's claims of 'same left and right edges, same fill' at the layout level (the numbers every block takes its insets and fill from); the built-app edges are the gap above. Broken copies of the other tests are the comments in DraftCardLayoutTests.swift (insets(.message), authorOffset s16, fill(.reply) flat, fill(.message) lifted, replyFieldRadius sheet). | gap-shots (2026-11-11): checks/shots-sheet.py STATES 'thread-saved-draft' (screen mac-main): `key R`, `type` 'Draft words.\\nSecond line.', `key Escape`, `rows mac-main.thread.draft` until one card is there (the sequence of par-quickreply.py:194-200), then the picture at 1280x820 and 960x600, light and dark: 4 files. | fix-mailviews: three new unit tests in Tests/Unit/ReaderReplyRowTests.swift (listed in proof 0) and the dots pill's frame id; docs/lanes/fix-mailviews.md. | fix-checks (2026-11-11): the two check cases exist in checks/parity/par-quickreply.py drive_foot (called from drive_drafts right after draft-card-is-lifted-glass): `par-quickreply-foot/reply-field-material-is-lifted` (rows mac-main.reader.reply [0].material == 'lifted') and `par-quickreply-foot/dots-pill-lies-inside-its-card` (the pill's frame inside the frame of the open message card mac-main.reader.message.<message_count - 1> (rows mac-main.reader.state; main88 read message.0, the first earlier message, with no frame), both read from one `shot` reply per CONTROL-SOCKET delta 46 instead of two `measure` calls; a message with no quoted text prints NOT JUDGED, never a pass), each with a model mutant in the thread foot model and the app broken copies listed in mutants 4 and 5. Proof 2 (--selftest) now ends 'selftest incl. thread foot: 38 checks, 38 mutants, 0 not red or missing'. Unrun on the app until the lead's hidden run."
+}

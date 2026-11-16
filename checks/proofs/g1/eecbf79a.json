@@ -1,0 +1,361 @@
+{
+ "item": "eecbf79a",
+ "full_id": "eecbf79a-6ac9-4954-81b0-3d926614abc3",
+ "title": "Build ix-decision-settings",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "cargo",
+   "run": "--release -p decision --test preview",
+   "pass": "test result: ok\\. 4 passed; 0 failed",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J5 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J5-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+   "pass": "(?s)(?=.*STEP J5\\.8 PASS=\\d+\\n)(?=.*STEP J5\\.9 PASS=\\d+\\n)",
+   "fail": "STEP J5\\.[89] [^\\n]*(FAIL|NOT JUDGED)=|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/decision-check.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL |NOT JUDGED|could not drive",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/decision-check.py --selftest",
+   "pass": "(?i)selftest|\\d+ checks, 0 failed",
+   "fail": "NOT RED|SURVIVES|FAILED",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/decision-check.py",
+   "pass": "(?s)PASS J5\\.8/unticking-vip-removes-it-from-the-preview.*PASS J5\\.8/editing-the-prompt-then-run-shows-20-rows-with-a-verdict-and-a-tab",
+   "fail": "FAIL J5\\.8/(unticking|editing)|NOT JUDGED|could not drive",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/settingsaimac-check.py",
+   "pass": "PASS J5\\.7/jev-with-the-fixture-key-says-connected",
+   "fail": "FAIL J5\\.7/jev-with-the-fixture-key-says-connected|NOT JUDGED J5\\.7/jev-with",
+   "timeout_s": 1800
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/settingsaimac-check.py --selftest",
+   "pass": "selftest: OK \\(0 mutants not red\\)",
+   "fail": "selftest: FAILED|NOT RED",
+   "timeout_s": 300
+  },
+  {
+   "kind": "cargo",
+   "run": "--release -p engine --test engine_decision_preview",
+   "pass": "test result: ok\\. 6 passed; 0 failed",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "thePageSendsItsCurrentListUntickedEntryIncluded,anEditedQuestionIsTheOneTheCoreIsSent,theRowsAreDrawnFromTheCoresAnswer,anUntickedEntryDecidesNoRow,aBlankQuestionAsksNothingInTheTestEngine,anUnknownPageIsRefusedInWords,theRunSendsTheCommandAndKeepsTheCoresRows",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "cargo",
+   "run": "--release -p engine --test engine_decision_apply -- --nocapture",
+   "pass": "(?s)DECISION_PREVIEW_RULES_ONLY_MS first=.*test result: ok\\. 9 passed; 0 failed",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "thePreviewIsRunningAtOnceAndLandsLater,aSecondClickWhileOneRunsStartsNoSecondRun,closingThePageDropsTheResult,editingTheListWhileItRunsDropsTheResult,applyAfterTheOffMainPreviewMarksThePageApplied,applyAsksTheCoreToWriteThePreviewAndThePreviewAloneWritesNothing",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 journeys/J5.py --selftest",
+   "pass": "selftest: \\d+ checks, \\d+ mutants red, 0 not run .*, 0 not red or missing",
+   "fail": "selftest: FAILED|not red or missing: [1-9]|[1-9]\\d* not red",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/decision-check.py",
+   "pass": "PASS J5\\.8/preview-state-is-served-and-ends-done",
+   "fail": "FAIL J5\\.8/preview-state|NOT JUDGED|could not drive",
+   "timeout_s": 600
+  },
+  {
+   "kind": "unit",
+   "run": "theWorkingWordShowsOnlyWhileThePreviewRuns,theTestEngineServesThePlacedCount",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/sweep-settingsai.py --selftest",
+   "pass": "selftest: every check seen red on its broken model",
+   "fail": "PROBLEM|selftest: \\d+ problem|Traceback",
+   "timeout_s": 300
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.update(page: id, entry: s.pages[i].entries[n - 1].id) { $0.enabled.toggle() }; return true",
+   "replace": "return true",
+   "proof": 2,
+   "red": "FAIL J5\\.8/unticking-vip-removes-it-from-the-preview"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "s.questionFocus = (id, s.pages[i].entries[n - 1].id); return true",
+   "replace": "return true",
+   "proof": 2,
+   "red": "FAIL J5\\.8/editing-the-prompt-then-run-shows-20-rows-with-a-verdict-and-a-tab"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "if !e.enabled {",
+   "replace": "if false && !e.enabled {",
+   "proof": 7,
+   "red": "thread 'the_list_given_is_the_list_used' (\\(\\d+\\) )?panicked|the_list_given_is_the_list_used.*FAILED|FAILED.*the_list_given_is_the_list_used"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "question: e.question.clone(), trust_from",
+   "replace": "question: String::new(), trust_from",
+   "proof": 7,
+   "red": "thread 'the_list_given_is_the_list_used' (\\(\\d+\\) )?panicked|the_list_given_is_the_list_used.*FAILED|FAILED.*the_list_given_is_the_list_used"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "let n = decision::tuning::decision_preview_n();",
+   "replace": "let n = 3;",
+   "proof": 7,
+   "red": "thread 'twenty_rows_each_with_a_verdict_and_a_tab' (\\(\\d+\\) )?panicked|twenty_rows_each_with_a_verdict_and_a_tab.*FAILED|FAILED.*twenty_rows_each_with_a_verdict_and_a_tab"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "if ids.is_empty() {",
+   "replace": "if false {",
+   "proof": 7,
+   "red": "thread 'an_empty_mailbox_gives_an_empty_preview_and_a_sentence' (\\(\\d+\\) )?panicked|an_empty_mailbox_gives_an_empty_preview_and_a_sentence.*FAILED|FAILED.*an_empty_mailbox"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "let conn = open_reader(store.path()).map_err(|e| unexpected(\"the mail database could not be opened for reading\", e))?;\n    let ctx = load_context(&conn).map_err(|e| unexpected(\"the owner's addresses and VIPs could not be read\", e))?;",
+   "replace": "let conn = open_reader(store.path()).map_err(|e| unexpected(\"the mail database could not be opened for reading\", e))?; let _w = rusqlite::Connection::open(store.path()).and_then(|w| w.execute(\"UPDATE message SET subject = subject || ' '\", [])).ok();\n    let ctx = load_context(&conn).map_err(|e| unexpected(\"the owner's addresses and VIPs could not be read\", e))?;",
+   "proof": 7,
+   "red": "thread 'the_preview_writes_nothing' (\\(\\d+\\) )?panicked|the_preview_writes_nothing.*FAILED|FAILED.*the_preview_writes_nothing"
+  },
+  {
+   "file": "core/crates/engine/src/rust_core.rs",
+   "find": "fn decision_preview(&self) -> Vec<DecisionVerdict> { crate::decision_preview::rows(&self.decision_preview) }",
+   "replace": "fn decision_preview(&self) -> Vec<DecisionVerdict> { vec![] }",
+   "proof": 7,
+   "red": "thread 'the_list_given_is_the_list_used' (\\(\\d+\\) )?panicked|the_list_given_is_the_list_used.*FAILED|FAILED.*the_list_given"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "(None, b) => b.unwrap_or(u64::MAX / 4),",
+   "replace": "(_, b) => b.unwrap_or(u64::MAX / 4),",
+   "proof": 7,
+   "red": "thread 'a_model_needs_the_ledgers_bound_and_is_refused_in_words_without_it' (\\(\\d+\\) )?panicked|a_model_needs_the_ledgers_bound_and_is_refused_in_words_without_it.*FAILED|FAILED.*a_model_needs"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/DecisionPreview.swift",
+   "find": "enabled: e.enabled,",
+   "replace": "enabled: true,",
+   "proof": 8,
+   "red": "thePageSendsItsCurrentListUntickedEntryIncluded.*failed|anUntickedEntryDecidesNoRow.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/DecisionPreview.swift",
+   "find": "question: e.kind == .model ? e.text : \"\"",
+   "replace": "question: \"\"",
+   "proof": 8,
+   "red": "anEditedQuestionIsTheOneTheCoreIsSent.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/DecisionPreview.swift",
+   "find": "decidedBy: $0.decidedBy,",
+   "replace": "decidedBy: \"\",",
+   "proof": 8,
+   "red": "theRowsAreDrawnFromTheCoresAnswer.*failed|theRunSendsTheCommandAndKeepsTheCoresRows.*failed"
+  },
+  {
+   "file": "Sources/CoreBridge/FixtureDecisionPreview.swift",
+   "find": "for (i, e) in entries.enumerated() where e.enabled {",
+   "replace": "for (i, e) in entries.enumerated() {",
+   "proof": 8,
+   "red": "anUntickedEntryDecidesNoRow.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+   "find": "_ = try core.run(command: .previewDecisionList(pageId: id, entries: entries))",
+   "replace": "_ = try core.run(command: .previewDecisions)",
+   "proof": 8,
+   "red": "theRunSendsTheCommandAndKeepsTheCoresRows.*failed|anUntickedEntry"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "Target::Tab(tab_id) => tabs.push(Placement {",
+   "replace": "Target::Tab(tab_id) => drop(Placement {",
+   "proof": 9,
+   "red": "thread 'apply_writes_exactly_the_previewed_tab_placements' (\\(\\d+\\) )?panicked|apply_writes_exactly_the_previewed_tab_placements.*FAILED|FAILED.*apply_writes_exactly_the_previewed_tab_placements"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "(Outcome::WhichTab, Value::Tab(t)) if differs => Target::Tab(tabs.resolve(t)),",
+   "replace": "(Outcome::WhichTab, Value::Tab(t)) => Target::Tab(tabs.resolve(t)),",
+   "proof": 9,
+   "red": "thread 'apply_writes_exactly_the_previewed_tab_placements' (\\(\\d+\\) )?panicked|apply_writes_exactly_the_previewed_tab_placements.*FAILED|FAILED.*apply_writes_exactly_the_previewed_tab_placements"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "if let Some(n) = last.placed {",
+   "replace": "if let Some(n) = None::<usize> {",
+   "proof": 9,
+   "red": "thread 'apply_files_the_labels_the_preview_showed' (\\(\\d+\\) )?panicked|apply_files_the_labels_the_preview_showed \\.\\.\\. FAILED"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "if now != last.snapshot {",
+   "replace": "if false {",
+   "proof": 9,
+   "red": "thread 'a_stale_preview_is_refused_in_words_and_writes_nothing' (\\(\\d+\\) )?panicked|a_stale_preview_is_refused_in_words_and_writes_nothing.*FAILED|FAILED.*a_stale_preview_is_refused_in_words_and_writes_nothing"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "ctx.label_file_flow(label_id, &p.message_id, &p.by, p.model_entry.as_deref(), p.probability, p.card, p.chain_id, now_ms)?;",
+   "replace": "let _ = (label_id, now_ms);",
+   "proof": 9,
+   "red": "thread 'apply_files_the_labels_the_preview_showed' (\\(\\d+\\) )?panicked|apply_files_the_labels_the_preview_showed.*FAILED|FAILED.*apply_files_the_labels_the_preview_showed"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "if held {",
+   "replace": "if false {",
+   "proof": 9,
+   "red": "thread 'apply_leaves_an_existing_filing_as_it_is' (\\(\\d+\\) )?panicked|apply_leaves_an_existing_filing_as_it_is.*FAILED|FAILED.*apply_leaves_an_existing_filing_as_it_is"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "\"decision_preview/applied\" => Some(book.read(|l| l.is_some_and(|l| l.placed.is_some())).to_string()),",
+   "replace": "\"decision_preview/applied\" => Some(\"false\".to_string()),",
+   "proof": 9,
+   "red": "thread 'apply_writes_exactly_the_previewed_tab_placements' (\\(\\d+\\) )?panicked|apply_writes_exactly_the_previewed_tab_placements.*FAILED|FAILED.*apply_writes_exactly_the_previewed_tab_placements"
+  },
+  {
+   "file": "core/crates/engine/src/rust_core.rs",
+   "find": "crate::decision_preview::apply(&self.decision_preview, &self.store, now_ms())?;",
+   "replace": "let _ = now_ms();",
+   "proof": 9,
+   "red": "thread 'apply_writes_exactly_the_previewed_tab_placements' (\\(\\d+\\) )?panicked|apply_writes_exactly_the_previewed_tab_placements.*FAILED|FAILED.*apply_writes_exactly_the_previewed_tab_placements"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "Some(l) if !l.rows.is_empty() && l.page.is_some() => l,",
+   "replace": "Some(l) => l,",
+   "proof": 9,
+   "red": "thread 'apply_without_a_preview_is_refused_in_words' (\\(\\d+\\) )?panicked|apply_without_a_preview_is_refused_in_words.*FAILED|FAILED.*apply_without_a_preview_is_refused_in_words"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "    fn put(&self, last: Last) { *self.0.lock().unwrap_or_else(|e| e.into_inner()) = Some(last); }\n    fn read<R>(&self, f: impl FnOnce(Option<&Last>) -> R) -> R { f(self.0.lock().unwrap_or_else(|e| e.into_inner()).as_ref()) }",
+   "replace": "    fn put(&self, last: Last) { *shared().lock().unwrap_or_else(|e| e.into_inner()) = Some(last); }\n    fn read<R>(&self, f: impl FnOnce(Option<&Last>) -> R) -> R { f(shared().lock().unwrap_or_else(|e| e.into_inner()).as_ref()) }\n}\nfn shared() -> &'static Mutex<Option<Last>> { static S: std::sync::OnceLock<Mutex<Option<Last>>> = std::sync::OnceLock::new(); S.get_or_init(Default::default) }\nimpl PreviewBook {",
+   "proof": 9,
+   "red": "thread 'two_cores_keep_their_own_preview' (\\(\\d+\\) )?panicked|two_cores_keep_their_own_preview.*FAILED|FAILED.*two_cores_keep_their_own_preview"
+  },
+  {
+   "file": "core/crates/engine/src/decision_preview.rs",
+   "find": "let kind = port.as_ref().map(|p| p.provider()).unwrap_or(DecisionProviderKind::Rules);",
+   "replace": "std::thread::sleep(std::time::Duration::from_millis(80)); let kind = port.as_ref().map(|p| p.provider()).unwrap_or(DecisionProviderKind::Rules);",
+   "proof": 9,
+   "red": "thread 'the_rules_only_preview_on_20_of_2000_mails_stays_under_50_ms' (\\(\\d+\\) )?panicked|the_rules_only_preview_on_20_of_2000_mails_stays_under_50_ms.*FAILED|FAILED.*the_rules_only_preview_on_20_of_2000_mails_stays_under_50_ms"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+   "find": "previewRuns[id] = Task.detached(priority: .userInitiated) { [weak self] in",
+   "replace": "previewRuns[id] = Task { @MainActor [weak self] in",
+   "proof": 10,
+   "red": "thePreviewIsRunningAtOnceAndLandsLater.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+   "find": "guard let p = pageIndex(id), previewState(id) != .running else { return }",
+   "replace": "guard let p = pageIndex(id) else { return }",
+   "proof": 10,
+   "red": "aSecondClickWhileOneRunsStartsNoSecondRun.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+   "find": "guard section == .page(id) else { previewStates[id] = .idle; return }",
+   "replace": "",
+   "proof": 10,
+   "red": "closingThePageDropsTheResult.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+   "find": "        dropPreview(page: id)\n        previews[id] = nil\n        applied.remove(id)",
+   "replace": "        previews[id] = nil\n        applied.remove(id)",
+   "proof": 10,
+   "red": "editingTheListWhileItRunsDropsTheResult.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/AISettingsStore.swift",
+   "find": "        applied.insert(id)\n        previewNotes[id] = nil",
+   "replace": "        previewNotes[id] = nil",
+   "proof": 10,
+   "red": "applyAfterTheOffMainPreviewMarksThePageApplied.*failed|applyAsksTheCoreToWriteThePreviewAndThePreviewAloneWritesNothing.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/SettingsAIMacFeature.swift",
+   "find": "out[\"mac-settings-ai.decisions.page.\\(page).preview.state\"] = { _ in [[\"state\": s.previewState(page).rawValue]] }",
+   "replace": "out[\"mac-settings-ai.decisions.page.\\(page).preview.state\"] = { _ in [[\"state\": \"idle\"]] }",
+   "proof": 12,
+   "red": "FAIL J5\\.8/preview-state-is-served-and-ends-done"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/DecisionLabelMenu.swift",
+   "find": "static func shows(_ state: AISettingsStore.PreviewState) -> Bool { state == .running }",
+   "replace": "static func shows(_ state: AISettingsStore.PreviewState) -> Bool { state != .idle }",
+   "proof": 13,
+   "red": "theWorkingWordShowsOnlyWhileThePreviewRuns.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAIMac/DecisionLabelMenu.swift",
+   "find": "static func shows(_ state: AISettingsStore.PreviewState) -> Bool { state == .running }",
+   "replace": "static func shows(_ state: AISettingsStore.PreviewState) -> Bool { false }",
+   "proof": 13,
+   "red": "theWorkingWordShowsOnlyWhileThePreviewRuns.*failed"
+  },
+  {
+   "file": "Sources/CoreBridge/FixtureCore.swift",
+   "find": "return settings.previewApplied ? settings.placedBy.count : 0",
+   "replace": "return settings.previewApplied ? 0 : 0",
+   "proof": 13,
+   "red": "theTestEngineServesThePlacedCount.*failed"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Proof 0: core/crates/decision/tests/preview.rs: the_preview_returns_twenty_verdict_rows_and_writes_nothing (:29), the_bound_stops_the_preview_and_names_what_it_did_not_reach (:48), the_preview_bound_comes_from_the_ledger_and_is_refused_while_it_holds_no_number (:63), at_arrival_only_switched_on_pages_ask_the_engine_and_the_row_names_it (:74). Proof 1: J5.8 and J5.9 as journeys (J5.py:342-370, pure PASS per step: preview-runs-on-n, preview-names-the-deciding-entry-per-message, preview-writes-nothing). Proofs 2-3: checks/decision-check.py (J5.8/J5.9 of docs/DECISION-MODEL.md v2: it prints only failing cases and the totals line, so it proves the whole set, not one case: a gap of kind check for per-case pass lines, S, the `checks/checklib` has no case printer; use harness.case_line as par-keys.py:1570 does) and its --selftest. DECISION_PREVIEW_N = 20 (docs/CONSTANTS.md:69). No mutant is listed: the one candidate (remove the Apply door's call, AISettingsStore.swift:425) would NOT turn proof 1 red because no step of J5.8 clicks Apply (J5.py:342-356); that is itself the finding: write the Apply case first (gap), then its mutant. Saved: _captures/core-decision/test.out last line 'EXIT=0' (cargo decision tests, read only). gap-decisions: parts (1), (2), (4) are proofs 4 to 6; their broken copies are mutants 0 and 1 (app doors) and the stand-in mutants of the self-test (proof 6). Part (3) stays in the gap. gap-preview-core (part 3): contract PreviewDecisionList + PreviewEntry + PreviewEntryKind (command.rs), DecisionVerdict gained decided_by, sender, subject (records.rs, defaults \"\"); engine core/crates/engine/src/decision_preview.rs (+ arm and two read lines in rust_core.rs, `pub mod decision_preview;` in lib.rs); test engine Sources/CoreBridge/FixtureDecisionPreview.swift; page DecisionPreview.swift + AISettingsStore.runPreview. Proofs 7 (6 engine tests) and 8 (7 Swift tests), mutants 2 to 12. STILL OPEN (not blocking the item's finish line, named for the lead): (b) DECISION_PREVIEW_MS in docs/CONSTANTS.md holds no measured number, so on the real core a preview WITH a model is refused in words (rules only runs); (c) the page calls the core on the main actor, bounded only by that ledger number: off-main with a progress line is not built (it would make the J5.8 check reads race the run). Proofs 7 and 8 were written without a compile and are not yet run."
+}

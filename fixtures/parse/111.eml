@@ -1,0 +1,39 @@
+From: Mosaic Notes <news@example.com>
+To: Assem Example <assem@example.org>
+Subject: Product updates
+Date: Mon, 09 Nov 2026 07:45:00 +0000
+Message-ID: <284ac40f1582db16@example.com>
+List-Unsubscribe: <https://example.net/unsubscribe?u=b9b622>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============6855149674250370780=="
+
+--===============6855149674250370780==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+Tm92ZW1iZXIgbmV3cy4gUmVhZCBtb3JlIGF0IGh0dHBzOi8vZXhhbXBsZS5uZXQvYmxvZy9hYmMx
+MjMNCg==
+
+--===============6855149674250370780==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Mosaic Notes</title=
+><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-siz=
+e:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspaci=
+ng=3D"0"><tr><td align=3D"center"><img alt=3D"x" src=3Dhttp://track.example.o=
+rg/px/bbd5e312.gif><h2>Mosaic Notes</h2><h3>November news</h3><p>Join 5000 re=
+aders. In 2026 we shipped 12 releases. Ten percent off until 30 November.</p>=
+<p>Book a call: +32 2 194 73 96</p><p><a href=3D'https://example.net/blog/4e5=
+775'>Read more</a></p><p style=3D"font-size:11px;color:#888">You receive this=
+ because of your account. <a href=3D"https://example.net/unsubscribe?u=3De204=
+50">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Privacy</a></p>=
+<img src=3D"//track.example.org/open/ec1a437c.png" width=3D"1" height=3D"1"><=
+IMG SRC=3D"http://pixel.example.net/banner/23ab88f0.jpg" ALT=3D"banner"><img =
+src=3D'https://track.example.org/banner/b5153e82.jpg' alt=3D'logo' width=3D'1=
+20'><img src=3D"//cdn.example.net/open/2a296d03.gif" width=3D"1" height=3D"1"=
+></td></tr></table></body></html>
+
+--===============6855149674250370780==--

@@ -1,0 +1,152 @@
+{
+ "item": "d66b30dd",
+ "full_id": "d66b30dd-6b7e-441c-a321-7e9f5362797a",
+ "title": "Stop a test copy's Swift code reaching outside this Mac",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "unit",
+   "run": "theSharedRuleKeepsThisMacAndRefusesEveryOtherHostOnARig,theSharedRuleChangesNothingOnTheOwnersCopy,modelsFolderRigSafeIsTheSharedRule,aRigRefusesAProviderEndpointOffThisMacInTheVerb,aRigRefusesAKeyCheckOffThisMacBeforeThePost,theOwnersCopyKeepsEveryProviderEndpoint",
+   "pass": "Test theOwnersCopyKeepsEveryProviderEndpoint\\(\\) passed",
+   "fail": "recorded an issue|failed after",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "aRigRefusesTheRealMicrosoftSignInBeforeAnySheetOrRequest,aRigRefusesEveryPresetRoute,aRigKeepsALoopbackAuthority,aRigChoosesNoSheetAndItsSheetRefusesWithoutOpening,theOwnersCopyKeepsTheRealSignIn",
+   "pass": "Test theOwnersCopyKeepsTheRealSignIn\\(\\) passed",
+   "fail": "recorded an issue|failed after",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "aRigDrawsNoRemotePictureAfterLoadOnce,aRigDrawsAPictureServedFromThisMac,aRigsPicturesRuleListBlocksEveryHostButThisMac,theOwnersCopyStillLoadsRemotePicturesWhenAsked,nothingLoadsBeforeTheOwnerAsksOnEitherCopy",
+   "pass": "Test nothingLoadsBeforeTheOwnerAsksOnEitherCopy\\(\\) passed",
+   "fail": "recorded an issue|failed after",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "aShownRigIsARigAndGetsTheWebRefusals,everyRigRefusesAWebAddressOffThisMac,theOwnersCopyOpensEveryWebAddress",
+   "pass": "Test theOwnersCopyOpensEveryWebAddress\\(\\) passed",
+   "fail": "recorded an issue|failed after",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "aRigsRelayRedirectGuardRefusesARedirectOffThisMac,aRigsRelayRedirectGuardFollowsARedirectOnThisMac,theOwnersRelayClientGetsNoRedirectGuard",
+   "pass": "Test theOwnersRelayClientGetsNoRedirectGuard\\(\\) passed",
+   "fail": "recorded an issue|failed after",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "aRigCopyReplacesARealHostByAnAddressThatRefuses,aRigCopyKeepsAnAddressOnThisMac,aRigCopyRefusesAnAddressWithNoHost,theOwnersCopyKeepsTheRealHost,aRigCopyReachesNothingWithoutALoopbackAddressAndWritesOnlyInItsRunFolder",
+   "pass": "Test aRigCopyReachesNothingWithoutALoopbackAddressAndWritesOnlyInItsRunFolder\\(\\) passed",
+   "fail": "recorded an issue|failed after",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/firstrun-check.py <bundle> --core fixture",
+   "pass": "^ok +\\S+ nothing-left-the-mac ::",
+   "fail": "^FAIL +\\S+ nothing-left-the-mac|NOT JUDGED +\\S+ nothing-left-the-mac",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/messagebody-check.py",
+   "pass": "J1\\.6b/load-fetches-the-pictures-and-never-a-pixel",
+   "fail": "FAIL J1\\.6b/load-fetches-the-pictures-and-never-a-pixel",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/firstrun-check.py <bundle> --core fixture",
+   "pass": "^ok +T-30 provider-key-post-reaches-nothing ::",
+   "fail": "^FAIL +T-30|NOT JUDGED +T-30",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/firstrun-check.py <bundle> --core fixture",
+   "pass": "^ok +T-30 sign-in-reaches-nothing ::",
+   "fail": "^FAIL +T-30 sign-in-reaches-nothing|NOT JUDGED +T-30 sign-in-reaches-nothing",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "hidden",
+   "core": "real",
+   "run": "python3 checks/firstrun-check.py <bundle> --step T-30",
+   "pass": "^ok +T-30 sign-in-reaches-nothing ::",
+   "fail": "^FAIL +T-30 sign-in-reaches-nothing",
+   "timeout_s": 1200
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/firstrun-check.py --rule-pin",
+   "pass": "^ok +one-shared-rule ::",
+   "fail": "^FAIL +one-shared-rule",
+   "timeout_s": 120
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/firstrun-check.py --selftest",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "^BAD",
+   "timeout_s": 300
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/parity/par-reader.py --selftest",
+   "pass": "MUTANTS \\| par-reader-unsub2/a-web-link-reaches-nothing-outside-this-mac \\| green \\| link-asks-the-real-browser \\| red",
+   "fail": "STILL GREEN|MUTANTS \\| par-reader-unsub2/a-web-link-reaches-nothing-outside-this-mac \\| RED",
+   "timeout_s": 300
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/parity/par-reader.py",
+   "pass": "par-reader-unsub2/a-web-link-reaches-nothing-outside-this-mac +pass",
+   "fail": "par-reader-unsub2/a-web-link-reaches-nothing-outside-this-mac +fail",
+   "timeout_s": 600
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/CoreBridge/CoreHost.swift",
+   "find": "return !allows(url, env: env)",
+   "replace": "return false",
+   "proof": 3,
+   "red": "everyRigRefusesAWebAddressOffThisMac\\(\\) (recorded an issue|failed)"
+  },
+  {
+   "file": "Sources/CoreBridge/CoreHost.swift",
+   "find": "public static func safe(_ url: URL, env: [String: String]? = nil) -> URL { allows(url, env: env) ? url : refusing }",
+   "replace": "public static func safe(_ url: URL, env: [String: String]? = nil) -> URL { url }",
+   "proof": 0,
+   "red": "theSharedRuleKeepsThisMacAndRefusesEveryOtherHostOnARig\\(\\) (recorded an issue|failed)"
+  },
+  {
+   "file": "Sources/CoreBridge/CoreHost.swift",
+   "find": "host.map { thisMacHosts.contains($0) } ?? false",
+   "replace": "host.map { thisMacHosts.contains($0) } ?? true",
+   "proof": 5,
+   "red": "aRigCopyRefusesAnAddressWithNoHost\\(\\) (recorded an issue|failed)"
+  },
+  {
+   "file": "Sources/ControlSocket/FixtureVerbs.swift",
+   "find": "case (\"provider-endpoint\", 3) where providerEndpointRefused(a[2]):",
+   "replace": "case (\"provider-endpoint\", 3) where false:",
+   "proof": 8,
+   "red": "^FAIL +T-30 provider-key-post-reaches-nothing"
+  }
+ ],
+ "gap": "CLOSED 13 Nov 2026 (lead): all 15 proofs pass (hidden reads on main147 and main148, statics on the work copy). The relay redirect guard is proven by its unit test alone: no screen of the Mac app calls the relay client (the iPhone push client is not released), so no hidden read can reach it. M. Closed in code: T-30 cases, `--rule-pin`, and part (5): MeaningModelRig.current (Sources/Features/Embedding/MeaningModelRig.swift:25-29) now follows the environment it is given, so aRigCopyReachesNothingWithoutALoopbackAddressAndWritesOnlyInItsRunFolder needs a rerun, not a build. STILL MISSING: (1) BUILT by hid-keys 2026-11-12: checks/parity/par-reader.py unsub_twice_round `a-web-link-reaches-nothing-outside-this-mac` (msg-11, after the confirm the rig's own count `uistate.hidden.system_ui.open` of refused web opens has not moved: a test copy did not even try), broken copy `link-asks-the-real-browser` (proofs 8 and 9); not run on a build. STILL MISSING: (2) the relay redirect: the only RelayClient( caller is Sources/Features/PushClient/RelaySettings.swift:34, itself without a screen caller, so nothing can drive it; (3) the SignInController route has no hidden door: setAddress is called only from Sources/Features/SettingsAccountsMac/AccountsSession.swift:254 on a real core; (4) the provider-key case: the proofs already hold `firstrun-check.py T-30 provider-key-post-reaches-nothing`; a copy in settingsaimac-check.py (grep provider-key finds nothing there) is not needed for the rule, left as a note. Dead code? (2) the relay redirect: RelaySettings.swift and RelayClient.swift have no caller outside each other (RelaySettings is named elsewhere only in a comment): dead today, but they are the unreleased iPhone push client (fn-pushclient-ios), so removal is the lead's call: Sources/Features/PushClient/RelayClient.swift and RelaySettings.swift (RelayClient( is built at RelaySettings.swift:34). (3) SignInController is not dead (AccountsSession.swift:254 calls setAddress on a real core): it needs a hidden door, not removal.",
+ "owner": null,
+ "notes": "Unit files: Tests/Unit/RigNetProviderEndpointTests.swift:12,24,30,36,44,49; RigNetSignInTests.swift:27,35,41,55,63; RigNetPicturesTests.swift:15,23,29,48,57; RigNetWebOpenTests.swift:13,21,31; RigNetRelayRedirectTests.swift:14,21,26; ModelsFolderRigSafeTests.swift:13,19,26,30; MeaningModelStoreTests.swift:89. Gap commits per the reader: 11c6d646 (provider key), cf74c859 (sign-in), 90386bf1 (pictures), e2d7a09a (web address), 5c82bd74 (relay redirect), 1542f4b1 (model file). firstrun-check.py usage :9 (takes a bundle, drives launch-one itself with WHOOSH_RIG_HIDDEN=1); its case line shape is '%-10s %s %s :: %s' (status ok|FAIL|NOT JUDGED, id, name, detail) at :146. The hidden run command of proof 6 needs the bundle path from the lead. Lane tail-outside: T-30 is firstrun-check.py (step t30, cases at its two outside_case calls), outside_verdict and probe_control above it; rule_pin and KNOWN_SECOND_LISTS beside the T-27 section; model mutants sign-in-dials, key-post-dials, endpoint-accepted in ModelApp. The sign-in case has no claimed app mutant: on the fixture core the sheet never reaches the Rust guard, and on the real core the browser step ends it first (core/crates/engine/src/sign_in/browser.rs NoBrowser): the lead may try netguard/src/lib.rs:45 `if !is_closed() || is_this_mac(host) { return Ok(()); }` -> `if true { return Ok(()); }` on a throwaway build with proof 10; unverified. | OLD GAP (before lane gap-states, 2026-11-12): M. Closed in code (item d66b30dd, lane tail-outside): (a) T-30 of checks/firstrun-check.py: sign-in-reaches-nothing (the add-account sheet's Microsoft sign-in, both cores) and provider-key-post-reaches-nothing (the provider endpoint verb off this Mac plus a key paste, fixture core), each reading the app's peers through NetWatch/offenders_of and rig/refused-outbound and printing both; T-24 now also runs on the fixture core (proof 6 could not print its line there before); (c) `--rule-pin` pins the one shared rule (it found two second host lists, see the notes). STILL MISSING: (1) a hidden case for a web address opened from a mail: the fixture core never calls NSWorkspace (ReaderLinks.swift:88, ReaderListActions.swift:88 both skip it on a fixture core) and no mail body of the fixture holds a link, so the act that could reach outside exists only on the real core, where no check opens a link; the case would be par-reader.py's unsubscribe round on msg-11 (web link list) plus a peer read: that file is not in this lane's files; (2) the relay redirect: no caller builds RelayClient (grep Sources: only RelaySettings.swift, itself never called), so no screen can drive it: a case waits for a caller; (3) the Swift SignInController route (RigNoSheet, SignInController.swift:34) has no hidden door: setAddress is called only from AccountsSession.swift:254 on a real core, so mac-welcome-accounts.sign-in-microsoft answers 'Type your address first.'; T-30's sign-in act is the engine's route; (4) the provider-key case in checks/settingsaimac-check.py (not this lane's file); (5) part (b) test aRigCopyReachesNothing...: still red at the r83 head per the saved log; cause read in code, see notes: MeaningModelRig.swift:30 asks ModelInstaller.defaultDirectory(for:) which reads the process environment, not the `environment` argument."
+}

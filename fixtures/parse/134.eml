@@ -1,0 +1,33 @@
+From: Northwind Cloud <security@example.com>
+To: Assem Example <assem@example.org>
+Subject: New sign-in to your account
+Date: Fri, 13 Nov 2026 15:40:00 +0000
+Message-ID: <2dc33457e4783c87@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============3223727669527625418=="
+
+--===============3223727669527625418==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+We noticed a new sign in to your account from Chrome on a Mac at 14:32. Review recent activity: https://accounts.example.com/security/activity
+
+--===============3223727669527625418==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Northwind Cloud</ti=
+tle><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-=
+size:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellsp=
+acing=3D"0"><tr><td align=3D"center"><img src=3D'http://pixel.example.net/ban=
+ner/aa9bd93c.jpg' alt=3D'logo' width=3D'120'><h2>Northwind Cloud</h2><p>We no=
+ticed a new sign in to your account from Chrome on a Mac at 14:32.</p><p>If t=
+his was you, no action is needed. If not, <a href=3D"https://example.org/secu=
+rity/activity">review recent activity</a>.</p><p style=3D"font-size:11px;colo=
+r:#888">You receive this because of your account. <a href=3D"https://example.=
+net/unsubscribe?u=3Da60396">Unsubscribe</a> | <a href=3D"https://example.net/=
+privacy">Privacy</a></p></td></tr></table></body></html>
+
+--===============3223727669527625418==--

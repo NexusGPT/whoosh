@@ -1,0 +1,120 @@
+{
+ "item": "5b704a2d",
+ "full_id": "5b704a2d-dc55-4410-8cd7-809e60baa1b6",
+ "title": "Build ix-account-icon-picker",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "unit",
+   "run": "theIconLimitsComeFromTheLedger,theIconPickerRefusesAnOversizeFileAndSaysTheLimit,anUploadedIconOverTheLimitIsRefusedAndTheLimitItselfIsAccepted",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J4 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J4-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+   "pass": "(?m)^STEP J4\\.12 PASS=\\d+$",
+   "fail": "STEP J4\\.12 [^\\n]*(FAIL|NOT JUDGED)=|could not drive",
+   "timeout_s": 900
+  },
+  {
+   "kind": "hidden",
+   "core": "fixture",
+   "run": "python3 checks/accountmark-check.py",
+   "pass": "\\d+ checks, 0 failed, 0 not judged",
+   "fail": "FAIL |NOT JUDGED|could not drive",
+   "timeout_s": 600
+  },
+  {
+   "kind": "unit",
+   "run": "aLibraryPickShowsOnTheListRowTheSidebarAndTheReaderInTheSameUpdate,aColourPickShowsOnTheListRowTheSidebarAndTheReaderInTheSameUpdate,theListDirectoryIsKeptWhileNothingAboutAMarkChanged,anUploadedPictureIsKeptAsTheAccountsIconFile,anUploadedPictureEndsAsTheAccountsIconReferenceInTheCore",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/SettingsAccountsMac/AccountIconStore.swift",
+   "find": "byteCount > WhooshConstants.ACCOUNT_ICON_MAX_BYTES ?",
+   "replace": "byteCount >= WhooshConstants.ACCOUNT_ICON_MAX_BYTES ?",
+   "proof": 0,
+   "red": "theIconPickerRefusesAnOversizeFileAndSaysTheLimit.*failed|theIconLimitsComeFromTheLedger.*failed"
+  },
+  {
+   "file": "Sources/Features/InboxList/ListProbe.swift",
+   "find": "\"account_icon\": a.iconId ?? NSNull(), \"account_attention\"",
+   "replace": "\"account_icon\": NSNull(), \"account_attention\"",
+   "proof": 1,
+   "red": "STEP J4\\.12 [^\\n]*FAIL="
+  },
+  {
+   "file": "Sources/Features/SettingsAccountsMac/AccountsSession.swift",
+   "find": "AccountMarkRevision.shared.bump()",
+   "replace": "_ = AccountMarkRevision.shared.value",
+   "proof": 3,
+   "red": "aLibraryPickShowsOnTheListRow.*failed|aColourPickShowsOnTheListRow.*failed"
+  },
+  {
+   "file": "Sources/Features/InboxList/RowFacts.swift",
+   "find": "c.counts == m.counts, c.revision == rev",
+   "replace": "c.counts == m.counts",
+   "proof": 3,
+   "red": "aLibraryPickShowsOnTheListRow.*failed|aColourPickShowsOnTheListRow.*failed"
+  },
+  {
+   "file": "Sources/Features/InboxList/RowFacts.swift",
+   "find": "public func bump() { value += 1 }",
+   "replace": "public func bump() { value += 2 }",
+   "proof": 3,
+   "red": "theListDirectoryIsKeptWhileNothingAboutAMarkChanged.*failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAccountsMac/AccountIconStore.swift",
+   "find": "appendingPathComponent(\"\\(accountId).png\")",
+   "replace": "appendingPathComponent(\"icon.png\")",
+   "proof": 3,
+   "red": "anUploadedPictureIsKeptAsTheAccountsIconFile.*failed"
+  },
+  {
+   "file": "Sources/CoreBridge/FixtureSettings.swift",
+   "find": "if case .uploaded? = icons[id] { return \"uploaded\" }",
+   "replace": "if case .uploaded? = icons[id] { return iconId(id, fallback: fallback) }",
+   "proof": 3,
+   "red": "anUploadedPictureEndsAsTheAccountsIconReferenceInTheCore.*failed"
+  },
+  {
+   "file": "Sources/CoreBridge/FixtureSettings.swift",
+   "find": "if case .uploaded(let p)? = icons[id] { return p }",
+   "replace": "if case .uploaded(_)? = icons[id] { return nil }",
+   "proof": 3,
+   "red": "anUploadedPictureEndsAsTheAccountsIconReferenceInTheCore.*failed"
+  },
+  {
+   "file": "Sources/Features/Reader/ReaderHeaderProbe.swift",
+   "find": "\"account_icon\": a.iconId ?? NSNull()]",
+   "replace": "\"account_icon\": NSNull()]",
+   "proof": 1,
+   "red": "STEP J4\\.12 [^\\n]*FAIL="
+  },
+  {
+   "file": "Sources/Features/SettingsAccountsMac/AccountIconPicker.swift",
+   "find": "session.setImage(path: path, for: id)",
+   "replace": "_ = path",
+   "proof": 2,
+   "red": "FAIL.*upload-stores-the-file-and-writes-the-ref|upload-stores-the-file-and-writes-the-ref.*FAIL|[1-9]\\d* failed"
+  },
+  {
+   "file": "Sources/Features/SettingsAccountsMac/AccountIconStore.swift",
+   "find": "width: px, height: px, bitsPerComponent: 8",
+   "replace": "width: px, height: px / 2, bitsPerComponent: 8",
+   "proof": 2,
+   "red": "FAIL.*upload-stores-the-file-and-writes-the-ref|upload-stores-the-file-and-writes-the-ref.*FAIL|[1-9]\\d* failed"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Proof 0: Tests/Unit/SettingsAccountsMacIconTests.swift:29 theIconLimitsComeFromTheLedger (ACCOUNT_ICON_MAX_BYTES == 1,048,576, ACCOUNT_ICON_PX 64, ring min 20), :34-48 theIconPickerRefusesAnOversizeFileAndSaysTheLimit (picker opened through mac-settings-accounts.acc-01.icon, the over-limit door refuses with a note naming 1 MB, the at-limit door is accepted), Tests/Unit/SettingsAccountsMacTests.swift:38-43 anUploadedIconOverTheLimitIsRefusedAndTheLimitItselfIsAccepted (which also expects the library pick 'briefcase' to be saved in the fixture core, line 41-42: it only builds the AccountIcon value and reads the fixture's own state 'account_icon/acc-01' == briefcase: a thin check that the fixture serves it, not that picking in the picker saves it). Proof 1: the J4.12 step (journeys/J4.py:499-516; judges icon-saved, colour-saved, icon-on-list-row, icon-in-sidebar). Proof 2: checks/accountmark-check.py (ring colour per account, ring minimum px, J4.12 icon-over-limit-refused, refusal-names-the-limit, icon-at-limit-accepted, stored-icon-px; its own run_journey prints the totals and, on a fail, the lines). Saved evidence (read only): screenshots _captures/settingsaccountsmac/picker-refused-dark-1280x820.png and healed-light-1280x820.png. The acceptance line the reader saw cut off ends 'the colour change shows on all three places' (plan.json). Mutants: the byte limit becomes inclusive (AccountIconStore.swift:17 verdict), red on proof 0 if the at-limit door reaches AccountIconStore.verdict (the unit test's door is registered at SettingsAccountsMacFeature.swift:134-146: if it uses another path the mutant survives; the lead should record that); and the list row serves no icon (ListProbe.swift:19), red on J4.12 icon-on-list-row (mutant row J4.py:650-651 family). Proof 3 (new, Tests/Unit/AccountIconPickerTests.swift): the pick reaches list directory, sidebar and reader line on the next read; the upload is kept as <folder>/<id>.png (128 px square) and as the core's account_icon/<id> 'uploaded' and iconFile. Cause of the lag: Sources/Features/InboxList/RowFacts.swift:84 (base 3901575b) kept the account directory keyed by m.counts only. tail-small (2026-11-11): the square check is built. Sources/Features/SettingsAccountsMac/AccountIconPicker.swift storedRows (line 174) now serves \"pixels_high\": rep.pixelsHigh beside \"pixels\"; checks/accountmark-check.py stored_file_and_ref (line 113) returns (width, height, bytes > 0) and the case upload-stores-the-file-and-writes-the-ref expects (\"uploaded\", (side, side, True)) with side = ACCOUNT_ICON_PX * 2 (its MUTANTS row now says 'or the kept file is not square'); the dry run lists the case with its row (12 checks, 0 failed, 12 not judged, as before the edit: tail-small-out/accountmark-dry.txt). Mutant 10 (the crop context made half as high in AccountIconStore.swift) leaves the width and turns only this case red. Not run on a build: the lead's run of proof 2 and mutant 10. Still NOT changed (a look, for the owner, questions_for_owner in docs/lanes/tail-small.md): a row, ring or reader line draws the library glyph only, not an uploaded picture. Earlier text of the remaining piece: Still missing: the check cannot judge that the stored picture is SQUARE: the row icon.stored serves the width only (AccountIconPicker.swift storedRows, about line 171: `[\"account\": a.id, \"px\": rep.pixelsWide / 2, \"pixels\": rep.pixelsWide, \"bytes\": data.count]`); the owner of Sources/Features/SettingsAccountsMac must add `\"pixels_high\": rep.pixelsHigh`, then the case reads it too. Not changed (look): a row, ring or reader line draws the library glyph only, not an uploaded picture."
+}

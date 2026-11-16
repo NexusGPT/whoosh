@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Whoosh</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>fr</string>
+		<string>nl</string>
+		<string>de</string>
+		<string>es</string>
+		<string>it</string>
+		<string>pt</string>
+		<string>pl</string>
+		<string>sv</string>
+		<string>da</string>
+		<string>nb</string>
+		<string>fi</string>
+		<string>ja</string>
+		<string>zh-Hans</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.productivity</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Whoosh reads your calendars on this Mac only to know when you are free when it drafts a reply. It never changes an event and nothing leaves this Mac.</string>
+	<key>NSFocusStatusUsageDescription</key>
+	<string>Whoosh reads whether a Focus is on, only to keep its notch and notifications quiet while you focus. The state never leaves this device.</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>MIT License</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Whoosh listens only while you hold the dictation key, to turn your voice into text on this device.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Whoosh turns your dictation into text. With the on-device engine nothing leaves this device.</string>
+</dict>
+</plist>

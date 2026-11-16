@@ -1,0 +1,31 @@
+From: Orchard Pay <billing@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1324
+Date: Thu, 12 Nov 2026 20:11:00 +0000
+Message-ID: <3789c0227aa92bbf@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============7647252982397252827=="
+
+--===============7647252982397252827==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Invoice 2026-1324 for EUR 1,250.00 is due on 30 November 2026.
+
+--===============7647252982397252827==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Orchard Pay</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><h2>Orchard Pay</h2><p>Invoice <b>2026-1324<=
+/b> for EUR 6205.51 is due on 30 November 2026.</p><p>VAT 21%. IBAN BE68 5390=
+ 0754 7034. Payment reference 642/2151/60682.</p><p style=3D"font-size:11px;c=
+olor:#888">You receive this because of your account. <a href=3D"https://examp=
+le.net/unsubscribe?u=3Dbec0ea">Unsubscribe</a> | <a href=3D"https://example.n=
+et/privacy">Privacy</a></p></td></tr></table></body></html>
+
+--===============7647252982397252827==--

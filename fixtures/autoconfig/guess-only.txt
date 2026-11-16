@@ -1,0 +1,6 @@
+# HAND-WRITTEN: a domain with no ISPDB entry, no autoconfig file, no SRV record and no Autodiscover answer.
+# Only these servers answer the probe; every other host and port refuses.
+# Lines: "probe <host> <port> <ssl|starttls>".
+domain guess-only.example
+probe imap.guess-only.example 143 starttls
+probe mail.guess-only.example 465 ssl

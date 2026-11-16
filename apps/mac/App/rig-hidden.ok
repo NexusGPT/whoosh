@@ -1,0 +1,1 @@
+This bundle honours WHOOSH_RIG_HIDDEN=1 and --rig-hidden (Sources/App/HiddenRig.swift): every window at alpha 0, click-through, never activating; accessory policy. Copied into Contents/Resources by apps/mac/project.yml (sources: App). scripts/launch-one.sh refuses a bundle without it.

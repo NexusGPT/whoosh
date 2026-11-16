@@ -1,0 +1,77 @@
+{
+  "item": "0aea8b37",
+  "full_id": "0aea8b37-eb4c-47d5-bda3-5da72d63d090",
+  "title": "Fix the decision model download click (A126)",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingsaimac-check.py --selftest",
+      "pass": "^selftest: OK \\(0 mutants not red\\)$",
+      "fail": "NOT RED|selftest: FAILED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "downloadShowsProgressFailsInWordsAndRetries",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-0aea8b37\" --screens mac-settings-ai",
+      "pass": "^PASS mac-settings-ai (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "read the three pictures of `python3 checks/shots-sheet.py --states decision-model-download` (hid-ai round 18: Settings > Decisions, the decision model's row on the loopback download stand-in of J5.7, light and dark, 1280x820 and 700x480): view downloading (the line's `read rows mac-settings-ai.decisions.local` gives state downloading, received and total above 0, the words 'Downloading <x> of <y>'), view ready (state ready, chip 'Ready'), view failed (state failed, the sentence naming the missing file, retry true, button 'Retry'); the hidden test copy's usual launch (WHOOSH_RIG_HIDDEN=1, --fixture-core), no other variable",
+      "pass": "the Decisions row shows bytes and a bar while downloading, a sentence with Retry on failure, and Ready at the end"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.7/laya-download-click-shows-downloading-within-one-frame: the first read after the click returned says 'downloading'",
+      "fail": "^FAIL J5\\.7/laya-download-click-shows-downloading-within-one-frame",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsaimac-check.py",
+      "pass": "^PASS J5\\.7/laya-download-click-shows-downloading-then-ready",
+      "fail": "^FAIL J5\\.7/laya-download-click-shows-downloading-then-ready",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/OnDeviceAI/Core/LayaModelStore.swift",
+      "find": "LayaModelState.downloading(received: base + received, total: grand)",
+      "replace": "LayaModelState.downloading(received: base, total: grand)",
+      "proof": 0,
+      "red": "FAIL J5\\.7/laya-figures-keep-moving-while-downloading"
+    },
+    {
+      "file": "Sources/Features/OnDeviceAI/Core/LayaModelStore.swift",
+      "find": "do { let s = LayaModelState.downloading(received: 0, total: -1); set(s); progress(s) }",
+      "replace": "do { let s = LayaModelState.downloading(received: 0, total: -1); progress(s) }",
+      "proof": 5,
+      "red": "FAIL J5\\.7/laya-download-click-shows-downloading-(then-ready|within-one-frame)"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: Sources/Features/OnDeviceAI/Core/LayaModelStore.swift:111-117 (download(): the click sets downloading(0,-1) at once), :134-141 (progress frames), :173-176 (failure words with Tap Retry), Sources/Features/SettingsAIMac/ModelSetupRow.swift:13 (row: Download, progress bar, Retry; button id buttonId). Cases in checks/settingsaimac-check.py: :2061 laya-download-click-shows-downloading-then-ready, :2079 laya-second-click-while-downloading-changes-only-the-progress, :2106 laya-figures-keep-moving-while-downloading (three reads two progress ticks apart, each strictly greater), :2121 laya-download-failure-names-the-file-and-retry-works (failure names the file, retry True, key ↩, then ready), :2002 laya-row-says-why-not-and-the-download-door-works. The stub is slow on purpose (LAYA_TICKS_S, _slow_laya). The total line is the pass line (main(), line 1233: `N checks, F failed, N not judged`). gap-settings-checks: new case J5.7/laya-download-click-shows-downloading-within-one-frame (checks/settingsaimac-check.py) clicks the download, reads the row at once, and requires state downloading and an answer within FIRST_READ_MS = 50 ms; the detail prints the milliseconds. Broken copy on the stand-in: laya-first-read-slow (a read that takes 80 ms; red in the self-test, 84.8 ms). Whether the app survives mutant 1 depends on the first read; the lead's run decides."
+}

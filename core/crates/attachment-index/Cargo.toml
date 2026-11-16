@@ -1,0 +1,19 @@
+[package]
+name = "attachment-index"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+description = "Whoosh attachment index: what an attachment CONTAINS (PDF and document text, OCR, scene labels, speech, image/audio/video-frame vectors), ready for the word and meaning indexes."
+
+[dependencies]
+contracts = { workspace = true }
+# zlib streams inside PDFs; MIT OR Apache-2.0, pure Rust backend (miniz_oxide)
+flate2 = "1.1"
+# the attachment_content writer (the store's own pair: MIT, bundled SQLite)
+rusqlite = { version = "0.41", features = ["bundled"] }
+# pieces: a file's text is cut by the same rule as a mail body (search-vector `pieces`)
+search-vector = { path = "../search-vector" }
+
+[dev-dependencies]
+tempfile = "3.27.0"

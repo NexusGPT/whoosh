@@ -1,0 +1,623 @@
+{
+ "schema": "whoosh-search-corpus/1",
+ "note": "The corpus behind J2 (search) and the search/labels/embedding checks. Fictional people and domains. Record 1 is the Linea Supply quote thread (msg-01, acc-04, 0.84 EUR, quote-Q1-print-run.pdf). The design fixture (docs/design/fixtures/mac-main-sample.json) dates msg-01 'Today 09:12' and carries no body, thread or date fields; J2's trigger says 'last spring' and J2.2 filters 'before June', so this file re-dates record 1 and adds the decoys each filter and each exact-figure check needs to be able to fail. No number of the ledger lives here: sizes and budgets come from docs/CONSTANTS.md.",
+ "today": "2026-11-07",
+ "before_june": "2026-06-01",
+ "messages": [
+  {
+   "id": "msg-01",
+   "thread": "thr-01",
+   "account": "acc-04",
+   "from_name": "Linea Supply",
+   "from": "orders@linea-supply-example.com",
+   "date": "2026-04-16T09:12:00",
+   "subject": "Quote for the Q1 print run: 12,000 units",
+   "body": "Hi Assem, as discussed, the unit price at 12,000 is 0.84 EUR, delivery in week 4. Please find the signed quote attached.",
+   "attachments": [
+    "quote-Q1-print-run.pdf"
+   ],
+   "role": "record 1"
+  },
+  {
+   "id": "msg-01a",
+   "thread": "thr-01",
+   "account": "acc-04",
+   "from_name": "Assem Chammah",
+   "from": "assem@northlight-example.de",
+   "date": "2026-04-13T14:02:00",
+   "subject": "Quote for the Q1 print run: 12,000 units",
+   "body": "Could you quote 12,000 units of the Q1 brochure, 16 pages, 130 g matte, delivery before week 5?",
+   "attachments": [],
+   "role": "thread-mate of record 1, from the owner: a second message of thr-01 that matches the meaning query (kills a one-row-per-message list)"
+  },
+  {
+   "id": "msg-01b",
+   "thread": "thr-01",
+   "account": "acc-04",
+   "from_name": "Linea Supply",
+   "from": "orders@linea-supply-example.com",
+   "date": "2026-04-15T10:15:00",
+   "subject": "Re: Quote for the Q1 print run: 12,000 units",
+   "body": "Thanks Assem. Our estimator is on it; you will have the quote by Friday.",
+   "attachments": [],
+   "role": "thread-mate of record 1, from the supplier, no attachment"
+  },
+  {
+   "id": "msg-s02",
+   "thread": "thr-s02",
+   "account": "acc-04",
+   "from_name": "Linea Supply",
+   "from": "orders@linea-supply-example.com",
+   "date": "2026-09-03T10:30:00",
+   "subject": "Invoice for the Q1 print run",
+   "body": "Please find the invoice for the Q1 print run. Total 10,080.00 EUR, payment terms 30 days.",
+   "attachments": [
+    "invoice-Q1-print-run.pdf",
+    "warehouse-photo.jpg"
+   ],
+   "role": "decoy: right sender, has attachment, AFTER June (kills a dead 'before' filter); also carries warehouse-photo.jpg (J2.8: found by what the photo shows)"
+  },
+  {
+   "id": "msg-s03",
+   "thread": "thr-s03",
+   "account": "acc-04",
+   "from_name": "Linea Supply",
+   "from": "orders@linea-supply-example.com",
+   "date": "2026-02-10T14:05:00",
+   "subject": "Paper samples for your brochure",
+   "body": "We will send paper samples for the brochure on Thursday. No attachment this time.",
+   "attachments": [],
+   "role": "decoy: right sender, BEFORE June, NO attachment (kills a dead 'has attachment' filter)"
+  },
+  {
+   "id": "msg-s04",
+   "thread": "thr-s04",
+   "account": "acc-12",
+   "from_name": "Linea Supply",
+   "from": "orders@linea-supply-example.com",
+   "date": "2025-11-20T08:00:00",
+   "subject": "Welcome to Linea Supply: your account is open",
+   "body": "Your account is open. Order by mail or phone.",
+   "attachments": [],
+   "role": "J2.7: the same sender in a SECOND account, oldest"
+  },
+  {
+   "id": "msg-s05",
+   "thread": "thr-s05",
+   "account": "acc-05",
+   "from_name": "Printwerk",
+   "from": "sales@printwerk-example.com",
+   "date": "2026-04-20T11:45:00",
+   "subject": "Offer for the brochure run, spring",
+   "body": "Our price per unit for the brochure run is 0.84 USD at 12,000 units. Quote attached.",
+   "attachments": [
+    "printwerk-offer.pdf"
+   ],
+   "role": "decoy: another supplier, spring, shares '0.84' but not '0.84 EUR'"
+  },
+  {
+   "id": "msg-s06",
+   "thread": "thr-s06",
+   "account": "acc-07",
+   "from_name": "Atelier Mérel",
+   "from": "hello@atelier-merel-example.com",
+   "date": "2026-04-02T16:20:00",
+   "subject": "What it will cost to print twelve thousand brochures",
+   "body": "Our estimate for the brochure print job is eighty-four cents each, delivered in a month.",
+   "attachments": [
+    "scan-notes.pdf"
+   ],
+   "role": "meaning-only match: no word of the query 'supplier price quote spring' appears; scan-notes.pdf is NOT downloaded (J2.8 failure path)"
+  },
+  {
+   "id": "msg-s07",
+   "thread": "thr-s07",
+   "account": "acc-08",
+   "from_name": "Hetzner-style host",
+   "from": "billing@host-example.net",
+   "date": "2026-10-31T06:00:00",
+   "subject": "Invoice 2026-11 is available",
+   "body": "Your invoice for November is available. Amount 110.84 EUR.",
+   "attachments": [
+    "invoice-2026-11.pdf",
+    "site-plan.dwg"
+   ],
+   "role": "decoy: '110.84 EUR' contains the characters '0.84 EUR' (kills substring matching of a quoted figure); site-plan.dwg is a kind the app cannot read (J2.8 failure path)"
+  },
+  {
+   "id": "msg-s08",
+   "thread": "thr-s08",
+   "account": "acc-10",
+   "from_name": "Sophie Chammah",
+   "from": "sophie@family-example.org",
+   "date": "2026-11-05T19:10:00",
+   "subject": "Photos from Sunday",
+   "body": "Here are the photos from the lake on Sunday.",
+   "attachments": [
+    "lake-1.jpg"
+   ],
+   "role": "unrelated"
+  },
+  {
+   "id": "msg-s09",
+   "thread": "thr-s09",
+   "account": "acc-04",
+   "from_name": "Linea Supply",
+   "from": "billing@linea-supply-example.com",
+   "date": "2026-05-12T09:40:00",
+   "subject": "Bank details for payments",
+   "body": "Our bank details changed on 1 May. Please use the new IBAN for every payment from now on.",
+   "attachments": [],
+   "role": "contact merge (delta 8): the same company from a second address, so the contact book holds two look-alike cards (orders@ and billing@); no attachment and none of the query words, so every J2 expectation stays true"
+  }
+ ],
+ "accounts_named": {
+  "acc-04": "Nordlicht",
+  "acc-12": "second Linea account",
+  "acc-05": "Printwerk's recipient",
+  "acc-07": "Atelier recipient"
+ },
+ "expect": {
+  "record1_message": "msg-01",
+  "record1_thread": "thr-01",
+  "record1_account": "acc-04",
+  "record1_attachment": "quote-Q1-print-run.pdf",
+  "meaning_query": "supplier price quote spring",
+  "meaning_query_must_include_threads": [
+   "thr-01",
+   "thr-s05"
+  ],
+  "meaning_query_semantic_only_thread": "thr-s06",
+  "filter_text": "from Linea Supply before June has attachment",
+  "filter_chip_kinds": [
+   "attachment",
+   "before",
+   "from"
+  ],
+  "filter_result_threads_with_meaning_words": [
+   "thr-01"
+  ],
+  "exact_query": "\"0.84 EUR\"",
+  "exact_first_message": "msg-01",
+  "exact_matching_messages": [
+   "msg-01"
+  ],
+  "exact_must_not_match": [
+   "msg-s07",
+   "msg-s05"
+  ],
+  "no_exact_query": "\"9.99 EUR\"",
+  "no_exact_bar_words": "no exact match",
+  "smart_folder_name": "Supplier quotes",
+  "smart_folder_threads_after_save": [
+   "thr-01"
+  ],
+  "smart_folder_parent": "Work",
+  "sender_address": "orders@linea-supply-example.com",
+  "sender_messages_newest_first": [
+   "msg-s02",
+   "msg-01",
+   "msg-01b",
+   "msg-s03",
+   "msg-s04"
+  ],
+  "sender_accounts": [
+   "acc-04",
+   "acc-04",
+   "acc-04",
+   "acc-04",
+   "acc-12"
+  ],
+  "sender_second_address": "billing@linea-supply-example.com",
+  "thread_with_several_matches": "thr-01",
+  "people_query": "from Linea",
+  "people_addresses": [
+   "orders@linea-supply-example.com",
+   "billing@linea-supply-example.com"
+  ],
+  "people_chip_value": "Linea Supply",
+  "people_chip_address": "orders@linea-supply-example.com",
+  "filter_words_query": "supplier price quote spring",
+  "filter_word_titles": [
+   "Sender contains: {q}",
+   "Subject contains: {q}",
+   "Attachment name contains: {q}"
+  ],
+  "dropdown_group_order": [
+   "Search",
+   "People",
+   "Labels",
+   "Filter words",
+   "Recent"
+  ],
+  "label_query": "Supplier",
+  "label_title": "Supplier quotes",
+  "search_row_title": "Search all mail",
+  "result_sections": [
+   "Top results",
+   "All results"
+  ],
+  "results_footer": "Matched by words and by meaning, attachments included.",
+  "mac_result_sections": [
+   "Close in meaning"
+  ],
+  "mac_divider_keys": {
+   "ranked": "Related",
+   "words": "Ranking the other mails by meaning…",
+   "no_model": "Other mails, by date"
+  },
+  "mac_count_keys": {
+   "one": "1 match",
+   "many": "%lld matches",
+   "close": "· %lld close in meaning"
+  },
+  "mac_filter_text": "from:\"Linea Supply\" before:2026-06-01 has:attachment",
+  "mac_note": "SPEC A141 to A143 on the Mac: the list is every mail, the exact matches first, then ONE divider and the close ones; the count line says N matches then M close in meaning. result_sections and filter_text stay for the phone's check and the rule editor's check (checks/searchphone-check.py, checks/labelscontactsmac-check.py); the Mac checks read these mac_ keys. SPEC A150 (2026-11-11) replaced the close group: the list is the matches, then the line Related and the related mail, then the closed line All other mail; the count line says N matches then M related; mac_divider_keys ranked is Related (journeys/J2.py divider_follows_stage, header_counts). mac_result_sections and mac_count_keys are read by no check (grep of journeys and checks, lane hid-search).",
+  "dropdown_foot_words": [
+   "Move",
+   "Add as filter",
+   "Search",
+   "Close"
+  ],
+  "meaning_tinted_words": {
+   "thr-01": [
+    "quote"
+   ],
+   "thr-s05": [
+    "spring"
+   ]
+  },
+  "photo_query": "the warehouse photo",
+  "photo_message": "msg-s02",
+  "photo_thread": "thr-s02",
+  "photo_attachment": "warehouse-photo.jpg",
+  "photo_content_query": "forklift pallets in the aisle",
+  "not_downloaded_query": "scan notes",
+  "not_downloaded_message": "msg-s06",
+  "not_downloaded_attachment": "scan-notes.pdf",
+  "not_downloaded_note": "not indexed yet, download to search inside",
+  "unreadable_query": "site plan",
+  "unreadable_message": "msg-s07",
+  "unreadable_attachment": "site-plan.dwg",
+  "unreadable_note_words": "name only",
+  "recent_flood_queries": [
+   "flood 01",
+   "flood 02",
+   "flood 03",
+   "flood 04",
+   "flood 05",
+   "flood 06",
+   "flood 07",
+   "flood 08",
+   "flood 09",
+   "flood 10"
+  ],
+  "narrow_window": {
+   "w": 960,
+   "h": 600
+  }
+ },
+ "filter_cases": [
+  {
+   "text": "from:\"Linea Supply\"",
+   "chips": [
+    {
+     "kind": "from",
+     "value": "Linea Supply"
+    }
+   ],
+   "residual": ""
+  },
+  {
+   "text": "email from consultant",
+   "chips": [],
+   "residual": "email from consultant",
+   "why": "the word from in a sentence stays a word: a sender filter is from:name or Tab on Sender contains (SPEC A142)"
+  },
+  {
+   "text": "before June",
+   "chips": [
+    {
+     "kind": "before",
+     "value": "June"
+    }
+   ],
+   "residual": ""
+  },
+  {
+   "text": "has attachment",
+   "chips": [
+    {
+     "kind": "attachment"
+    }
+   ],
+   "residual": ""
+  },
+  {
+   "text": "price from:\"Linea Supply\" before June has attachment",
+   "chips": [
+    {
+     "kind": "from"
+    },
+    {
+     "kind": "before"
+    },
+    {
+     "kind": "attachment"
+    }
+   ],
+   "residual": "price"
+  },
+  {
+   "text": "has attachment has attachment",
+   "chips": [
+    {
+     "kind": "attachment"
+    }
+   ],
+   "residual": "",
+   "why": "the same filter twice is one chip, not two"
+  },
+  {
+   "text": "FROM:\"linea supply\"",
+   "chips": [
+    {
+     "kind": "from",
+     "value": "linea supply"
+    }
+   ],
+   "residual": "",
+   "why": "filter words are case-blind"
+  },
+  {
+   "text": "before Junetember",
+   "chips": [],
+   "residual": "before Junetember",
+   "bar_says": "not understood",
+   "why": "a filter word not understood stays as plain words and the bar says so"
+  },
+  {
+   "text": "from",
+   "chips": [],
+   "residual": "from",
+   "why": "a filter word with no value is plain text"
+  },
+  {
+   "text": "attachment",
+   "chips": [],
+   "residual": "attachment",
+   "why": "'has' is part of the filter; the bare noun is a word to search"
+  }
+ ],
+ "typed_cases": [
+  {
+   "text": "from:\"Linea Supply\"",
+   "chips": [
+    {
+     "kind": "from",
+     "value": "Linea Supply"
+    }
+   ],
+   "residual": "",
+   "why": "the colon form is a pill (SPEC A142, A143)"
+  },
+  {
+   "text": "email from consultant",
+   "chips": [],
+   "residual": "email from consultant",
+   "why": "the word from in a sentence stays a word: the owner's picture, a pill 'From c' (SPEC A142)"
+  },
+  {
+   "text": "from Linea Supply has attachment",
+   "chips": [],
+   "residual": "from Linea Supply has attachment",
+   "why": "typed words make no pill; the dropdown offers the person and Has attachment, Tab makes them"
+  },
+  {
+   "text": "before June",
+   "chips": [],
+   "residual": "before June",
+   "why": "a date in words is offered by the dropdown and made a pill by Tab, never by the typing alone"
+  },
+  {
+   "text": "has attachment",
+   "chips": [],
+   "residual": "has attachment",
+   "why": "same: words until Tab"
+  },
+  {
+   "text": "before:2026-06-01",
+   "chips": [
+    {
+     "kind": "before",
+     "value": "2026-06-01"
+    }
+   ],
+   "residual": "",
+   "why": "a day in the colon form is a pill"
+  },
+  {
+   "text": "after:2026-06-01",
+   "chips": [
+    {
+     "kind": "after",
+     "value": "2026-06-01"
+    }
+   ],
+   "residual": ""
+  },
+  {
+   "text": "to:\"Karen Bosch\"",
+   "chips": [
+    {
+     "kind": "to",
+     "value": "Karen Bosch"
+    }
+   ],
+   "residual": "",
+   "why": "To is a pill kind of its own (SPEC A143)"
+  },
+  {
+   "text": "has:attachment",
+   "chips": [
+    {
+     "kind": "attachment",
+     "value": ""
+    }
+   ],
+   "residual": ""
+  },
+  {
+   "text": "price from:\"Linea Supply\" before:2026-06-01 has:attachment",
+   "chips": [
+    {
+     "kind": "from",
+     "value": "Linea Supply"
+    },
+    {
+     "kind": "before",
+     "value": "2026-06-01"
+    },
+    {
+     "kind": "attachment",
+     "value": ""
+    }
+   ],
+   "residual": "price"
+  },
+  {
+   "text": "has:attachment has:attachment",
+   "chips": [
+    {
+     "kind": "attachment",
+     "value": ""
+    }
+   ],
+   "residual": "",
+   "why": "the same filter twice is one pill, not two"
+  },
+  {
+   "text": "FROM:\"linea supply\"",
+   "chips": [
+    {
+     "kind": "from",
+     "value": "linea supply"
+    }
+   ],
+   "residual": "",
+   "why": "filter words are case-blind"
+  },
+  {
+   "text": "before:Junetember",
+   "chips": [],
+   "residual": "before:Junetember",
+   "why": "a colon form whose value is not a day stays words"
+  },
+  {
+   "text": "from",
+   "chips": [],
+   "residual": "from",
+   "why": "a filter word with no value is plain text"
+  }
+ ],
+ "adversarial_queries": [
+  {
+   "name": "empty",
+   "text": ""
+  },
+  {
+   "name": "spaces only",
+   "text": "     "
+  },
+  {
+   "name": "empty quotes",
+   "text": "\"\""
+  },
+  {
+   "name": "unterminated quote",
+   "text": "\"0.84 EUR"
+  },
+  {
+   "name": "quote inside word",
+   "text": "supp\"lier"
+  },
+  {
+   "name": "filter bait only",
+   "text": "from before has attachment"
+  },
+  {
+   "name": "very long",
+   "repeat": "supplier ",
+   "times": 4000
+  },
+  {
+   "name": "unicode and emoji",
+   "text": "quote für Müller éè 📬"
+  },
+  {
+   "name": "control characters",
+   "text": "tab\there\nnewline"
+  },
+  {
+   "name": "query syntax bait",
+   "text": "AND OR NOT * ? ( ) [ ] { } ^ ~ :"
+  },
+  {
+   "name": "bell character inside a word",
+   "text": "quo\u0007te"
+  }
+ ],
+ "embedding": {
+  "query": "supplier price quote spring",
+  "passages": [
+   {
+    "id": "msg-01",
+    "text": "Hi Assem, as discussed, the unit price at 12,000 is 0.84 EUR, delivery in week 4. Please find the signed quote attached."
+   },
+   {
+    "id": "msg-s06",
+    "text": "Our estimate for the brochure print job is eighty-four cents each, delivered in a month."
+   },
+   {
+    "id": "msg-s08",
+    "text": "Here are the photos from the lake on Sunday."
+   }
+  ],
+  "must_rank_above": [
+   [
+    "msg-01",
+    "msg-s08"
+   ],
+   [
+    "msg-s06",
+    "msg-s08"
+   ]
+  ],
+  "long_text_repeat": "The quote for the print run is attached. ",
+  "long_text_times_over_chunk": 200
+ },
+ "attachment_content": {
+  "note": "Per attachment: state indexed | not-downloaded | unreadable; text is what the on-device reading (OCR, scene labels, extraction) would return. warehouse-photo.jpg deliberately holds neither the exact figure 0.84 EUR nor any word of the J2.1 meaning query.",
+  "warehouse-photo.jpg": {
+   "message": "msg-s02",
+   "kind": "image",
+   "state": "indexed",
+   "text": "pallets of brochures, a delivery note reading Q1 brochure · 12,000, a forklift in the aisle",
+   "mime": "image/jpeg",
+   "size_bytes": 184320,
+   "content_text": "pallets of brochures, a delivery note reading Q1 brochure · 12,000"
+  },
+  "scan-notes.pdf": {
+   "message": "msg-s06",
+   "kind": "pdf",
+   "state": "not-downloaded",
+   "text": "heavy matte stock, 170 g, two colours"
+  },
+  "site-plan.dwg": {
+   "message": "msg-s07",
+   "kind": "cad",
+   "state": "unreadable",
+   "text": ""
+  }
+ }
+}

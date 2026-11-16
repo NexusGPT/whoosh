@@ -1,0 +1,38 @@
+import CoreGraphics
+// Science family. bolt and planet: board glyphs, verbatim.
+enum EmblemScience {
+    static let glyphs: [EmblemGlyph] = [
+        EmblemGlyph("bolt", .science,
+            detail: EmblemDrawing([G.f("M13.8 2.2 L4.6 13.6 H11.2 L9.8 21.8 L19.4 9.6 H12.8 Z")], [G.f("M13.8 2.2 L4.6 13.6 H11.2 L12.8 9.6 Z")],
+                                  cut: [G.s("M8.4 12.4 L15.6 10.8", 1.2)]),
+            small: EmblemDrawing([G.f("M14 1.8 L4 13.8 H11 L9.6 22.2 L20 9.4 H13 Z")], [G.f("M14 1.8 L4 13.8 H11 L13 9.4 Z")],
+                                 cut: [G.s("M8 12.6 L16 10.6", 1.7)])),
+        EmblemGlyph("planet", .science,
+            detail: EmblemDrawing([G.c(11.4, 12.6, 6.3)], [G.c(19.4, 4.8, 1.9), G.ellipse(11.4, 12.6, 10.2, 3.4, -22, 1.6)],
+                                  cut: [G.ellipse(11.4, 12.6, 10.2, 3.4, -22, 3.6)]),
+            small: EmblemDrawing([G.c(11.4, 12.6, 7)], [G.c(19.8, 4.4, 2.2), G.ellipse(11.4, 12.6, 10.8, 3.7, -22, 2)],
+                                 cut: [G.ellipse(11.4, 12.6, 10.8, 3.7, -22, 4.4)])),
+        EmblemGlyph("atom", .science,
+            detail: EmblemDrawing([G.ellipse(12, 12, 9.6, 3.8, 0, 1.4), G.ellipse(12, 12, 9.6, 3.8, 60, 1.4), G.ellipse(12, 12, 9.6, 3.8, -60, 1.4)],
+                                  [G.c(12, 12, 2.6), G.c(21.6, 12, 1.4)]),
+            small: EmblemDrawing([G.ellipse(12, 12, 10, 4, 0, 2), G.ellipse(12, 12, 10, 4, 60, 2), G.ellipse(12, 12, 10, 4, -60, 2)], [G.c(12, 12, 3)])),
+        EmblemGlyph("flask", .science,
+            detail: EmblemDrawing([G.f("M9.4 2.6 H14.6 V4.6 H13.6 V9 L19.8 18.4 A2 2 0 0 1 18.1 21.4 H5.9 A2 2 0 0 1 4.2 18.4 L10.4 9 V4.6 H9.4 Z")],
+                                  [G.f("M7.2 14 H16.8 L19.8 18.4 A2 2 0 0 1 18.1 21.4 H5.9 A2 2 0 0 1 4.2 18.4 Z")],
+                                  cut: [G.c(10.6, 17.6, 1.1), G.c(13.8, 16.2, 0.9)], cutsBoth: true),
+            small: EmblemDrawing([G.f("M9 2 H15 V4.4 H14 V8.8 L20.6 18.6 A2.2 2.2 0 0 1 18.8 22 H5.2 A2.2 2.2 0 0 1 3.4 18.6 L10 8.8 V4.4 H9 Z")],
+                                 [G.f("M6.8 13.6 H17.2 L20.6 18.6 A2.2 2.2 0 0 1 18.8 22 H5.2 A2.2 2.2 0 0 1 3.4 18.6 Z")],
+                                 cut: [G.c(11, 17.8, 1.6)], cutsBoth: true)),
+        EmblemGlyph("rocket", .science,
+            detail: EmblemDrawing([G.f("M12 1.8 C15.4 4.4 16.2 8.6 16.2 12.6 V17 H7.8 V12.6 C7.8 8.6 8.6 4.4 12 1.8 Z", rot: 45)],
+                                  [G.f("M7.8 13 L4.6 16.6 V19.6 L7.8 17 Z", rot: 45), G.f("M16.2 13 L19.4 16.6 V19.6 L16.2 17 Z", rot: 45),
+                                   G.f("M9.8 17.6 H14.2 L12 22 Z", rot: 45)],
+                                  cut: [G.f("M12 7.1 A1.9 1.9 0 1 1 12 10.9 A1.9 1.9 0 1 1 12 7.1 Z", rot: 45)]),
+            small: EmblemDrawing([G.f("M12 1 C15.8 3.8 16.8 8.4 16.8 12.6 V17.4 H7.2 V12.6 C7.2 8.4 8.2 3.8 12 1 Z", rot: 45)],
+                                 [G.f("M7.2 12.8 L3.8 16.8 V20.2 L7.2 17.4 Z", rot: 45), G.f("M16.8 12.8 L20.2 16.8 V20.2 L16.8 17.4 Z", rot: 45)],
+                                 cut: [G.f("M12 6.6 A2.4 2.4 0 1 1 12 11.4 A2.4 2.4 0 1 1 12 6.6 Z", rot: 45)])),
+        EmblemGlyph("magnet", .science,
+            detail: EmblemDrawing([G.f("M4 3.4 H9.4 V12 A2.6 2.6 0 0 0 14.6 12 V3.4 H20 V12 A8 8 0 0 1 4 12 Z")], [G.r(4, 3.4, 5.4, 3.6, 0.8), G.r(14.6, 3.4, 5.4, 3.6, 0.8)]),
+            small: EmblemDrawing([G.f("M3.2 2.6 H9.4 V12 A2.6 2.6 0 0 0 14.6 12 V2.6 H20.8 V12 A8.8 8.8 0 0 1 3.2 12 Z")], [G.r(3.2, 2.6, 6.2, 4.2, 0.8), G.r(14.6, 2.6, 6.2, 4.2, 0.8)])),
+    ]
+}

@@ -1,0 +1,173 @@
+{
+  "item": "7604cdeb",
+  "full_id": "7604cdeb-817c-4f60-ae46-39e012af7442",
+  "title": "Connect calendars as a source for replies",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingscalendars-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL|COULD-NOT-DRIVE",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/settingscalendars-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "selftest: FAILED|NOT RED",
+      "timeout_s": 120
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_reply_work the_calendars_the_shell_pushes_start_off_and_once_on_their_events_reach_the_writer",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_replies_settings the_shell_pushes_calendars_reads_which_are_enabled_and_the_sources_pane_serves_their_real_names",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p reply-sources --test calendar_sync",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_reply_work calendar",
+      "pass": "test result: ok\\. 4 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p reply-retrieval --test calendar_scope",
+      "pass": "test result: ok\\. 2 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "on the installed build on this Mac: Settings, Agendas, press the ask button, answer the macOS calendar prompt (read access), switch one calendar on in Sources, then read the pane rows count only",
+      "pass": "calendars listed with names; no event written (the Calendar app shows no new event)"
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_calendar_free",
+      "pass": "test result: ok\\. 7 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"contracts::constants::REPLY_WORK_START_MIN\\|contracts::constants::REPLY_WORK_END_MIN\\|contracts::constants::REPLY_FREE_MIN_MIN\" core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "pass": "^3$",
+      "fail": "^[0-2]$",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/write_draft.rs",
+      "find": "let calendar = if on.is_empty() { NO_CALENDAR.to_string() } else {",
+      "replace": "let calendar = if false { NO_CALENDAR.to_string() } else {",
+      "proof": 5,
+      "red": "no calendar|FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/write_draft.rs",
+      "find": "if events.is_empty() { NO_EVENT.to_string() }",
+      "replace": "if false { NO_EVENT.to_string() }",
+      "proof": 5,
+      "red": "no_calendar_connected_tells_the_writer.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/sync_sources.rs",
+      "find": "let on: Vec<String> = rows.iter().filter(|r| r.enabled).filter_map(",
+      "replace": "let on: Vec<String> = rows.iter().filter(|r| true || r.enabled).filter_map(",
+      "proof": 5,
+      "red": "only_the_events_of_a_selected_calendar.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/reply-retrieval/src/usecases/search_scope.rs",
+      "find": "for cal in sources.calendars.iter().filter(|c| c.enabled) {",
+      "replace": "for cal in sources.calendars.iter().filter(|c| true || c.enabled) {",
+      "proof": 6,
+      "red": "a_selected_calendars_event.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/reply-retrieval/src/usecases/search_scope.rs",
+      "find": "if scope == RetrievalScope::AllAccounts || mine {",
+      "replace": "if true {",
+      "proof": 6,
+      "red": "the_wall_keeps.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": "Some(last) if s <= last.1 =>",
+      "replace": "Some(last) if false =>",
+      "proof": 8,
+      "red": "two_overlapping_events_give_one_busy_interval.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": "Some((day_start(first, off), day_start(last + 1, off)))",
+      "replace": "Some((e.start_ms, e.end_ms))",
+      "proof": 8,
+      "red": "an_all_day_event_is_busy_for_its_whole_day.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": ".filter(|e| !e.declined).filter_map",
+      "replace": ".filter(|e| true).filter_map",
+      "proof": 8,
+      "red": "a_declined_event_is_not_busy.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": "let hi = (base + WORK_END_MIN * MIN_MS).min(horizon);",
+      "replace": "let hi = (base + WORK_START_MIN * MIN_MS).min(horizon);",
+      "proof": 8,
+      "red": "no_event_gives_the_whole_working_day_free.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": "(!*with, e.start_ms)",
+      "replace": "(false, e.start_ms)",
+      "proof": 8,
+      "red": "an_event_with_the_correspondent_comes_first.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": "on.contains(&e.calendar_id)",
+      "replace": "true || on.contains(&e.calendar_id)",
+      "proof": 8,
+      "red": "a_calendar_switched_off_contributes_nothing.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": "spans.sort();",
+      "replace": "spans.sort(); std::thread::sleep(std::time::Duration::from_millis(80));",
+      "proof": 8,
+      "red": "the_computation_stays_under_50_ms_on_500_events.*FAILED|panicked"
+    },
+    {
+      "file": "core/crates/engine/src/replies_work/usecases/calendar_free.rs",
+      "find": "contracts::constants::REPLY_FREE_MIN_MIN as i64;",
+      "replace": "30;",
+      "proof": 9,
+      "red": "^[0-2]$"
+    }
+  ],
+  "gap": "Still missing: (5) the real EventKit read-only path (EventKitCalendarAccess.swift) is run by no check: it needs the owner's answer to the macOS calendar prompt on this Mac (owner text below); no test ever asks macOS for calendar access. Also not carried by the contract's CalendarEvent (core/crates/contracts/src/reply_ai_d21.rs:25), so read by guess or not at all in calendar_free.rs: the all-day flag (guessed from local midnights, looks_all_day), a declined or cancelled status (declined is always false), the event's own time zone (every time is read in the owner's offset, the instants are exact). Lead to add those three fields to the contract if wanted. FIX-CORE (docs/lanes/fix-core.md): the ledger rows REPLY_WORK_START_MIN 540, REPLY_WORK_END_MIN 1080 and REPLY_FREE_MIN_MIN 30 are in docs/CONSTANTS.md and calendar_free.rs reads the generated constants (proof 9 counts the three reads). The three contract fields stay a finding: persisting them needs a store migration the fix-core lane may not make (the exact migration and contract change are in docs/lanes/fix-core.md).",
+  "owner": "Answer the macOS calendar prompt once on your Mac (Settings, Agendas, ask button, Allow read access): the real EventKit read cannot be proved by a test (lead proof, proof 7). Free and busy times are built: do you want other working hours than 09:00-18:00 Monday to Friday, or a shortest free stretch other than 30 minutes?",
+  "notes": "settingscalendars-check prints '32 checks, 0 failed, 0 not judged' and a MUTANTS table with 'RED on this mutant' per case (checks/settingscalendars-check.py, r83 log), no per-case pass line; so proof 0 is the total. Its --selftest ends with 'selftest: OK (N mutants not red)' (checks/settingscalendars-check.py:803). EventKit: Sources/Features/SettingsCalendarsMac/EventKitCalendarAccess.swift:11 EKEventStore, :25 requestFullAccessToEvents. Core: core/crates/engine/src/replies_work/usecases/write_draft.rs:22-48 (calendar variable), sync_sources.rs:52 (calendars), contract Command::SyncReplyCalendars (core/crates/contracts/src/command.rs:356). gap-replies built: engine_reply_work.rs no_calendar_connected_tells_the_writer_not_to_invent_a_time_and_a_calendar_without_events_says_so, only_the_events_of_a_selected_calendar_reach_the_writer_and_none_of_an_unselected_one (a fake calendar source: the events are handed over by SyncReplyCalendars, never macOS Calendar), the_calendar_is_no_accounts_own_so_a_second_accounts_thread_reads_the_selected_calendar_too; reply-retrieval/tests/calendar_scope.rs a_selected_calendars_event_reaches_the_writer_and_an_unselected_calendars_event_never_does, the_wall_keeps_another_accounts_mail_out_while_the_selected_calendar_stays_in. The wall: calendars belong to no account (contracts sources_in_scope; search_scope.rs header), another account's MAIL is behind the wall under 'this account'; that mail wall is proved over a scripted index in reply-retrieval, not over the engine's indexed mail. gap-calendar built (3) and (4): core/crates/engine/src/replies_work/usecases/calendar_free.rs (busy(), free(), free_busy_text(), event_lines(), is_with(), only_enabled(), looks_all_day()) called from write_draft.rs `calendar` variable; proof 8 is core/crates/engine/tests/engine_calendar_free.rs (7 tests, each prints `PASS <name>`; the 50 ms test prints its time). Existing proofs 2 to 5 still hold: the `let calendar = if on.is_empty()` and `if events.is_empty() { NO_EVENT` lines are unchanged and the no-event text is followed by the free times. State stays gap only for (5), which is owner text."
+}

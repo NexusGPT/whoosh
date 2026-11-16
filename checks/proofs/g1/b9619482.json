@@ -1,0 +1,84 @@
+{
+  "item": "b9619482",
+  "full_id": "b9619482-8a39-465c-9a9a-ebb219a54ad6",
+  "title": "Build fn-embedding",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "goodEmbedderKeepsTheContract,theCheckerGoesRedOnEveryBentEmbedder",
+      "pass": "passed",
+      "fail": "failed|issue",
+      "timeout_s": 600
+    },
+    {
+      "kind": "unit",
+      "run": "realEmbedderReturnsVectorsOfTheLedgerDimension,realEmbedderKeepsTheWholeContract",
+      "pass": "Test realEmbedderReturnsVectorsOfTheLedgerDimension\\(\\) passed",
+      "fail": "failed|skipped|not judged",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"^| EMBED_MS_MAC\\|^| EMBED_MS_IPHONE\" docs/CONSTANTS.md",
+      "pass": "^2$",
+      "fail": "^[01]$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "unit",
+      "run": "realEmbedderStaysUnderTheMemoryBudgetWhileEmbedding",
+      "pass": "Test realEmbedderStaysUnderTheMemoryBudgetWhileEmbedding\\(\\) passed",
+      "fail": "failed|skipped|not judged",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 perf/embed-latency.py {bundle}",
+      "pass": "(?s)PASS embed-query-median: median [0-9.]+ ms.*PASS embed-document-chunk-median: median [0-9.]+ ms.*\\d+ checks, 0 failed",
+      "fail": "OVER |Traceback|not judged: the run stopped",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/embed-latency.py --selftest",
+      "pass": "(?s)ok   BROKEN COPY keeps the cold call.*ok   BROKEN COPY judges the whole batch call.*ok   BROKEN COPY takes the mean.*\\d+ checks, 0 failed",
+      "fail": "BAD |Traceback",
+      "timeout_s": 120
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/Embedding/MatryoshkaVector.swift",
+      "find": "Array(full.prefix(dimension))",
+      "replace": "Array(full.prefix(dimension + 1))",
+      "proof": 1,
+      "red": "realEmbedderReturnsVectorsOfTheLedgerDimension.*failed"
+    },
+    {
+      "file": "Sources/Features/Embedding/GemmaEmbedder.swift",
+      "find": "public func dimension() -> UInt32 { UInt32(outputDimension) }",
+      "replace": "public func dimension() -> UInt32 { UInt32(outputDimension + 1) }",
+      "proof": 1,
+      "red": "realEmbedderReturnsVectorsOfTheLedgerDimension.*failed"
+    },
+    {
+      "file": "Tests/Unit/EmbeddingTests.swift",
+      "find": "#expect(peak < WhooshConstants.RSS_MODEL_MAX_MB,",
+      "replace": "#expect(peak < 1,",
+      "proof": 3,
+      "red": "realEmbedderStaysUnderTheMemoryBudgetWhileEmbedding.*failed"
+    },
+    {
+      "file": "perf/embed-latency.py",
+      "find": "def judge(calls, budget, drop_cold=True, per_chunk=True, middle=statistics.median, load=0.0):",
+      "replace": "def judge(calls, budget, drop_cold=True, per_chunk=False, middle=statistics.median, load=0.0):",
+      "proof": 5,
+      "red": "BAD  BROKEN COPY judges the whole batch call|BAD  a chunk median at the budget is OVER|BAD  both medians under the budget pass"
+    }
+  ],
+  "gap": null,
+  "owner": "Confirm that the memory finish line is the ledger's RSS_MODEL_MAX_MB 2200 and not the 200 MB written before the model was chosen (the saved peak 933.7 MB is under 2200).",
+  "notes": "Proof 0: Tests/Unit/EmbeddingTests.swift:102-103 goodEmbedderKeepsTheContract and :106-120 theCheckerGoesRedOnEveryBentEmbedder (stand-in embedders, the contract checker including WrongDimension at line 84 which has dimension dim-1: proves the checker catches a wrong dimension; no weights needed). Proof 1: :137-144 realEmbedderReturnsVectorsOfTheLedgerDimension asserts every vector of the fixture passages has EMBED_DIM (512) values (the '768-capable truncated to EMBED_DIM' claim), and :147-150 realEmbedderKeepsTheWholeContract; both are `.enabled(if: weightsPresent)`: without the EmbeddingGemma weights in the support folder they are SKIPPED and a skip is not a pass, so the fail regex includes 'skipped'; the lead says whether this Mac has the weights (I could not look: reading Application Support is not allowed to me). Proof 2 reads 0 now (the rows do not exist) and goes green when the constants are written. Mutants need an app/test rebuild; both break the dimension, red only on proof 1 (weights present). EmbeddingTests.swift has no RSS or latency assertion (grep for 'rss', 'median', 'ms' finds none). | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). No proof of this file runs on the simulator: the iPhone latency has no check to put through the rig. | OLD GAP (before lane gap-states, 2026-11-12): M for the Mac latency claim; the iPhone latency claim is outside (a real iPhone). Built: Tests/Unit/EmbeddingTests.swift realEmbedderStaysUnderTheMemoryBudgetWhileEmbedding (weights-gated, samples Footprint.physicalMB every 20 ms over three embeds of the fixture passages, #expects the peak under WhooshConstants.RSS_MODEL_MAX_MB; the check should read RSS_MODEL_MAX_MB 2200, not the 200 MB written before the model was chosen: the saved peak 933.7 MB is under it). Still missing: (1) the rows EMBED_MS_MAC (100) and EMBED_MS_IPHONE (not yet measured) were added to docs/CONSTANTS.md by fix-core and EMBED_MS_MAC is generated (WhooshConstants.EMBED_MS_MAC): `realEmbedderEmbedsAChunkUnderTheMacBudget` (10 embeds of one fixture passage, median under that constant) can now be written, in Tests/Unit/EmbeddingTests.swift, not this lane's file (Mac measured median 74 ms, p95 123 ms on a debug build, no release figure); (2) iPhone latency: EMBED_MS_IPHONE is not measured and no check or test measures the phone's embedding time; the simulator runs on this Mac's CPU, so a simulator figure is not an iPhone figure: the measurement needs a real iPhone (outside: a real iPhone), and until then the row stays unmeasured. | perf-archive round 6 (2026-11-12): the Mac latency measure is built without a Swift test: Sources/Features/Embedding/EmbedTimes.swift keeps each call into GemmaEmbedder (embedQuery, embedTitled, embedDocumentBatch: two clock reads around the existing call, GemmaEmbedder.swift) in a ring of 64, served by `measure mac-main.interaction.embed` (Sources/App/InteractionProbe.swift answer). perf/embed-latency.py launches the hidden copy on the fixture core with the real model (--weights, else WHOOSH_EMBED_WEIGHTS, else rig/embedding/weights found upward from the repo, perf/footprint.py find_weights), runs 11 meaning searches with their own words, drops the first call (the model's load) and judges the median of warm query calls and of warm document calls per chunk (ms / texts) under EMBED_MS_MAC; the worst is printed. Proof 4 is the lead's run; proof 5 its selftest (10 cases, three broken copies: keeps the cold call, judges the whole batch, takes the mean). The ledger row says a release build: a Debug run is judged and its stamp printed. If the default corpus gives fewer than 5 warm document batches the chunk line reads NOT JUDGED: rerun with --fixture-load <a larger corpus>. After the Mac proofs pass, what is left is EMBED_MS_IPHONE (a real iPhone): outside."
+}

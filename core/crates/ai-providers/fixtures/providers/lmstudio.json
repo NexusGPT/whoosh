@@ -1,0 +1,114 @@
+{
+  "provider": "lmstudio",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "key": "lm-FIXTURE-not-a-real-key-0001",
+  "bad_key": "lm-FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "list_models": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "http://localhost:1234/v1/models",
+          "headers": {},
+          "absent": [
+            "Authorization"
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "object": "list",
+            "data": [
+              {
+                "id": "fixture-qwen-7b",
+                "object": "model",
+                "owned_by": "organization_owner"
+              },
+              {
+                "id": "fixture-embed-nomic",
+                "object": "model",
+                "owned_by": "organization_owner"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "list_models_with_key": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "http://localhost:1234/v1/models",
+          "headers": {
+            "Authorization": "Bearer lm-FIXTURE-not-a-real-key-0001"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "object": "list",
+            "data": [
+              {
+                "id": "fixture-qwen-7b",
+                "object": "model",
+                "owned_by": "organization_owner"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "GET",
+          "url": "http://localhost:1234/v1/models",
+          "headers": {
+            "Authorization": "Bearer lm-FIXTURE-not-a-real-key-REFUSED"
+          }
+        },
+        "response": {
+          "status": 401,
+          "body": {
+            "error": {
+              "message": "Invalid API key.",
+              "type": "invalid_request_error"
+            }
+          }
+        }
+      }
+    ],
+    "complete": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "http://localhost:1234/v1/chat/completions",
+          "headers": {},
+          "absent": [
+            "Authorization"
+          ],
+          "body_contains": [
+            "\"model\":\"fixture-qwen-7b\""
+          ]
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "id": "chatcmpl-fixture",
+            "object": "chat.completion",
+            "choices": [
+              {
+                "index": 0,
+                "finish_reason": "stop",
+                "message": {
+                  "role": "assistant",
+                  "content": "Thanks Marta, Friday works for me."
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

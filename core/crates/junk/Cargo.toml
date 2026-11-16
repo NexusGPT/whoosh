@@ -1,0 +1,10 @@
+[package]
+name = "junk"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The local spam filter behind the Spam folder: the SpamBayes method (tokeniser, Robinson smoothing, chi-square combining), cheap header rules, and the person's blocks. Pure functions over a message; no I/O, no network, no clock."
+
+# No dependencies, on purpose (base decision in docs/lanes/core-junk.md): the whole crate is std only,
+# so it adds no download, no licence row and no compile time to the workspace.
+[dependencies]

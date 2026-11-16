@@ -1,0 +1,70 @@
+{
+  "item": "d9e9f32a",
+  "full_id": "d9e9f32a-059e-4510-a342-1f31fc86e6ac",
+  "title": "Add Mute, Unsubscribe and Mark not done",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_actions",
+      "pass": "test result: ok\\. 14 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p store --test engine_actions",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p actions --test par_actions",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-keys.py",
+      "pass": "(?s)\\A(?=.*par-keys-list/shift-m-mute\\s+pass )(?=.*par-keys-list/shift-e-mark-not-done\\s+pass )(?=.*par-keys-reader/cmd-u-unsubscribe\\s+pass )",
+      "fail": "par-keys-(list/shift-m-mute|list/shift-e-mark-not-done|reader/cmd-u-unsubscribe)\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-keys.py --selftest",
+      "pass": "par-keys selftest: green \\(0 problems\\)",
+      "fail": "STILL GREEN|Traceback",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/store/src/delta10.rs",
+      "find": "self.set_muted(&members, on)?;",
+      "replace": "self.set_muted(message_ids, on)?;",
+      "proof": 0,
+      "red": "mute_a_thread_then_its_next_mail_arrives_read_and_muted_through_the_real_sync \\.\\.\\. FAILED|muting_one_message_mutes_its_whole_thread_and_nothing_else_and_unmuting_lifts_it \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/unsubscribe.rs",
+      "find": "match check_unsubscribe(method(store, message_id, plain_loopback), done)? {",
+      "replace": "match check_unsubscribe(method(store, message_id, plain_loopback), false)? {",
+      "proof": 0,
+      "red": "unsubscribe_one_click_posts_once_to_the_list_and_a_second_try_is_refused_without_a_second_post \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/unsubscribe.rs",
+      "find": "post_one_click(&wire_url(&url, plain_loopback))?,",
+      "replace": "{ let _ = post_one_click(&wire_url(&url, plain_loopback)); },",
+      "proof": 0,
+      "red": "a_refused_one_click_is_refused_in_the_servers_words_and_marks_nothing \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) ⇧M mutes a thread (core flag, muted view): core/crates/actions/src/usecases/mute.rs, core/crates/engine/src/mute.rs, store core/crates/store/src/delta10.rs:212 (members = the whole thread); judged by core/crates/engine/tests/engine_actions.rs:103 mute_a_thread_then_its_next_mail_arrives_read_and_muted_through_the_real_sync, :134 mute_refuses_an_unknown_message_and_writes_nothing; core/crates/store/tests/engine_actions.rs:28 muting_one_message_mutes_its_whole_thread_and_nothing_else_and_unmuting_lifts_it; core/crates/actions/tests/par_actions.rs:87 mute_labels_and_archives_the_whole_thread_and_unmute_lifts_only_the_label, :99 a_refused_mute_leaves_the_thread_in_the_inbox_with_no_label; the key: Sources/Features/Shortcuts/KeyPreset.swift:155 (⇧M mute) and the driven case par-keys-list/shift-m-mute (checks/parity/par-keys.py:544-548: press ⇧M on msg-06, read `message/msg-06/muted` true); the muted view: key sequence G M (KeyPreset.swift:143 go-muted). (2) ⌘U unsubscribes through List-Unsubscribe, one-click when offered, else the mail link, after one confirm: core/crates/engine/src/unsubscribe.rs:74 post_one_click and :119-120 (OneClick posts, MailLink queues one outbox entry); engine_actions.rs:238 unsubscribe_one_click_posts_once_to_the_list_and_a_second_try_is_refused_without_a_second_post, :257 a_refused_one_click_is_refused_in_the_servers_words_and_marks_nothing, :274 a_mail_link_queues_one_outbox_entry_with_the_headers_subject_and_sends_no_post, :295 a_web_page_is_left_to_the_ui_a_message_with_no_header_is_refused_and_an_unknown_message_is_not_found; par_actions.rs:129, :144; the confirm: par-keys-reader/cmd-u-unsubscribe (par-keys.py:833-837: ⌘U in the reader sets `mac-main.reader.unsubscribe` pending, ask first). (3) ⇧E returns a thread from Archive: KeyPreset.swift:154 (⇧E mark-not-done); core/crates/engine/tests/engine_actions.rs:146 unarchive_returns_the_messages_to_the_inbox_and_the_next_sync_does_not_put_them_back, :177 unarchive_clears_the_archived_flag_refuses_an_unknown_id_and_touches_nothing_else; core/crates/engine/tests/engine_act_r6.rs:130 shift_e_on_the_archive_views_row_returns_it_to_the_inbox_locally_and_on_the_server; store engine_actions.rs:62; driven par-keys-list/shift-e-mark-not-done (par-keys.py:502-512). (4) 'nothing is sent while no real account exists': engine_actions.rs:313 a_one_click_url_is_posted_to_only_by_a_plain_loopback_core_and_only_on_this_macs_own_address (the POST goes to a TcpListener of the test file on 127.0.0.1; a core that is not plain-loopback never posts). The case names of par-keys are built from the binding label and command (slug_of, par-keys.py:114-127; the case label is '<step id>/<slug>', printed by print_cases at :1570 as 'name  pass|fail|unjudged  detail'). (5) 'mutants red': three of the lane's eight single-edit mutants (docs/lanes/engine-actions.md:15-26; each find string occurs once at 0aa1558e); the others are in item ab649850. par-actions.py (checks/parity/par-actions.py:14-37) also holds a mutant table for mute (usecases/mute.rs `let members = ctx.thread_member_ids(&message_ids)?;`) and list-unsubscribe, run as `python3 checks/parity/par-actions.py --selftest` which runs cargo itself (not used here: it compiles). The reader's finding 'no core test run and no mutants' is an evidence gap: the tests and mutant tables exist; proofs 0 to 4 are the first run at this commit."
+}

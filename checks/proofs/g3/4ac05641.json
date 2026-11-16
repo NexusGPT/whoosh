@@ -1,0 +1,51 @@
+{
+  "item": "4ac05641",
+  "full_id": "4ac05641-5b34-4746-835e-db74765522f5",
+  "title": "Enter in the search field searches",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "\\d+ checks, 0 failed, \\d+ not judged",
+      "fail": "FAIL [^\\n]*(par-real-return|par-door-return-after-typing-launches-the-search|par-enter-launches-what-was-typed)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-real-return-in-the-field-launches-the-typed-words +pass",
+      "fail": "par-real-return-in-the-field-launches-the-typed-words +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "par-real-return-from-the-list-opens-the-reply +pass",
+      "fail": "par-real-return-from-the-list-opens-the-reply +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ gap checks, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SearchMac/SearchField.swift",
+      "find": "                    .onSubmit { model.claim(); _ = model.enter() }   // Return typed IN the field is always the search's: never the list's Enter (reply), even if the field had let go of the keys\n                    // Real keys: the shell's monitor (ChordKit.handle) hands Down, Up, Tab and Return to a text field that has the cursor, so the\n                    // field itself must send them to the search. Each takes the keys first: a field with the cursor is the search's, whatever released.\n                    .onKeyPress(.downArrow) { model.claim(); return model.move(1) ? .handled : .ignored }\n                    .onKeyPress(.upArrow) { model.claim(); return model.move(-1) ? .handled : .ignored }\n                    .onKeyPress(.tab) { model.claim(); _ = model.tab(); return .handled }   // never moves the cursor out of the field\n                    .onKeyPress(.return) { model.claim(); return model.enter() ? .handled : .ignored }",
+      "replace": "                    .onSubmit { }   // Return typed IN the field is always the search's: never the list's Enter (reply), even if the field had let go of the keys\n                    // Real keys: the shell's monitor (ChordKit.handle) hands Down, Up, Tab and Return to a text field that has the cursor, so the\n                    // field itself must send them to the search. Each takes the keys first: a field with the cursor is the search's, whatever released.\n                    .onKeyPress(.downArrow) { model.claim(); return model.move(1) ? .handled : .ignored }\n                    .onKeyPress(.upArrow) { model.claim(); return model.move(-1) ? .handled : .ignored }\n                    .onKeyPress(.tab) { model.claim(); _ = model.tab(); return .handled }   // never moves the cursor out of the field\n                    .onKeyPress(.return) { .ignored }",
+      "proof": 1,
+      "red": "par-real-return-in-the-field-launches-the-typed-words +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Built in lane gap-search-cases. checks/parity/par-searchmac.py: case par-real-return-in-the-field-launches-the-typed-words (real_return_in_field, J2.1 step 'Return in the field runs the typed words'): the list's last row holds the keys, the socket's `key` opens the search (as par-keys.py:1416 does), the letters of 'hello' and Return are REAL key events (`keyevent`, KeyEventVerb.swift), the bar must say launched true with the words and the surface mac-search, and rows mac-main.quickreply.field must be empty; it is NOT JUDGED when the field has no cursor or the real letters did not land. Its positive control par-real-return-from-the-list-opens-the-reply: the same real Return with the list holding the keys opens the quick reply (Commands.enter), so the absence above means the field took the key. The mutant is ONE multi-line break of SearchField.swift lines 39 to 45 (the field's onSubmit AND onKeyPress(.return)): each alone stays green because the field has both routes. ⌘K is sent by the socket's `key`, not as a real event: the item is Enter in the field. par-searchmac.py main now prints one line per judged case (print_cases). Self-test model: GapModel (mutants return-ignored-in-field, return-reaches-the-list, list-return-dead). Case line numbers: grep -n 'REAL_CASES' checks/parity/par-searchmac.py."
+}

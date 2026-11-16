@@ -1,0 +1,14 @@
+# A signature: a closing plus the sender's name plus contact details (two independent signals at least). Folded behind the dots.
+subject: Quote for the shelves
+sender: Hugo Bernard
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 SIGNATURE collapse
+authored: The quote for the oak shelves is attached; the price holds until the end of the month.
+--- text
+The quote for the oak shelves is attached; the price holds until the end of the month.
+
+Best regards,
+Hugo Bernard
+Bernard Joinery
++33 6 12 34 56 78

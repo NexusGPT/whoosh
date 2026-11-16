@@ -1,0 +1,12 @@
+[package]
+name = "agents"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh agents: the runtime behind Ask my inbox, the built-in Writer and approved proposals. An agent is the actions it may take, in words; the model is offered only the tools those actions name, answers cite the mail it read, a proposal changes nothing until the owner approves it, a provider is asked about once before mail leaves the device, and a loop stops at AGENT_MAX_STEPS."
+
+[dependencies]
+contracts = { workspace = true }
+# The provider port (CompleteText) and its request shape; no transport is enabled here.
+ai-providers = { path = "../ai-providers" }
+serde_json = "1"

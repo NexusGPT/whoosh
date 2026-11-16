@@ -1,0 +1,45 @@
+{
+  "item": "d212170b",
+  "full_id": "d212170b-d1c1-49f6-a902-8930e95a56dd",
+  "title": "Bring 20 mail moves under the frame budget",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-reader.py --selftest",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "NOT RED|NO MUTANT|RED on the model",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "read the one-minute load (uptime) just before the hidden run: it must be under PERF_LOAD_MAX 12 (docs/CONSTANTS.md:43), else the case is NOT JUDGED and nothing is proved",
+      "pass": "load averages: ([0-9]\\.|1[01]\\.)[0-9]+ "
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-reader.py",
+      "pass": "^[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL par-reader-a129-nav/20-moves-keep-every-turn-under-the-frame-budget|NOT JUDGED par-reader-a129-nav/20-moves",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "read the results file par-reader writes (_captures/results/par-reader/, or $WHOOSH_RESULTS_DIR, *.results.jsonl) and take the line of the case",
+      "pass": "\"case\": \"20-moves-keep-every-turn-under-the-frame-budget\", \"verdict\": \"PASS\""
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-reader.py",
+      "pass": "par-reader-a129-nav/20-moves-keep-every-turn-under-the-frame-budget +(pass|fail) ",
+      "fail": "NOT JUDGED",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "14 Nov 2026, the lead: the cause is named with a sample and file:line (the finish line's second way). Evidence in _captures/perf-moves-main181/: sample-main180.txt and sample-main181.txt (`sample <pid> 9 1` over twenty paced moves of the hidden test copy), sample-summary.txt, par-reader-main180-moves.txt and par-reader-main181-moves.txt (the check's own lines, machine load 10.1 and 10.9). (1) Sources/Features/InboxList/InboxListView.swift row(): the focus fill's key and animation kind were in every row's equality key, so a one-row move built every row on screen: 33 row bodies in the key frame. Fixed in 6b52c4853: 5 on main181 and main182 (three runs); key frame update, median, 15.0 -> 11.4 ms on main181. The count of turns over 16 ms is not a stable figure and shows no gain: 31 on main180 (load 10.1); with the fix 15 (main181, load 10.9), 42 (main182, load 13.8) and 29 (main182, load 7.3): those turns are the settle turn of cause 2, which this fix does not touch. Case 20-moves-rebuild-only-the-rows-that-change (bound 6). (2) The 15 turns left are the settle turn: Sources/Features/Reader/ReaderFocus.swift settle() sets the shown mail, the pane is evaluated, Sources/Features/MessageBody/MessageBodyHost.swift:57 builds the body 1 ms later, a timer already due when the header's turn ends, so the header's build and the body's build run as one busy period of 17 to 34 ms holding two commits; MessageBodyView.swift:494 hands the page to the web view in it. The sample: SwiftUI update 1006 and AppKit layout 619 of 1600 busy ms, WebKit 6. Not the earlier reading (loadHTMLString). (3) ReaderPerf.start kept the previous recording's clock: one false turn of 120,247 ms on main180, fixed in 6b52c4853. The frame case itself stays red (15 > 0): a busy period that holds two commits may drop no frame, and the hidden copy has no display to tell; an earlier body build delay was tried on paper and dropped, it would only move the meter. Earlier gap text: L. The cause of the slow turns is not named. Left: (2) the fix, after a main-thread sample of the twenty paced moves (Instruments or `sample <pid>`); reading points at Sources/Features/MessageBody/MessageBodyView.swift:386 and :394 `loadHTMLString` and the measure after it (evaluateJavaScript answers re-enter the main actor), and MessageBodyDocument.swift:51 NSRegularExpression over the whole HTML (line numbers moved since the first gap): a reading, not a measurement. The case itself prints a line (par-reader.py:532) and was NOT JUDGED on main97 (_captures/lead/main97/proofs-hidden/again-021.log: load 12.74 over PERF_LOAD_MAX 12); main97 interaction.log shows the open action's `update` pass at median 21.23 ms (see 8736d094)."
+}

@@ -1,0 +1,43 @@
+{
+ "domain": "blocked-m365.example.test",
+ "address": "assem.fixture@blocked-m365.example.test",
+ "password": "fixture-password",
+ "source": "autodiscover",
+ "trace": [
+  {
+   "id": "ispdb",
+   "outcome": "miss"
+  },
+  {
+   "id": "autoconfig",
+   "outcome": "miss"
+  },
+  {
+   "id": "srv",
+   "outcome": "miss"
+  },
+  {
+   "id": "autodiscover",
+   "outcome": "found"
+  }
+ ],
+ "config": {
+  "imapHost": "outlook.office365.com",
+  "imapPort": 993,
+  "imapSecurity": "ssl",
+  "smtpHost": "smtp.office365.com",
+  "smtpPort": 587,
+  "smtpSecurity": "starttls",
+  "username": "assem.fixture@blocked-m365.example.test",
+  "authMethod": "oauth2"
+ },
+ "tenant": "Blocked Test Tenant",
+ "coming_soon": "Sign in with Microsoft: coming soon",
+ "validates": false,
+ "case": "tenant-blocks-password-imap",
+ "refusal_words_contain": [
+  "password",
+  "coming soon"
+ ],
+ "reopens": "manual"
+}

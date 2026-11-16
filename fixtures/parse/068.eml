@@ -1,0 +1,41 @@
+From: Quill Docs <hello@example.org>
+To: Assem Example <assem@example.org>
+Subject: Your sign-in link
+Date: Tue, 03 Nov 2026 01:53:00 +0000
+Message-ID: <40c686eb9873fbae@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============3695097216207491524=="
+
+--===============3695097216207491524==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Confirm my address: https://auth.example.org/confirm-email/922f1fd01d3e44b4ac=
+42a4e4
+
+The link works once.
+
+--===============3695097216207491524==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5R
+dWlsbCBEb2NzPC90aXRsZT48c3R5bGU+Ym9keXtmb250LWZhbWlseTpIZWx2ZXRpY2EsQXJpYWws
+c2Fucy1zZXJpZjtjb2xvcjojMjIyfS5jb2Rle2ZvbnQtc2l6ZToyOHB4fTwvc3R5bGU+PC9oZWFk
+Pjxib2R5Pjx0YWJsZSB3aWR0aD0iMTAwJSIgY2VsbHBhZGRpbmc9IjAiIGNlbGxzcGFjaW5nPSIw
+Ij48dHI+PHRkIGFsaWduPSJjZW50ZXIiPjxpbWcgd2lkdGg9IjEiIGhlaWdodD0iMSIgc3R5bGU9
+ImRpc3BsYXk6bm9uZSIgc3JjPSJodHRwOi8vY2RuLmV4YW1wbGUubmV0L2Jhbm5lci8yZDliZmM2
+Ny5wbmciIHNyY3NldD0iaHR0cDovL2Nkbi5leGFtcGxlLm5ldC9iYW5uZXIvMmQ5YmZjNjcucG5n
+IDJ4Ij48aDI+UXVpbGwgRG9jczwvaDI+PHA+Q2xpY2sgdGhlIGJ1dHRvbiBiZWxvdyB0byBmaW5p
+c2guIFRoZSBsaW5rIHdvcmtzIG9uY2UuPC9wPjxwPjxhIGhyZWY9Imh0dHBzOi8vYXV0aC5leGFt
+cGxlLm9yZy9jb25maXJtLWVtYWlsLzkyMmYxZmQwMWQzZTQ0YjRhYzQyYTRlNCIgc3R5bGU9ImJh
+Y2tncm91bmQ6IzA2Yztjb2xvcjojZmZmIj5Db25maXJtIG15IGFkZHJlc3M8L2E+PC9wPjxwIHN0
+eWxlPSJmb250LXNpemU6MTFweDtjb2xvcjojODg4Ij5Zb3UgcmVjZWl2ZSB0aGlzIGJlY2F1c2Ug
+b2YgeW91ciBhY2NvdW50LiA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0L3Vuc3Vic2NyaWJl
+P3U9MGQ0ZjA2Ij5VbnN1YnNjcmliZTwvYT4gfCA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0
+L3ByaXZhY3kiPlByaXZhY3k8L2E+PC9wPjwvdGQ+PC90cj48L3RhYmxlPjwvYm9keT48L2h0bWw+
+DQo=
+
+--===============3695097216207491524==--

@@ -1,0 +1,12 @@
+[package]
+name = "netguard"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The process-wide outbound guard of a hidden test copy (owner: \"nothing leaves this Mac except the relay\"): every dialer and resolver of the core asks `outbound_allowed(host)` before it resolves or connects. A home of its own until the contract crate takes it (docs/lanes/engine-act-r6.md, round 5)."
+
+[dependencies]
+contracts = { workspace = true }
+# rig-net-rust (audit r77, gap 4): the parser reqwest uses, so the guard decides on the host the client dials. Already in Cargo.lock
+# (url 2.5.8, through reqwest); no new crate.
+url = "2.5"

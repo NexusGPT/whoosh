@@ -1,0 +1,16 @@
+{
+  "item": "8b21a5dd",
+  "full_id": "8b21a5dd-edfb-4ded-a3a0-6336891f6c50",
+  "title": "Draw the mail text in every hidden picture",
+  "state": "prove",
+  "proofs": [
+    {"kind": "static", "run": "python3 checks/rig-hidden-check.py --selftest", "pass": "^[0-9]+ checks, 0 failed, 0 not judged", "fail": "^  FAIL  |[1-9][0-9]* failed", "timeout_s": 300},
+    {"kind": "hidden", "core": "fixture", "run": "python3 checks/rig-hidden-check.py <bundle>", "pass": "^hidden-web-text\\|PASS\\|mail text ink in the page band", "fail": "^hidden-web-text\\|FAIL", "timeout_s": 600}
+  ],
+  "mutants": [
+    {"file": "Sources/App/WindowShotWeb.swift", "find": "static var disabled: Bool { ProcessInfo.processInfo.environment[\"WHOOSH_SHOT_WEB_MUTANT\"] == \"off\" }", "replace": "static var disabled: Bool { true }", "proof": 1, "red": "^hidden-web-text\\|FAIL\\|mail text ink in the page band"}
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Case: checks/rig-hidden-check.py:330-369 (hidden_web_text): loads a mail with key J, shots right after the load and WEB_WAIT_S=6.0 s later with no key between (:51), floors WEB_INK_FLOOR_PCT 0.5 (:52) and WEB_INK_KEPT 0.5 (:53); prints 'hidden-web-text|PASS|mail text ink in the page band ...: A % right after the load, B % 6 s later, no key (...)' at :367; registered via guarded(...) :280. Selftest of it: :107-126 (four model cases, PASS/FAIL printed), total line :127. Mutant switch: Sources/App/WindowShotWeb.swift:9,15 (WHOOSH_SHOT_WEB_MUTANT=off restores the old path); the lead may instead run proof 1 with that environment variable set on the rig copy (declared at rig-hidden-check.py:50), which needs no source edit. The old reading: 0.0 on main79. Proof 1 launches its own hidden rig copy (rig-hidden-check.py:4 usage takes a bundle) and the lead gives the bundle; the run never shows a window (WHOOSH_RIG_HIDDEN)."
+}

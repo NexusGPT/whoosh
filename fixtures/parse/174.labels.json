@@ -1,0 +1,15 @@
+{
+ "id": "174",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "Le lun. 2 nov. 2026 à 10:14, Noor Haddad <noor.haddad@example.org> a écrit :",
+  "visible_contains": "I will send the figures tomorrow morning. 6be3",
+  "folded_contains": "Here are the three options we discussed. f3ce"
+ },
+ "adversarial": false
+}

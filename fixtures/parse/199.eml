@@ -1,0 +1,27 @@
+From: Orchard Pay <digest@example.com>
+To: Assem Example <assem@example.org>
+Subject: Weekly digest
+Date: Wed, 04 Nov 2026 17:11:00 +0000
+Message-ID: <6623233ee02cbe6f@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0739498478566186931=="
+
+--===============0739498478566186931==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+SGVsbG8sIHNhZmUgdGV4dC4gYWZ0ZXINCg==
+
+--===============0739498478566186931==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><head><title>x</title></head><body><p>Hello, safe text 03e8</p><scr<scr=
+ipt>ipt>alert(1)</scr</script>ipt><a href=3D"&#106;avascript:alert(1)">e</a><=
+img alt=3D"x" src=3Dhttps://pixel.example.net/px/02b919ff.jpg><img src=3D'htt=
+p://img.example.com/o/279b024f.gif' alt=3D'logo' width=3D'120'><p>after</p></=
+body></html>
+
+--===============0739498478566186931==--

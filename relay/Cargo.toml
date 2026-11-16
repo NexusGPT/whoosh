@@ -1,0 +1,38 @@
+[package]
+name = "relay"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Whoosh push relay: device registry, APNs sender, sent-mail tracking routes. Holds device tokens and opaque routing ids only."
+publish = false
+
+# Standalone workspace: relay/ is not a member of core/ (core/Cargo.toml is frozen).
+[workspace]
+
+[features]
+default = ["adapter-gmail", "adapter-graph", "adapter-jmap", "adapter-macsource"]
+# One feature per provider adapter (relay/src/adapters/<name>/). All four are on by default;
+# `--no-default-features` builds the relay with the loopback adapter only.
+adapter-gmail = []
+adapter-graph = []
+adapter-jmap = []
+adapter-macsource = []
+
+[dependencies]
+axum = { version = "0.8", features = ["http2"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time", "signal"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.41", features = ["bundled"] }
+reqwest = { version = "0.13", default-features = false, features = ["http2", "json", "rustls"] }
+jsonwebtoken = "9"
+hmac = "0.12"
+sha2 = "0.10"
+base64 = "0.22"
+rand = "0.8"
+hex = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[dev-dependencies]
+p256 = { version = "0.13", features = ["ecdsa", "pem"] }

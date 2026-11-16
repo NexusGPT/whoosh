@@ -1,0 +1,90 @@
+{
+  "item": "80710b25",
+  "full_id": "80710b25-f511-4c11-9c76-fed2aa8af97a",
+  "title": "Store Message-ID and References with each mail",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--manifest-path core/crates/store/migrations/Cargo.toml --test migration_v23 --test migration_v13 --test migration_v14 --test migration_v16",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){4}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p store --test thread_headers_0023",
+      "pass": "test result: ok\\. 5 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p outbox --test reply_headers_stored",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test thread_headers_fill",
+      "pass": "test result: ok\\. 7 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p sync-imap --test a144_plain_resync",
+      "pass": "test result: ok\\. 8 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p store --test setup_tables",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/store/migrations/sql/0023_thread_headers.sql",
+      "find": "WHERE rfc_message_id IS NULL;",
+      "replace": ";",
+      "proof": 0,
+      "red": "the_index_holds_only_the_unknown_rows \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/thread_headers.rs",
+      "find": "AND j.type = 'text' ORDER BY j.key",
+      "replace": "AND j.type = 'text' ORDER BY j.key DESC",
+      "proof": 1,
+      "red": "the_arrival_write_sits_in_the_insert_transaction_and_keeps_the_chain_order \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/thread_headers.rs",
+      "find": "ORDER BY received_at_ms DESC, id DESC LIMIT 1",
+      "replace": "ORDER BY received_at_ms ASC, id ASC LIMIT 1",
+      "proof": 1,
+      "red": "the_reply_parent_is_the_newest_message_of_the_thread_with_stored_headers \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/store/src/thread_headers.rs",
+      "find": "UPDATE message SET rfc_message_id = '' WHERE id = ?1 AND rfc_message_id IS NULL",
+      "replace": "UPDATE message SET rfc_message_id = '' WHERE id = ?1",
+      "proof": 1,
+      "red": "a_known_value_is_kept_when_the_server_gives_none_and_replaced_when_known \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/outbox/src/adapters/reply/mod.rs",
+      "find": "if let Some(found) = self.stored(thread_id, kind)? {",
+      "replace": "if let Some(found) = None::<ReplyContext> {",
+      "proof": 2,
+      "red": "a_reply_to_a_mail_with_stored_headers_and_no_server_place_is_threaded_from_the_store \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) 'a migration adds the two columns': core/crates/store/migrations/sql/0023_thread_headers.sql (rfc_message_id TEXT, rfc_references_json TEXT with a json_valid CHECK, partial index message_headers_unknown at :13) and its .down.sql; judged by core/crates/store/migrations/tests/migration_v23.rs:31 a_copy_of_a_version_22_database_migrates_and_every_row_reads_unknown, :62 the_index_holds_only_the_unknown_rows, :71 the_reversal_gives_back_0022; the three older migration tests whose expected message columns now name rfc_message_id and rfc_references_json (0023) and reply_to_json (0027, lane fix-migtests) one by one (migration_v13.rs:82, migration_v14.rs:129 and :132, migration_v16.rs:115 and :118, docs/lanes/reply-headers.md 'Round 2' item 1) are in proof 0; that crate is its own workspace (the lane note: `cargo test -p store` does not run it), so proof 0 uses --manifest-path core/crates/store/migrations/Cargo.toml. docs/DATA-MAP.md names the two columns and core/crates/store/tests/setup_tables.rs / migration_v1's every_column_the_data_map_names_exists reads them (proof 5 runs the store table test; the data-map test lives in the migrations crate, proof 0 migration_v1 is not in the list: add `--test migration_v1` if the lead wants it). (2) 'arrival fills them from the downloaded header': core/crates/sync-imap/tests/a144_plain_resync.rs:186 references_holds_the_mails_own_chain and :210 thread_headers_many_returns_the_answered_uids_only (the adapter reads Message-ID and References), core/crates/store/tests/thread_headers_0023.rs:82 the_arrival_write_sits_in_the_insert_transaction_and_keeps_the_chain_order, core/crates/engine/tests/thread_headers_fill.rs:113 held_arrival_headers_are_written_without_asking_the_server, :195 the_arrival_and_the_fill_in_store_the_same_bracket_form_and_the_reply_names_it. (3) 'stored mails are filled in by a background pass': thread_headers_fill.rs:80 a_pass_fills_the_answered_rows_and_marks_the_unanswered_once, :98 a_failed_call_changes_nothing_and_the_next_pass_asks_again, :131 a_folder_sync_runs_the_pass_in_the_background_on_the_body_hook, :157 every_folder_with_mail_stored_before_is_filled_page_after_page; store thread_headers_0023.rs:32, :53, :93. (4) 'a reply reads the store first and asks the server only when the store has none': core/crates/outbox/tests/reply_headers_stored.rs:66 a_reply_to_a_mail_with_stored_headers_and_no_server_place_is_threaded_from_the_store, :81 a_thread_with_no_stored_headers_still_asks_the_server, :96 the_newest_message_with_stored_headers_is_answered_and_a_marked_one_is_skipped; code core/crates/outbox/src/adapters/reply/mod.rs:76-94 (`stored` first, then parent_of and the server read). (5) 'seen red': the mutants are the lane's broken copies (docs/lanes/reply-headers.md 'Broken copy per test': M2, T2, T3, T4, R1 re-written as exact finds; the others, T1, T5, M1, M3, R2, R4, F1 to F8, need multi-line or edit of non-code files and are listed there), find strings occur once at 0aa1558e. The lane note says nothing was compiled or run (reply-headers.md:3): proofs 0 to 5 are the first run, and the reader's finding 'BUILT, NOT PROVED' is right. The in-process tests open no socket (the engine test uses a fake ThreadHeadersSource). The end-to-end on a bundle is item 56fdca7c."
+}

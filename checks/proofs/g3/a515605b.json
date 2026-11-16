@@ -1,0 +1,62 @@
+{
+  "item": "a515605b",
+  "full_id": "a515605b-cb8f-4b6b-8cf9-8fc52dd123ba",
+  "title": "The bottom key bar shows the keys of the current state",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-macshell.py",
+      "pass": "(?s)J0\\.17/foot-list-set +pass.*J0\\.17/foot-reader-set +pass.*J0\\.17/foot-hold-item-last +pass.*J0\\.17/foot-composer-set +pass.*J0\\.17/foot-keys-follow-preset +pass.*J0\\.17/foot-keeps-the-hints-that-fit-at-960 +pass.*J0\\.17/foot-hold-item-is-still-the-last-row-at-960 +pass",
+      "fail": "J0\\.17/foot-[a-z-]+ +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"foot-list-set\\|foot-reader-set\\|foot-composer-set\\|foot-hold-item-last\" checks/parity/par-macshell.py",
+      "pass": "^[4-9]|^[1-9][0-9]",
+      "fail": "^0$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/keycaps-check.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "lead",
+      "run": "read the shots r9-foot-list-1280-light, r9-foot-list-1280-dark, r9-foot-reader-1280-light, r9-foot-reader-1280-dark, r9-foot-composer-1280-light, r9-foot-composer-1280-dark (par-macshell J0.17, s.shot)",
+      "pass": "the bar shows the keys of its state in both themes"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/MacShell/MacFootHints.swift",
+      "find": "(\"archive\", \"Mark done\"), (\"reply\", \"Reply\"), (\"reply-all\", \"Reply all\")",
+      "replace": "(\"archive\", \"Archive\"), (\"reply\", \"Reply\"), (\"reply-all\", \"Reply all\")",
+      "proof": 0,
+      "red": "J0\\.17/foot-list-set +fail"
+    },
+    {
+      "file": "Sources/Features/MacShell/MacFootHints.swift",
+      "find": ".composer: [(\"send\", \"Send\"), (\"ai-reply\", \"AI draft\"), (\"discard-draft\", \"Discard\"), (\"popout-draft\", \"Pop out\")],",
+      "replace": ".composer: [(\"send\", \"Send\")],",
+      "proof": 0,
+      "red": "J0\\.17/foot-composer-set +fail"
+    }
+  ],
+  "gap": null,
+  "owner": "Two decisions are the owner's. (1) 'Shift-R Reply all' in the list and reader bars: the build shows Reply all only on Enter in an open thread, because Shift-R is the No Reply filter (J0.18); showing Shift-R would change the key map. Default taken: keep. (2) 'E Done' against the build's 'Mark done' (Superhuman's word): default taken: keep 'Mark done'. Then look at the six shots.",
+  "notes": "Built and judged today: list set (E Mark done, R Reply, F Forward, H Snooze, L Label, Cmd-K Search + hold) and reader set with Reply all, composer set (Send, Draft, Discard, Pop out + hold), keys follow the preset: par-macshell J0.17 (checks/parity/par-macshell.py:331-370, cases foot-list-set, foot-reader-set, foot-hold-item-last, foot-composer-set, foot-keys-follow-preset). par-macshell is journey style: it prints only 'FAIL <case>' lines and the total, so the proof is the total with 0 failed and no FAIL line for those cases; the 3 not judged are by design on a hidden rig (Dock tile, full screen: par-macshell-main83.log), so the pass regex expects '3 not judged'. 'Every cap from the catalogue': i18n --catalogue (checks/i18n-check.py) prints 'catalogue: GREEN'; 'Mark done', 'Reply all', 'Hold for all shortcuts' each hold 14 languages in Sources/Resources/Localizable.xcstrings (checked). keycaps-check.py is the cap-name check (r83: 8 checks, 0 failed). Built on lane/gap-keys (checks/parity/par-macshell.py J0.17): foot-shows-all-seven-at-1280, foot-shows-fewer-hints-at-960, foot-hold-item-is-still-the-last-row-at-960, foot-shown-hints-are-a-prefix-at-960, and light and dark shots of the list, reader and composer states at 1280x820. Unrun: if all seven hints fit at 960 the 'fewer' case is red and the finding is the app's width rule (MacFootHints.fitting). main93 (hid-keys): the case foot-shows-fewer-hints-at-960 became foot-keeps-the-hints-that-fit-at-960: at 960 the strip is 726 pt (sidebar 200, list 320, reader 438) and all seven hints fit, so the app was right and the old claim wrong; the broken copy that removed the width rule is dropped because nothing at the smallest window can tell it from the app."
+}

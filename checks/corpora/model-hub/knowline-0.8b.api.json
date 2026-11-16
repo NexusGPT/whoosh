@@ -1,0 +1,165 @@
+{
+ "id": "PelaAI/KnowLine-0.8B-Gen1",
+ "modelId": "PelaAI/KnowLine-0.8B-Gen1",
+ "sha": "01952e55d70c9cc087db25656cafb125590ea4a6",
+ "gated": false,
+ "private": false,
+ "disabled": false,
+ "tags": [
+  "transformers",
+  "safetensors",
+  "qwen3_5",
+  "image-text-to-text",
+  "qwen3.5",
+  "decision-model",
+  "structured-prediction",
+  "text-classification",
+  "conversational",
+  "en",
+  "zh",
+  "base_model:Qwen/Qwen3.5-0.8B",
+  "base_model:finetune:Qwen/Qwen3.5-0.8B",
+  "license:apache-2.0",
+  "endpoints_compatible",
+  "region:us"
+ ],
+ "pipeline_tag": "image-text-to-text",
+ "library_name": "transformers",
+ "siblings": [
+  {
+   "rfilename": ".gitattributes",
+   "blobId": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+   "size": 1570
+  },
+  {
+   "rfilename": "CALIBRATION.json",
+   "blobId": "d4b85b7b6c37c1fc083b882358971b6ac4c4f9a9",
+   "size": 30
+  },
+  {
+   "rfilename": "INFERENCE.md",
+   "blobId": "71f39aef92383d3ac95efc98e32045370f1b0851",
+   "size": 2581
+  },
+  {
+   "rfilename": "LICENSE",
+   "blobId": "1d5180a42f1c3383ba7c7bd0a50f0837ef0168df",
+   "size": 11343
+  },
+  {
+   "rfilename": "README.md",
+   "blobId": "33866e12ae6c02546c172ad4bc32d3e27b45cbbb",
+   "size": 8519
+  },
+  {
+   "rfilename": "README.zh.md",
+   "blobId": "36dc3813c0e7a75171869bc4044bef808f28bffe",
+   "size": 7372
+  },
+  {
+   "rfilename": "SHA256SUMS",
+   "blobId": "f9ac85bbbc6295207a8e9b34c7dfd6190443f7ea",
+   "size": 1853
+  },
+  {
+   "rfilename": "chat_template.jinja",
+   "blobId": "0ef09f214eaa6d9bca297988afc1454b5827b2c7",
+   "size": 7755
+  },
+  {
+   "rfilename": "config.json",
+   "blobId": "715f0448b9d38103211f0ad88bbb4d6e4f4be8c9",
+   "size": 2907
+  },
+  {
+   "rfilename": "configuration.json",
+   "blobId": "3a6d425685de8896b2bc8b59b671e41aea1d7bf3",
+   "size": 51
+  },
+  {
+   "rfilename": "knowline_engine.py",
+   "blobId": "f3f26eca401aa92de432a49d52c4a219a8bf678c",
+   "size": 7469
+  },
+  {
+   "rfilename": "knowline_layout.py",
+   "blobId": "f03fa79562517441dd6c8bfb5d681b9a9fea516f",
+   "size": 12776
+  },
+  {
+   "rfilename": "knowline_server.py",
+   "blobId": "4534daf6c80869c0cef64eb2b900fdf61f776560",
+   "size": 61850
+  },
+  {
+   "rfilename": "merges.txt",
+   "blobId": "a494e019ca1502219fd0128658b979e5f05ae8e8",
+   "size": 3353259
+  },
+  {
+   "rfilename": "model-extra-from-base.safetensors",
+   "blobId": "efea12470e6441c552041092f4a0dcf93ab34b60",
+   "size": 40907328,
+   "lfs": {
+    "sha256": "b3d623fe186d4a1af87373d133751de382e05a4a7ec5f232e7e0cee81d892f4b",
+    "size": 40907328,
+    "pointerSize": 133
+   }
+  },
+  {
+   "rfilename": "model.safetensors",
+   "blobId": "8be7fe88955c8fe964e25c66c44141edc67b2d19",
+   "size": 1706035272,
+   "lfs": {
+    "sha256": "433818210672e99e186f2f874a19568f4337a8714aeafd6b5c86a3ed83b3be0f",
+    "size": 1706035272,
+    "pointerSize": 135
+   }
+  },
+  {
+   "rfilename": "model.safetensors.index.json",
+   "blobId": "56a2f6776f19192c50801fd6a49a00fbef7e789c",
+   "size": 37964
+  },
+  {
+   "rfilename": "preprocessor_config.json",
+   "blobId": "2ea84a437d448ff71b08df68fdd949d5cc4ebb64",
+   "size": 390
+  },
+  {
+   "rfilename": "serve_knowline.sh",
+   "blobId": "ce50a44ccde0f7f12b781a23426207939ec8433e",
+   "size": 1688
+  },
+  {
+   "rfilename": "temperatures.json",
+   "blobId": "a2b274a113273905e812e219e64298a351104303",
+   "size": 17
+  },
+  {
+   "rfilename": "tokenizer.json",
+   "blobId": "a73a846725794819aa6e1c9e97d8dc9671c2006d",
+   "size": 12807982,
+   "lfs": {
+    "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "size": 12807982,
+    "pointerSize": 133
+   }
+  },
+  {
+   "rfilename": "tokenizer_config.json",
+   "blobId": "fae3ce993e07c092ad024dde45e592379fde91bb",
+   "size": 16709
+  },
+  {
+   "rfilename": "video_preprocessor_config.json",
+   "blobId": "3ba673a5ad7d4d13f54155ecd38b2a94a6dac8fe",
+   "size": 385
+  },
+  {
+   "rfilename": "vocab.json",
+   "blobId": "0aa0ce0658d60ac4a5d609f4eadb0e8e43514176",
+   "size": 6722759
+  }
+ ]
+}

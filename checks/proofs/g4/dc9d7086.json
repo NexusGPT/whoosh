@@ -1,0 +1,60 @@
+{
+  "item": "dc9d7086",
+  "full_id": "dc9d7086-0f56-4e88-a58b-871ff633619a",
+  "title": "Compress the mailbox connection when offered",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p sync-imap --test compress",
+      "pass": "test result: ok\\. 5 passed; 0 failed; 1 ignored",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p sync-imap --test compress -- --ignored --nocapture sync_2000_messages_with_and_without_compression",
+      "pass": "(?s)clear: 2000 messages in .*deflate: 2000 messages in .*compressed connections",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "uptime",
+      "pass": "load averages?: *([0-9]|1[01])\\.",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "static",
+      "run": "python3 perf/first-sync.py --selftest",
+      "pass": "7 checks, 0 failed, 0 not judged",
+      "fail": "BAD ",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "quiet machine, from the repo root: python3 perf/first-sync.py (three runs of the ignored test; prints the load, `first-sync: 2000 messages: clear (before) X ms, deflate (after) Y ms, ...`, then one PASS line per case); the lead writes the two figures and the load into docs/lanes/core-sync-imap.md",
+      "pass": "(?s)PASS first-sync-clear-time.*PASS first-sync-deflate-time.*PASS machine-load.*\\d+ checks, 0 failed, 0 not judged"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": "if ask_compress && !caps.compressed && c.has_str(\"COMPRESS=DEFLATE\") {",
+      "replace": "if ask_compress && !caps.compressed {",
+      "proof": 0,
+      "red": "a_server_that_does_not_list_compress_never_gets_a_compress_command.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/sync-imap/src/adapter.rs",
+      "find": "Ok(deflated) => { s = deflated; caps.compressed = true; }",
+      "replace": "Ok(deflated) => { s = deflated; }",
+      "proof": 0,
+      "red": "test result: FAILED|FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Code: core/crates/sync-imap/src/adapter.rs:407-418 (after login, `COMPRESS DEFLATE` only if the server lists COMPRESS=DEFLATE and the connection is not already compressed; OK -> deflated stream; NO or BAD -> Attempt::CompressRefused, the caller carries on uncompressed), core/crates/sync-imap/src/transport.rs:33. Tests: core/crates/sync-imap/tests/compress.rs:48 a_server_that_lists_compress_and_says_ok_gets_the_next_commands_deflated_and_its_answers_are_read, :73 a_refused_compress_no_or_bad_leaves_a_working_clear_connection_and_is_not_asked_again (both outcomes), :92 a_server_that_does_not_list_compress_never_gets_a_compress_command, :103 the_xoauth2_sign_in_is_compressed_too, :114 the_idle_connection_is_compressed_and_hears_new_mail_through_the_inflater, :141 sync_2000_... (#[ignore]) = 5 run + 1 ignored. The fake: core/crates/sync-imap/tests/support (CompressAnswer, cap_compress). The uptime pass regex accepts a 1-minute load of 0 to 11; macOS prints `load averages: a b c`. The refusal path itself has no one-line mutant given: `s` is consumed by compress(), so removing the Err arm does not compile; the second mutant breaks the flag instead. | OLD GAP (before lane gap-states, 2026-11-12): S, the lead's run only. Built: perf/first-sync.py (runs the ignored measurement N times, reads the two printed lines, prints the medians, the load before and after, one PASS line per case, not judged above PERF_LOAD_MAX) and its self-test (`python3 perf/first-sync.py --selftest`, 7 checks, 5 broken models). Missing: the figures themselves: the lead runs proof 4 on a quiet machine and writes the two medians and the load into docs/lanes/core-sync-imap.md (the script cannot be run by this lane: it runs cargo)."
+}

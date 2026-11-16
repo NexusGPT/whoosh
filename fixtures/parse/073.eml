@@ -1,0 +1,40 @@
+From: Tessel Health <hello@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Your sign-in link
+Date: Sun, 15 Nov 2026 12:29:00 +0000
+Message-ID: <7b01ff906259083c@accounts.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============3055089785536937716=="
+
+--===============3055089785536937716==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Activate your account: https://auth.example.com/activate?key=fa31bde1897f92e1cb504ce2
+
+The link works once.
+
+--===============3055089785536937716==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5U
+ZXNzZWwgSGVhbHRoPC90aXRsZT48c3R5bGU+Ym9keXtmb250LWZhbWlseTpIZWx2ZXRpY2EsQXJp
+YWwsc2Fucy1zZXJpZjtjb2xvcjojMjIyfS5jb2Rle2ZvbnQtc2l6ZToyOHB4fTwvc3R5bGU+PC9o
+ZWFkPjxib2R5Pjx0YWJsZSB3aWR0aD0iMTAwJSIgY2VsbHBhZGRpbmc9IjAiIGNlbGxzcGFjaW5n
+PSIwIj48dHI+PHRkIGFsaWduPSJjZW50ZXIiPjxpbWcgd2lkdGg9IjEiIGhlaWdodD0iMSIgc3R5
+bGU9ImRpc3BsYXk6bm9uZSIgc3JjPSJodHRwOi8vY2RuLmV4YW1wbGUubmV0L3B4L2MyMzc4MDY3
+LnBuZyIgc3Jjc2V0PSJodHRwOi8vY2RuLmV4YW1wbGUubmV0L3B4L2MyMzc4MDY3LnBuZyAyeCI+
+PGgyPlRlc3NlbCBIZWFsdGg8L2gyPjxwPkNsaWNrIHRoZSBidXR0b24gYmVsb3cgdG8gZmluaXNo
+LiBUaGUgbGluayB3b3JrcyBvbmNlLjwvcD48cD48YSBocmVmPSJodHRwczovL2F1dGguZXhhbXBs
+ZS5jb20vYWN0aXZhdGU/a2V5PWZhMzFiZGUxODk3ZjkyZTFjYjUwNGNlMiIgc3R5bGU9ImJhY2tn
+cm91bmQ6IzA2Yztjb2xvcjojZmZmIj5BY3RpdmF0ZSB5b3VyIGFjY291bnQ8L2E+PC9wPjxwIHN0
+eWxlPSJmb250LXNpemU6MTFweDtjb2xvcjojODg4Ij5Zb3UgcmVjZWl2ZSB0aGlzIGJlY2F1c2Ug
+b2YgeW91ciBhY2NvdW50LiA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0L3Vuc3Vic2NyaWJl
+P3U9ZDlkYTczIj5VbnN1YnNjcmliZTwvYT4gfCA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0
+L3ByaXZhY3kiPlByaXZhY3k8L2E+PC9wPjwvdGQ+PC90cj48L3RhYmxlPjwvYm9keT48L2h0bWw+
+DQo=
+
+--===============3055089785536937716==--

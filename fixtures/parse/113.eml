@@ -1,0 +1,39 @@
+From: Marlow Travel <news@example.com>
+To: Assem Example <assem@example.org>
+Subject: Our November newsletter
+Date: Sun, 08 Nov 2026 20:43:00 +0000
+Message-ID: <6f44d0d89feea3fb@accounts.example.com>
+List-Unsubscribe: <https://example.net/unsubscribe?u=283cf8>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0670672640274808140=="
+
+--===============0670672640274808140==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+November news. Read more at https://example.net/blog/abc123
+
+--===============0670672640274808140==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Marlow Travel</titl=
+e><style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-si=
+ze:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspac=
+ing=3D"0"><tr><td align=3D"center"><img alt=3D"x" src=3Dhttp://pixel.example.=
+net/px/0ae04f86.gif><h2>Marlow Travel</h2><h3>November news</h3><p>Join 5000 =
+readers. In 2026 we shipped 12 releases. Ten percent off until 30 November.</=
+p><p>Book a call: +32 2 961 83 29</p><p><a href=3D'https://example.net/blog/6=
+26686'>Read more</a></p><p style=3D"font-size:11px;color:#888">You receive th=
+is because of your account. <a href=3D"https://example.net/unsubscribe?u=3Dba=
+90b9">Unsubscribe</a> | <a href=3D"https://example.net/privacy">Privacy</a></=
+p><img src=3D'https://cdn.example.net/banner/97dfd948.jpg' alt=3D'logo' width=
+=3D'120'><img src=3D'http://cdn.example.net/o/3e6ce4f4.png' alt=3D'logo' widt=
+h=3D'120'><img alt=3D"x" src=3Dhttps://img.example.com/banner/014dcb22.gif><i=
+mg width=3D"1" height=3D"1" style=3D"display:none" src=3D"https://img.example=
+.com/o/8ddca34d.jpg" srcset=3D"https://img.example.com/o/8ddca34d.jpg 2x"></t=
+d></tr></table></body></html>
+
+--===============0670672640274808140==--

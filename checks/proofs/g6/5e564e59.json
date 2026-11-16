@@ -1,0 +1,49 @@
+{
+  "item": "5e564e59",
+  "full_id": "5e564e59-4566-447d-85b0-26ec80e587c6",
+  "title": "Decision model evaluates Before, Jev, After with the fallback",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p decision --test flow --test pipeline --test decide --test jev",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){4}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "(?s)a140-a-reply-moves-one-message-out-of-the-label\\s+pass .*a140-the-example-row-step-1-once-filed-is-now-exit\\s+pass ",
+      "fail": "\\sfail\\s|unjudged",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "STILL GREEN|MUTANTS \\| .* \\| RED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/decision-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "Traceback|not red\\) *[1-9]",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/decision/src/flow.rs",
+      "find": "if !label.exit_enabled {",
+      "replace": "if true {",
+      "proof": 0,
+      "red": "FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The acceptance names A94 ('Ordered evaluation per A94'); docs/SPEC.md:158 (A140) replaces the A94 reading ('Before-Jev chains file directly, above the model') with the three-step pipeline, so the Before / Jev / After order of this item is superseded: Before = Entry rule step 1, Jev = the AI step 2, After = Exit filter step 3, with the fallback ('others go to'). The proofs below are the A140 equivalents; the lead decides whether to close this item as 'done by e23ed476' (a question for the owner, below). Claims and judges. (1) ordered evaluation with the fallback: core/crates/decision/tests/flow.rs:139 entry_first_match_wins_by_label_order_and_the_model_never_sees_the_message, :218 exit_kept_by_a_chain_names_the_exit_card_and_that_chain_and_chains_are_alternatives, :233 a_rejected_message_goes_to_primary_and_leaves_a_rejection_row, :245 ...goes_to_junk_when_that_is_the_fallback, :255 ...goes_to_its_fallback_label_one_hop_only, :266 an_exit_filter_with_no_chain_keeps_everything, :272 an_exit_card_switched_off_keeps_the_pick; core/crates/decision/tests/pipeline.rs (the three-step order, see item e23ed476). (2) 'a flipped fact (reply) moves the message at once': flow.rs:292 a_flipped_fact_moves_the_message_at_once_and_back_and_never_asks_the_model, :317 a_flipped_fact_re_asks_the_entry_cards_but_never_moves_the_owners_filing; pipeline.rs:220 a_read_mail_leaves_a_label_whose_step_1_is_is_unread; engine core/crates/engine/tests/label_flow_d17.rs:225 a_reply_flip_moves_a_message_out_at_once_and_never_asks_the_model, :245 a_reply_stored_beside_the_sync_flips_the_older_message_without_being_named. (3) 'Why here?' names block and chain: flow.rs:335 why_here_names_the_card_the_chain_and_the_conditions_that_hold, pipeline.rs:315 why_here_names_step_1s_chain_and_the_ais_answer; driven: par-labelscontactsmac case a140-the-example-row-step-1-once-filed-is-now-exit (checks/parity/par-labelscontactsmac.py:2640-2650, e_whyentry) reads `core state message/<id>/why/<label>`. (4) driven check on fixture messages, seen red on a mutant: par-labelscontactsmac.py prints one 'name  pass|fail|unjudged  detail' line per case (report() at :2968-2973), the case a140-a-reply-moves-one-message-out-of-the-label (e_reply, mutants reply-keeps-it-in, reply-leaves-counts, reply-moves-the-picks) judges the flipped fact on the fixture's À répondre label; its self-test (proof 2) prints a MUTANTS table with 'STILL GREEN' for any mutant that does not turn its case red; checks/decision-check.py --selftest (proof 3, flow3-checks.md:17) is the second self-test. The earlier failing runs the reader cites (cargo-flow3.log: engine_first_run; cargo-flow3-all.log: store label_budget) are other targets and are not in proof 0. Question for the owner/lead: close this item as superseded by A140 (e23ed476, 7f996166, d458d432) or keep a Before/Jev/After wording check."
+}

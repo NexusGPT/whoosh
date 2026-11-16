@@ -1,0 +1,88 @@
+{
+ "item": "2908dc78",
+ "full_id": "2908dc78-6c9b-410f-9da5-36ae2c61411f",
+ "title": "Build fn-signin-oauth",
+ "state": "prove",
+ "proofs": [
+  {
+   "kind": "lead",
+   "run": "swift test --package-path _captures/signin/proof (the proof package of commit 6f2d77a0: Package.swift compiles Sources/Features/SignIn/Engine alone through a symlink and runs its 9 tests against loopback stub servers; it is in the commit's tree, `git ls-tree -r HEAD _captures/signin/proof`, but not in the sparse worktree, so run it in a full checkout or after `git checkout HEAD -- _captures/signin/proof`)",
+   "pass": "Test run with 9 tests in \\d+ suites passed"
+  },
+  {
+   "kind": "unit",
+   "run": "aRigRefusesEveryPresetRoute,aRigRefusesTheRealMicrosoftSignInBeforeAnySheetOrRequest,aRigKeepsALoopbackAuthority,addingAMicrosoftAccountThroughTheCoreStoresTheAddressAndNeverAPassword",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  },
+  {
+   "kind": "cargo",
+   "run": "--release -p sync-gmail-api --test flag",
+   "pass": "test result: ok\\. 5 passed; 0 failed",
+   "fail": "FAILED|panicked",
+   "timeout_s": 900
+  },
+  {
+   "kind": "unit",
+   "run": "everyStubbedSignInRouteAsksOnlyAddressesOnThisMac,microsoftSignInSendsPKCEAndStoresTheTokenOnlyInTheVault,anAdminBlockedRedirectShowsTheLineTellingTheOwnerWhatToAsk,anAdminBlockedTokenAnswerShowsTheSameLine,otherRefusalsKeepTheProvidersOwnWords,fastmailUsesAuthorizationCodeWithPKCEAndJMAPScopes,theGoogleRouteIsUnreachableWhileTheVerificationFlagIsFalse,signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed,aRedirectWithAnotherStateIsIgnored,aRouteWithoutAnAppRegistrationSaysSo",
+   "pass": "passed",
+   "fail": "failed|issue",
+   "timeout_s": 600
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/Features/SignIn/Engine/OAuthClient.swift",
+   "find": "return d.contains(\"AADSTS90094\") || d.contains(\"AADSTS65001\") || error == \"consent_required\" || error == \"admin_consent_required\"",
+   "replace": "return false",
+   "proof": 3,
+   "red": "anAdminBlockedRedirectShowsTheLineTellingTheOwnerWhatToAsk.*failed.*failed|anAdminBlockedTokenAnswerShowsTheSameLine.*failed.*failed"
+  },
+  {
+   "file": "Sources/Features/SignIn/Engine/SignInService.swift",
+   "find": "if provider == .google && !flags.gmailAPIVerified {",
+   "replace": "if provider == .google && false {",
+   "proof": 3,
+   "red": "theGoogleRouteIsUnreachableWhileTheVerificationFlagIsFalse.*failed.*failed"
+  },
+  {
+   "file": "Sources/Features/SignIn/Engine/SignInService.swift",
+   "find": "let ref = try vault.store(kind: kind, name: name, secret: try JSONEncoder().encode(tokens))",
+   "replace": "let ref = VaultReference(service: \"x\", account: name)",
+   "proof": 3,
+   "red": "microsoftSignInSendsPKCEAndStoresTheTokenOnlyInTheVault.*failed.*failed"
+  },
+  {
+   "file": "Sources/Features/SignIn/Engine/OAuthClient.swift",
+   "find": ".init(name: \"code_challenge_method\", value: \"S256\"),",
+   "replace": ".init(name: \"code_challenge_method\", value: \"plain\"),",
+   "proof": 3,
+   "red": "microsoftSignInSendsPKCEAndStoresTheTokenOnlyInTheVault.*failed|fastmailUsesAuthorizationCodeWithPKCEAndJMAPScopes.*failed"
+  },
+  {
+   "file": "Sources/Features/SignIn/Engine/OAuthClient.swift",
+   "find": "guard v(\"state\") == expectedState else",
+   "replace": "guard true else",
+   "proof": 3,
+   "red": "aRedirectWithAnotherStateIsIgnored.*failed"
+  },
+  {
+   "file": "Sources/Features/SignIn/Engine/SignInService.swift",
+   "find": "guard let e = endpoints(provider), !e.clientId.isEmpty else",
+   "replace": "guard let e = endpoints(provider) else",
+   "proof": 3,
+   "red": "aRouteWithoutAnAppRegistrationSaysSo.*failed"
+  },
+  {
+   "file": "Sources/Features/SignIn/Engine/SignInService.swift",
+   "find": "return !(reaches(e.authorize) && reaches(e.token))",
+   "replace": "return false",
+   "proof": 3,
+   "red": "everyStubbedSignInRouteAsksOnlyAddressesOnThisMac.*failed"
+  }
+ ],
+ "gap": null,
+ "owner": null,
+ "notes": "Proof 0: the side package, 9 tests: microsoftSignInSendsPKCEAndStoresTheTokenOnlyInTheVault (:26), anAdminBlockedRedirectShowsTheLineTellingTheOwnerWhatToAsk (:50), anAdminBlockedTokenAnswerShowsTheSameLine (:66), otherRefusalsKeepTheProvidersOwnWords (:77), fastmailUsesAuthorizationCodeWithPKCEAndJMAPScopes (:86), theGoogleRouteIsUnreachableWhileTheVerificationFlagIsFalse (:99), signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed (:115), aRedirectWithAnotherStateIsIgnored (:124), aRouteWithoutAnAppRegistrationSaysSo (:132); line numbers from `git show HEAD:_captures/signin/proof/Tests/SignInEngineTests/SignInEngineTests.swift`. The admin-consent line is SignInWords.adminBlocked (OAuthTypes.swift:~82: 'Ask your admin to approve Whoosh for Microsoft 365 mail ...'), mapped at OAuthClient.swift:70-85 (AADSTS90094, AADSTS65001, consent_required). The Google route closed text: SignInWords.googleClosed (OAuthTypes.swift). Mutant 3 replaces the stored reference by an invented one (VaultReference init is (service:account:), Sources/Features/SignIn/Engine/TokenVault.swift:7). Proof 1: Tests/Unit/SignInTests.swift:70 (a Microsoft account through the core stores the address and never a password) and RigNetSignInTests.swift (nothing leaves this Mac). Proof 2: the core's own flag is gmail_api_verified: core/crates/sync-gmail-api/tests/flag.rs (5 tests: the_flag_has_the_name_the_signin_lane_and_the_plan_use :14, flag_off_the_adapter_is_never_constructed :19, another_flag_on_does_not_switch_it_on :30, flag_on_the_adapter_is_built_once :40, flag_off_error_reads_as_words_and_is_not_retryable :51), so the snake_case name of the acceptance has a Rust test; the app's flag is the separate SignInFlags.gmailAPIVerified. PORTED (lane gap-signin): the nine side-package tests and one new guard test now live in Tests/Unit/SignInStubTests.swift (proof 3): everyStubbedSignInRouteAsksOnlyAddressesOnThisMac (:119), microsoftSignInSendsPKCEAndStoresTheTokenOnlyInTheVault (:133), anAdminBlockedRedirectShowsTheLineTellingTheOwnerWhatToAsk (:158), anAdminBlockedTokenAnswerShowsTheSameLine (:174), otherRefusalsKeepTheProvidersOwnWords (:185), fastmailUsesAuthorizationCodeWithPKCEAndJMAPScopes (:194), theGoogleRouteIsUnreachableWhileTheVerificationFlagIsFalse (:207), signInWithChatGPTStoresAProviderCredentialAndTheNoteIsFixed (:223), aRedirectWithAnotherStateIsIgnored (:233), aRouteWithoutAnAppRegistrationSaysSo (:241). Loopback only: each stub listens on 127.0.0.1, every endpoint given to the service is a 127.0.0.1 address and the service is built with a reaches rule that refuses any other host (SignInStubTests.swift, signInOnThisMacOnly); a token is a stub string held in a MemoryVault and never printed. The app's SignInFlags.gmailAPIVerified is still a separate Bool that nothing sets from the Rust core (Sources/Features/SignIn/SignInController.swift, `public var flags`): the app test proves the engine flag, the Rust test (proof 2) proves the core flag; wiring the one source needs Sources/CoreBridge, outside this lane's files. The token lands in the vault seam: in the app it is KeychainVault (interim, Sources/Features/SignIn/KeychainVault.swift:5-8), in the tests a MemoryVault; core-secrets is not called (FFI has no StoreSecret). Proof 0 (the side package) is kept as the earlier run of the same nine tests."
+}

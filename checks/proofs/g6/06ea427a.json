@@ -1,0 +1,55 @@
+{
+  "item": "06ea427a",
+  "full_id": "06ea427a-b736-477a-aa5a-e6b9ea190dc6",
+  "title": "Build the three-part search list on screen",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "(?s)^(?=.*par-list-in-three-parts-in-order +pass)(?=.*par-count-line-says-matches-and-related +pass)(?=.*par-no-match-state-keeps-the-closed-line +pass)",
+      "fail": "par-list-in-three-parts-in-order +(fail|unjudged)|par-count-line-says-matches-and-related +(fail|unjudged)|par-no-match-state-keeps-the-closed-line +(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "WHOOSH_BUILD_LABEL=g6 WHOOSH_RESULTS_DIR=_captures/results/g6 python3 checks/parity/par-searchmac.py",
+      "pass": "(?s)^(?=.*par-closed-line-opens-and-closes-by-enter +pass)(?=.*par-closed-line-click-and-new-search-closes-it +pass)",
+      "fail": "par-closed-line-opens-and-closes-by-enter +(fail|unjudged)|par-closed-line-click-and-new-search-closes-it +(fail|unjudged)",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-searchmac.py --selftest",
+      "pass": "\\d+ three-part checks, \\d+ mutants, 0 problems",
+      "fail": "SELFTEST FAIL|[1-9]\\d* problems|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED|Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py _captures/results/g6/search-s1 --states search-after-enter,search-closed-line-selected,search-closed-line-opened,search-nothing-matches",
+      "pass": "(?s)^(?!.*(?:FAIL|NOT JUDGED) )(?=.*PASS [^\\n]*)[^\\n]*[\\s\\S]*\\b\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |^NOT JUDGED |[1-9]\\d* failed|[1-9]\\d* not judged",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "open the pictures state-search-after-enter-*, state-search-closed-line-selected-*, state-search-closed-line-opened-* and state-search-nothing-matches-* (light and dark, 1280x820 and 960x632) of _captures/results/g6/search-s1/ beside the page 'Search: the three parts of the list' of the board docs/design/boards/search-r3-parts/designs.js (that board is not in this copy: git ls-files finds no file under it, so the lead reads it from the main checkout)",
+      "pass": "each state matches its drawing: the matches, the Related line then the related mails, the closed 'All other mail · N' line (open: its rows below), the count line 'N matches · M related'"
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": null,
+  "notes": "Owner ban: the finish line's 'unit tests red on a broken copy' is not proved by a Swift run (no unit proof, no new Swift test). The same behaviour is proved by hidden cases and by the check's own broken-copy proof: checks/parity/par-searchmac.py:2425 PARTS_CASES, run in step J2.9 at :3115-3124 on the fixture core. Clause to case: the three parts in order, the rest listed only while the line is open -> par-list-in-three-parts-in-order (:2657); the count line -> par-count-line-says-matches-and-related (:2658, expected from count_expect :2431); the no-match state keeps the closed line -> par-no-match-state-keeps-the-closed-line (:2664); Enter opens and closes the line, and the foot hint follows -> par-closed-line-opens-and-closes-by-enter (:2659); click opens and closes it, and a new search closes it -> par-closed-line-click-and-new-search-closes-it (:2660). Every control of this item is a door the check clicks or presses: the closed line (mac-search.more, :2427) by key and by click. Proof 2's selftest runs each case on a model and on 10 broken models (PARTS_MUTANTS :2643-2645, e.g. rest-listed-closed, enter-ignored-on-line, no-click-door, count-counts-only-matches, nothing-no-line), each must go red on its own case, and prints '7 three-part checks, 10 mutants, 0 problems' (:2680). 14 languages: docs/lanes/list-p1.md says the 14 new keys (Related, All other mail, Show all other mail, Hide all other mail, From domain, the count forms and the no-match sentence) are in 14 languages; proof 3 is checks/i18n-check.py --catalogue ('catalogue: GREEN', i18n-check.py:275). Swift unit tests that exist for the same behaviour and are NOT proofs here: Tests/Unit/SearchPartsTests.swift:66 theListIsInThreePartsFromOneAnswerAndTheRestStaysBehindTheClosedLine, :86 theClosedLineOpensAndClosesByEnterAndIsClosedAgainByANewSearch, :111 theClosedLineIsClickableAndAClickOpensAndClosesIt, :134 theCountLineReadsMatchesAndRelatedInEachForm. The pictures are the states of checks/shots-sheet.py (search-after-enter, search-closed-line-selected, search-closed-line-opened, search-nothing-matches; item d1ffe36c, listed in checks/proofs/g6/d1ffe36c.json). No broken copy is given: every behaviour here is Swift app source, whose red is the check's model-mutant selftest (proof 2), not a cargo run. Nothing was run by me."
+}

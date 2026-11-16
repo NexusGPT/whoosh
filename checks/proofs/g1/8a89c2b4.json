@@ -1,0 +1,53 @@
+{
+ "item": "8a89c2b4",
+ "full_id": "8a89c2b4-6d90-45eb-af7a-434615d378fe",
+ "title": "Launch to first paint under its budget",
+ "state": "gap",
+ "proofs": [
+  {
+   "kind": "static",
+   "run": "python3 checks/launch-order-check.py",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD |FAIL",
+   "timeout_s": 120
+  },
+  {
+   "kind": "static",
+   "run": "python3 checks/launch-order-check.py --selftest",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD |FAIL",
+   "timeout_s": 120
+  },
+  {
+   "kind": "static",
+   "run": "python3 perf/launch.py --selftest",
+   "pass": "(?s)\\d+ checks, 0 failed, 0 not judged",
+   "fail": "BAD |FAIL",
+   "timeout_s": 120
+  },
+  {
+   "kind": "static",
+   "run": "grep -c \"^## Phase table\" docs/lanes/launch-r1.md",
+   "pass": "^1$",
+   "fail": "^0$",
+   "timeout_s": 30
+  },
+  {
+   "kind": "lead",
+   "run": "quiet machine, an installed main bundle holding Contents/Resources/rig-hidden.ok: python3 perf/launch.py --bundle <App.app> --samples 5 --pairs 3 (perf/launch.py:170-190; it launches the rig copies itself through launch-one.sh; do not wrap it in launch-one); save the log",
+   "pass": "(?s)warm, same copy, median ms\\s+[0-9.]+ \\(budget < 400 \\(LAUNCH_SAME_COPY_MS\\)\\) ok.*cold launch ms\\s+[0-9.]+ \\(budget < 1500\\) ok.*first frame ms\\s+[0-9.]+ \\(budget < 100\\) ok.*\\d+ checks, 0 failed, 0 not judged"
+  }
+ ],
+ "mutants": [
+  {
+   "file": "Sources/App/RootView.swift",
+   "find": "model.settle()",
+   "replace": "model.settleLater()",
+   "proof": 0,
+   "red": "onAppear: firstFrameMs, then settle\\(\\)[^\\n]* +FAIL"
+  }
+ ],
+ "gap": "L. Budget LAUNCH_SAME_COPY_MS 400 stays (lead's ruling). Measured phases (main100 launch.log, same copy, hidden rig, Debug; perf/launch.py `launch: phase` lines): app-init 39.5 ms after process start; NSApplication's own start 486.4 (app-init to nsapp-made, AppKit: no app code runs); the hidden copy's set-up 2.6 (taken off); commands-body to root-state-init 132.0 (SwiftUI making the window; no app code); then the app's views: split-hosts-made to list-body 92.6 (the sidebar pane), list 26.7, reader 16.1, dividers and appearance about 30; the judged launch (842) is first-appear. Built (perf-archive rounds 6-7): the hidden search dropdown is built after the first frame (InboxListView.swift), the sidebar reads the outbox once per evaluation instead of four times (SidebarView.swift), a `sidebar-body` mark splits the 92.6. Left: (1) the lead's run of the next build with the new marks; (2) the 400 ms budget is below AppKit's own start on this machine (486.4 ms before any app view exists): no app change can meet it while that holds; a Release build and a quiet machine are the remaining levers (launch-r1 proposal 5), the owner or the lead decides; (3) whatever the sidebar mark names inside its 92.6 ms.",
+ "owner": "The owner says whether the installed main bundle is a Release build (docs/lanes/launch-r1.md proposal 5): the 400 ms row cannot be met by a Debug build (phases 3-5 alone about 500 ms).",
+ "notes": "Budgets (docs/CONSTANTS.md:9-12): warm 400 is judged as 'warm, same copy' (the SECOND launch of one copy); the first launch of a fresh copy is judged against LAUNCH_COLD_MS 1500 (perf/launch.py:89-99); the acceptance's 'warm under 400' maps to the same-copy row. Proofs 0-1: checks/launch-order-check.py:73-110 judges 'AppModel.init draws from an empty model', 'CoreChanges.start only inside settle()', 'PushClientMac.start only inside afterFirstFrame()', 'NotchFeature.attach ...', 'onAppear: firstFrameMs, then settle(), then afterFirstFrame()', the web view after the first frame; --selftest (lines 160-237) prints 'ok|BAD <case> fails=[...]' and the totals line (237). Mutant: Sources/App/RootView.swift:27 renames settle() so the source reader's ordered-offset check finds settle at offset -1 and prints FAIL for 'onAppear: firstFrameMs, then settle(), then afterFirstFrame()' (proof 0; the selftest of proof 1 runs on its own mutated copies and stays green). Needs no build. Last lines saved: _captures/launch-r1/launch-main55.log:4. Proof 4 needs the machine quiet; the log's first line prints the load (perf/launch.py:52). | OLD GAP (before lane gap-states, 2026-11-12): L. main92 (lane-inputs-main92/perf/launch.log): warm same copy 811.7 ms (budget 400), warm fresh copy 1712.9 ms (budget 1500), all still OVER; docs/lanes/perf-archive.md section (d) names the three app-owned pieces; its Round 2 places the split dividers before the first layout when the split view is sized (MacSplitView.swift viewWillLayout, placeIfSized), keeps launch-r2's web view gate, adds `measure mac-main.launch.phases` (LaunchClock.phases; perf/launch.py --phases, selftested) which needs one routing line in Sources/ControlSocket/WindowVerbs.swift (a finding there), and proposes the LAUNCH_SAME_COPY_MS and FIRST_FRAME_MS rows. Still missing: the lead's build, `perf/launch.py --phases` and par-macshell runs, and the rows set from that measure. perf/launch.py reads 1742 ms warm, 1789 ms cold and 1817 ms first frame on main55 (docs/lanes/launch-r1.md:'Baseline' table), all OVER; the budgets 400 / 1500 / 100 are not met by any saved run. The phase table (launch-r1.md '## Phase table', rows 1-7) already names where the time went: phase 1 (process held before its first instruction, 679-838 ms: the OS's first-run scan of a fresh file, not the app), phase 3-5 (about 500 ms at load 9, Debug build: AppKit init and WKWebView creation) and 'App code about 40 to 130 ms'. What a builder must do: (a) fix what the app owns (the WKWebView creation behind BodyWebGate, launch-r2; defer work after first frame; lane launch-r1/launch-r2 files Sources/App/*), (b) judge on a Release build, as launch-r1.md proposal 5 says (the owner decides; see owner note below), (c) re-run perf/launch.py on a quiet machine and save the log. The start-order check is green today on source and has its own selftest with mutants (proofs 0-1)."
+}

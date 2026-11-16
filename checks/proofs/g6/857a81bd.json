@@ -1,0 +1,69 @@
+{
+  "item": "857a81bd",
+  "full_id": "857a81bd-6b21-4254-8217-450661a2785d",
+  "title": "Mark related mail with a per-search cut-off",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_search_related",
+      "pass": "test result: ok\\. 10 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "**lift >= RELATED_LIFT_MIN && f64::from(c.cos) >= RELATED_MIN_COSINE && !matches.contains(c.id.as_str())",
+      "replace": "**lift >= RELATED_LIFT_MIN * 4.0 && f64::from(c.cos) >= RELATED_MIN_COSINE && !matches.contains(c.id.as_str())",
+      "proof": 0,
+      "red": "a_one_mail_far_above_a_flat_field_is_related.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "variance.sqrt().max(RELATED_DEVIATION_FLOOR)",
+      "replace": "variance.sqrt()",
+      "proof": 0,
+      "red": "b_a_flat_field_gives_no_related_mail.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "if meaning.len() < RELATED_MIN_POPULATION { return HashSet::new(); }",
+      "replace": "if meaning.len() < 1 { return HashSet::new(); }",
+      "proof": 0,
+      "red": "c_under_the_least_population_no_mail_is_related.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": ".take(RELATED_MAX)",
+      "replace": ".take(RELATED_MAX + 10)",
+      "proof": 0,
+      "red": "d_the_most_related_mails_are_the_closest.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "meaning.iter().zip(lifts)\n        .filter(|(c, lift)| **lift >= RELATED_LIFT_MIN && f64::from(c.cos) >= RELATED_MIN_COSINE && !matches.contains(c.id.as_str()))",
+      "replace": "meaning.iter().zip(lifts)\n        .filter(|(c, lift)| **lift >= RELATED_LIFT_MIN && f64::from(c.cos) >= RELATED_MIN_COSINE && true)",
+      "proof": 0,
+      "red": "thread 'e2_a_word_match_does_not_use_up_a_place_among_the_related_mails' (\\(\\d+\\) )?panicked|e2_a_word_match_does_not_use_up_a_place_among_the_related_mails \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "for want_related in [true, false] {",
+      "replace": "for want_related in [false, true] {",
+      "proof": 0,
+      "red": "f_the_order_is_matches_related_others_then_no_vector.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/search_cmd.rs",
+      "find": "meaning.iter().map(|c| (f64::from(c.cos) - mean) / deviation).collect()",
+      "replace": "meaning.iter().map(|c| (f64::from(c.cos) - mean) / deviation.powi(2)).collect()",
+      "proof": 0,
+      "red": "i_the_related_count_and_each_lift_are_served.*FAILED|test result: FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "All nine tests are in core/crates/engine/tests/engine_search_related.rs (grep -c '^#\\[test\\]' = 9), each over the rig's production core on 127.0.0.1 with a fake embedder (a text's first cNN token fixes its cosine): :172 a_one_mail_far_above_a_flat_field_is_related (a mail with no typed letters whose closeness stands clearly above the search's average is related), :188 b_a_flat_field_gives_no_related_mail (no fixed score: a flat field gives none), :205 c_under_the_least_population_no_mail_is_related, :222 d_the_most_related_mails_are_the_closest (cap RELATED_MAX), :247 e_a_match_is_never_marked_related, :266 f_the_order_is_matches_related_others_then_no_vector (the order matches, related, the rest), :339 i_the_related_count_and_each_lift_are_served (state search/last/related and search/last/hit/<n>/lift recomputed from the scores). The rule is search_cmd.rs:553-575 (lifts_of, related_of). The broken copies are the ones the lane lists in docs/lanes/rank.md (table 'Tests ... each with its broken copy'); each find was checked to occur once. The e_ copy's find spans the two lines of related_of's filter (search_cmd.rs:571-572). The cut-off value on the owner's mail (RELATED_LIFT_MIN 2.0) is the lead's measure (rank.md 'What I could not settle') and is not in this finish line. Nothing was run by me."
+}

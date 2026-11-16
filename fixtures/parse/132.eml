@@ -1,0 +1,37 @@
+From: Quill Docs <security@example.com>
+To: Assem Example <assem@example.org>
+Subject: New sign-in to your account
+Date: Sun, 15 Nov 2026 07:49:00 +0000
+Message-ID: <aa56693eb66f380d@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============2039419992283622885=="
+
+--===============2039419992283622885==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+We noticed a new sign in to your account from Chrome on a Mac at 14:32. Revie=
+w recent activity: https://example.com/security/activity
+
+--===============2039419992283622885==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5R
+dWlsbCBEb2NzPC90aXRsZT48c3R5bGU+Ym9keXtmb250LWZhbWlseTpIZWx2ZXRpY2EsQXJpYWws
+c2Fucy1zZXJpZjtjb2xvcjojMjIyfS5jb2Rle2ZvbnQtc2l6ZToyOHB4fTwvc3R5bGU+PC9oZWFk
+Pjxib2R5Pjx0YWJsZSB3aWR0aD0iMTAwJSIgY2VsbHBhZGRpbmc9IjAiIGNlbGxzcGFjaW5nPSIw
+Ij48dHI+PHRkIGFsaWduPSJjZW50ZXIiPjxpbWcgYWx0PSJ4IiBzcmM9aHR0cDovL2Nkbi5leGFt
+cGxlLm5ldC9sb2dvL2RiMTIwMTc1LmdpZj48aDI+UXVpbGwgRG9jczwvaDI+PHA+V2Ugbm90aWNl
+ZCBhIG5ldyBzaWduIGluIHRvIHlvdXIgYWNjb3VudCBmcm9tIENocm9tZSBvbiBhIE1hYyBhdCAx
+NDozMi48L3A+PHA+SWYgdGhpcyB3YXMgeW91LCBubyBhY3Rpb24gaXMgbmVlZGVkLiBJZiBub3Qs
+IDxhIGhyZWY9Imh0dHBzOi8vYWNjb3VudHMuZXhhbXBsZS5jb20vc2VjdXJpdHkvYWN0aXZpdHki
+PnJldmlldyByZWNlbnQgYWN0aXZpdHk8L2E+LjwvcD48cCBzdHlsZT0iZm9udC1zaXplOjExcHg7
+Y29sb3I6Izg4OCI+WW91IHJlY2VpdmUgdGhpcyBiZWNhdXNlIG9mIHlvdXIgYWNjb3VudC4gPGEg
+aHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC91bnN1YnNjcmliZT91PTc1ZGMyYiI+VW5zdWJzY3Jp
+YmU8L2E+IHwgPGEgaHJlZj0iaHR0cHM6Ly9leGFtcGxlLm5ldC9wcml2YWN5Ij5Qcml2YWN5PC9h
+PjwvcD48L3RkPjwvdHI+PC90YWJsZT48L2JvZHk+PC9odG1sPg0K
+
+--===============2039419992283622885==--

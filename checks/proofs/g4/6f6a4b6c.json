@@ -1,0 +1,31 @@
+{
+  "item": "6f6a4b6c",
+  "full_id": "6f6a4b6c-b0fc-4890-a65c-0835da5b07ff",
+  "title": "Run tonight's new Swift tests for real",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "everySampleMailIsServedAndNotEmpty,theSamplesKeepTheirHtmlAndTheirFigures,aBlockedRemotePictureIsNotAFile,aRealInlinePictureStaysListedBesideABlockedOne,theBlockedPlaceholderIsTheCoresOwn,everyKeyOfTheV8ListIsBoundInTheSuperhumanPreset,theSuperhumanPresetBindsNothingElseButTheDeclaredExtras,windowFactsAreEmptyWhenThereIsNoApplication",
+      "pass": "passed",
+      "fail": "failed"
+    },
+    {
+      "kind": "lead",
+      "run": "sh scripts/swift-test-here.sh (the whole package target) on a tree whose library matches; quote the run's summary line and, from the log, the line `Test <name> passed` of each of the eight tests of proof 0",
+      "pass": "all eight names appear as passed; the summary line `Test run with N tests ... passed` is quoted with the eight lines"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/AttachmentsMac/AttachmentSet.swift",
+      "find": ".filter { $0.lowercased() != blockedImageSource }",
+      "replace": ".filter { _ in true }",
+      "proof": 0,
+      "red": "aBlockedRemotePictureIsNotAFile"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "The five items of the acceptance and their tests: MessageBodySamplesTests (Tests/Unit/MessageBodySamplesTests.swift:13 everySampleMailIsServedAndNotEmpty, :23 theSamplesKeepTheirHtmlAndTheirFigures); AttachmentSetBlockedTests (Tests/Unit/AttachmentSetBlockedTests.swift:9 aBlockedRemotePictureIsNotAFile, :16 aRealInlinePictureStaysListedBesideABlockedOne, :22 theBlockedPlaceholderIsTheCoresOwn); the two Cmd-J tests in ShortcutsTests (Tests/Unit/ShortcutsTests.swift:74 everyKeyOfTheV8ListIsBoundInTheSuperhumanPreset and :91 theSuperhumanPresetBindsNothingElseButTheDeclaredExtras; the latter lists the Cmd-J key among the declared extras at :94 and expects it bound to ai-reply at :98, which the old log's red lines contradicted before that edit); the WindowBridge no-app test (Tests/Unit/WindowBridgeNoAppTests.swift:13 windowFactsAreEmptyWhenThereIsNoApplication; its mutant note at lines 10-11, reading NSApp.windows directly, is not given as a find string because the break spans several lines). The mutant here removes the blocked-picture filter (Sources/Features/AttachmentsMac/AttachmentSet.swift:57). Whether the Cmd-J tests are green now is not known: the reader's log (unit-final.log:851-884) may be older than the edit that added the key to the extras; proof 1 settles it. If ShortcutsTests is red on the current HEAD, the item stays open with the named test."
+}

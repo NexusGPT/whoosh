@@ -1,0 +1,6 @@
+# Hostile nesting: 100,000 nested divs around a sentence. Past the nesting cap (a linear scan, before any parser) the message is escaped text with a warning; the sentence shows.
+fold_from: none
+warning: nested deeper than the cap
+authored: The sentence at the bottom of the nesting.
+--- html
+<p>Before the nesting.</p>@@REPEAT 100000@@<div>@@END@@The sentence at the bottom of the nesting.

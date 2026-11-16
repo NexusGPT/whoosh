@@ -1,0 +1,76 @@
+{
+  "item": "dd219a00",
+  "full_id": "dd219a00-0a4c-47a8-837d-188a21c32f98",
+  "title": "Build par-relay-tracking",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--manifest-path relay/Cargo.toml --test relay tracking::",
+      "pass": "(?s)(?=.*test tracking::opens_are_counted_for_an_opted_in_message_only \\.\\.\\. ok)(?=.*test tracking::a_signed_link_redirects_and_counts_the_click \\.\\.\\. ok)(?=.*test tracking::only_links_this_relay_signed_redirect \\.\\.\\. ok)(?=.*test tracking::tracking_rows_hold_no_address_and_no_url \\.\\.\\. ok)(?=.*test result: ok\\. 4 passed; 0 failed)",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "python3 checks/parity/par-relay-tracking.py",
+      "pass": "(?s)(?=.*PASS +open-tracking-pixel-counts-opens)(?=.*PASS +pixel-is-never-cached)(?=.*PASS +tracking-is-opt-in-per-message)(?=.*PASS +click-redirect-counts-the-click)(?=.*PASS +only-relay-signed-links-redirect)(?=.*PASS +tracking-stores-token-and-time-only)(?=.*PASS +reader-summary-says-opened-and-clicked)(?=.*7 checks, 0 failed, 0 not judged)",
+      "fail": "  FAIL +|NOT JUDGED",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "lead",
+      "run": "python3 checks/parity/par-relay-tracking.py --selftest",
+      "pass": "(?s)(?=.*\\| open-tracking-pixel-counts-opens \\| .* \\| yes \\|)(?=.*\\| pixel-is-never-cached \\| .* \\| yes \\|)(?=.*\\| tracking-is-opt-in-per-message \\| .* \\| yes \\|)(?=.*\\| click-redirect-counts-the-click \\| .* \\| yes \\|)(?=.*\\| only-relay-signed-links-redirect \\| .* \\| yes \\|)(?=.*\\| tracking-stores-token-and-time-only \\| .* \\| yes \\|)(?=.*\\| reader-summary-says-opened-and-clicked \\| .* \\| yes \\|)",
+      "fail": "\\| NO \\(",
+      "timeout_s": 2400
+    }
+  ],
+  "mutants": [
+    {
+      "file": "relay/src/routes/tracking_routes.rs",
+      "find": "tracking::record(&st.store, token, \"open\", now_unix())",
+      "replace": "Ok::<bool, crate::registry::StoreError>(false)",
+      "proof": 0,
+      "red": "opens_are_counted_for_an_opted_in_message_only \\.\\.\\. FAILED|test result: FAILED"
+    },
+    {
+      "file": "relay/src/routes/tracking_routes.rs",
+      "find": "(header::CACHE_CONTROL, \"no-store\")",
+      "replace": "(header::CACHE_CONTROL, \"public\")",
+      "proof": 0,
+      "red": "opens_are_counted_for_an_opted_in_message_only \\.\\.\\. FAILED|a cached pixel would hide the second open"
+    },
+    {
+      "file": "relay/src/routes/tracking_routes.rs",
+      "find": "tracking::record(&st.store, &token, \"click\", now_unix())",
+      "replace": "Ok::<bool, crate::registry::StoreError>(false)",
+      "proof": 0,
+      "red": "a_signed_link_redirects_and_counts_the_click \\.\\.\\. FAILED|test result: FAILED"
+    },
+    {
+      "file": "relay/src/routes/tracking_routes.rs",
+      "find": "|| !st.signer.verify(&token, &url, &q.s)",
+      "replace": "|| false",
+      "proof": 0,
+      "red": "only_links_this_relay_signed_redirect \\.\\.\\. FAILED|test result: FAILED"
+    },
+    {
+      "file": "relay/src/registry/schema.rs",
+      "find": "    occurred_at INTEGER NOT NULL\n);",
+      "replace": "    occurred_at INTEGER NOT NULL,\n    recipient_address TEXT\n);",
+      "proof": 1,
+      "red": "FAIL +tracking-stores-token-and-time-only"
+    },
+    {
+      "file": "relay/src/routes/tracking_routes.rs",
+      "find": "\"clicked\": s.clicks > 0,",
+      "replace": "\"clicked\": false,",
+      "proof": 1,
+      "red": "FAIL +reader-summary-says-opened-and-clicked"
+    }
+  ],
+  "gap": "(1) THE PER-MESSAGE HOSTED ENDPOINT IS HELD ON AN OWNER DECISION: the todo says 'per-message tracking (needs a hosted pixel and redirect endpoint; held on gap G17)'; docs/plan.json:7339 id G17, :7341 owner: approve the extra hosted endpoint, :7342 blocking par-relay-tracking. Until that is approved the item cannot close; the routes are proved on 127.0.0.1 only (par-relay-tracking.py:13-14: hosting is printed as PENDING, not counted). (2) App half unproved (M): PRD 'Sent-mail tracking' also asks for a composer switch (off by default) and the reader showing 'opened · clicked' (par-relay-tracking.py:3-7 docstring); no case in checks/parity/par-composermac.py or par-reader.py reads a tracking switch or label (grep of Sources and checks for 'tracking' finds no composer or reader code); the relay check's 'reader-summary-says-opened-and-clicked' judges the relay's summary JSON only (par-relay-tracking.py:130). Add the composer switch and the reader label plus a case each (M, L if the switch goes to the core).",
+  "owner": "Approve (or refuse) the extra hosted pixel and redirect endpoint (gap G17, docs/plan.json:7339-7342).",
+  "notes": "Features (par-relay-tracking.py CHECKS): open-tracking-pixel-counts-opens :51 (pixel at /t/o/<token>.gif, relay/src/routes/tracking_routes.rs:29), pixel-is-never-cached :64, tracking-is-opt-in-per-message :72, click-redirect-counts-the-click :86, only-relay-signed-links-redirect :100, tracking-stores-token-and-time-only :115, reader-summary-says-opened-and-clicked :130; mutants P1 to P7 at :142-156 (P1, P2, P4, P5 go to the cargo proof, P6 and P7 to the check; P3 is not used). Cargo twin: relay/tests/relay/tracking.rs tests at :15, :36, :50, :70 (4 tests, main.rs lists mod tracking at :7). Proofs 1 and 2 run `cargo build -j 2` of the relay through checks/relay-core-check.py:202-208 and start a relay on 127.0.0.1 (no app, no window); selftest rebuilds the relay once per mutant, so it is long: kind lead, one compile at a time. The 4 cargo tests share the relay crate with the item acefe421 (registry_api). Not run by me; the reader found no run of this check at any commit. The selftest writes its mutant table under the check's capture folder (relay-core-check.py:269-270 CAP): run it on a scratch copy."
+}

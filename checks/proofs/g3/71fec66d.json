@@ -1,0 +1,57 @@
+{
+  "item": "71fec66d",
+  "full_id": "71fec66d-5645-4e7c-a614-bebc78038686",
+  "title": "Build con-seams-s4",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/seams/undo-window.py",
+      "pass": "\\| qr-instant \\|.*RED",
+      "fail": "STAYED GREEN|FAIL +oracle",
+      "timeout_s": 120
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/seams/from-signature.py",
+      "pass": "\\| no-signature \\|.*RED",
+      "fail": "STAYED GREEN|FAIL +oracle",
+      "timeout_s": 120
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/seams/undo-window.py",
+      "pass": "PASS +window-seconds",
+      "fail": "FAIL |STAYED GREEN|NOT JUDGED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/seams/from-signature.py",
+      "pass": "PASS +from",
+      "fail": "FAIL |STAYED GREEN|NOT JUDGED",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel.swift",
+      "find": "fromId = r.accountId",
+      "replace": "fromId = accounts.first?.id ?? \"\"",
+      "proof": 3,
+      "red": "FAIL +from"
+    },
+    {
+      "file": "Sources/Features/ComposerMac/ComposerModel+Send.swift",
+      "find": "return UndoCountdown(startedAt: Date(), seconds: Int((until - e.createdAtMs) / 1000))",
+      "replace": "return UndoCountdown(startedAt: Date(), seconds: 5)",
+      "proof": 2,
+      "red": "FAIL +window-seconds"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "checks/seams/undo-window.py (judge :95, MUTANTS notch-8s, composer-5, qr-instant) and checks/seams/from-signature.py (judge :71, MUTANTS default-account, no-signature). seamlib.run (checks/seams/seamlib.py:217) prints 'PASS <label>' per live label, 'PASS oracle' and one table row '| <mutant> | ... | RED: ... |' per mutant; with no socket the live part prints NOT JUDGED and exit is 1, so proofs 0 and 1 (offline, they prove the JUDGE goes red on its mutants) are matched by their lines, not by exit code. Proofs 2 and 3 drive the hidden build (the runner wraps them in launch-one.sh with --fixture-core, as checks/seams/run.py does). The two source mutants are real app breaks that must turn the live seam red; the judge mutants inside the scripts are the 'red on their mutants' claim. Slice list: checks/seams/run.py:20 ('4': undo-window, from-signature)."
+}

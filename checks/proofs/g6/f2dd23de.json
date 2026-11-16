@@ -1,0 +1,114 @@
+{
+  "item": "f2dd23de",
+  "full_id": "f2dd23de-212f-4134-9faa-a771d33b94e8",
+  "title": "Rule preview counts are real on the real core",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p smart-inbox --test answered_r5 --test counts",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){2}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test label_flow_d17 --test engine_labels_r5",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){2}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice3",
+      "pass": "(?s)PASS\\s+.*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL\\s",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_rule_counts -- --nocapture",
+      "pass": "(?s)rule counts, words rule cold: 200 matches from 2000 mails in \\d+ ms.*test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_rig_hooks",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-rulecount",
+      "pass": "(?s)PASS\\s+rule-count-unread-and-replied-by-me-is-not-zero .*PASS\\s+rule-count-unread-and-not-replied-by-me-is-two .*PASS\\s+rule-count-rows-are-the-count .*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL\\s|NOT JUDGED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice-rulecount --mutant",
+      "pass": "mutant rule-counts-zero: (?:RED as it must be|KILLED by )",
+      "fail": "SURVIVED",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice rulecount: model all pass, 4 broken models each red on its own cases",
+      "fail": "WRONG|FAILS|SURVIVED|Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "smart_inbox::corpus::rule_set_count(&self.store, rule_set)",
+      "replace": "RuleSetCount { count: 0, unread: 0, newest_at_ms: None }",
+      "proof": 1,
+      "red": "the_live_count_is_the_real_one \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "rule_counts::words_count(&parts, &rule_words)",
+      "replace": "{ let _ = (&parts, &rule_words); 0 }",
+      "proof": 3,
+      "red": "thread 'a_words_rule_counts_the_stored_inbox_mail_it_matches' (\\(\\d+\\) )?panicked|a_words_rule_counts_the_stored_inbox_mail_it_matches \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "rule_counts::split_tab_count(&self.store, rule)",
+      "replace": "{ let _ = rule; 0 }",
+      "proof": 3,
+      "red": "thread 'a_split_tab_rule_counts_the_inbox_mail_it_would_hold' (\\(\\d+\\) )?panicked|a_split_tab_rule_counts_the_inbox_mail_it_would_hold \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rule_counts.rs",
+      "find": "pub(crate) fn words_count(parts: &Parts, rule_words: &str) -> u32 {",
+      "replace": "pub(crate) fn words_count(parts: &Parts, rule_words: &str) -> u32 {\n    std::thread::sleep(std::time::Duration::from_millis(60));",
+      "proof": 3,
+      "red": "the_rule_counts_answer_under_50_ms_on_2000_mails \\.\\.\\. FAILED|words rule cold took \\d+ ms"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "if rule_counts::zeroed() {",
+      "replace": "if false {",
+      "proof": 4,
+      "red": "the mutant: the label rule count answers 0|the_rig_hooks_set_the_conditions.*FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "smart_inbox::corpus::rule_set_count(&self.store, rule_set)",
+      "replace": "RuleSetCount { count: 0, unread: 0, newest_at_ms: None }",
+      "proof": 5,
+      "red": "FAIL\\s+rule-count-unread-and-replied-by-me-is-not-zero"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges that exist. (1) 'counts come from the store': the label rule preview is real: core/crates/engine/src/rust_core.rs:640 `rule_set_count` calls smart_inbox::corpus::rule_set_count (the reader found this), :642 rule_set_matches, :643 label_rerun_count; judged by core/crates/smart-inbox/tests/answered_r5.rs:86 the_unread_threads_with_a_previous_reply_from_me_are_counted (unread AND replied by me counts 1 with unread 1; replied-by-me alone 1; never replied 8) and :107 the_matching_ids_are_the_rows_pane_2_draws, :154 the_projected_count_equals_the_count_over_the_whole_corpus; core/crates/smart-inbox/tests/counts.rs:54, :74. (2) 'Sent is synced for replied by me': core/crates/engine/src/imap_source.rs:88 `skipped(role)` skips only the All and Flagged roles, so Sent is a synced folder (the reader's 'syncs INBOX only' no longer holds at this commit); the sent copy joins its thread: core/crates/smart-inbox/tests/answered_r5.rs:54 the_sent_copy_joins_the_thread_of_the_message_it_answers; engine label_flow_d17.rs:395 a_message_in_sent_is_never_filed_by_the_flow. The real core's Sent folder from a server is exercised by checks/realcore-check.py --slice3 (a Sent message earlier in a thread, flips a later inbox message; judge3 at :378) and engine/tests/realcore_s3b.rs. (3) the cited rust_core.rs:503 line of the acceptance is old: the zero returns now sit at :635 and :685. The seen-red mutant sets the label rule count to zero (find string occurs once, rust_core.rs:640): it is the lane's own mutant E1 (core/crates/engine/tests/engine_labels_r5.rs:6, test the_live_count_is_the_real_one, which calls core.rule_set_count at :110-113), judged by proof 1; the smart-inbox tests of proof 0 call the corpus directly and judge the arithmetic. Not proved by anything yet: the hidden real-core non-zero count (gap piece 2). (4) gap-engine-tests, 2026-11-11: rule_match_count and split_tab_rule_match_count (rust_core.rs) now read the store through the new core/crates/engine/src/rule_counts.rs (declared in rust_core.rs by #[path], as people.rs and search_cmd.rs are). rule_match_count = the exact group of the owner's search for the rule's words (search_cmd::exact_matches, capped at SEARCH_RANKED_MAX 1000) kept to the mail still in the inbox and not sent by the owner (the test engine's FixtureFiling.swift ruleLiveIdsLocked reading: no archived, muted or snoozed mail, no sent copy). split_tab_rule_match_count: Sender, Domain and Account through smart_inbox::corpus::rule_set_count (inbound INBOX mail, as the labels screen counts), Builtin and DecisionCategory through the store's tab_count, Label through one SQL read of the inbox mail filed under it (no store change). Proof 3 is new: core/crates/engine/tests/engine_rule_counts.rs, three tests (a_words_rule_counts_the_stored_inbox_mail_it_matches, a_split_tab_rule_counts_the_inbox_mail_it_would_hold, the_rule_counts_answer_under_50_ms_on_2000_mails, which prints 'rule counts, <name>: N matches from 2000 mails in X ms'). Written, not run. (tail-realcore, 2026-11-12) the hidden half is built as its own slice, `--slice-rulecount` (not a case inside --slice3, whose cases stay as they were): the slice-3 mailbox and labels (WHOOSH_CORE_CHECK_FLOW=1), then the labels screen's new-label inspector (`mac-main.sidebar.labels.add`, `mac-labels.inspector`, doors `.entry.fact.unread.yes`, `.entry.fact.replied_by_me.yes|no`, the summary row's `count` read once `counting` is false) as checks/parity/par-labelscontactsmac.py drives it. Cases: `rule-count-unread-and-replied-by-me-is-not-zero` (count 1: the Kim mail that follows the owner's Sent mail), `rule-count-unread-and-not-replied-by-me-is-two` (a count that is always 1 is red), `rule-count-rows-are-the-count`. `--mutant` launches WHOOSH_CORE_MUTANT=rule-counts-zero and all three must be red. The gap named `mac-labels-contacts.rule.matches` (the smart-folder editor, rule_match_count); the label rule count is the labels inspector's, so that is the door read. Written and self-tested, not run on a bundle."
+}

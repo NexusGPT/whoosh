@@ -1,0 +1,36 @@
+{
+  "item": "ca7f4e9d",
+  "full_id": "ca7f4e9d-97a8-4025-845a-077524445781",
+  "title": "Prove meaning search on the owner's real mail",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "lead",
+      "run": "on the installed build with the real account, after the sync and the indexing have finished: read from a private copy of the owner's data folder, as numbers only: (a) stored messages, (b) messages in the word index, (c) chunks embedded in the meaning index, (d) chunks stored",
+      "pass": "(a) = (b) and (c) = (d), (a) greater than 0"
+    },
+    {
+      "kind": "lead",
+      "run": "in the installed build search the word 'cadeau' (absent from the mail, close in meaning to a word the mail holds); read the number of results and whether the first result is the message the owner knows to be about gifts",
+      "pass": "results greater than 0 and the owner confirms the right message"
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --test engine_search_inside",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "-p search-vector --test recall_probe",
+      "pass": "test result: ok\\. \\d+ passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [],
+  "gap": null,
+  "owner": "This is the owner's own mail on the owner's installed build: the lead can read counts (messages, word-index entries, meaning-index chunks) from a private copy, but only the owner can say that a search for 'cadeau' returns the right message. Run the installed build, let it finish indexing, search 'cadeau', and say what you see.",
+  "notes": "What proves the engines in the repo (not the owner's data): word index inside words engine_search_inside.rs, meaning recall core/crates/search-vector/tests/recall_probe.rs, key by chunk id replies_d21.rs:88. The earlier reader could not read the data folder (the brief forbids it); I did not either. The exact index file names and tables of the data folder are not named here because I did not read them: the lead names them from docs/DATA-MAP.md rows 'chunk' (:145) and the search index rows when preparing the private copy. A meaning-index count equal to the number of stored chunks, and a word-index count equal to stored messages, are the acceptance's 'covering every stored message'."
+}

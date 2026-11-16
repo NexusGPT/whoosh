@@ -1,0 +1,76 @@
+{
+  "item": "fa8497a8",
+  "full_id": "fa8497a8-c8ac-420e-a670-451df76bdc4a",
+  "title": "Build mob-labelscontactsphone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "theFixtureLabelTreeNestsThreeDeepSoTheScreenHasDepthToShow,thePhoneShowsTheSameLabelTreeWithTheSameDepths,theSmartFoldersShowTheirRuleInWordsAndAZeroMatchCountBeforeSaving,theContactCardListsEveryMessageFromTheSenderWithItsAccount",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/labelscontactsphone-check.py --selftest",
+      "pass": "(?s)(?=.*mutant labels-flat +-> L1 red: True)(?=.*mutant pin-no-write +-> L6 red: True)(?=.*mutant contact-one-address +-> L8 red: True)(?=.*mutant back-dead +-> L9 red: True)(?=.*mutant journey-gains-a-step +-> M1 red: True)(?=.*mutant journey-moves-a-value +-> M1 red: True)(?=.*mutant contact-wrong-account +-> L8 red: True)(?=.*order judge oldest first +-> False)(?=.*selftest: \\d+ cases green on the model, each red on its mutant)",
+      "fail": "did not turn|baseline|red: False|selftest: \\d+ cases, \\d+ mutants, \\d+ problems",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/labelscontactsphone-check.py",
+      "pass": "(?s)(?=.*ok +M1 step J2\\.6/rule-in-words )(?=.*ok +M1 step J2\\.6/nested-under-work )(?=.*ok +M1 step J2\\.6/sidebar-shows-nesting )(?=.*ok +M1 step J2\\.6/rule-edited )(?=.*ok +M1 step J2\\.6/count-updates )(?=.*ok +M1 step J2\\.7/sender-messages-newest-first )(?=.*ok +M1 step J2\\.7/each-row-has-account )(?=.*ok +M1 step J2\\.7/sender-is-linea )",
+      "fail": "FAIL +M1",
+      "timeout_s": 120
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/labelscontactsphone-check.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theLabelPageNamesItsCardsAsTheMacDoes",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/LabelsContactsPhone/LabelPagePhone.swift",
+      "find": ".accessibilityIdentifier(\"iphone-labels-contacts.label.pin\")",
+      "replace": ".accessibilityIdentifier(\"iphone-labels-contacts.label.pinx\")",
+      "proof": 1,
+      "red": "baseline .* is FAIL|did not turn"
+    },
+    {
+      "file": "checks/labelscontactsphone-check.py",
+      "find": "\"labels-flat\": \"L1\"",
+      "replace": "\"labels-flat\": \"L9\"",
+      "proof": 1,
+      "red": "mutant labels-flat +-> L9 red: False|did not turn L9 red"
+    },
+    {
+      "file": "checks/labelscontactsphone-check.py",
+      "find": "(\"J2.7/each-row-has-account\", \"substituted\", \"L8\",",
+      "replace": "(\"J2.7/each-row-has-accountx\", \"substituted\", \"L8\",",
+      "proof": 2,
+      "red": "FAIL +M1"
+    },
+    {
+      "file": "Sources/Features/LabelsContactsPhone/LabelPhoneRead.swift",
+      "find": "title: Words.text(\"AI sorting\")",
+      "replace": "title: Words.text(\"AI sort\")",
+      "proof": 4,
+      "red": "theLabelPageNamesItsCardsAsTheMacDoes.*failed"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Selftest (labelscontactsphone-check.py:414-451) runs the cases against a ModelApp, prints `  mutant <name> -> <case> red: True|False` per model mutant (:429-431 and MUTANTS :384-388) and, on a clean pass, `selftest: N cases green on the model, each red on its mutant (a model mutants, b source mutants)` (:451); the source mutants S1 to S4 (:389-394) edit a COPY of Sources/Features/LabelsContactsPhone (id-removed, literal-word, second-toggle, network); my first mutant edits the real file so the selftest's baseline static run (`run_static(SRC)`, :417) goes red. The second mutant re-points a declared mutant to the wrong case so the 'each red on its mutant' claim fails. The only sources with the pin id: LabelPagePhone.swift:85 (the :44 line has `.pin.failure`, so the find string with the closing quote occurs once). Not run by me. Added in this change: STEP_ROWS, mac_steps, judge_steps and the static case M1 in checks/labelscontactsphone-check.py: 8 rows, one printed line per Mac check call of J2.6 and J2.7 (`ok M1 step J2.x/<name> :: <kind> -> <case>: <reason>`), two journey mutants in the selftest; the unit test theLabelPageNamesItsCardsAsTheMacDoes (proof 4, three arguments: Entry rules, AI sorting, Exit filter). Proof 2 prints 'N checks, F failed, 9 not judged' with no app, because the nine driven cases are not judged: its pass line is the step lines only. | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). Limit measured: the phone fixture holds one message from the sender of the contact card, so the order is judged on one row live and on synthetic rows in --selftest."
+}

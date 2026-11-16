@@ -1,0 +1,35 @@
+From: Mosaic Notes <billing@accounts.example.com>
+To: Assem Example <assem@example.org>
+Subject: Invoice 2026-1984
+Date: Tue, 03 Nov 2026 14:19:00 +0000
+Message-ID: <f13bc8d68783bf5e@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============8895095303334648829=="
+
+--===============8895095303334648829==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Invoice 2026-1984 for EUR 1,250.00 is due on 30 November 2026.
+
+--===============8895095303334648829==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5N
+b3NhaWMgTm90ZXM8L3RpdGxlPjxzdHlsZT5ib2R5e2ZvbnQtZmFtaWx5OkhlbHZldGljYSxBcmlh
+bCxzYW5zLXNlcmlmO2NvbG9yOiMyMjJ9LmNvZGV7Zm9udC1zaXplOjI4cHh9PC9zdHlsZT48L2hl
+YWQ+PGJvZHk+PHRhYmxlIHdpZHRoPSIxMDAlIiBjZWxscGFkZGluZz0iMCIgY2VsbHNwYWNpbmc9
+IjAiPjx0cj48dGQgYWxpZ249ImNlbnRlciI+PGltZyBzcmM9J2h0dHBzOi8vdHJhY2suZXhhbXBs
+ZS5vcmcvby9mNDViOGRmOC5qcGcnIGFsdD0nbG9nbycgd2lkdGg9JzEyMCc+PGgyPk1vc2FpYyBO
+b3RlczwvaDI+PHA+SW52b2ljZSA8Yj4yMDI2LTE5ODQ8L2I+IGZvciBFVVIgNjc4OC4zOSBpcyBk
+dWUgb24gMzAgTm92ZW1iZXIgMjAyNi48L3A+PHA+VkFUIDIxJS4gSUJBTiBCRTY4IDUzOTAgMDc1
+NCA3MDM0LiBQYXltZW50IHJlZmVyZW5jZSA0MDUvNDE0OS8yMjA4Ny48L3A+PHAgc3R5bGU9ImZv
+bnQtc2l6ZToxMXB4O2NvbG9yOiM4ODgiPllvdSByZWNlaXZlIHRoaXMgYmVjYXVzZSBvZiB5b3Vy
+IGFjY291bnQuIDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvdW5zdWJzY3JpYmU/dT04Njg3
+ZjUiPlVuc3Vic2NyaWJlPC9hPiB8IDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS5uZXQvcHJpdmFj
+eSI+UHJpdmFjeTwvYT48L3A+PC90ZD48L3RyPjwvdGFibGU+PC9ib2R5PjwvaHRtbD4NCg==
+
+--===============8895095303334648829==--

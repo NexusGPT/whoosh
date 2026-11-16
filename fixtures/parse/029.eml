@@ -1,0 +1,36 @@
+From: Northwind Cloud <security@example.com>
+To: Assem Example <assem@example.org>
+Subject: Your verification code
+Date: Sun, 08 Nov 2026 14:03:00 +0000
+Message-ID: <545b6469e4ad0f1c@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============4072265718553083224=="
+
+--===============4072265718553083224==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+WW91ciBOb3J0aHdpbmQgQ2xvdWQgdmVyaWZpY2F0aW9uIGNvZGUgaXMgOTA5NjIzLiBJdCBleHBp
+cmVzIGluIDEwIG1pbnV0ZXMuDQo=
+
+--===============4072265718553083224==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+
+PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjx0aXRsZT5O
+b3J0aHdpbmQgQ2xvdWQ8L3RpdGxlPjxzdHlsZT5ib2R5e2ZvbnQtZmFtaWx5OkhlbHZldGljYSxB
+cmlhbCxzYW5zLXNlcmlmO2NvbG9yOiMyMjJ9LmNvZGV7Zm9udC1zaXplOjI4cHh9PC9zdHlsZT48
+L2hlYWQ+PGJvZHk+PHRhYmxlIHdpZHRoPSIxMDAlIiBjZWxscGFkZGluZz0iMCIgY2VsbHNwYWNp
+bmc9IjAiPjx0cj48dGQgYWxpZ249ImNlbnRlciI+PGltZyBzcmM9Imh0dHBzOi8vdHJhY2suZXhh
+bXBsZS5vcmcvYmFubmVyLzUyNjg4NTBkLnBuZyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgYWx0PSIi
+PjxoMj5Ob3J0aHdpbmQgQ2xvdWQ8L2gyPjxkaXY+U2VjdXJpdHkgY29kZTogPHNwYW4gc3R5bGU9
+ImZvbnQtZmFtaWx5Om1vbm9zcGFjZTtmb250LXNpemU6MjRweCI+OTA5NjIzPC9zcGFuPjwvZGl2
+PjxwIHN0eWxlPSJmb250LXNpemU6MTFweDtjb2xvcjojODg4Ij5Zb3UgcmVjZWl2ZSB0aGlzIGJl
+Y2F1c2Ugb2YgeW91ciBhY2NvdW50LiA8YSBocmVmPSJodHRwczovL2V4YW1wbGUubmV0L3Vuc3Vi
+c2NyaWJlP3U9NzNkYzRmIj5VbnN1YnNjcmliZTwvYT4gfCA8YSBocmVmPSJodHRwczovL2V4YW1w
+bGUubmV0L3ByaXZhY3kiPlByaXZhY3k8L2E+PC9wPjwvdGQ+PC90cj48L3RhYmxlPjwvYm9keT48
+L2h0bWw+DQo=
+
+--===============4072265718553083224==--

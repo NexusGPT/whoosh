@@ -1,0 +1,65 @@
+{
+  "provider": "mistral",
+  "note": "Invented keys and answers written from each provider's documented JSON. Nothing here was recorded from the live service.",
+  "key": "FIXTURE-not-a-real-key-0001",
+  "bad_key": "FIXTURE-not-a-real-key-REFUSED",
+  "scenarios": {
+    "transcribe": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://api.mistral.ai/v1/audio/transcriptions",
+          "headers": {
+            "Authorization": "Bearer FIXTURE-not-a-real-key-0001"
+          },
+          "body_contains": [
+            "name=\"model\"",
+            "voxtral-mini-latest",
+            "name=\"file\"",
+            "filename=\"clip.wav\"",
+            "Content-Type: audio/wav"
+          ],
+          "content_type_starts": "multipart/form-data; boundary="
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "model": "voxtral-mini-latest",
+            "text": "hold the shipment until Friday and copy Marta",
+            "language": "en",
+            "segments": [],
+            "usage": {
+              "prompt_audio_seconds": 1
+            }
+          }
+        }
+      }
+    ],
+    "refused": [
+      {
+        "expect": {
+          "method": "POST",
+          "url": "https://api.mistral.ai/v1/audio/transcriptions",
+          "headers": {
+            "Authorization": "Bearer FIXTURE-not-a-real-key-REFUSED"
+          },
+          "body_contains": [
+            "name=\"model\"",
+            "voxtral-mini-latest",
+            "name=\"file\"",
+            "filename=\"clip.wav\"",
+            "Content-Type: audio/wav"
+          ],
+          "content_type_starts": "multipart/form-data; boundary="
+        },
+        "response": {
+          "status": 401,
+          "body": {
+            "message": "Unauthorized",
+            "request_id": "fixture-req-0002"
+          }
+        }
+      }
+    ]
+  }
+}

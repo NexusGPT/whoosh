@@ -1,0 +1,19 @@
+{
+  "item": "2bc352b6",
+  "full_id": "2bc352b6-e33d-483c-a012-e800563d916f",
+  "title": "Build par-devicesync",
+  "state": "prove",
+  "proofs": [
+    {"kind": "lead", "run": "python3 checks/parity/par-devicesync.py", "pass": "(?s)(?=.*PASS P-mac-to-mac )(?=.*PASS P-retry-offline )(?=.*PASS P-backoff-steps )(?=.*PASS P-retry-coalesce )(?=.*PASS P-pull-offline )(?=.*PASS P-iphone-accounts-settings )(?=.*PASS P-qr-accounts )(?=.*7 checks, 0 failed, 0 not judged)", "fail": "FAIL |NOT-JUDGED", "timeout_s": 900},
+    {"kind": "lead", "run": "python3 checks/parity/par-devicesync.py --selftest", "pass": "selftest: every check seen red on its mutant", "fail": "NOT RED|FAILED|STAYED GREEN", "timeout_s": 1800}
+  ],
+  "mutants": [
+    {"file": "Sources/Features/DeviceSync/DeviceSyncEngine.swift", "find": "let due = lastWasFailure && clock() >= retryAtMs", "replace": "let due = false", "proof": 0, "red": "FAIL P-retry-offline"},
+    {"file": "Sources/Features/DeviceSync/DeviceSyncEngine.swift", "find": "let index = min(max(failures - 1, 0), backoffSeconds.count - 1)", "replace": "let index = 0", "proof": 0, "red": "FAIL P-backoff-steps"},
+    {"file": "Sources/Features/DeviceSync/FakeCloudContainer.swift", "find": "records.values.filter { $0.seq > since }", "replace": "records.values.filter { $0.seq > since + 100000 }", "proof": 0, "red": "FAIL P-mac-to-mac"},
+    {"file": "Sources/Features/DeviceSync/DeviceSyncEngine.swift", "find": "            throw error\n", "replace": "            return 0\n", "proof": 0, "red": "FAIL P-pull-offline"}
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Named features (docs/plan.json par-devicesync 'what'): 'Sync between Macs' = P-mac-to-mac (three Macs converge on one fake container), 'sync retry without network' = P-retry-offline, P-backoff-steps, P-retry-coalesce, P-pull-offline (checks/devicesync-check.py:28-30 PARITY_IDS; driver cases `check(\"P-...\")` at :195-288; research rows research/gotmail.md:65 and :125). The check is self-contained: par-devicesync.py:19-22 runs base.run_group(PARITY_IDS, 'parity', with_static=False): it compiles the DeviceSync sources with `xcrun swiftc -j 2 -O` (devicesync-check.py build_and_run, ~:325-336) into a scratch folder and runs the driver on a FAKE cloud container: no app, no window, no network. Because it compiles Swift it is kind `lead` (never in parallel with another compile, README says a static proof compiles nothing). Each case prints `PASS|FAIL <id> <detail>` (report(), :355-359), so every named case has a pass line. The mutants are the ones the check's own selftest applies to a scratch copy (devicesync-check.py MUTANTS :365-389, selftest :392-417); here they are applied to the real files and proof 0 must turn red on the named id. Proof 1 runs the 12 parity-relevant mutants of that table on scratch copies (long). The reader's captures (_captures/devicesync/run-parity.txt, 7 checks, 0 failed) show the same ids passing at an earlier build with no commit or date in the file, so they are not used as evidence; the lead's run at this commit is. The 'Sync with iPhone' and 'Accounts to iPhone by QR' ids (P-iphone-accounts-settings, P-qr-accounts) belong to the same group and are listed in the regex. Not run by me."
+}

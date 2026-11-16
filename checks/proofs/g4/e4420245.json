@@ -1,0 +1,68 @@
+{
+  "item": "e4420245",
+  "full_id": "e4420245-43aa-431b-a2db-dd5c83e3e1a4",
+  "title": "Fill the built-in labels on a new installation",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_builtin_labels_r6",
+      "pass": "test result: ok\\. 3 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "cargo",
+      "run": "--release -p engine --test engine_first_run a_new_installation_equals_the_first_run_golden",
+      "pass": "test result: ok\\. 1 passed; 0 failed",
+      "fail": "FAILED|panicked",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "fresh data folder on the installed build: open Settings, Labels, Needs Reply, then Updates, Promotions, Social; read `rows` of the label inspector (or its shot)",
+      "pass": "each of the four labels shows a non-empty description and its entry rule; the AI card of each, with no model set, says in words that the AI cannot sort yet and why"
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py <bundle> --slice-labels",
+      "pass": "(?s)\\A(?=.*?\\nPASS +label-needs-reply-has-a-description )(?=.*?\\nPASS +label-updates-has-a-description )(?=.*?\\nPASS +label-promotions-has-a-description )(?=.*?\\nPASS +label-social-has-a-description )(?=.*?\\nPASS +label-promotions-has-its-entry-rules )",
+      "fail": "^(FAIL|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest slice labels: model all 17 cases pass, broken answers each red on its own case",
+      "fail": "WRONG|FAILS",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/store/src/label_meta.rs",
+      "find": "&& label.description.trim().is_empty()",
+      "replace": "&& true",
+      "proof": 0,
+      "red": "what_the_owner_wrote_is_never_overwritten.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/store/src/label_meta.rs",
+      "find": "UPDATE label SET exit_enabled = 1, exit_fallback = 'primary', updated_at_ms = ?2 WHERE id = ?1",
+      "replace": "UPDATE label SET exit_enabled = 0, exit_fallback = 'primary', updated_at_ms = ?2 WHERE id = ?1",
+      "proof": 0,
+      "red": "a_new_installation_has_the_builtin_labels_filled.*FAILED|test result: FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/rust_core.rs",
+      "find": "if let Err(e) = store.seed_builtin_labels(0) { eprintln!(\"labels: the built-in labels could not be seeded: {e}\"); }",
+      "replace": "let _ = 0;",
+      "proof": 3,
+      "red": "FAIL +label-(needs-reply|updates|promotions|social)-has-a-description"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner opens a new real installation (fresh data folder) and sees Needs Reply, Updates, Promotions and Social filled and the AI card's reason (acceptance: 'seen by the owner').",
+  "notes": "Tests: core/crates/engine/tests/engine_builtin_labels_r6.rs:64, :95, :113 (the file header lists mutants S1-S5, lines 6-12). Seed code: core/crates/store/src/label_meta.rs:761-785 seed_builtin, :792 seed_builtin_labels; call at core/crates/engine/src/rust_core.rs:239-240. Golden: docs/FIRST-RUN.json, engine_first_run.rs:1. No app-side proof is listed: no case of checks/labelscontactsmac-check.py or checks/parity/par-labelscontactsmac.py was confirmed to read the seeded descriptions of a new real installation. That is a gap of kind check (M): a case in checks/realcore-check.py that reads the label inspector rows on a new real installation. The lead proof (the last proof) stands in for it. Lane gap-mailview-checks: the app-side case is checks/realcore-check.py --slice-labels (REAL core, a fresh data folder, one account added through the sheet): `click mac-labels.inspector.open.modify.<id>` for needs-reply, updates, promotions, social; the summary row's `meaning` must be non-empty (Needs Reply: the approved sentence), `rules` must be 1 for Promotions (the mailing-list entry rule) and 0 for the others, and where there is no rule the `.empty` row's words (the AI card saying it cannot sort) must be non-empty: that last case is NOT JUDGED when the inspector serves no `.empty` row within 8 s (the row exists only while the label has no rule and the AI cannot sort: Sources/Features/LabelsContactsMac/LabelInspectorSocket.swift `.empty`). Untested against a build: the lead's run decides whether the inspector serves the row on the real core. The owner's own look (the `owner` text) stands."
+}

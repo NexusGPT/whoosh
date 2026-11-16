@@ -1,0 +1,20 @@
+{
+ "id": "148",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "2324343f1afe441fb068@example.org",
+  "summary": "Design review",
+  "organizer": "ada.lindqvist@example.net",
+  "all_day": false,
+  "start_utc_ms": 1794834000000,
+  "start_local": null,
+  "tzid": null,
+  "location": "Room Alpha"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

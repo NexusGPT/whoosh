@@ -1,0 +1,30 @@
+From: Pia Kowalski <pia.kowalski@mail.example.net>
+To: Assem Example <assem@example.org>
+Subject: Invitation: Supplier call
+Date: Wed, 04 Nov 2026 17:00:00 +0000
+Message-ID: <a22f5b81dc08d02e@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2295388191248756147=="
+
+--===============2295388191248756147==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Pia Kowalski invites you to Supplier call.
+
+--===============2295388191248756147==
+Content-Type: application/ics
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="invite.ics"
+MIME-Version: 1.0
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vRXhhbXBsZSBDYWxlbmRhci8vRU4NClZFUlNJT046
+Mi4wDQpNRVRIT0Q6UkVRVUVTVA0KQkVHSU46VkVWRU5UDQpVSUQ6NjNiMjM3MWI4ZWY0MzNlYmQ0
+ZDlAbWFpbC5leGFtcGxlLm5ldA0KRFRTVEFSVDoyMDI2MTEyNVQxMzMwMDBaDQpEVEVORDoyMDI2
+MTEyNVQxNDMwMDBaDQpTVU1NQVJZOlN1cHBsaWVyIGNhbGwNCk9SR0FOSVpFUjtDTj1QaWEgS293
+YWxza2k6bWFpbHRvOnBpYS5rb3dhbHNraUBtYWlsLmV4YW1wbGUubmV0DQpBVFRFTkRFRTtDTj1B
+c3NlbSBFeGFtcGxlO1JPTEU9UkVRLVBBUlRJQ0lQQU5UO1BBUlRTVEFUPU5FRURTLUFDVElPTjtS
+U1ZQPVQNCiBSVUU6bWFpbHRvOmFzc2VtQGV4YW1wbGUub3JnDQpTVEFUVVM6Q09ORklSTUVEDQpT
+RVFVRU5DRTowDQpFTkQ6VkVWRU5UDQpFTkQ6VkNBTEVOREFSDQo=
+
+--===============2295388191248756147==--

@@ -1,0 +1,33 @@
+From: Kestrel VPN <no-reply@example.net>
+To: Assem Example <assem@example.org>
+Subject: Your Kestrel VPN sign-in code
+Date: Tue, 10 Nov 2026 01:33:00 +0000
+Message-ID: <a9174e9057f16932@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============6324442114575965744=="
+
+--===============6324442114575965744==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Your code is 667461.
+Or sign in with one click: https://auth.example.org/magic-link/9c8a42efbfe2d5604e12f568
+
+--===============6324442114575965744==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Kestrel VPN</title>=
+<style>body{font-family:Helvetica,Arial,sans-serif;color:#222}.code{font-size=
+:28px}</style></head><body><table width=3D"100%" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td align=3D"center"><img src=3D"//cdn.example.net/o/eb22ac10.jpg=
+" width=3D"1" height=3D"1"><h2>Kestrel VPN</h2><p>Your code is <b>667461</b>.=
+</p><p>Or <a href=3D"https://auth.example.org/magic-link/9c8a42efbfe2d5604e12=
+f568">sign in with one click</a>.</p><p style=3D"font-size:11px;color:#888">Y=
+ou receive this because of your account. <a href=3D"https://example.net/unsub=
+scribe?u=3Dccc481">Unsubscribe</a> | <a href=3D"https://example.net/privacy">=
+Privacy</a></p></td></tr></table></body></html>
+
+--===============6324442114575965744==--

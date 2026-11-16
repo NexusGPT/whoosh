@@ -1,0 +1,41 @@
+{
+  "item": "03d77a15",
+  "full_id": "03d77a15-cfaf-4f81-88a8-fdc003510853",
+  "title": "Make the language resolver check catch its broken copy",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --mutants",
+      "pass": "^mutant resolver +seen RED",
+      "fail": "^mutant [a-z ]+ +NOT SEEN RED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --resolver",
+      "pass": "^resolver: GREEN",
+      "fail": "^resolver: RED",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 -I docs/lanes/gap-findings-runs/broken_copy_guard.py",
+      "pass": "(?s)^real target: copy differs from the file: True ; holds the broken line: True\\nstale target: stopped: MUTANT TARGET",
+      "fail": "NOT STOPPED|Traceback",
+      "timeout_s": 120
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Localization/Words.swift",
+      "find": "        let pick = UserDefaults.standard.string(forKey: languageKey) ?? system\n        let code = codes.contains(pick) ? pick : systemLanguage",
+      "replace": "        let pick = system\n        let code = codes.contains(pick) ? pick : systemLanguage",
+      "proof": 1,
+      "red": "^resolver: RED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Check file: checks/i18n-check.py cmd_mutants :730-808 (resolver mutant :767-772, summary loop :807-808 'mutant %-13s %s' and exit 0 only when every mutant is seen red), cmd_resolver :701-726 (its last line 'resolver: GREEN' or 'resolver: RED, N'), usage :9-16. The line asked for in the item is matched by the regex '^mutant resolver +seen RED' (the padding of the format). Words.swift:39-40 and :62 hold the stored-choice lines; only :39-40 is the resolver's path of Words.text. gap-findings 2026-11-11: checks/i18n-check.py cmd_mutants now builds the swift reader mutant and the resolver mutant through broken_copy(), which stops the run when the target does not occur exactly once; the resolver mutant targets the two lines now at Sources/Localization/Words.swift:39-40 ('let pick = ... ?? system' then 'return codes.contains(pick) ? pick : systemLanguage', the property `current`). Proof 2 shows the guard on the real file and on the old text (docs/lanes/gap-findings-runs/broken_copy_guard.txt). Not run by the builder: proofs 0 and 1 compile Words.swift with swiftc, so the lead's run shows 'mutant resolver      seen RED'."
+}

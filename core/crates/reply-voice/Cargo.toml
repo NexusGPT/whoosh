@@ -1,0 +1,11 @@
+[package]
+name = "reply-voice"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Whoosh reply voice (delta 20, J10): the tone analysis of the owner's last sent messages, the owner's earlier replies as examples at draft time, and the choice of tone for a draft. Pure logic behind two ports (SentMail, VoiceWriter); no database, no socket, no key."
+
+[dependencies]
+contracts = { workspace = true }
+# Started from, not rewritten: the parse lane's quoted-text boundary (text_quote_start: "On ... wrote:", "Le ... a écrit :", "> " runs, Outlook header blocks).
+parse = { path = "../parse" }

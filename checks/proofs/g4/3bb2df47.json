@@ -1,0 +1,56 @@
+{
+  "item": "3bb2df47",
+  "full_id": "3bb2df47-1245-4190-9b7c-a7bdf7536190",
+  "title": "Show Replies sub-pages only when on Replies",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged",
+      "fail": "^FAIL |NOT JUDGED ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-settingswindow.py --selftest",
+      "pass": "ok +stand-in, clean: replies-is-closed-while-another-pane-is-selected passes",
+      "fail": "^FAIL ",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-3bb2df47\" --screens mac-settings-general,mac-settings-replies",
+      "pass": "^PASS mac-settings-general (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "open \"$D/shots-3bb2df47/pics\" (the mac-settings-general picture, light and dark, window at its default size) and read the sidebar",
+      "pass": "General is the selected row; under the AI group the row Replies is present and NO row for Auto, On demand, Sources, Retrieval, Voice or Prompt is drawn under it"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-settingswindow.py",
+      "pass": "replies-is-closed-while-another-pane-is-selected +pass",
+      "fail": "FAIL [^\\n]*replies-is-closed-while-another-pane-is-selected",
+      "timeout_s": 600
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/SettingsWindow/SettingsSidebar.swift",
+      "find": "if pane == .replies && model.repliesOpen { repliesChildren }",
+      "replace": "if pane == .replies { repliesChildren }",
+      "proof": 0,
+      "red": "FAIL .*replies-is-closed-while-another-pane-is-selected"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner looks at Settings with General selected on the next build and confirms the six parts are not listed (acceptance: 'and by the owner').",
+  "notes": "Code: Sources/Features/SettingsWindow/SettingsSidebar.swift:41 (`if pane == .replies && model.repliesOpen { repliesChildren }`), :52-53 repliesChildren. Check cases: checks/parity/par-settingswindow.py:253 replies_closed_by_default (click General, read open and drawn), :467 expect_ev replies-is-closed-while-another-pane-is-selected (expected (False, False), EXPECT at :368), :490 selecting-another-pane-closes-replies-and-it-is-not-remembered, :457 replies-parts-are-listed-under-replies-and-each-opens; mutant table lines :968-974; selftest evidence mutant at :1437 (replies-stays-open). The mutant needs a rebuild of the hidden copy before proof 0 runs. The shots-sheet shot is the whole Settings window of the surface named; the sidebar is inside it. Settings window opens on General by default (the shot of mac-settings-general selects it). Hidden render: owner rule, no visible launch. gap-settings-checks: par-settingswindow now prints one line per case, so the last proof reads the named case's pass line."
+}

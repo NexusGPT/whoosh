@@ -1,0 +1,98 @@
+{
+  "item": "9d574875",
+  "full_id": "9d574875-f664-4003-bb51-ca91e0ec2b38",
+  "title": "Fit a wide HTML mail to the reading pane",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "aMailOf700InAPaneOf560IsScaledTo0Point8,aMailOf400IsShownAtItsOwnSizeNeverEnlarged,theReaderHeightFollowsTheScaledHeight,aWidthChangeRecomputesTheScale,aZoomedWideMailScrollsSidewaysAndTheFitAloneDoesNot,theScaleIsAppliedInThePageWithoutAReload,theWideFixtureMailIsServedWiderThanThePane",
+      "pass": "Test theWideFixtureMailIsServedWiderThanThePane\\(\\) passed",
+      "fail": "recorded an issue|failed after",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/messagebody-check.py --selftest",
+      "pass": "[0-9]+ mutants, 0 not seen red, 0 clean failures, 0 clean not judged",
+      "fail": "NOT RED|[1-9][0-9]* problem",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -n \"WIDE_MAIL_ZOOM_MAX\" docs/CONSTANTS.md Sources/CoreBridge/Generated/Constants.swift",
+      "pass": "WIDE_MAIL_ZOOM_MAX",
+      "fail": "^$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/messagebody-check.py",
+      "pass": "J1\\.6e/wide-mail-is-not-cut-off-at-the-right +pass",
+      "fail": "J1\\.6e/[a-z-]+ +(fail|unjudged)",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyFit.swift",
+      "find": "return pane / content",
+      "replace": "return 1",
+      "proof": 0,
+      "red": "aMailOf700InAPaneOf560IsScaledTo0Point8\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyFit.swift",
+      "find": "guard content > 0, pane > 0, content > pane + tolerance else",
+      "replace": "guard content > 0, pane > 0 else",
+      "proof": 0,
+      "red": "aMailOf400IsShownAtItsOwnSizeNeverEnlarged\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyView.swift",
+      "find": "let h = WideMailFit.height(layout: layoutHeight, scale: s)",
+      "replace": "let h = WideMailFit.height(layout: layoutHeight, scale: 1)",
+      "proof": 0,
+      "red": "theReaderHeightFollowsTheScaledHeight\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyView.swift",
+      "find": "naturalWidth = natural; paneWidth = pane",
+      "replace": "naturalWidth = natural",
+      "proof": 0,
+      "red": "aWidthChangeRecomputesTheScale\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyFit.swift",
+      "find": "min(max(fit * zoom, fit), max(fit, zoomMax))",
+      "replace": "fit",
+      "proof": 0,
+      "red": "aZoomedWideMailScrollsSidewaysAndTheFitAloneDoesNot\\(\\) (recorded an issue|failed)"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodySamples.swift",
+      "find": "[\"designed\", \"written\", \"plain\", \"wide\"]",
+      "replace": "[\"designed\", \"written\", \"plain\"]",
+      "proof": 0,
+      "red": "theWideFixtureMailIsServedWiderThanThePane\\(\\) (recorded an issue|failed)|everySampleMailIsServedAndNotEmpty"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodyFit.swift",
+      "find": "return pane / content",
+      "replace": "return 1",
+      "proof": 3,
+      "red": "J1\\.6e/wide-mail-is-scaled-to-the-pane +fail"
+    },
+    {
+      "file": "Sources/Features/MessageBody/MessageBodySamples.swift",
+      "find": "[\"designed\", \"written\", \"plain\", \"wide\"]",
+      "replace": "[\"designed\", \"written\", \"plain\"]",
+      "proof": 3,
+      "red": "J1\\.6e/wide-mail-is-laid-out-at-its-own-width +fail"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Commits e6b1d7f6 (A146) and 6f9b01e9 (constants). Code: Sources/Features/MessageBody/MessageBodyFit.swift (WideMailFit: scale, shown, zoomMax, script), MessageBodyView.swift:148 and :348 (the measure and the fit). Constant WIDE_MAIL_ZOOM_MAX = 3 (docs/CONSTANTS.md:78). The broken-copy find strings are the lane note's own; the lead's runner must confirm each occurs once (the note says it does not know about duplicates: a find that occurs twice makes that mutant void, not red). Tests need no web view: they feed the numbers a measure would answer. Lane gap-mailview-checks: checks/messagebody-check.py step J1.6e (drive_wide) opens the wide sample, waits for the page's measure and prints one line per case with the values: wide-fixture-mail-is-wider-than-the-pane, wide-mail-is-laid-out-at-its-own-width (natural_width = the fixture table's width), wide-mail-is-scaled-to-the-pane (scale < 1 and = view_width / natural_width), wide-mail-is-not-cut-off-at-the-right (scaled_width <= view_width + 0.5), the-fit-alone-does-not-scroll-sideways. Not on the socket: the zoomed half (a pinch has no door), which stays the unit test aZoomedWideMailScrollsSidewaysAndTheFitAloneDoesNot (proof 0). The check's own broken answers are in `python3 checks/messagebody-check.py --selftest` (proof 1: 74 mutants, 0 not seen red)."
+}

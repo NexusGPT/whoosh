@@ -1,0 +1,24 @@
+{
+  "lane": "tests-j1",
+  "note": "Inputs the slice-1 tests name. The mail itself is docs/design/fixtures/mac-main-sample.json (never copied here); this file names which rows each test acts on and the large fixture the perf cell loads.",
+  "journey": "J1",
+  "themes": ["light", "dark"],
+  "fixture_core_file": "docs/design/fixtures/mac-main-sample.json",
+  "failing_account": "acc-18",
+  "trace": {
+    "J1.2": {"archive": "msg-01"},
+    "J1.3": {"snooze": "msg-02", "when": "tomorrowMorning"},
+    "J1.4": {"pin": "msg-04"},
+    "J1.5": {"label": "Suppliers", "on": "msg-04"},
+    "J1.6": {"open": "msg-04"},
+    "J1.7": {"reply_on": "msg-04", "body": "Thanks.\nNoted for section 4.2."},
+    "J1.8": {"archive_by_mistake": "msg-05", "then": "undo"},
+    "J1.9": {"move": "msg-05", "to": "acc-01"},
+    "J1.10": {"mouse_archive": ["msg-06", "msg-08"], "key_archive": "msg-07"},
+    "J1.12": {"reauth": "acc-18", "then": "archive every remaining row"}
+  },
+  "fixture_events_assumed": ["fixture theme <light|dark>", "fixture reauth <account>", "fixture load full-history-30"],
+  "perf": {
+    "full-history-30": {"accounts": 30, "history": "full", "note": "served by the core lane that owns large fixtures; until then perf/memory-mac.py reports not judged"}
+  }
+}

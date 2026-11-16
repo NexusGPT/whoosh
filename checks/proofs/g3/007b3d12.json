@@ -1,0 +1,50 @@
+{
+  "item": "007b3d12",
+  "full_id": "007b3d12-d5df-4c23-86db-6db57d10d23b",
+  "title": "Build the quick start step Réponses",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-firststart.py",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL J9\\.9/|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "grep -c \"J9.9/replies-\" checks/parity/par-firststart.py",
+      "pass": "^(9|1[0-9]|[2-9][0-9])$",
+      "fail": "^[0-8]$",
+      "timeout_s": 30
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-firststart.py",
+      "pass": "J9\\.9/replies-continue-writes-auto-on +pass",
+      "fail": "J9\\.9/replies-[a-z-]+ +(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-firststart.py --selftest",
+      "pass": "[0-9]+ checks green on the model, [0-9]+ mutants, 0 not red",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|RED on the model",
+      "timeout_s": 900
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/FirstStart/FirstStartModel.swift",
+      "find": "        case Self.repliesStep:\n            RepliesStepModel.shared.apply()\n            go(Self.importStep); return true",
+      "replace": "        case Self.repliesStep:\n            go(Self.importStep); return true",
+      "proof": 0,
+      "red": "FAIL J9\\.9/replies-(continue-writes-auto-on|when-i-ask-writes-auto-off|search-choice-reaches-the-folders|voice-choice-reaches-the-analysis)"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Step 8 is the Réponses step: FirstStartModel.swift:16 (repliesStep = 8), :111-113 (Continue applies the three choices through RepliesStepModel.shared.apply(), Skip :135 leaves the defaults), FirstStartArt.swift:31. The mutant removes the apply() on Continue. The 'seen red' evidence is the declared mutant list, which the file does not run by itself (no --selftest in par-firststart.py: not checked), so the red is shown by the lead applying the mutant above. Built in this lane (checks/parity/par-firststart.py): main() now prints one line per case (print_cases(r), before the MUTANTS table; a pass reads 'J9.9/replies-continue-writes-auto-on pass expected True, got True'). The red J9.10/ai-skip-leaves-the-marks-on of the r83 log was the check's staging: the pasted-key case connects a provider in the core and `ai-setup.reset` keeps it (AISetupStatus.reset), so writing read ready after Skip; the case now stages `fixture providers none` and resets before Skip. J10.1 (journeys/J10.py) is judged inside the J10 journey (item ebde5eae), not here. The mutant is the declared one, run by the runner; the self-test (proof 3) shows the case red on its model mutant."
+}

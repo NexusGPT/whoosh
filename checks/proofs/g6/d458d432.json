@@ -1,0 +1,95 @@
+{
+  "item": "d458d432",
+  "full_id": "d458d432-9d4b-44c5-ac4e-3935c51bb20e",
+  "title": "Rewrite the label checks for the three steps",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-labelscontactsmac.py",
+      "pass": "(?s)a140-step-1-picks-37\\s+pass .*a140-the-ai-accepts-32\\s+pass .*a140-the-exit-filter-keeps-24\\s+pass .*a140-8-go-to-primary\\s+pass .*a140-a-reply-moves-one-message-out-of-the-label\\s+pass .*a140-5-picked-mails-wait-for-the-ai\\s+pass .*a140-no-warning-says-the-ai-will-see-none\\s+pass .*a140-the-example-row-step-1-once-filed-is-now-exit\\s+pass ",
+      "fail": "a140-[a-z0-9-]+\\s+(fail|unjudged)",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-labelscontactsmac.py --selftest",
+      "pass": "\\d+ checks, 0 failed, 0 not judged",
+      "fail": "STILL GREEN|MUTANTS \\|[^\\n]*\\| RED",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/decision-check.py --selftest",
+      "pass": "selftest: OK \\(0 mutants not red\\)",
+      "fail": "Traceback",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/realcore-check.py --selftest",
+      "pass": "selftest: model all pass, mutant model red",
+      "fail": "Traceback|WRONG|FAILS",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice3",
+      "pass": "(?s)PASS\\s+.*\\d+ checks, 0 failed, 0 not judged",
+      "fail": "FAIL\\s",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice3b",
+      "pass": "(?s)(?=.*PASS\\s+(?:seeded-slice3b/)?by-meaning-mail-is-filed-by-the-ai-card )(?=.*PASS\\s+(?:seeded-slice3b/)?an-ai-off-label-is-not-offered-to-the-ai )(?=.*PASS\\s+(?:seeded-slice3b/)?why-here-names-the-card-and-chain )",
+      "fail": "FAIL\\s",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "real",
+      "run": "python3 checks/realcore-check.py {bundle} --slice3 --mutant",
+      "pass": "(?i)RED as it must be",
+      "fail": "SURVIVED",
+      "timeout_s": 1200
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "sh -c 'WHOOSH_RESULTS_DIR=$D/results python3 journeys/run.py J5 2>&1 ; python3 -c \"import json,glob,collections as C;c=C.defaultdict(C.Counter);[c[r[\\\"step\\\"]].update([r[\\\"verdict\\\"]]) for f in glob.glob(\\\"$D/results/J5-*.results.jsonl\\\") for r in map(json.loads,open(f))];[print(\\\"STEP\\\",s,\\\",\\\".join(\\\"%s=%d\\\"%(k,v) for k,v in sorted(c[s].items()))) for s in sorted(c)]\"'",
+      "pass": "(?s)(?=.*STEP J5\\.10 PASS=\\d+\\n)",
+      "fail": "STEP J5\\.10 [^\\n]*(FAIL|NOT JUDGED)=|could not drive",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 journeys/J5.py --selftest",
+      "pass": "selftest: \\d+ checks, \\d+ mutants red, 0 not run \\(not judged on the ideal\\), \\d+ declared rows, 0 not red or missing",
+      "fail": "NOT RED|NO MUTANT|STRAY MUTANT|UNEXPECTED|MUTANTS \\| example figures \\| RED|NOT GREEN",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "checks/parity/par-labelscontactsmac.py",
+      "find": "EX_PINNED = {\"entry\": 37, \"ai\": 32, \"kept\": 24, \"sent\": 8, \"waiting\": 5}",
+      "replace": "EX_PINNED = {\"entry\": 36, \"ai\": 32, \"kept\": 24, \"sent\": 8, \"waiting\": 5}",
+      "proof": 1,
+      "red": "MUTANTS \\| example figures \\| RED"
+    },
+    {
+      "file": "Sources/CoreBridge/FixtureFlow.swift",
+      "find": "caughtByEntry: UInt32(pickedByEntryLocked(l).count), sortedByAi: aiRulesIn(l) ? base.sortedByAi : 0,",
+      "replace": "caughtByEntry: UInt32(pickedByEntryLocked(l).count + 1), sortedByAi: aiRulesIn(l) ? base.sortedByAi : 0,",
+      "proof": 7,
+      "red": "STEP J5\\.10 [^\\n]*FAIL="
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) par-labelscontactsmac judges A140: EXAMPLE list checks/parity/par-labelscontactsmac.py:2640-2650 (8 cases), FLOW cases incl. flow-ai-reads, flow-why-here, flow-save-reads-back (:1193-1196), self-test at :2976-3128 (MUTANTS table: a case whose mutant stays green prints STILL GREEN, proof 1; the self-test also pins the example figures, line 'MUTANTS | example figures | green | derived from ...', :3105). Printing: report() :2968-2973 prints 'name  pass|fail|unjudged  detail' per case, so every pass is visible. (2) the realcore slices follow A140: docs/lanes/flow3-checks.md lines 76-91: slice 3 (judge3) unchanged, slice 3b follows the Renewals seed (cases by-meaning-mail-is-filed-by-the-ai-card, why-here-names-the-card-and-chain, an-ai-off-label-is-not-offered-to-the-ai), self-tests green but 'not run on a build' (flow3-checks.md:91): proofs 4 to 6 are the first hidden runs; `{bundle}` is the built Whoosh.app, realcore-check launches the rig copy itself hidden (checks/realcore-check.py:119). (3) checks/decision-check.py --selftest 'selftest: OK (0 mutants not red)' (flow3-checks.md:17). (4) Each changed case seen red on a broken copy: the self-test models (FakeExample, FakeTree) turn each case red on its own mutant and the mutant leaves the other cases of its step green (printed on each MUTANTS line, par-labelscontactsmac.py:3112-3120). The reader's finding that no run line exists in _captures/labelscontactsmac/CAPTURES.md stands; proofs 0 and 1 are the first runs at this commit. gap-labels: no file of this item changed in this lane; the gap text is cut to the one part still missing. gap-decisions: journey step J5.10 'A label is a pipeline of three steps' added at journeys/J5.py (after J5.9, search `s = j.step(\"J5.10\"`): opens À répondre by the door of par-labelscontactsmac example_open (`mac-labels.inspector.open.modify.needs-reply`), reads `label/needs-reply/flow/counts` against figures derived from docs/design/fixtures/mac-main-sample.json by `example_figures()` (entry 37, ai 32, kept 24, sent 8, waiting 5: never typed; the self-test prints the `MUTANTS | example figures | green` line and fails when derived and pinned differ), then `fixture reply` on a kept row (kept 23, fallback 9, picks and accepts unchanged, the mail leaves the label). 11 checks, each with its MUTANTS row (11 `# J5.10/...` lines) and its own broken copy in the self-test model (proof 8, `selftest: 72 checks, 72 mutants red`); the real-engine broken copy is mutant 1 (FlowCounts picked off by one in the test engine). The first run on a build is proof 7."
+}

@@ -1,0 +1,83 @@
+{
+  "item": "72d8f5d5",
+  "full_id": "72d8f5d5-f35d-4ba9-8405-ba80e866a156",
+  "title": "Build par-inboxphone",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "unit",
+      "run": "everyRowHasASwipeArchiveAndASwipeSnoozeAndTheUndoHasAButton,theIphoneListShowsTheFixtureMailPinnedFirstWithAccountMarks",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "with IPHONE_APP=<out>/Build/Products/Debug-iphonesimulator/Whoosh.app (built by `WHOOSH_JOBS=10 sh scripts/build-ios.sh <out>`): WHOOSH_RIG_HIDDEN=1 sh scripts/iphone-rig.sh \"$IPHONE_APP\" -- python3 checks/parity/par-inboxphone.py",
+      "pass": "[0-9]+ checks, 0 failed, 0 not judged",
+      "fail": "[1-9][0-9]* failed|[1-9][0-9]* not judged|NOT JUDGED|REFUSED|NO SOCKET|NO INSTANCE|DIED|COULD-NOT-DRIVE",
+      "timeout_s": 900
+    },
+    {
+      "kind": "unit",
+      "run": "theSwipePicksStartAsArchiveAndSnoozeAndAPickedPinSwipePinsTheRowAndKeepsIt,pullToRefreshReadsTheCoreAgainStampsTheTimeAndKeepsTheRowsItHad",
+      "pass": "passed",
+      "fail": "failed",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-inboxphone.py --selftest",
+      "pass": "(?s)(?=.*clean model: failed=\\[\\] unjudged=\\[\\]; labels without a mutant=\\[\\])(?=.*\\| par-inboxphone-swipe/leading-swipe-pins \\| .* \\| RED on this case \\|)(?=.*\\| par-inboxphone-refresh/refresh-reads-again \\| .* \\| RED on this case \\|)(?=.*11 mutants, 0 not seen red; 0 clean failures, 0 clean not judged, 0 cases without a mutant)",
+      "fail": "NOT RED|\\b[1-9]\\d* not seen red|\\b[1-9]\\d* clean failures",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "c[\"\\(row).swipe-leading\"] = { state.act(state.swipes.leading, row: i, in: $0) }",
+      "replace": "c[\"\\(row).swipe-leading\"] = { state.act(.archive, row: i, in: $0) }",
+      "proof": 1,
+      "red": "FAIL par-inboxphone-swipe/leading-swipe-pins"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"iphone-inbox.list.refresh\": { m in state.refresh(m); return true },",
+      "replace": "\"iphone-inbox.list.refresh\": { m in return true },",
+      "proof": 1,
+      "red": "FAIL par-inboxphone-refresh/refresh-reads-again"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "c[\"\\(row).swipe-leading\"] = { state.act(state.swipes.leading, row: i, in: $0) }",
+      "replace": "c[\"\\(row).swipe-leading\"] = { state.act(.archive, row: i, in: $0) }",
+      "proof": 2,
+      "red": "theSwipePicksStartAsArchiveAndSnoozeAndAPickedPinSwipePinsTheRowAndKeepsIt.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/SwipeAction.swift",
+      "find": "public static let standard = SwipeSettings(leading: .archive, trailing: .snooze)",
+      "replace": "public static let standard = SwipeSettings(leading: .pin, trailing: .snooze)",
+      "proof": 2,
+      "red": "theSwipePicksStartAsArchiveAndSnoozeAndAPickedPinSwipePinsTheRowAndKeepsIt.*failed|✘"
+    },
+    {
+      "file": "Sources/Features/InboxPhone/InboxPhoneFeature.swift",
+      "find": "\"iphone-inbox.list.refresh\": { m in state.refresh(m); return true },",
+      "replace": "\"iphone-inbox.list.refresh\": { m in return true },",
+      "proof": 2,
+      "red": "pullToRefreshReadsTheCoreAgainStampsTheTimeAndKeepsTheRowsItHad.*failed|✘"
+    },
+    {
+      "file": "checks/parity/par-inboxphone.py",
+      "find": "    s.expect(\"leading-swipe-pins\", lambda: s.ctl.core(\"pin/%s\" % target), True)",
+      "replace": "    s.expect(\"leading-swipe-pinsx\", lambda: s.ctl.core(\"pin/%s\" % target), True)",
+      "proof": 3,
+      "red": "NO MUTANT|\\b[1-9]\\d* not seen red|labels without a mutant=\\['par"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Cases: par-inboxphone-swipe/default-leading-archives, default-trailing-snoozes, pick-is-kept, rows-follow-the-pick, leading-swipe-pins, pinned-row-stays, pick-restored (par-inboxphone.py:45-57); par-inboxphone-refresh/rows-before-refresh, stamp-before, refresh-reads-again, refresh-keeps-the-rows (:58-64). Code: InboxPhoneFeature.swift:21 swipe-settings row, :32 refresh click, :46-47 swipe-leading and swipe-trailing clicks, :54-55 pick clicks, SwipeAction.swift. The existing unit proofs cover only that the swipe-archive, swipe-snooze and undo clicks are registered and that rows carry mark colours (InboxPhoneTests.swift:82-96). The driven output prints the MUTANTS table and a total only (par-inboxphone.py:81-99), so a passing case prints no line (S: print cases through harness.print_cases). Not in tests/r83/summary.txt. The red regexes name the check ids as the runner prints them on failure (`FAIL <id>`). | gap-phone-a: units added in Tests/Unit/InboxPhoneTests.swift: swipe pick defaults read from an empty defaults suite (archive, snooze), pick pin through the settings click, every row serves the pick, the leading swipe pins the row (core pin/<id> true, the row stays, no undo control), the pick is kept (SwipeSettings.load()), and pull to refresh (a core change made behind the screen stays unseen until iphone-inbox.list.refresh, refreshed_at grows, the other rows stay). | Round 2 (iphone-rig, 2026-11-12): the iOS 26.5 runtime is installed and scripts/iphone-rig.sh runs the phone with no window (docs/lanes/iphone-rig.md); the lead proofs below are the exact commands through it. IPHONE_APP and MAC_APP are the built .app bundles (the Mac one is the one launch-one.sh takes). To see it red on a broken copy: Sources/Features/InboxPhone/InboxPhoneState.swift:79 `refreshedAt = Date()` to `refreshedAt = refreshedAt` in a throwaway worktree, a build into another <out>, the same command: expect par-inboxphone-refresh/refresh-reads-again to fail."
+}

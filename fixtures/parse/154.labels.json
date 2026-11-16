@@ -1,0 +1,20 @@
+{
+ "id": "154",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "63b2371b8ef433ebd4d9@mail.example.net",
+  "summary": "Supplier call",
+  "organizer": "pia.kowalski@mail.example.net",
+  "all_day": false,
+  "start_utc_ms": 1795613400000,
+  "start_local": null,
+  "tzid": null,
+  "location": null
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

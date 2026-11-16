@@ -1,0 +1,63 @@
+{
+  "item": "e4b22510",
+  "full_id": "e4b22510-7449-4204-b21c-4731923972b2",
+  "title": "Build the picked unread control: the count is the switch",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-inboxlist.py",
+      "pass": "(?s)J1\\.54/unread-control-sits-in-the-count-line +pass.*J1\\.54/unread-count-is-secondary-while-off +pass.*J1\\.54/unread-count-is-accent-while-on +pass.*J1\\.54/unread-control-turns-the-filter-on-from-the-count-line +pass.*J1\\.54/unread-control-turns-it-off-from-the-count-line +pass.*J1\\.54/shift-u-and-the-count-line-are-one-switch +pass.*J1\\.54/unread-control-words-come-from-the-catalogue +pass.*J1\\.54/unread-words-are-in-14-languages +pass",
+      "fail": "J1\\.54/(unread-control|unread-count|shift-u-and-the-count-line|unread-words)[a-z0-9-]* +fail",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/i18n-check.py --catalogue",
+      "pass": "catalogue: GREEN",
+      "fail": "catalogue: RED",
+      "timeout_s": 300
+    },
+    {
+      "kind": "static",
+      "run": "python3 -c \"import json; d=json.load(open('Sources/Resources/Localizable.xcstrings'))['strings']['%lld unread']['localizations']; print('unread-words languages', len(d), 'fr:', d['fr']['stringUnit']['value'])\"",
+      "pass": "unread-words languages 14 fr: %lld non lus",
+      "fail": "Traceback|languages ([0-9]|1[0-3]) ",
+      "timeout_s": 30
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/InboxList/UnreadCount.swift",
+      "find": "Button { _ = ListFilters.toggle(.unread, model) } label: {",
+      "replace": "Button { } label: {",
+      "proof": 0,
+      "red": "J1\\.54/unread-control-turns-the-filter-on-from-the-count-line +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/UnreadCount.swift",
+      "find": "(Words.text(\"%lld unread\", count), on ? \"\\u{00B7} \" + Words.text(\"Show all\") : nil)",
+      "replace": "(Words.text(\"%lld unread\", count), nil)",
+      "proof": 0,
+      "red": "J1\\.54/unread-control-turns-the-filter-on-from-the-count-line +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/UnreadCount.swift",
+      "find": "static func countStyle(on: Bool) -> CountStyle { on ? .accent : .secondary }",
+      "replace": "static func countStyle(on: Bool) -> CountStyle { .secondary }",
+      "proof": 0,
+      "red": "J1\\.54/unread-count-is-accent-while-on +fail"
+    },
+    {
+      "file": "Sources/Features/InboxList/UnreadCount.swift",
+      "find": "static func countStyle(on: Bool) -> CountStyle { on ? .accent : .secondary }",
+      "replace": "static func countStyle(on: Bool) -> CountStyle { .accent }",
+      "proof": 0,
+      "red": "J1\\.54/unread-count-is-secondary-while-off +fail"
+    }
+  ],
+  "gap": null,
+  "owner": "The owner says what 'the tab strip takes the full width' means: stretch the segments to the pane (a new look: SplitTabsBar.swift:4-5 says the strip takes the row's full width, but its strip is an HStack of fixed-size segments in a horizontal ScrollView, lines 19 and 32-43) or judge only that the strip never passes the pane's edge. Until then no case is written. Shots light and dark and 'main58' are the lead's runs.",
+  "notes": "Journey style: FAIL lines and the total only. UnreadCount.swift:12-15 (doc), :21-23 (words). Mutant 2 removes the 'Show all' tail while on. | OLD GAP (before lane gap-states, 2026-11-12): Built and judged (UnreadCount.swift draws the count line: 'N unread' with the key cap, accent plus 'Show all' while on; French '%lld non lus'): par-inboxlist J1.54 cases unread-control-sits-in-the-count-line, unread-control-turns-the-filter-on-from-the-count-line, ...-turns-it-off-..., shift-u-and-the-count-line-are-one-switch, unread-control-words-come-from-the-catalogue, unread-words-are-in-14-languages. Built by tail-small (2026-11-11), gap (2) 'on = accent count': Sources/Features/InboxList/UnreadCount.swift `enum CountStyle` and `countStyle(on:)` (the view's foregroundStyle reads it: same colours, no look changed), the probe field `count_style` (accent / secondary) in ListProbe.unreadControl (ListProbe.swift line 39), and the J1.54 cases unread-count-is-secondary-while-off and unread-count-is-accent-while-on (checks/parity/par-inboxlist.py; MUTANTS rows and the ListR8Ctl model updated; `par-inboxlist.py --selftest` exit 0, last line '6 checks, 0 failed, 0 not judged', both cases pass on the model and are red on their mutants: tail-small-out/st-inboxlist1.txt). Swift broken copies: mutants 2 and 3. Not run on a build: the lead's run of proof 0 and mutants 2 and 3. Still missing: (1) 'the tab strip takes the full width': NOT built as a case. Sources/Features/InboxList/SplitTabsBar.swift:4-5 says the strip takes the row's full width, but its strip (line 32-43) is an HStack of fixed-size segments inside a horizontal ScrollView (line 19): it hugs its content and the pane's width is only the scroll view's. A check of 'first segment to last segment within 24 px of mac-main.list.view' would be red on any inbox with fewer tabs than fill the pane, so the item's wish needs the owner's word on the look (stretch the segments, or judge only that the strip never passes the pane's edge); see questions_for_owner in docs/lanes/tail-small.md; (3) 'shots light and dark' and 'main58' as in item 0b095f58 (the lead's run)."
+}

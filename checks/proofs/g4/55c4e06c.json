@@ -1,0 +1,41 @@
+{
+  "item": "55c4e06c",
+  "full_id": "55c4e06c-13c6-4866-8e6a-bf206818a51d",
+  "title": "Show the search keys in the bottom bar during a search",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-searchmac.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^(FAIL|UNJUDGED|NOT JUDGED) ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-macshell.py",
+      "pass": "J0\\.17/foot-composer-set\\s+pass",
+      "fail": "J0\\.17/foot-\\S+\\s+(fail|unjudged)",
+      "timeout_s": 900
+    },
+    {
+      "kind": "lead",
+      "run": "hidden render: shots-sheet `mac-search` (python3 checks/shots-sheet.py \"$D/shots-55c4e06c\" --screens mac-search, light) after the sequence Enter, Escape, cmd-K, a word, Return is driven by `par-bar-shows-search-keys-during-search`; read the bottom bar in the picture",
+      "pass": "the bar shows Search (Enter) and Close search (Esc) and none of Send, Draft, Discard, Pop out"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/MacShell/MacFootHints.swift",
+      "find": "        .search: [(\"enter\", \"Search\"), (\"back\", \"Close search\")],",
+      "replace": "        .search: [(\"send\", \"Send\"), (\"ai-reply\", \"Draft\"), (\"discard-draft\", \"Discard\"), (\"popout-draft\", \"Pop out\")],",
+      "proof": 0,
+      "red": "FAIL .*par-bar-shows-search-keys-during-search"
+    }
+  ],
+  "gap": "S, kind check: the two cases of the item exist (checks/parity/par-searchmac.py:1929-1957 BAR_CASES: par-bar-shows-search-keys-during-search, par-bar-is-the-list-set-after-search-closes) but par-searchmac.py prints only the total line, so a pass of these two by name is not shown (aggregate only); and the picture asked for ('seen on a hidden build') is the lead's read of the bar. To print the pass line by case: call print_cases from journeys/lib/harness.py in par-searchmac.py's main (S).",
+  "owner": null,
+  "notes": "Code: Sources/Features/MacShell/MacFootHints.swift:30-32 (`.search: [(\"enter\", \"Search\"), (\"back\", \"Close search\")]`, comment: the search's own keys), :35-40 oldSets (the mutant old-set whose .search is the composer's set: 'the defect the search check must catch'). Case: checks/parity/par-searchmac.py:1931-1957 (FOOT = mac-main.foot.hints, BAR_SEARCH = [enter, back], BAR_COMPOSER = send, ai-reply, discard-draft, popout-draft; bar_during_search types the owner's sequence Enter, Escape, cmd-K, RETURN_WORDS, Enter, then reads the surfaces, the commands and whether any composer command is present). The picture named by the item, _captures/lead/main76/blank-main76-2-after-search.png, shows the old state; the proof is a new render. The proof-1 par-macshell case J0.17/foot-composer-set exists (par-macshell.py:356) and shows the composer's own set is unchanged; par-macshell prints per-case lines (print_cases at line 1183)."
+}

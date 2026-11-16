@@ -1,0 +1,10 @@
+# Outlook on the web: hr#stopSpelling / div#divRplyFwdMsg before the earlier message. History hidden.
+subject: RE: Holiday rota
+sender: Yara Haddad
+fold_from: 1
+expect: 0 NEW_CONTENT show
+expect: 1 REPLY_HISTORY hide
+authored: I can take the 27th and the 28th.
+history: Who can cover the desk between Christmas and New Year?
+--- html
+<div class="elementToProof" style="font-family:Aptos,sans-serif;font-size:12pt">I can take the 27th and the 28th.</div><div id="appendonsend"></div><hr style="display:inline-block;width:98%" tabindex="-1"><div id="divRplyFwdMsg" dir="ltr"><font face="Calibri, sans-serif" style="font-size:11pt"><b>From:</b> Zoe Clark &lt;zoe@example.com&gt;<br><b>Sent:</b> Tuesday, November 10, 2026 08:01<br><b>To:</b> Team &lt;team@example.com&gt;<br><b>Subject:</b> Holiday rota</font><div>&nbsp;</div></div><div>Who can cover the desk between Christmas and New Year?</div>

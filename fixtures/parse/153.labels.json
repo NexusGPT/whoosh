@@ -1,0 +1,20 @@
+{
+ "id": "153",
+ "category": "invite",
+ "code": null,
+ "links": [],
+ "invite": {
+  "method": "REQUEST",
+  "uid": "7caac0ed0d81a4bbcacc@example.org",
+  "summary": "Quarterly planning",
+  "organizer": "sanne.de.wit@example.org",
+  "all_day": false,
+  "start_utc_ms": null,
+  "start_local": "2026-11-14T16:00:00",
+  "tzid": "Europe/Brussels",
+  "location": "Room Alpha"
+ },
+ "tracker_count": 0,
+ "quoted": null,
+ "adversarial": false
+}

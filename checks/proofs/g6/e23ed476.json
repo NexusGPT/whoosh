@@ -1,0 +1,60 @@
+{
+  "item": "e23ed476",
+  "full_id": "e23ed476-0c44-4807-8d73-06918f1c6a52",
+  "title": "Make the engine run a label as three steps",
+  "state": "prove",
+  "proofs": [
+    {
+      "kind": "cargo",
+      "run": "-p decision --no-fail-fast --test pipeline --test flow --test decide --test labels --test counts_r5 --test preview",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){6}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1500
+    },
+    {
+      "kind": "cargo",
+      "run": "-p engine --no-fail-fast --test label_flow_d17 --test engine_builtin_labels_r6 --test engine_preview_r8 --test realcore_s3b",
+      "pass": "(?s)(test result: ok\\. \\d+ passed; 0 failed.*){4}",
+      "fail": "FAILED|panicked|error(\\[E\\d+\\])?:",
+      "timeout_s": 1800
+    },
+    {
+      "kind": "lead",
+      "run": "fails on the old order: in a private worktree of dd433948 (the A94 base named in docs/lanes/flow3-core.md, an ancestor of this commit) copy core/crates/decision/tests/pipeline.rs and core/crates/engine/tests/label_flow_d17.rs from this commit and run `cargo test -p decision --test pipeline` then `cargo test -p engine --test label_flow_d17`; list the failing test names",
+      "pass": "the_ai_is_asked_only_about_the_mails_step_1_picked|with_the_ai_off_step_1_files_the_mail_then_step_3_applies|step_3_sends_what_it_rejects_among_the_ai_accepted_mails_to_the_fallback"
+    }
+  ],
+  "mutants": [
+    {
+      "file": "core/crates/decision/src/flow.rs",
+      "find": "return DecideMessage { settings: d.settings, engine: d.engine, tabs: d.tabs, labels: &view }.walk(f);",
+      "replace": "return DecideMessage { settings: d.settings, engine: d.engine, tabs: d.tabs, labels: d.labels }.walk(f);",
+      "proof": 0,
+      "red": "the_ai_is_asked_only_about_the_mails_step_1_picked \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/decision/src/flow.rs",
+      "find": "if !label.exit_enabled {",
+      "replace": "if true {",
+      "proof": 0,
+      "red": "step_3_sends_what_it_rejects_among_the_ai_accepted_mails_to_the_fallback \\.\\.\\. FAILED|with_the_ai_off_step_1_files_the_mail_then_step_3_applies \\.\\.\\. FAILED"
+    },
+    {
+      "file": "core/crates/decision/src/flow.rs",
+      "find": "let asks = d.settings.page(Outcome::Labels).is_some_and(|p| p.enabled && p.list.has_model_entry());",
+      "replace": "let asks = false;",
+      "proof": 0,
+      "red": "FAILED"
+    },
+    {
+      "file": "core/crates/engine/src/file_arrivals.rs",
+      "find": "return AiStep::NoLabelOffered;",
+      "replace": "return AiStep::Asked;",
+      "proof": 1,
+      "red": "thread 'a140_on_arrival_the_ai_is_asked_only_about_the_mails_step_1_picked' (\\(\\d+\\) )?panicked|a140_on_arrival_the_ai_is_asked_only_about_the_mails_step_1_picked \\.\\.\\. FAILED"
+    }
+  ],
+  "gap": null,
+  "owner": null,
+  "notes": "Claims and judges. (1) the AI is asked only about mails step 1 picked: core/crates/decision/src/flow.rs:241-255 decide_pipeline (the per-message view `step_one_view`, :246-248); judged by core/crates/decision/tests/pipeline.rs:102 the_ai_is_asked_only_about_the_mails_step_1_picked (counts the questions the fake port got: 2, only 'To read' offered; A94: 1), :123 a_step_1_match_with_the_ai_on_is_not_filed_when_the_ai_says_no, :247 a_mail_that_starts_to_pass_step_1_later_is_named_for_the_ai_and_the_flip_never_asks_it, :271 a_rerun_asks_the_ai_only_about_what_step_1_picks...; engine: core/crates/engine/tests/label_flow_d17.rs:426 a140_on_arrival_the_ai_is_asked_only_about_the_mails_step_1_picked, :466 a140_a_mail_that_starts_to_pass_step_1_later_is_asked_once. (2) with the AI off step 1 files: pipeline.rs:140 with_the_ai_off_step_1_files_the_mail_then_step_3_applies, :163 a_label_with_no_entry_chain_and_the_ai_off_files_nothing (a guard that also passes on A94, per docs/lanes/flow3-core.md), :195 of_two_labels_whose_step_1_matched_the_ai_off_one_wins_first; code flow.rs:277-281 entry_filing; engine label_flow_d17.rs:489 a140_the_ai_off_label_whose_step_1_matched_wins_over_a_higher_ai_on_label. (3) step 3 filters the accepted mails: flow.rs:257-273 step_three, :283-289 after_ai; pipeline.rs:175 step_3_sends_what_it_rejects_among_the_ai_accepted_mails_to_the_fallback; engine label_flow_d17.rs:524 a140_an_ai_off_labels_step_3_rejection_is_not_counted_as_sorted_by_the_ai. (4) 'tests that fail on the old order': pipeline.rs header lines 7-8 say each test names what it fails on under A94; docs/lanes/flow3-core.md 'Tests' lists the A94 outcome per test; the first red-first proof on the real old code is proof 2 (kind lead). The old base is dd433948 (an ancestor); the commit that introduced the pipeline is eabc8f3c. The reader's finding says no passing run names these tests: _captures/lead/main84-verify/cargo-flow3.log ends with a failing engine_first_run and cargo-flow3-all.log with a failing store label_budget target; proofs 0 and 1 deliberately do not include those two targets (engine_first_run, store label_budget) which are other items' reds; if they are still red at this commit they are 'already there' for this item. Mutants chosen by this file (the lane gives broken copies per test in comments; these are one-line breaks of the same rules); find strings occur once in their files at 0aa1558e. Mutant 3 on file_arrivals.rs is a weak one; if the lead prefers a stronger break, use the lane's comment in label_flow_d17.rs:403-425."
+}

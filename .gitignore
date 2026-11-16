@@ -1,0 +1,37 @@
+# build output and caches
+build/
+_captures/.tmp/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+# rust
+core/target/
+relay/target/
+# local state
+data/
+docs/lanes/*.log
+*.pid
+*.log
+__pycache__/
+.worktrees/
+journeys/.last-pass
+core/target/
+.build/
+build/
+_captures/contracts/tmp/
+build-keep*/
+
+# cargo-mutants output (the round runs it in a scratch tree; a stray run in core/ leaves these)
+core/mutants.out/
+core/mutants.out.old/
+
+# Rust build cache: never tracked (it was added by mistake in bb204f99 and copied into every helper folder and build snapshot, 7 GB each; disk full 2026-11-10 08:5x)
+core/target/
+.worktrees/*/core/target/
+core/target-check/
+.worktrees/*/core/target-check/
+
+# the build assistant's own step log and compiled Python: never part of the repo
+docs/PROCESS-LOG.jsonl
+*.pyc

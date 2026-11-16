@@ -1,0 +1,22 @@
+[package]
+name = "oauth"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Bring-your-own OAuth2 sign-in (contract delta 14): PKCE, the loopback redirect, the token exchange and refresh, the refresh token in the Keychain. No vendor client ID ships."
+
+[dependencies]
+netguard = { path = "../netguard" }   # engine-act-r6 round 5: a rig copy reaches this Mac only (outbound_allowed before any lookup or dial)
+contracts = { workspace = true }
+secrets = { path = "../secrets" }
+# sha2 (MIT OR Apache-2.0) for the PKCE S256 challenge; base64 (MIT OR Apache-2.0) for base64url; getrandom (MIT OR Apache-2.0) for the verifier and state.
+sha2 = "0.10"
+base64 = "0.22"
+getrandom = "0.2"
+serde_json = "1"
+reqwest = { version = "0.13", optional = true, default-features = false, features = ["blocking", "rustls"] }
+
+[features]
+default = []
+# The real token endpoint over HTTPS. Off in tests: they answer from an in-process fake authority.
+http = ["dep:reqwest"]

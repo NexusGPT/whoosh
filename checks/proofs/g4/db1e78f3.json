@@ -1,0 +1,92 @@
+{
+  "item": "db1e78f3",
+  "full_id": "db1e78f3-84e7-4e87-9642-d12821db23d8",
+  "title": "Build the missing-setup warning mark (A128)",
+  "state": "owner",
+  "proofs": [
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/parity/par-welcomemac.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^FAIL |NOT JUDGED ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/settingsphone-check.py",
+      "pass": "^\\d+ checks, 0 failed, 0 not judged$",
+      "fail": "^FAIL |NOT JUDGED ",
+      "timeout_s": 900
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/parity/par-welcomemac.py --selftest",
+      "pass": "^selftest: every check seen red on its mutant$",
+      "fail": "problem\\(s\\)",
+      "timeout_s": 300
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/shots-sheet.py \"$D/shots-db1e78f3\" --screens mac-search,mac-settings-ai",
+      "pass": "^PASS mac-search (light|dark) [\\s\\S]*^PASS mac-settings-ai (light|dark) ",
+      "fail": "^FAIL ",
+      "timeout_s": 600
+    },
+    {
+      "kind": "lead",
+      "run": "read the mac-search picture and the mac-settings-ai picture of `python3 checks/shots-sheet.py --screens mac-settings-ai` (since hid-ai round 18 the AI and agents pane, opened by its sidebar row and read back from `rows mac-settings-window.place`; main108's pictures under that name showed Decisions) after `click ai-setup.preview.meaning.missing` and `.writing.missing` (the preview door)",
+      "pass": "an amber dot and one line and one button on the search list (meaning) and on the AI settings; none when the preview is set to ready"
+    },
+    {
+      "kind": "hidden",
+      "core": "fixture",
+      "run": "python3 checks/probes-check.py",
+      "pass": "^OK +ai-setup-marks-are-drawn-in-their-six-places: 6 of 6 places drawn",
+      "fail": "^(FAIL|NOT JUDGED) +ai-setup-marks-are-drawn-in-their-six-places",
+      "timeout_s": 600
+    },
+    {
+      "kind": "static",
+      "run": "python3 checks/probes-check.py --selftest",
+      "pass": "\\d+ checks, 0 not as expected",
+      "fail": "not as expected: [1-9]|RED |Traceback",
+      "timeout_s": 300
+    }
+  ],
+  "mutants": [
+    {
+      "file": "Sources/Features/AISetup/AISetupRows.swift",
+      "find": "[\"ax\": \"\\(P).place.reader-summary\", \"place\": \"reader-summary\", \"shown\": unmet([.writing])]",
+      "replace": "[\"ax\": \"\\(P).place.reader-summary\", \"place\": \"reader-summary\", \"shown\": true]",
+      "proof": 0,
+      "red": "ai-setup-places-follow-the-needs"
+    },
+    {
+      "file": "Sources/Features/AISetup/AISetupRows.swift",
+      "find": "\"shown\": !x.usable, \"working\"",
+      "replace": "\"shown\": true, \"working\"",
+      "proof": 0,
+      "red": "ai-setup-marks-draw-nothing-when-the-need-is-met"
+    },
+    {
+      "file": "Sources/Features/AISetup/MissingSetupMark.swift",
+      "find": ".whooshAx(\"ai-setup.mark.\\(need.rawValue).fix\")",
+      "replace": ".whooshAx(\"ai-setup.mark.\\(need.rawValue).fix-x\")",
+      "proof": 5,
+      "red": "FAIL +ai-setup-marks-are-drawn-in-their-six-places.*search-meaning"
+    },
+    {
+      "file": "Sources/Features/MacShell/MacFootHints.swift",
+      "find": "MissingSetupDot(needs: [.writing], id: \"mac-main.foot.mark\")",
+      "replace": "EmptyView()",
+      "proof": 5,
+      "red": "FAIL +ai-setup-marks-are-drawn-in-their-six-places.*foot-reply-with-ai"
+    }
+  ],
+  "gap": null,
+  "owner": "The foot's mark and the probes-check row are done (MacFootHints.swift:152 draws `mac-main.foot.mark`; checks/probes-check.py MARK_PLACES row 4 is now (\"foot-reply-with-ai\", \"mac-main.foot.mark\"), its self-test expects six of six; proof 5 reads '6 of 6 places drawn'). Not done, a decision for the owner of the row source: the list 'Reply with AI', the label inspector's AI card, the Decisions and Replies panes are controls A127 names that AISetupRows.places (six places) does not list; say whether they belong in the row source.",
+  "notes": "Code: Sources/Features/AISetup/MissingSetupMark.swift:3 (W1: amber dot and one line), :50-58 line(), :61-70 progress with Cancel; AISetupRows.swift:24 places(), :36 marks() (rows `ai-setup.mark.<need>.<sentence>` with shown, words, button). Cases: checks/parity/par-welcomemac.py:456 ai-setup-marks-say-what-the-board-draws, :468 ai-setup-marks-draw-nothing-when-the-need-is-met, :477 ai-setup-places-follow-the-needs (reads `ai-setup.places`: six places, shown [True x6] with nothing connected, then [False, False, True, True, True, True] after writing is ready), :484 ai-setup-no-bare-string; checks/settingsphone-check.py:287 ai-missing-mark (phone). The case ai-setup-places-follow-the-needs reads the row source's `shown` (AISetupRows.swift:24-31), so the first mutant (reader-summary always shown) is red there, but a place that is listed and never drawn passes: that is the gap. Built in this lane: checks/probes-check.py marks_driven/marks_drawn: with the three needs shown missing through the preview door and the Settings window and search surface opened by `shot`, each of the six places listed by `rows ai-setup.places` is MEASURED by the ax id its view draws (MARK_PLACES, ids from the views), not read from the row source's shown flag; FAIL when a listed place is not on screen. Self-tests: one mutant per drawable place (listed, never drawn) is red; the foot is NOT JUDGED; a place no longer listed is red; six drawn passes."
+}

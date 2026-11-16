@@ -1,0 +1,15 @@
+{
+ "id": "171",
+ "category": "quoted-text",
+ "code": null,
+ "links": [],
+ "invite": null,
+ "tracker_count": 0,
+ "quoted": {
+  "kind": "text",
+  "marker": "On Mon, Nov 2, 2026 at 10:14 AM Luc Martens",
+  "visible_contains": "Agreed. Let's move ahead with the second option. 9074",
+  "folded_contains": "Here are the three options we discussed. fccf"
+ },
+ "adversarial": false
+}
