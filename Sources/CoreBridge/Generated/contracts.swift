@@ -38540,7 +38540,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_contracts_checksum_func_parse_exit_fallback() != 33088) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_contracts_checksum_func_parse_label_path() != 48534) {
+    if (uniffi_contracts_checksum_func_parse_label_path() != 33633) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_contracts_checksum_func_passes_filters() != 42226) {
