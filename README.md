@@ -27,12 +27,63 @@ A native mail client for Mac and iPhone,<br>for people who run many accounts and
 ## What it is
 
 - **One window for every inbox.** Thirty accounts and more, each with its own mark, in one list with split tabs.
+- **A notch that reads your mail.** New mail shows under the camera, sized by what it is. You read it, answer it or search it without leaving the app you are in.
+- **Sorting by a model you choose.** A small model on your Mac, or a hosted one with your own key, sorts the mail. Its rules and its questions sit in one list you can read.
+- **AI drafts in your voice.** `⌘J` writes the reply from one line of instruction, with the provider key you choose and the sources you allow.
 - **Every action has a key, and the key is on screen.** The bar at the bottom always shows the keys that act right now. `⌘P` finds every command, `⌘K` searches.
 - **Search that finds the mail.** By its words, and by its meaning, with a model that runs on your Mac. Attachments included.
-- **AI that stays yours.** Sorting runs on the device. Replies are written with the provider key you choose, from the sources you allow.
 - **Nothing between you and your mail.** No Whoosh account, no telemetry. Your mail lives on your devices and on your own mail servers.
 
 ## A look around
+
+### The notch: your mail under the camera
+
+A new mail shows where you already look, and each kind of mail takes its own size: a card for your VIPs and for mail that needs your answer, one line for other mail, a light for updates, nothing for promotions. Settings › Notifications sets the size per kind.
+
+- Open the card and read the mail's own words there. `R` answers in place, `E` archives.
+- `⌥M` opens the notch from any app, with the search field first. `⌘O` opens the same mail in Whoosh.
+- A sign-in code gets its own card, with Copy and Fill.
+- On a Mac without a camera housing, the same panel hangs under the menu bar.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/notch-dark.png">
+  <img src="docs/media/notch-light.png" alt="Three states of the notch hanging from the top of the screen: a new mail as a card with Open, Reply and Archive; the open mail with its own words and an earlier message folded; the search field with one result and its keys" width="100%">
+</picture>
+
+### Sorting by a model you choose
+
+Settings › Decisions shows which model sorts your mail, and what it may file on its own.
+
+- **Local.** Laya (843 MB) or KnowLine 0.8B (1.73 GB) runs on your Mac, and nothing leaves it. The pane also takes the Hugging Face address of another model Whoosh can run.
+- **Jev.** A hosted decision model, with your own key.
+- **Off.** Only your rules sort.
+
+Each decision (which tab, needs my reply, sign-in code) is one ordered list: your rules first, then "ask the model", then a default. You read and change every line.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/decisions-dark.png">
+  <img src="docs/media/decisions-light.png" alt="Settings, Decisions: the decision model with Local, Jev and Off; Laya and KnowLine 0.8B with their sizes and licences and a Download button; below, the lists for Which tab and Needs my reply" width="100%">
+</picture>
+
+### AI drafts, from one line
+
+`⌘J` in a reply asks for a draft. Type one line of instruction and press Return: the draft lands in the reply box. Say what to change ("shorter", "without the price") and it writes again. Nothing is sent before you press `⌘↩`.
+
+Drafts use the provider you connect, with your own key: Anthropic, OpenAI, Gemini or OpenRouter.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/draft-dark.png">
+  <img src="docs/media/draft-light.png" alt="The reply box under a conversation with the Draft control and its key, and the instruction line that tells the AI what to write" width="100%">
+</picture>
+
+### Replies written like you
+
+Whoosh reads your sent mail once, on the Mac, and describes how you write. You can edit the description. Every draft follows it, and reads only the folders, files and calendars you allow.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/voice-dark.png">
+  <img src="docs/media/voice-light.png" alt="Settings, Replies, Voice: the analysis of your sent mail and the short description of how you write, which you can edit" width="100%">
+</picture>
 
 ### Search by words and by meaning
 
@@ -68,15 +119,6 @@ Ten short steps on the first launch: try the search, try the keys, connect an ac
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/media/quickstart-dark.png">
   <img src="docs/media/quickstart-light.png" alt="Step 2 of the quick start: the word boat is typed and a sample mail about a sailing club is found by meaning" width="100%">
-</picture>
-
-### Replies written like you
-
-Whoosh reads your sent mail once, on the Mac, and describes how you write. You can edit the description. Every draft follows it, and reads only the folders, files and calendars you allow.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/media/voice-dark.png">
-  <img src="docs/media/voice-light.png" alt="Settings, Replies, Voice: the analysis of your sent mail and the short description of how you write, which you can edit" width="100%">
 </picture>
 
 ### Quiet settings, one line each
@@ -189,7 +231,7 @@ A check counts only after it has been seen red on a deliberately broken copy (`d
 
 - **No account with us.** There is no Whoosh login and no Whoosh server that holds your mail or a mailbox password.
 - **No telemetry.** The app sends nothing about what you do.
-- **No AI call you did not choose.** Sorting and search run on the device. A reply draft uses the provider you connected, with your key.
+- **No AI call you did not choose.** Search runs on the device, and so does sorting unless you pick the hosted model. A reply draft uses the provider you connected, with your key.
 - **No remote pictures by surprise.** Tracking pixels are blocked, and a mail's pictures load when you say so.
 
 <br clear="both">
@@ -198,7 +240,8 @@ A check counts only after it has been seen red on a deliberately broken copy (`d
 
 Whoosh is in active development and runs daily on its author's own mail.
 
-- **Works today:** IMAP accounts with send, the inbox with split tabs and labels, search by words and by meaning, the quick reply and the composer, snooze and reminders, the command palette, the notch alerts, the quick start, fourteen languages, light and dark.
+- **Works today:** IMAP accounts with send, the inbox with split tabs and labels, search by words and by meaning, the quick reply and the composer, snooze and reminders, the command palette, the notch (alerts, reading, replying, search), the quick start, fourteen languages, light and dark.
+- **Built, proof on real mail in progress:** sorting with the on-device models, and AI drafts with each provider.
 - **Not built yet:** one-click sign-in for Google and Microsoft accounts (it waits for the app registrations; IMAP with an app password works), a notarised download, push on a real iPhone, and several speed budgets that still wait for their final measure.
 
 ## Licence
