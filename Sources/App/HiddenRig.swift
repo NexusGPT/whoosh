@@ -43,6 +43,7 @@ public enum HiddenRig {
         _ = app.setActivationPolicy(.accessory)   // no Dock tile, no ⌘-Tab entry, before anything shows
         LaunchClock.mark("rig-nsapp-end")   // the hidden copy's own set-up from here to app-init-end (the owner's copy never runs it)
         if mutant != "no-system-ui" { installSystemUI() }   // panels, menus, alerts, pickers, apps, notifications
+        if mutant != "real-clipboard" { installPrivateClipboard() }   // a copy made by a hidden test never lands on the Mac's own clipboard
         LaunchClock.mark("rig-system-ui-end")
         let w = NSWindow.self
         swap(w, #selector(NSWindow.orderFront(_:)), #selector(NSWindow.whooshHidden_orderFront(_:)))

@@ -3,7 +3,8 @@
 
 Inputs the socket's `fixture` verbs will serve (docs/lanes/notch.md N1) come through the notch's own stage clicks
 (`mac-notch.stage.*`), which call the same model entries the real inputs call. The clipboard and the window's
-sharing state are read from the host (pbpaste, CGWindowList), never from the app's own report.
+sharing state are read from the host (the test copy's private clipboard board, CGWindowList), never from the app's own report.
+The Mac's own clipboard is never written or read: only its change count is read, to prove the test copy left it alone.
 Step ids J6.11 to J6.38: the harness reads mutant labels only in the J<n>.<m> form (journeys/lib/harness.py:113).
 Round 1 of look A (board a, Continuum) adds J6.31 to J6.38: the rest wings, the band, Latest | Unread and the end mark,
 the open mail's header, back chevron and keys, the code block's Copy, Open in Whoosh, the shape's widths read from the
@@ -46,12 +47,35 @@ J6_FIXTURE = os.path.join(ROOT, "fixtures", "tests-j6.json")
 FAILING_LINE = FX["states"]["sync"]["failing_line"]
 
 
+# The clipboard of a hidden test copy is a private board (Sources/App/HiddenClipboard.swift carries the same name): this file reads and writes
+# that board, never the Mac's own clipboard. Of the Mac's own clipboard it reads one number, the change count, to prove no copy landed there.
+RIG_CLIP = "io.nexus.whoosh.rig.clipboard"
+_JXA_GET = ('function run(a) { ObjC.import("AppKit"); var s = $.NSPasteboard.pasteboardWithName(a[0]).stringForType("public.utf8-plain-text");'
+            ' return s.isNil() ? "" : ObjC.unwrap(s); }')
+_JXA_SET = ('function run(a) { ObjC.import("AppKit"); var pb = $.NSPasteboard.pasteboardWithName(a[0]); pb.clearContents;'
+            ' return pb.setStringForType($(a[1]), "public.utf8-plain-text") ? "ok" : "refused"; }')
+_JXA_COUNT = 'function run(a) { ObjC.import("AppKit"); return String($.NSPasteboard.generalPasteboard.changeCount); }'
+
+
+def _jxa(script, *argv):
+    r = subprocess.run(["osascript", "-l", "JavaScript", "-e", script, *argv], capture_output=True, text=True, timeout=10)
+    if r.returncode != 0:
+        raise OSError("osascript: %s" % r.stderr.strip()[:200])
+    return r.stdout[:-1] if r.stdout.endswith("\n") else r.stdout
+
+
 def _real_clip():
-    return subprocess.run(["pbpaste"], capture_output=True, text=True, timeout=5).stdout
+    return _jxa(_JXA_GET, RIG_CLIP)
 
 
 def _real_setclip(text):
-    subprocess.run(["pbcopy"], input=text, text=True, timeout=5)
+    if _jxa(_JXA_SET, RIG_CLIP, text) != "ok":
+        raise OSError("the test copy's clipboard refused the text")
+
+
+def _real_owner_count():
+    """How many times the Mac's own clipboard changed since login: a number, never its content."""
+    return int(_jxa(_JXA_COUNT))
 
 
 def _rig_pids():
@@ -77,8 +101,8 @@ def _real_cg():
 
 def _real_screen_top():
     """The window server's Y of the top edge of the display the notch targets. The window server counts from the top of the first display;
-    a second display set higher or lower than it has another top (15 Nov 2026: J6.25 and J6.46 read -551 for 0 with the laptop's display set
-    551 pt above the first one, and 0 on the laptop alone: the panel sat at 6000 with `parked` 6000). The display is the app's own choice
+    a second display set higher or lower than it has another top. (The -551 of 15 Nov 2026 was not such a display: see `_real_lock_scale`.)
+    The display is the app's own choice
     (NotchGeometry.screen: the first with a camera housing, else the main one), read here from the host, not from the app."""
     js = ('ObjC.import("AppKit");var s=$.NSScreen.screens;var o=[];for(var i=0;i<s.count;i++){var c=s.objectAtIndex(i);var f=c.frame;'
           'o.push({y:f.origin.y,h:f.size.height,inset:c.safeAreaInsets.top})};JSON.stringify(o)')
@@ -90,9 +114,66 @@ def _real_screen_top():
     return int(round(screens[0]["h"] - (target["y"] + target["h"])))
 
 
+_OWN_FRAMES = set()   # (width, height) of every window and panel the app listed during this run
+
+
+def _note_frames(s):
+    """The app's own list of its windows now, each size remembered for `_real_lock_scale`. A copy that lists none gives []."""
+    try:
+        frames = s.ctl.winframes()
+    except Exception as e:                                           # noqa: BLE001  a dry run or a copy that lists no frame: nothing to remember
+        return [{"error": "%s: %s" % (type(e).__name__, e)}]
+    for f in frames:
+        if isinstance(f, dict) and f.get("kind") in ("window", "panel") and f.get("w") and f.get("h"):
+            _OWN_FRAMES.add((float(f["w"]), float(f["h"])))
+    return frames
+
+
+def _real_lock_scale(s):
+    """-> (k, cy): how the window server lists this copy's windows against where the app put them. Under the LOCK SCREEN the window server lists every
+    window scaled about the centre of its display (16 Nov 2026, the screen locked, one 1512x982 display, three windows of the test copy measured: 0.9
+    about (756, 491); the panel parked at 6000 read 5449, so J6.25 and J6.46 read -551 for 0; the same -551 on 15 Nov was first taken for a second
+    display set higher). k is the window server's width of the copy's main window over the app's own width for it; cy is the window server's Y of the
+    centre of the display the notch targets. (1.0, 0.0) when the two widths agree or one of them cannot be read: nothing is undone then."""
+    frames = _note_frames(s)
+    # every window the app said it has in this run, widest first (the widest gives the most exact factor). 17 Nov 2026: at J6.25 and J6.46 the app
+    # lists only the notch's panel (616 x 600, which the window server rounds to 556 x 541: 0.9026, 16 points off at the parked 6000), so the main
+    # window's size is kept from the earlier steps (`fresh`), and a window is matched by its SHAPE, not its title (the title is the open mail's subject).
+    owns = sorted(_OWN_FRAMES, reverse=True)
+    js = ('ObjC.import("CoreGraphics");ObjC.import("AppKit");var l=ObjC.deepUnwrap(ObjC.castRefToObject($.CGWindowListCopyWindowInfo('
+          '$.kCGWindowListOptionAll,0)));var s=$.NSScreen.screens;var o=[];for(var i=0;i<s.count;i++){var c=s.objectAtIndex(i);var f=c.frame;'
+          'o.push({y:f.origin.y,h:f.size.height,inset:c.safeAreaInsets.top})};JSON.stringify({w:l.filter(function(w){return '
+          'w.kCGWindowBounds.Width>=200}).map(function(w){return {w:w.kCGWindowBounds.Width,h:w.kCGWindowBounds.Height,pid:w.kCGWindowOwnerPID}}),s:o})')
+    out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True, timeout=20)
+    got = json.loads(out.stdout or "{}")
+    pids = _rig_pids()
+    screens = got.get("s") or []
+    mine = [(float(w["w"]), float(w["h"])) for w in got.get("w", []) if w.get("w") and w.get("h") and (not pids or w.get("pid") in pids)]
+    # a window of the copy whose width and height are one of the app's own windows, both by one same factor: that factor is the scale
+    pair = next(((cw, ow) for ow, oh in owns for cw, ch in mine if 0.5 <= cw / ow <= 1.05 and abs(cw / ow - ch / oh) < 0.01), None)
+    if os.environ.get("PAR_NOTCH_SCALE_LOG"):   # a lead's probe: what this read saw, one line per call
+        with open(os.environ["PAR_NOTCH_SCALE_LOG"], "a", encoding="utf-8") as f:
+            f.write(json.dumps({"frames": frames, "pids": pids, "mine": mine, "pair": pair, "screens": screens, "err": out.stderr[:200]}) + "\n")
+    if not screens:
+        return 1.0, 0.0
+    if pair is None:   # said in the run's output: with no window of the app's own shape the read cannot tell whether the window server scales
+        print("par-notch: no window of this copy has the shape of one of the app's own windows %s: the copy's windows are %s" % (owns, mine), flush=True)
+        return 1.0, 0.0
+    seen, own = pair
+    if abs(seen / own - 1.0) < 0.002:
+        return 1.0, 0.0
+    target = next((c for c in screens if c["inset"] > 0), screens[0])
+    k, cy = seen / own, (screens[0]["h"] - (target["y"] + target["h"])) + target["h"] / 2.0
+    # said in the run's own output: a reader of the log sees that this read was taken under a scaled window server (a locked screen), and by how much
+    print("par-notch: the window server lists this copy's windows scaled by %.3f about y=%.0f (main window %s for %s): undone in the panel's read" % (k, cy, seen, own), flush=True)
+    return k, cy
+
+
 # What the checks read from the host Mac (the clipboard, the window server, the displays). --selftest swaps them for the model's.
-HOST = {"clip": _real_clip, "setclip": _real_setclip, "cg": _real_cg, "top": _real_screen_top}
+HOST = {"clip": _real_clip, "setclip": _real_setclip, "ownercount": _real_owner_count, "cg": _real_cg, "top": _real_screen_top, "scale": _real_lock_scale}
 MODEL_SCREEN_TOP = -551      # the model's display sits above the first one: a check that reads the panel against 0 is red on the model
+MODEL_LOCK = (0.9, MODEL_SCREEN_TOP + 491.0)   # the model's screen is locked: its window server lists a window scaled by 0.9 about the display's centre,
+                                               # so a measure that does not undo the scale is red on the model (49 for 0)
 FAST = "--selftest" in sys.argv        # the model answers at once: no beat to wait for
 SLEEP = time.sleep
 
@@ -130,10 +211,12 @@ def panel_tops(s):
     own top, is where the panel sits on the display it targets."""
     wins = cg_notch(s)
     parked, top = int(s.ctl.rows(N)[0].get("parked", 0)), HOST["top"]()
-    return [w["y"] - parked - top for w in wins]
+    k, cy = HOST["scale"](s)             # a locked screen: the window server's Y is scaled about the display's centre; undone here
+    return [int(round(cy + (w["y"] - cy) / k)) - parked - top for w in wins]
 
 
 def fresh(s):
+    _note_frames(s)             # the main window's size, for the scale of a sleeping display (`_real_lock_scale`)
     s.click("mac-notch.stage.reset")
     s.click("dock.whoosh")      # the main window holds the keys again: an earlier step that opened Settings left `type` going to its fields (main111: J6.23 typed into Settings)
 
@@ -159,15 +242,16 @@ def frame(s, name, ax):
     return f
 
 
+def owner_writes(s, before):
+    """Changes of the Mac's own clipboard since `before`: 0 when the test copy kept its copies to its private board."""
+    s.ctl.rows("mac-notch")   # dry run: raises, the check is not judged
+    return HOST["ownercount"]() - before
+
+
 def drive(j):
-    saved = clip() if j.ctl is not None else None
-    try:
-        steps(j)
-        steps_r6(j)
-        steps_sweep(j)
-    finally:
-        if saved is not None:
-            HOST["setclip"](saved)
+    steps(j)
+    steps_r6(j)
+    steps_sweep(j)
 
 
 
@@ -211,15 +295,18 @@ def steps(j):
     s.expect("settings-archive-on-card-has-archive", lambda: "Archive" in texts(s, N + ".buttons", "title"), True)
 
     s = j.step("J6.14", "Copy the login code")
-    subprocess.run(["pbcopy"], input="par-notch-sentinel", text=True, timeout=5)
+    HOST["setclip"]("par-notch-sentinel")
     s.click(N + ".codepill")
     s.expect("copied-label", lambda: texts(s, N + ".codepill"), ["Copied"])
     s.expect("clipboard-is-code", lambda: clip(s), "482915")
     s.expect("read-not-archived", lambda: [r["read"] for r in rows(s, LIST) if r["id"] == CODE], [True])
 
     s = j.step("J6.15", "Fill the code into the field in front")
+    asked = lambda: int(s.ctl.core("system-ui/paste-into-front-app") or 0)
+    before = asked() if s.ctl is not None else 0
     s.click(N + ".fill")
     s.expect("fill-says-why-without-access", lambda: texts(s, N + ".error"), ["Allow Whoosh in Accessibility to fill codes"])
+    s.expect("fill-never-sends-the-paste-key-from-a-test-copy", lambda: asked() - before, 1)
 
     s = j.step("J6.16", "Latest or only unread on hover")
     s.click("mac-notch.stage.hover")
@@ -444,7 +531,7 @@ def steps(j):
     fresh(s)
     _, path = arrival_file("copy", "Northlight Sign-in", "Your sign-in code", "482915")   # a new id: msg-j6-code is in the core already
     s.raw("fixture", "deliver", "r6", path, "eventsource")
-    subprocess.run(["pbcopy"], input="par-notch-sentinel-2", text=True, timeout=5)
+    HOST["setclip"]("par-notch-sentinel-2")
     s.click(N + ".copy")
     s.expect("copy-button-copies", lambda: (texts(s, N + ".codepill"), clip(s)), (["Copied"], "482915"))
 
@@ -564,8 +651,10 @@ def steps_r6(j):
     ident, path = arrival_file("pill", "Northlight Sign-in", "Your sign-in code", "482915")
     s.raw("fixture", "deliver", "r6", path, "eventsource")
     HOST["setclip"]("par-notch-sentinel-r6")
+    owner = HOST["ownercount"]() if s.ctl is not None else 0
     s.click(N + ".codepill")
     s.expect("pill-puts-code-on-clipboard", lambda: clip(s), "482915")
+    s.expect("the-macs-own-clipboard-is-not-written", lambda: owner_writes(s, owner), 0)
     s.expect("pill-reads-it-in-the-core", lambda: [r["unread"] for r in inbox(s).values() if r["id"] == ident], [False])
     s.expect("pill-leaves-it-in-the-inbox", lambda: ident in inbox(s), True)
     s.expect("pill-leaves-it-in-the-notch", lambda: ids(s), [ident])
@@ -752,6 +841,7 @@ def steps_sweep(j):
 # J6.14/clipboard-is-code | the pill click leaves the clipboard alone
 # J6.14/read-not-archived | copying the code leaves the mail unread
 # J6.15/fill-says-why-without-access | Fill without the permission is silent
+# J6.15/fill-never-sends-the-paste-key-from-a-test-copy | Fill reads the Mac's Accessibility permission and sends Command-V from a test copy
 # J6.16/unread-hides-read | the unread setting still lists read mail
 # J6.16/latest-shows-all | the latest setting drops read mail
 # J6.16b/settings-show-unread-saved | the Unread switch does not save the word unread
@@ -835,6 +925,7 @@ def steps_sweep(j):
 # J6.41/arrival-measured-by-the-app | the arrival's own time (drop received to first frame shown) is never reported
 # J6.41/arrival-window-is-listed | an arrival leaves the panel window out of the window server's list
 # J6.42/pill-puts-code-on-clipboard | the pill click leaves the clipboard alone
+# J6.42/the-macs-own-clipboard-is-not-written | a hidden test copy writes the Mac's own clipboard
 # J6.42/pill-reads-it-in-the-core | the pill never tells the core the mail is read
 # J6.42/pill-leaves-it-in-the-inbox | the pill archives the mail in the core instead of reading it
 # J6.42/pill-leaves-it-in-the-notch | the pill removes the mail from the notch
@@ -879,6 +970,7 @@ class R6Model:
         self.m = mut
         self.core = {}                       # message id -> {"unread", "archived"}
         self.clipboard = "before"
+        self.owner_count = 0                 # the Mac's own clipboard: how many times this stand-in wrote it
         self.attachments = []
         self.geo_none = False
         self.reset()
@@ -906,6 +998,8 @@ class R6Model:
             return
         if not self.on("pill-puts-code-on-clipboard"):
             self.clipboard = it["code"]
+        if self.on("the-macs-own-clipboard-is-not-written"):
+            self.owner_count += 1
         it["read"] = True
         row = self.core[it["id"]]
         if not self.on("pill-reads-it-in-the-core"):
@@ -977,7 +1071,8 @@ class R6Model:
         if self.on("arrival-window-is-listed") and self.stage != "rest":
             return []
         low = self.on("no-notch-panel-at-screen-top") and self.geo_none
-        return [{"s": 1 if self.on("window-sharing-type-none") else 0, "y": MODEL_SCREEN_TOP + (30 if low else 0)}]
+        k, cy = MODEL_LOCK                # where the panel is, as a locked screen's window server lists it
+        return [{"s": 1 if self.on("window-sharing-type-none") else 0, "y": cy + (MODEL_SCREEN_TOP + (30 if low else 0) - cy) * k}]
 
     def handle(self, verb, a):
         if verb == "click":
@@ -1052,7 +1147,7 @@ def model_run(mut):
     srv = socketserver.ThreadingUnixStreamServer(os.path.join(d, "whoosh.sock"), H)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     real = dict(HOST)
-    HOST.update(clip=lambda: model.clipboard, setclip=lambda t: setattr(model, "clipboard", t), cg=model.window_server, top=lambda: MODEL_SCREEN_TOP)
+    HOST.update(clip=lambda: model.clipboard, setclip=lambda t: setattr(model, "clipboard", t), ownercount=lambda: model.owner_count, cg=model.window_server, top=lambda: MODEL_SCREEN_TOP, scale=lambda _s: MODEL_LOCK)
     ctl = None
     try:
         ctl = Ctl(d).connect()

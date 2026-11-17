@@ -22,6 +22,7 @@ import importlib.util
 import json
 import os
 import plistlib
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -112,30 +113,76 @@ def _(r):
 def memory_cell(r, budget, row, when, model_is_a_finding=False):
     """(within budget, True, the line): the physical footprint (`measure app.memory`), its budget and ledger row, and the model's state."""
     mb = reading(r, "app.memory", "mb")
-    embedder, words = model_state(r)
+    loaded, words = model_state(r)
     line = "physical footprint %.0f MB %s, budget %s MB (%s)%s" % (mb, when, budget, row, words)
-    if model_is_a_finding and embedder == "handed":
+    if model_is_a_finding and loaded:
         return False, True, "FINDING: the meaning model was in memory before any search; " + line
     return mb <= budget, True, line
 
 
+# The model's weights are in the process when its graphics memory holds them. Measured 17 Nov 2026 on a hidden copy of main206: 648 MB and 529 MB
+# right after a meaning search, 1 to 3 MB before any search and after the idle release. The row value embedder=handed is NOT that state: the
+# embedder object is handed to the engine at launch and loads nothing (MeaningSearch.sharedEmbedder), so this file's FINDING fired on every run
+# (main206: footprint 298 MB before any search, inside the 600 MB budget, reported as a model in memory).
+WEIGHTS_GRAPHICS_MIN_MB = 200
+
+
+def _size_mb(text):
+    """'648.5M' -> 648.5, '480K' -> 0.47, '1.2G' -> 1228.8; 0 for a figure it cannot read."""
+    unit = {"K": 1 / 1024.0, "M": 1.0, "G": 1024.0}.get(text[-1:])
+    try:
+        return float(text[:-1]) * unit if unit else 0.0
+    except ValueError:
+        return 0.0
+
+
+def _real_graphics_mb():
+    """Graphics memory of the test copy in MB: the IOAccelerator (graphics) row of `vmmap --summary` for the pid launch-one.sh started, the largest
+    of its resident, dirty and swapped sizes. None when the pid or the summary cannot be read."""
+    d = os.environ.get("D") or os.environ.get("WHOOSH_SOCKET_DIR") or ""
+    try:
+        pid = int(os.environ.get("RIG_PID") or open(os.path.join(d, "rig.pid"), encoding="utf-8").read().strip())
+        out = subprocess.run(["vmmap", "--summary", str(pid)], capture_output=True, text=True, timeout=180).stdout
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return None
+    if "Physical footprint" not in out:
+        return None
+    for l in out.splitlines():
+        if l.startswith("IOAccelerator (graphics)"):
+            return max([_size_mb(x) for x in l.split()[3:6]] or [0.0])
+    return 0.0
+
+
+HOST = {"graphics_mb": _real_graphics_mb}   # --selftest swaps it for the stand-in's
+
+
 def model_state(r):
-    """What the copy says about the meaning model when the memory is read (`rows mac-main.background`: embedder handed|held), and its
-    resident size beside the footprint: the reading names whether the 1.49 GB model was in the process. Information, never a verdict."""
-    words, embedder = [], None
+    """(the weights are in memory: True, False, or None when it cannot be read; the words for the line). The state is read from the HOST
+    (the copy's graphics memory, `HOST["graphics_mb"]`), never from the row `mac-main.background`, whose embedder value says who holds the
+    embedder object, not whether a model is loaded; the row's word and the resident size are printed beside it as information."""
+    words, loaded = [], None
+    try:
+        g = HOST["graphics_mb"]()
+    except Exception as e:      # noqa: BLE001  the host read failed: said in the line, the verdict stands on the number
+        g = None
+        words.append("graphics memory unreadable (%s)" % type(e).__name__)
+    if g is not None:
+        loaded = g >= WEIGHTS_GRAPHICS_MIN_MB
+        words.append("meaning model %s (graphics memory %.0f MB)" % ("weights in memory" if loaded else "weights not in memory", g))
+    elif not words:
+        words.append("meaning model state not read (no pid of the test copy)")
     try:
         row = (r.rows("mac-main.background") or [{}])[0]
-        embedder = row.get("embedder")
-        words.append("meaning model %s" % (embedder or "not said"))
-    except Exception as e:      # a copy that does not serve the row: say so, the verdict stands on the number
-        words.append("meaning model state unreadable (%s)" % type(e).__name__)
+        words.append("embedder %s" % (row.get("embedder") or "not said"))
+    except Exception as e:      # noqa: BLE001  a copy that does not serve the row: say so
+        words.append("embedder row unreadable (%s)" % type(e).__name__)
     try:
         rss = r.send("measure", "app.memory").get("rss_mb")
         if rss is not None:
             words.append("resident %.0f MB" % float(rss))
-    except Exception as e:
+    except Exception as e:      # noqa: BLE001
         words.append("resident size unreadable (%s)" % type(e).__name__)
-    return embedder, "; " + ", ".join(words)
+    return loaded, "; " + ", ".join(words)
 
 
 @cell("budget-can-fail", "control", "control: the 30-account run is measured with the same probe")
@@ -184,6 +231,16 @@ def run(r):
     return out
 
 
+def with_fake(model, fn):
+    """K.with_fake with the host's read of the graphics memory answered by the stand-in: 650 MB once its model is loaded, 2 MB before."""
+    real = HOST["graphics_mb"]
+    HOST["graphics_mb"] = lambda: None if "graphics-unreadable" in model.m else (650.0 if model.model else 2.0)
+    try:
+        return K.with_fake(model, fn)
+    finally:
+        HOST["graphics_mb"] = real
+
+
 class Model:
     def __init__(self, mut):
         self.m = mut
@@ -212,7 +269,7 @@ class Model:
                     return {"ok": True, "mb": const("RSS_MODEL_MAX_MB") + 50 if "model-mem-high" in self.m else 300 + self.n + 1500, "rss_mb": 1780.0}
                 return {"ok": True, "mb": const("MEM_MAC_MB") + 50 if "mem-high" in self.m else 300 + self.n, "rss_mb": 280.0}   # ledger numbers, so a swapped budget cannot move the fake
         if verb == "rows" and a[0] == "mac-main.background":
-            return {"ok": True, "rows": [{"embedder": "handed" if self.model else "held"}]}
+            return {"ok": True, "rows": [{"embedder": "handed"}]}                # as the app: handed from launch, whatever is loaded
         if verb == "rows" and a[0] == "mac-settings-accounts.accounts":
             return {"ok": True, "rows": [{"name": x["name"]} for x in FX["accounts"]] + ([{"name": T31["name"]}] if self.n > ACCOUNT_COUNT else [])}
         return {"ok": False, "error": "no %s %s" % (verb, a)}
@@ -252,26 +309,26 @@ def order_ok(cells):
 def selftest():
     global CELLS, MEM, MODEL_MEM          # round 10: the broken copies swap the order and the budgets, then put them back
     bad = 0
-    base = K.with_fake(Model(set()), run)
+    base = with_fake(Model(set()), run)
     print("base model: %d cells, %d not passing" % (len(base), sum(1 for x in base if x[1] != "pass")))
     bad += any(x[1] != "pass" for x in base)
     print("| cell | mutant | mutation | seen red |\n|---|---|---|---|")
     for name, mut, words, _ in CELLS:
         mut = "ctl-null" if mut == "control" else mut
-        res = K.with_fake(Model({mut}), run)
+        res = with_fake(Model({mut}), run)
         ok = any(n == name and st == "fail" for n, st, _d in res)
         bad += not ok
         print("| %s | %s | %s | %s |" % (name, mut, words, "red on " + name if ok else "NOT RED"))
     for name, mut, want in NOT_JUDGED_MUTANTS:          # a reading of 0 is not a pass: the cell must say not judged
-        res = K.with_fake(Model({mut}), run)
+        res = with_fake(Model({mut}), run)
         ok = any(n == name and st == want for n, st, _d in res)
         bad += not ok
         print("| %s | %s | a reading of 0 | %s |" % (name, mut, "%s on %s" % (want, name) if ok else "NOT %s" % want.upper()))
-    high = K.with_fake(Model({"mem-high"}), run)
+    high = with_fake(Model({"mem-high"}), run)
     mline = next((d for n, st, d in high if n == "memory-under-budget"), "")
-    sline = next((d for n, st, d in K.with_fake(Model({"search-slow"}), run) if n == "search-under-budget"), "")
+    sline = next((d for n, st, d in with_fake(Model({"search-slow"}), run) if n == "search-under-budget"), "")
     for name, ok in (("a failing memory cell prints its number, its budget and its ledger row", ("%.0f MB" % (MEM + 50)) in mline and "MEM_MAC_MB" in mline and ("budget %s MB" % MEM) in mline),
-                     ("the memory line says whether the meaning model was in the process", "meaning model held" in mline and "resident 280 MB" in mline),
+                     ("the memory line says whether the meaning model was in the process", "meaning model weights not in memory" in mline and "resident 280 MB" in mline),
                      ("a failing search cell prints its time and SEARCH_FIRST_SCREEN_MS", ("%.1f ms" % (SEARCH + 40)) in sline and "SEARCH_FIRST_SCREEN_MS" in sline),
                      ("a passing cell prints its number too", any(n == "memory-under-budget" and st == "pass" and "MB" in d for n, st, d in base))):
         bad += not ok
@@ -283,34 +340,36 @@ def selftest():
     saved = CELLS
     try:
         CELLS = swapped
-        late = first(K.with_fake(Model(set()), run), "memory-under-budget")
+        late = first(with_fake(Model(set()), run), "memory-under-budget")
     finally:
         CELLS = saved
     cases10 = [("order: the 600 MB cell runs before the search cell, the model cell after it", order_ok(CELLS)),
                ("order, broken copy: the 600 MB cell moved after the search is caught by the order check", not order_ok(swapped)),
                ("order, broken copy: read after the search the 600 MB cell sees the model and fails as a FINDING", late[0] == "fail" and "FINDING" in late[1]),
-               ("the 600 MB line names MEM_MAC_MB and the model held", "MEM_MAC_MB" in first(base, "memory-under-budget")[1] and "meaning model held" in first(base, "memory-under-budget")[1]),
-               ("the model line names RSS_MODEL_MAX_MB and the model handed", "RSS_MODEL_MAX_MB" in first(base, "memory-with-search-model-under-budget")[1] and "meaning model handed" in first(base, "memory-with-search-model-under-budget")[1]),
-               ("a model in memory before any search is a FINDING, not a pass", first(K.with_fake(Model({"model-at-launch"}), run), "memory-under-budget")[0] == "fail")]
+               ("the 600 MB line names MEM_MAC_MB and the weights not in memory", "MEM_MAC_MB" in first(base, "memory-under-budget")[1] and "meaning model weights not in memory" in first(base, "memory-under-budget")[1]),
+               ("a handed embedder with no weights in memory is a PASS, not a finding (the app's state from launch)", first(base, "memory-under-budget")[0] == "pass" and "embedder handed" in first(base, "memory-under-budget")[1]),
+               ("graphics memory that cannot be read is said in the line and the cell is judged on its number", (lambda v: v[0] == "pass" and "state not read" in v[1])(first(with_fake(Model({"graphics-unreadable"}), run), "memory-under-budget"))),
+               ("the model line names RSS_MODEL_MAX_MB and the weights in memory", "RSS_MODEL_MAX_MB" in first(base, "memory-with-search-model-under-budget")[1] and "meaning model weights in memory" in first(base, "memory-with-search-model-under-budget")[1]),
+               ("a model in memory before any search is a FINDING, not a pass", first(with_fake(Model({"model-at-launch"}), run), "memory-under-budget")[0] == "fail")]
     try:
         MEM, MODEL_MEM = MODEL_MEM, MEM                  # broken copy: each memory cell judged against the other's row
-        bent = K.with_fake(Model(set()), run)
-        bent_high = K.with_fake(Model({"mem-high"}), run)
+        bent = with_fake(Model(set()), run)
+        bent_high = with_fake(Model({"mem-high"}), run)
     finally:
         MEM, MODEL_MEM = const("MEM_MAC_MB"), const("RSS_MODEL_MAX_MB")
     cases10 += [("budget, broken copy: the model cell judged against MEM_MAC_MB goes red on a normal model footprint", first(bent, "memory-with-search-model-under-budget")[0] == "fail"),
                 ("budget, broken copy: the 600 MB cell judged against RSS_MODEL_MAX_MB lets a 650 MB app pass (the real budget catches it)",
-                 first(bent_high, "memory-under-budget")[0] == "pass" and first(K.with_fake(Model({"mem-high"}), run), "memory-under-budget")[0] == "fail")]
+                 first(bent_high, "memory-under-budget")[0] == "pass" and first(with_fake(Model({"mem-high"}), run), "memory-under-budget")[0] == "fail")]
     for name, ok in cases10:
         bad += not ok
         print("%-4s %s" % ("ok" if ok else "BAD", name))
     sys.path.insert(0, os.path.join(ROOT, "journeys"))
     from lib import loadgate    # noqa: E402
     hi = (loadgate.load_limit() or 12.0) + 4
-    slow = K.with_fake(Model({"frame-slow"}), run)
+    slow = with_fake(Model({"frame-slow"}), run)
     for name, ok in (("load: every cell inside its budget on a loaded Mac still passes", all(st == "pass" for _n, st, _d in apply_load(base, hi))),
                      ("load: a slow frame on a loaded Mac is NOT JUDGED (with its number)", any(n == "every-frame-under-budget" and st == "unjudged" for n, st, _d in apply_load(slow, hi))),
-                     ("load: memory over budget on a loaded Mac stays FAIL", any(n == "memory-under-budget" and st == "fail" for n, st, _d in apply_load(K.with_fake(Model({"mem-high"}), run), hi))),
+                     ("load: memory over budget on a loaded Mac stays FAIL", any(n == "memory-under-budget" and st == "fail" for n, st, _d in apply_load(with_fake(Model({"mem-high"}), run), hi))),
                      ("load: a slow frame at PERF_LOAD_MAX fails", any(n == "every-frame-under-budget" and st == "fail" for n, st, _d in apply_load(slow, hi - 4)))) + tuple(loadgate.selftest_cases()):
         bad += not ok
         print("%-4s %s" % ("ok" if ok else "BAD", name))

@@ -88,11 +88,16 @@ public enum NotchFeature: FeatureModule {
 
     /// Fill: the code goes on the clipboard and is pasted into the field of the app in front. Pasting into
     /// another app needs the Accessibility permission; without it the code stays on the clipboard and the notch says so.
+    /// A test copy never reads that permission and never sends the paste key (17 Nov 2026): the key goes to whatever app the owner
+    /// has in front, and a test copy carries the installed app's permissions (NotchFocus). A hidden rig counts the ask instead
+    /// (`core state system-ui/paste-into-front-app`) and answers as a Mac without the permission does.
     @discardableResult
     static func fillCode() -> Bool {
         guard copyCode() else { return false }
         #if os(macOS)
-        guard AXIsProcessTrusted() else { model.showError(NotchCopy.fillNeedsAccess); return true }
+        guard HiddenRig.allowSystemUI("paste-into-front-app", "Command-V"), AppModel.shared.host.fixture == nil, AXIsProcessTrusted() else {
+            model.showError(NotchCopy.fillNeedsAccess); return true
+        }
         let src = CGEventSource(stateID: .combinedSessionState)
         for down in [true, false] {   // virtual key 9 is V: Command-V pastes into the app in front
             let e = CGEvent(keyboardEventSource: src, virtualKey: 9, keyDown: down); e?.flags = .maskCommand; e?.post(tap: .cghidEventTap)

@@ -122,6 +122,10 @@ fn an_imported_row_is_the_row_a_synced_message_would_be_and_the_inbox_query_read
     for ((ta, ra), (tb, rb)) in da.iter().zip(db.iter()) {
         assert_eq!(ta, tb);
         if ta == "account" { continue; }
+        // `index_manifest` is the record of ONE running core's search index (its folder, its count, its build time): store A has a core whose indexer
+        // wrote it for the three imported messages, store B is a bare store with no indexer. It is no row of a message, so it is outside this comparison
+        // (found red on 16 Nov 2026: left one row with documents=3, right none; the table is older than this test, the indexer that fills it is newer).
+        if ta == "index_manifest" { continue; }
         assert_eq!(ra, rb, "table {ta} differs between an imported row and a synced one");
     }
     assert_eq!(da.len(), db.len());

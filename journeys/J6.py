@@ -9,9 +9,11 @@ behind the other app" is read from the hidden rig's own refusal log (`uistate.hi
 is recorded there and refused), with the composer of J6.7, which must come to the front, as its positive control; the reply is
 sent with the open mail's Send control (`mac-notch.open.send`) and its undo window runs on the wall clock (the `clock` verb does
 not move it); the outbox and undo counts are read as deltas from a baseline, so the journey holds after J1 to J5 in one instance.
-The clipboard and the window sharing state are read from the host (pbpaste, CGWindowList, the window's owner pid matched to the
-rig copy), not from the app's own report. WHOOSH_J6_PBOARD and WHOOSH_J6_CGWINDOWS_FILE let a mutation harness point those reads
-at a private board and a fake window list; the rig leaves them unset."""
+The clipboard and the window sharing state are read from the host (the test copy's private clipboard board, CGWindowList, the window's
+owner pid matched to the rig copy), not from the app's own report. The Mac's own clipboard is never written or read: a hidden test copy
+copies to its private board (Sources/App/HiddenClipboard.swift), and this file reads one number of the Mac's own clipboard, its change
+count, to prove it. WHOOSH_J6_PBOARD and WHOOSH_J6_CGWINDOWS_FILE let a mutation harness point those reads at another board and a fake
+window list; the rig leaves them unset."""
 import json
 import os
 import subprocess
@@ -33,7 +35,7 @@ with open(FX_PATH, encoding="utf-8") as _f:
 CODE, NEXT = F6["arrivals"]["login-code"], F6["arrivals"]["next-mail"]
 NOTCH, LIST, MAIN = "mac-notch", "mac-notch.list", "mac-main.list"
 COMPOSER_HEAD = "mac-composer.header"
-PBOARD = os.environ.get("WHOOSH_J6_PBOARD", "general")
+PBOARD = os.environ.get("WHOOSH_J6_PBOARD", "io.nexus.whoosh.rig.clipboard")   # the hidden test copy's private board, by name
 SENTINEL = "j6-clipboard-sentinel"
 UNDO_S = const("UNDO_SEND_DEFAULT_S")
 RIG_PATH_MARK = "Whoosh-rig"
@@ -48,12 +50,32 @@ def button_id(title):
     return title.lower().replace(" ", "-")
 
 
+_JXA_GET = ('function run(a) { ObjC.import("AppKit"); var s = $.NSPasteboard.pasteboardWithName(a[0]).stringForType("public.utf8-plain-text");'
+            ' return s.isNil() ? "" : ObjC.unwrap(s); }')
+_JXA_SET = ('function run(a) { ObjC.import("AppKit"); var pb = $.NSPasteboard.pasteboardWithName(a[0]); pb.clearContents;'
+            ' return pb.setStringForType($(a[1]), "public.utf8-plain-text") ? "ok" : "refused"; }')
+_JXA_COUNT = 'function run(a) { ObjC.import("AppKit"); return String($.NSPasteboard.generalPasteboard.changeCount); }'
+
+
+def _jxa(script, *argv):
+    r = subprocess.run(["osascript", "-l", "JavaScript", "-e", script, *argv], capture_output=True, text=True, timeout=10)
+    if r.returncode != 0:
+        raise OSError("osascript: %s" % r.stderr.strip()[:200])
+    return r.stdout[:-1] if r.stdout.endswith("\n") else r.stdout
+
+
 def clip_get():
-    return subprocess.run(["pbpaste", "-pboard", PBOARD], capture_output=True, text=True, timeout=5).stdout
+    return _jxa(_JXA_GET, PBOARD)
 
 
 def clip_set(text):
-    subprocess.run(["pbcopy", "-pboard", PBOARD], input=text, text=True, timeout=5)
+    if _jxa(_JXA_SET, PBOARD, text) != "ok":
+        raise OSError("the test copy's clipboard refused the text")
+
+
+def owner_clip_count():
+    """How many times the Mac's own clipboard changed since login: a number, never its content."""
+    return int(_jxa(_JXA_COUNT))
 
 
 _OWNER = {}
@@ -170,13 +192,7 @@ def outbox_with_attachment(core, ob7, oid, recipient, file):
 
 
 def drive(j):
-    live = j.ctl is not None
-    saved = clip_get() if live else None
-    try:
-        steps(j)
-    finally:
-        if live:
-            clip_set(saved)
+    steps(j)
 
 
 def steps(j):
@@ -221,10 +237,12 @@ def steps(j):
     s.expect("clipboard-before", lambda: clip(s), SENTINEL)
     s.expect("unread-before", lambda: s.ctl.core("message/%s/read" % CODE["id"]), False)
     stage0 = ctl_try(lambda: notch(s, "stage"))
+    owner0 = owner_clip_count() if live else 0
     act("codepill", s.click, NOTCH + ".codepill")
     s.expect("arrives-by-control", lambda: (stage0, notch(s, "stage"), s.ctl.rows(NOTCH + ".codepill")[0]["text"]), ("drop", "drop", "Copied"))
     s.expect("copied-label", lambda: s.ctl.rows(NOTCH + ".codepill")[0]["text"], "Copied")
     s.expect("clipboard-is-the-code", lambda: clip(s), CODE["code"])
+    s.expect("the-macs-own-clipboard-is-not-written", lambda: (s.ctl.rows(NOTCH + ".codepill")[0]["text"], owner_clip_count() - owner0), ("Copied", 0))
     s.expect("read-not-archived", lambda: (s.ctl.core("message/%s/read" % CODE["id"]),
                                            s.ctl.core("message/%s/archived" % CODE["id"])), (True, False))
 
@@ -363,6 +381,7 @@ NOTCH_TITLE = "Notch"      # the panel's window title (NotchIds.windowTitle, Eng
 # J6.2/arrives-by-control | the code pill click collapses the notch or opens Whoosh instead
 # J6.2/copied-label | no Copied confirmation
 # J6.2/clipboard-is-the-code | the clipboard gets another string
+# J6.2/the-macs-own-clipboard-is-not-written | a hidden test copy writes the Mac's own clipboard
 # J6.2/read-not-archived | copying a code archives the mail
 # J6.3/list-collapsed-before | the list is already open before the pointer rests
 # J6.3/list-opens-on-rest | a pointer rest opens nothing
@@ -439,6 +458,11 @@ def _app6(kit):
             if self.inert:
                 return ""
             return kit.bend(self.clip) if self.mutant and self.mutant == self.current else self.clip
+
+        def host_owner_count(self):
+            if self.inert:
+                return 0
+            return kit.bend(0) if self.mutant and self.mutant == self.current else 0
 
         def host_windows(self):
             if self.inert:
@@ -585,17 +609,18 @@ def selftest():
     kit = _kit()
     App6 = _app6(kit)
     mod = sys.modules[__name__]
-    saved = (mod.clip_get, mod.clip_set, mod.cg_windows)
+    saved = (mod.clip_get, mod.clip_set, mod.cg_windows, mod.owner_clip_count)
 
     def make(mutant, inert):
         sim = App6(mutant, inert)
         mod.clip_get = sim.host_clip
         mod.clip_set = lambda text: setattr(sim, "clip", text)
         mod.cg_windows = sim.host_windows
+        mod.owner_clip_count = sim.host_owner_count
         return sim
 
     def put_back():
-        mod.clip_get, mod.clip_set, mod.cg_windows = saved
+        mod.clip_get, mod.clip_set, mod.cg_windows, mod.owner_clip_count = saved
     return kit.run_selftest(mod, os.path.abspath(__file__), make, {}, after=put_back)
 
 

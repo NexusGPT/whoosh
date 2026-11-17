@@ -47,7 +47,20 @@ def number(cell):
     return float(m.group(0).replace(",", "")) if m else None
 
 
+SEED_WAIT_S = 900    # the longest the tool waits for `fixture seed-corpus`; a tool's patience, not a budget of the app
+
+
 def build_stamp(bundle):
+    # The bundle's own stamp first (the Info.plist keys of scripts/build.sh, as perf/interaction.py reads them): a kept copy of a build sits outside its
+    # build tree, where no build-<label>.json is found (17 Nov 2026, main206: the one run on a quiet Mac ended NOT JUDGED on "the build stamp cannot be read").
+    if bundle:
+        try:
+            import plistlib
+            with open(os.path.join(bundle, "Contents", "Info.plist"), "rb") as f:
+                p = plistlib.load(f)
+            return "label=%s commit=%s built_at=%s dirty_files=%s" % (p["NexusBuildLabel"], p["NexusBuildCommit"][:12], p["NexusBuiltAt"], p.get("NexusBuildDirtyFiles", "?"))
+        except (OSError, KeyError, ValueError):
+            pass
     tree = os.path.abspath(bundle)
     for _ in range(4):
         tree = os.path.dirname(tree)                # Whoosh.app -> Debug -> Products -> Build -> the build tree
@@ -146,8 +159,18 @@ def main(argv):
     if not why:
         try:
             ctl = Ctl().connect()
-            ctl.send("fixture", "seed-corpus", str(corpus_n))
-            have = ctl.core("index/message_count")
+            # The fill of the corpus gets its own wait: one million generated mails take longer than the driver's 5 s for a plain request
+            # (17 Nov 2026, main206, load 8.8: NOT JUDGED on "seed-corpus 1000000: timed out"). The time it took is printed.
+            import time
+            import lib.ctl as _ctl
+            saved, _ctl.TIMEOUT_S, t0 = _ctl.TIMEOUT_S, SEED_WAIT_S, time.time()
+            try:
+                ctl.send("fixture", "seed-corpus", str(corpus_n))
+                t1 = time.time()
+                have = ctl.core("index/message_count")      # the app's first answer after the fill: it may still be settling its lists on the new corpus
+            finally:
+                _ctl.TIMEOUT_S = saved
+            print("corpus: %s mails made in %.1f s; the app's first answer after it took %.1f s (wait limit %s s)" % (corpus_n, t1 - t0, time.time() - t1, SEED_WAIT_S))
             if corpus_reason(have, corpus_n):
                 why.append(corpus_reason(have, corpus_n))
         except CouldNotDrive as e:
